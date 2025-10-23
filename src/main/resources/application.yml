@@ -1,0 +1,10 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: schedule-service
+  profiles:
+    active: dev
+  config:
+    import: optional:configserver:http://10.0.0.139:8888
