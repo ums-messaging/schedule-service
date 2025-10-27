@@ -8,3 +8,11 @@ spring:
     active: dev
   config:
     import: optional:configserver:http://10.0.0.141:8888
+
+logging:
+  file:
+    name: /app/logs/app.log
+  pattern:
+    file: %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+  level:
+    root: INFO

@@ -59,7 +59,7 @@ pipeline {
                         "docker pull ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}",
                         "docker stop ${APP_NAME} || true",
                         "docker rm ${APP_NAME} || true",
-                        "docker run -d --name ${APP_NAME} -p 8761:8761 ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
+                        "docker run -d --name ${APP_NAME} -v /data/logs/schedule-service:/app/logs -P ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
                     ]
                     def commandsJson = groovy.json.JsonOutput.toJson([commands: commands])
 
@@ -75,7 +75,7 @@ pipeline {
                                "docker pull ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}",
                                "docker stop ${APP_NAME} || true",
                                "docker rm ${APP_NAME} || true",
-                               "docker run -d --name ${APP_NAME} -P ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
+                               "docker run -d --name ${APP_NAME} -P -v /var/app/logs/schedule-service:/app/logs ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
                             ]}'
                     """
                  }
