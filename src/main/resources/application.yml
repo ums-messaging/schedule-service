@@ -7,4 +7,4 @@ spring:
   profiles:
     active: dev
   config:
-    import: optional:configserver:http://10.0.0.139:8888
+    import: optional:configserver:http://10.0.0.141:8888
