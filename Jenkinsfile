@@ -75,7 +75,7 @@ pipeline {
                                "docker pull ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}",
                                "docker stop ${APP_NAME} || true",
                                "docker rm ${APP_NAME} || true",
-                               "docker run -d --name ${APP_NAME} -e HOST_IP=$(hostname -i) -P -v /var/app/logs/schedule-service:/app/logs ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
+                               "docker run -d --name ${APP_NAME} -e HOST_IP=\$(hostname -i) -P -v /var/app/logs/schedule-service:/app/logs ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
                             ]}'
                     """
                  }
