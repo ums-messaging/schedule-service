@@ -11,4 +11,9 @@ public class RequestTestController {
     public String hello() {
         return "hello";
     }
+
+    @GetMapping("/hello1")
+    public String hello1() {
+        return "hello";
+    }
 }
