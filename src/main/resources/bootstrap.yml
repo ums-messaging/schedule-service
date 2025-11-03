@@ -9,6 +9,7 @@ spring:
   config:
     import: optional:configserver:http://10.0.0.141:8888
 
+
 logging:
   file:
     name: /app/logs/app.log
