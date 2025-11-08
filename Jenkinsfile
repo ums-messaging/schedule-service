@@ -54,15 +54,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def commands = [
-                        "docker login ${REGISTRY} --username jang314 --password jang314",
-                        "docker pull ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}",
-                        "docker stop ${APP_NAME} || true",
-                        "docker rm ${APP_NAME} || true",
-                        "docker run -d --name ${APP_NAME} -v /data/logs/schedule-service:/app/logs -v /data/db:/app/db -P -e PROFILE_ON=dev -e KAFKA_PORT=9092 --restart=always ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
-                    ]
-                    def commandsJson = groovy.json.JsonOutput.toJson([commands: commands])
-
                     sh """
                         aws ssm send-command \
                             --instance-ids "${TARGET_INSTANCE_ID}" \
@@ -75,7 +66,7 @@ pipeline {
                                "docker pull ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}",
                                "docker stop ${APP_NAME} || true",
                                "docker rm ${APP_NAME} || true",
-                               "docker run -d --name ${APP_NAME} -e host_ip=\$(hostname -i) -P -v /var/app/logs/schedule-service:/app/logs --network host ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
+                               "docker run -d --name ${APP_NAME} -e host_ip=\$(hostname -i) -P -e SPRING_PROFILES_ACTIVE=dev -e KAFKA_PORT=9092 --restart=always -v /var/app/logs/schedule-service:/app/logs --network host ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
                             ]}'
                     """
                  }
