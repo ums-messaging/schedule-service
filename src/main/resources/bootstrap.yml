@@ -5,26 +5,22 @@ spring:
   application:
     name: schedule-service
   profiles:
-    active: dev
+    active: ${PROFILE_ON:local}
   config:
-    import: optional:configserver:http://10.0.0.141:8888
+    import: optional:configserver:http://config-server:8888
+  cloud:
+    bus:
+      enabled: true
+    stream:
+      bindings:
+        springCloudBusOutput:
+          producer:
+            configuration:
+              value.serializer: org.apache.kafka.common.serialization.StringSerializer
+        springCloudBusInput:
+          consumer:
+            configuration:
+              value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 
-logging:
-  file:
-    name: /app/logs/app.log
-  pattern:
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
-  level:
-    root: INFO
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,env,refresh,metrics
-  endpoint:
-    health:
-      show-details: always
-    env:
-      keys-to-sanitize: ""
