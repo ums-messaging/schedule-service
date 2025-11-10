@@ -66,7 +66,7 @@ pipeline {
                                "docker pull ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}",
                                "docker stop ${APP_NAME} || true",
                                "docker rm ${APP_NAME} || true",
-                               "docker run -d --name ${APP_NAME} -e host_ip=\$(hostname -i) -P -e SPRING_PROFILES_ACTIVE=dev -e KAFKA_PORT=9092 --restart=always -v /var/app/logs/schedule-service:/app/logs --network host ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
+                               "docker run -d --name ${APP_NAME} -e host_ip=\$(hostname -i) -P -e SPRING_PROFILES_ACTIVE=dev -e KAFKA_PORT=9092 --restart=always -v /var/app/logs/schedule-service:/app/logs ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
                             ]}'
                     """
                  }
