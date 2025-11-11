@@ -8,6 +8,8 @@ pipeline {
         APP_NAME = "schedule-service"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         GIT_BRANCH = "${env.BRANCH_NAME ?: 'main'}"
+        REGISTRY_ID = "jang314"
+        REGISTRY_PW = "jang314"
     }
 
     stages {
@@ -45,7 +47,7 @@ pipeline {
             steps {
                 sh '''
                     docker build -t ${REGISTRY}/${APP_NAME}:${IMAGE_TAG} .
-                    docker login ${REGISTRY} --username jang314 --password jang314
+                    docker login ${REGISTRY} --username ${REGISTRY_ID} --password ${REGISTRY_PW}
                     docker push ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}
                 '''
             }
@@ -62,11 +64,14 @@ pipeline {
                             --region ${AWS_REGION} \
                             --comment "Deploy ${APP_NAME}" \
                             --parameters '{"commands" : [
-                               "docker login ${REGISTRY} --username jang314 --password jang314",
-                               "docker pull ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}",
+                               "docker login ${REGISTRY} --username ${REGISTRY_ID} --password ${REGISTRY_PW}",
+                               "export HOST_IP=$(hostname -i)",
+                               "export ${IMAGE_TAG}",
+                               "cd /data/${APP_NAME}",
                                "docker stop ${APP_NAME} || true",
                                "docker rm ${APP_NAME} || true",
-                               "docker run -d --name ${APP_NAME} -e host_ip=\$(hostname -i) -P -e SPRING_PROFILES_ACTIVE=dev -e KAFKA_PORT=9092 --restart=always -v /var/app/logs/schedule-service:/app/logs ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
+                               "docker-compose pull",
+                               "docker-compose up -d"
                             ]}'
                     """
                  }
