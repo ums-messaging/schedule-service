@@ -3,13 +3,12 @@ pipeline {
 
     environment {
         AWS_REGION = 'ap-northeast-2'
+        TARGET_INSTANCE_ID = 'i-0e07c6f25528e1b75'
         TARGET_INSTANCE_ID = 'i-06f03de3fe3b63428'
         REGISTRY = "registry.ums.local:5000"
         APP_NAME = "schedule-service"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         GIT_BRANCH = "${env.BRANCH_NAME ?: 'main'}"
-        REGISTRY_ID = "jang314"
-        REGISTRY_PW = "jang314"
     }
 
     stages {
@@ -46,9 +45,9 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                    docker build -t \${REGISTRY}/\${APP_NAME}:\${IMAGE_TAG} .
-                    docker login \${REGISTRY} --username \${REGISTRY_ID} --password \${REGISTRY_PW}
-                    docker push \${REGISTRY}/\${APP_NAME}:\${IMAGE_TAG}
+                    docker build -t ${REGISTRY}/${APP_NAME}:${IMAGE_TAG} .
+                    docker login ${REGISTRY} --username jang314 --password jang314
+                    docker push ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}
                 '''
             }
         }
@@ -58,20 +57,19 @@ pipeline {
                 script {
                     sh """
                         aws ssm send-command \
-                            --instance-ids "\${TARGET_INSTANCE_ID}" \
-                            --targets "Key=instanceIds,Values=\${TARGET_INSTANCE_ID}" \
+                            --instance-ids "${TARGET_INSTANCE_ID}" \
+                            --targets "Key=instanceIds,Values=${TARGET_INSTANCE_ID}" \
                             --document-name "AWS-RunShellScript" \
-                            --region \${AWS_REGION} \
-                            --comment "Deploy \${APP_NAME}" \
+                            --region ${AWS_REGION} \
+                            --comment "Deploy ${APP_NAME}" \
                             --parameters '{"commands" : [
-                               "docker login \${REGISTRY} --username \${REGISTRY_ID} --password \${REGISTRY_PW} ",
-                               "export HOST_IP=$(hostname -i)",
-                               "export IMAGE_TAG=\${IMAGE_TAG}",
-                               "cd /data/${APP_NAME}",
-                               "docker stop \${APP_NAME} || true",
-                               "docker rm \${APP_NAME} || true",
-                               "docker-compose pull",
-                               "docker-compose up -d"
+                               "docker login ${REGISTRY} --username jang314 --password jang314",
+                               "cd /data/schedule-service",
+                               "export HOST_IP=\$(hostname -i)",
+                               "export IMAGE_TAG=${IMAGE_TAG}",
+                               "docker stop ${APP_NAME} || true",
+                               "docker rm ${APP_NAME} || true",
+                               "docker-compose pull && docker-compose up -d"
                             ]}'
                     """
                  }
@@ -88,3 +86,4 @@ pipeline {
         }
     }
 }
+
