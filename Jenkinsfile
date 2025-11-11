@@ -47,7 +47,7 @@ pipeline {
             steps {
                 sh '''
                     docker build -t ${REGISTRY}/${APP_NAME}:${IMAGE_TAG} .
-                    docker login ${REGISTRY} --username \${REGISTRY_ID} --password \${REGISTRY_PW}
+                    docker login \${REGISTRY} --username \${REGISTRY_ID} --password \${REGISTRY_PW}
                     docker push ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}
                 '''
             }
@@ -64,7 +64,7 @@ pipeline {
                             --region ${AWS_REGION} \
                             --comment "Deploy ${APP_NAME}" \
                             --parameters '{"commands" : [
-                               "docker login ${REGISTRY} --username \${REGISTRY_ID} --password \${REGISTRY_PW} ",
+                               "docker login \${REGISTRY} --username \${REGISTRY_ID} --password \${REGISTRY_PW} ",
                                "export HOST_IP=$(hostname -i)",
                                "export IMAGE_TAG=${IMAGE_TAG}",
                                "cd /data/${APP_NAME}",
