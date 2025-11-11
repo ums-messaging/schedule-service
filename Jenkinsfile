@@ -66,7 +66,7 @@ pipeline {
                             --parameters '{"commands" : [
                                "docker login ${REGISTRY} --username ${REGISTRY_ID} --password ${REGISTRY_PW}",
                                "export HOST_IP=$(hostname -i)",
-                               "export ${IMAGE_TAG}",
+                               "export IMAGE_TAG=${IMAGE_TAG}",
                                "cd /data/${APP_NAME}",
                                "docker stop ${APP_NAME} || true",
                                "docker rm ${APP_NAME} || true",
