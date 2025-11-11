@@ -46,9 +46,9 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                    docker build -t ${REGISTRY}/${APP_NAME}:${IMAGE_TAG} .
+                    docker build -t \${REGISTRY}/\${APP_NAME}:\${IMAGE_TAG} .
                     docker login \${REGISTRY} --username \${REGISTRY_ID} --password \${REGISTRY_PW}
-                    docker push ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}
+                    docker push \${REGISTRY}/\${APP_NAME}:\${IMAGE_TAG}
                 '''
             }
         }
@@ -58,18 +58,18 @@ pipeline {
                 script {
                     sh """
                         aws ssm send-command \
-                            --instance-ids "${TARGET_INSTANCE_ID}" \
-                            --targets "Key=instanceIds,Values=${TARGET_INSTANCE_ID}" \
+                            --instance-ids "\${TARGET_INSTANCE_ID}" \
+                            --targets "Key=instanceIds,Values=\${TARGET_INSTANCE_ID}" \
                             --document-name "AWS-RunShellScript" \
-                            --region ${AWS_REGION} \
-                            --comment "Deploy ${APP_NAME}" \
+                            --region \${AWS_REGION} \
+                            --comment "Deploy \${APP_NAME}" \
                             --parameters '{"commands" : [
                                "docker login \${REGISTRY} --username \${REGISTRY_ID} --password \${REGISTRY_PW} ",
                                "export HOST_IP=$(hostname -i)",
-                               "export IMAGE_TAG=${IMAGE_TAG}",
+                               "export IMAGE_TAG=\${IMAGE_TAG}",
                                "cd /data/${APP_NAME}",
-                               "docker stop ${APP_NAME} || true",
-                               "docker rm ${APP_NAME} || true",
+                               "docker stop \${APP_NAME} || true",
+                               "docker rm \${APP_NAME} || true",
                                "docker-compose pull",
                                "docker-compose up -d"
                             ]}'
