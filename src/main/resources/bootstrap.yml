@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 0
 
 spring:
   application:
@@ -21,6 +21,3 @@ spring:
           consumer:
             configuration:
               value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-
-
-
