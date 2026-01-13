@@ -8,6 +8,8 @@ pipeline {
         APP_NAME = "schedule-service"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         GIT_BRANCH = "${env.BRANCH_NAME ?: 'main'}"
+        SPRING_PROFILES_ACTIVE = 'test'
+        KAFKA_PORT = '9092'
     }
 
     stages {
@@ -31,6 +33,21 @@ pipeline {
                  }
             }
         }
+
+        stage('Test') {
+            steps {
+                sh '''
+                    chmod +x gradlew
+                    ./gradlew clean test
+                '''
+            }
+            post {
+                always {
+                    junit 'build/test-results/test/*.xml'
+                }
+            }
+        }
+
         stage('Gradle Build') {
             steps {
                 script {
@@ -74,6 +91,8 @@ pipeline {
                  }
             }
         }
+
+
     }
 
     post {
