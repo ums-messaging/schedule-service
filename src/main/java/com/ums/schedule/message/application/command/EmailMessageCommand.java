@@ -1,9 +1,11 @@
 package com.ums.schedule.message.application.command;
 
+import com.ums.schedule.attachment.application.command.SecurityPolicyCommand;
+
 public record EmailMessageCommand(
-        String templateId,
+        String templateKey,
         String convertType,
-        String contentType,
-        String encodingType
+        String encodingType,
+        SecurityPolicyCommand securityPolicy
 ) {
 }
