@@ -45,9 +45,6 @@ class EnumMapperFactoryTest {
                 .hasMessage(expectedError);
     }
 
-
-
-
     enum TestEnumMapper implements EnumMapper {
         TEST_ENUM_MAPPER(TestEnumMapperType.class);
 
