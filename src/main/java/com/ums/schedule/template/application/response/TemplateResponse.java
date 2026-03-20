@@ -11,10 +11,7 @@ public record TemplateResponse(
         String templateId,
         String templateName,
         String templateType,
-        String description,
-        String channelTemplateId,
-        String channelType,
-        String msgTitle
+        String channelType
 ) {
 
 }

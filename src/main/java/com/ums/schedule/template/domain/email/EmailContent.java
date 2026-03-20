@@ -1,33 +1,42 @@
 package com.ums.schedule.template.domain.email;
 
+import com.ums.schedule.attachment.domain.AttachmentPolicy;
+import com.ums.schedule.attachment.domain.FileMetaData;
 import com.ums.schedule.common.code.EnumMapperType;
 import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.template.application.response.email.EmailContentResponse;
 import com.ums.schedule.template.domain.code.TemplateContentFormatEnum;
+import com.ums.schedule.template.exception.TemplateContentRequiredException;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.HTML;
+
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EmailContent {
-    private String emailTemplateId;
-    private String versionId;
     private TemplateContentFormatEnum format;
     private String content;
 
-    public static EmailContent of(EmailContentResponse response, EnumMapperValue contentFormat) {
-        EmailContent content = new EmailContent(response.emailTemplateId(), response.versionId());
-        content.resolveTemplateContentFormat(contentFormat);
-        content.applyTemplate(response.content());
+    public static EmailContent fromResponse(EmailContentResponse response) {
+        EmailContent content = new EmailContent(HTML);
         return content;
     }
 
-    private EmailContent(String emailTemplateId, String versionId) {
-        this.emailTemplateId = emailTemplateId;
-        this.versionId = versionId;
+    public static EmailContent of(String content) {
+        EmailContent emailContent = new EmailContent(TemplateContentFormatEnum.TEXT);
+        emailContent.applyTemplate(content);
+        return emailContent;
     }
+
+    private EmailContent(TemplateContentFormatEnum format) {
+        this.format = format;
+    }
+
 
     private void resolveTemplateContentFormat(EnumMapperValue contentFormat) {
         this.format = TemplateContentFormatEnum.valueOf(contentFormat.value());
@@ -40,4 +49,5 @@ public class EmailContent {
     public boolean hasContent() {
         return StringUtils.hasText(this.content);
     }
+
 }

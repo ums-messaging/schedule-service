@@ -6,7 +6,8 @@ public enum EmailTemplateSectionEnum implements EnumMapperType {
     HEADER("HEADER", "이메일 상단"),
     BODY("BODY", "메시지 본문"),
     FOOTER("FOOTER", "이메일 하단"),
-    COVER("COVER", "이메일 커버");
+    COVER("COVER", "이메일 커버"),
+    ATTACHMENT("ATTACHMENT", "첨부파일");
 
     String value;
     String description;

@@ -17,4 +17,5 @@ public class TemplateContentRequiredException extends RequiredException {
     public static TemplateContentRequiredException ofCover() {
         return new TemplateContentRequiredException(COVER.value());
     }
+
 }
