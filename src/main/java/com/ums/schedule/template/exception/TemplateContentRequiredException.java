@@ -18,4 +18,15 @@ public class TemplateContentRequiredException extends RequiredException {
         return new TemplateContentRequiredException(COVER.value());
     }
 
+    public static TemplateContentRequiredException ofImageDir() {
+        return new TemplateContentRequiredException("Image dir ");
+    }
+
+    public static TemplateContentRequiredException ofTemplateKey() {
+        return new TemplateContentRequiredException("Template key ");
+    }
+
+    public static TemplateContentRequiredException ofTitle() {
+        return new TemplateContentRequiredException("Template title ");
+    }
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class AdvertiseFormatResolver implements MessageFormatResolver {
+public class AdvertisetypeResolver implements TemplateTypeResolver {
     @Value("${template.message_type.prefix}")
     private final String TEMPLATE_MESSAGE_TYPE_PREFIX;
 
