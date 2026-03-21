@@ -1,4 +1,4 @@
-package com.ums.schedule.attachment.application.service;
+package com.ums.schedule.attachment.application.handler;
 
 import com.ums.schedule.attachment.application.command.SecurityPolicyCommand;
 import com.ums.schedule.attachment.code.AttachmentEnumMapper;
@@ -6,9 +6,6 @@ import com.ums.schedule.attachment.code.EncryptionTypeEnum;
 import com.ums.schedule.attachment.code.PasswordHashEnum;
 import com.ums.schedule.attachment.code.PermissionMaskEnum;
 import com.ums.schedule.attachment.domain.Attachment;
-import com.ums.schedule.attachment.domain.AttachmentPolicy;
-import com.ums.schedule.attachment.domain.FileMetaData;
-import com.ums.schedule.attachment.domain.SecurityPolicy;
 import com.ums.schedule.common.code.EnumMapper;
 import com.ums.schedule.common.code.EnumMapperFactory;
 import com.ums.schedule.common.code.EnumMapperType;
@@ -16,22 +13,22 @@ import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.message.application.command.EmailMessageCommand;
 import com.ums.schedule.template.application.response.email.EmailContentResponse;
 import com.ums.schedule.template.domain.code.ConvertTypeEnum;
-import com.ums.schedule.template.domain.email.EmailContent;
+import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.swing.text.html.Option;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.ums.schedule.attachment.code.AttachmentEnumMapper.*;
+import static com.ums.schedule.template.domain.code.ConvertTypeEnum.NONE;
 
 @Component
 @RequiredArgsConstructor
 public class SecurityPolicyHandler implements AttachmentHandler {
     private final EnumMapperFactory factory;
-// Attachment도 호환될수 있게 수정
+
     public Attachment handle(EmailMessageCommand command, EmailContentResponse body) {
         EnumMapperValue convertType = resolveConvertTypeEnum(command);
         Attachment attachment = Attachment.of(convertType);
@@ -62,7 +59,7 @@ public class SecurityPolicyHandler implements AttachmentHandler {
                         .orElse(
                                 Optional.ofNullable(command.securityPolicy())
                                         .map(cmd -> EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.HTML))
-                                        .orElse(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE))
+                                        .orElse(EnumMapperValue.fromEnumMapperType(NONE))
 
                         );
     }

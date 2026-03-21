@@ -5,7 +5,8 @@ import com.ums.schedule.common.code.EnumMapperType;
 public enum TemplateContentFormatEnum implements EnumMapperType {
 
     TEXT("TEXT", "완성형"),
-    HTML("HTML", "파일형");
+    HTML("HTML", "HTML형"),
+    FILE("FILE", "파일형");
 
     String value;
     String description;

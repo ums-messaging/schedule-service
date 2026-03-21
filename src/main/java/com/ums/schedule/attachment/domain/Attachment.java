@@ -33,13 +33,11 @@ public class Attachment {
 
     public Attachment defineSecurityPolicy(SecurityPolicyCommand command, Map<AttachmentEnumMapper, EnumMapperValue> enumMapperMap) {
         this.securityPolicy = SecurityPolicy.of(command.passwordPolicy(), command.passwordFormat(), enumMapperMap);
-        securityPolicy.validate();
         return this;
     }
 
     public Attachment defineAttachmentPolicy(AttachmentPolicy policy) {
         this.attachmentPolicy = policy;
-        this.attachmentPolicy.validate();
         return this;
     }
 

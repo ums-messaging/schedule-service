@@ -19,11 +19,11 @@ public enum TemplateEnumMapper implements EnumMapper {
 
     @Override
     public String key() {
-        return null;
+        return this.name();
     }
 
     @Override
     public Class<? extends EnumMapperType> code() {
-        return null;
+        return this.code;
     }
 }

@@ -29,6 +29,6 @@ public enum EmailTemplateSectionEnum implements EnumMapperType {
 
     @Override
     public String description() {
-        return this.description();
+        return this.description;
     }
 }

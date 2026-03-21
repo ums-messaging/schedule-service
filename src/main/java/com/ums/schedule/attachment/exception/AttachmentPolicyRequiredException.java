@@ -8,4 +8,8 @@ public class AttachmentPolicyRequiredException extends AttachmentException {
     public static AttachmentPolicyRequiredException ofDownloadOrAttachmentName() {
         return new AttachmentPolicyRequiredException("download name or attachment name ");
     }
+
+    public static AttachmentPolicyRequiredException ofFileMetadata(String message) {
+        return new AttachmentPolicyRequiredException(message);
+    }
 }

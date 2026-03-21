@@ -1,4 +1,4 @@
-package com.ums.schedule.attachment.application.service;
+package com.ums.schedule.attachment.application.handler;
 
 import com.ums.schedule.attachment.domain.Attachment;
 import com.ums.schedule.attachment.domain.AttachmentPolicy;
@@ -15,10 +15,9 @@ import java.util.stream.Stream;
 public interface AttachmentHandler {
     Attachment handle(EmailMessageCommand command, EmailContentResponse body);
 
-    default List<Attachment> handler(EmailMessageCommand command, EmailContentResponse body, List<EmailContentResponse> attachmentList) {
-        Attachment fromBody = handle(command, body);
+    default List<Attachment> handle(EmailMessageCommand command, Attachment body, List<EmailContentResponse> attachmentList) {
         return Stream.concat(
-                Optional.ofNullable(fromBody)
+                Optional.ofNullable(body)
                     .map(Stream::of)
                     .orElseGet(Stream::empty),
                 attachmentList.stream()

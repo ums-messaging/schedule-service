@@ -4,11 +4,13 @@ import com.ums.schedule.attachment.exception.AttachmentPolicyRequiredException;
 import com.ums.schedule.template.domain.code.ConvertTypeEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import static com.ums.schedule.attachment.exception.AttachmentPolicyRequiredException.ofDownloadOrAttachmentName;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AttachmentPolicy {
@@ -16,8 +18,9 @@ public class AttachmentPolicy {
     private String downloadName;
 
     public static AttachmentPolicy of(String attachmentName, String downloadName) {
-        AttachmentPolicy policy = new AttachmentPolicy(attachmentName, downloadName);
-        return policy.hasAttachmentPolicy() ? policy : null;
+        AttachmentPolicy attachmentPolicy = new AttachmentPolicy(attachmentName, downloadName);
+        attachmentPolicy.validate();
+        return attachmentPolicy;
     }
 
     public void validate() {

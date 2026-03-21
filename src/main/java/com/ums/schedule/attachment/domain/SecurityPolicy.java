@@ -30,6 +30,7 @@ public class SecurityPolicy {
         SecurityPolicy securityPolicy = new SecurityPolicy();
         securityPolicy.resolveSecurityPolicyEnum(enumMapperMap);
         securityPolicy.definePasswordPolicy(passwordPolicy, passwordFormat);
+        securityPolicy.validate();
         return securityPolicy;
     }
 
@@ -46,15 +47,15 @@ public class SecurityPolicy {
     }
 
     private void resolvePermissionMask(EnumMapperValue permissionMask) {
-        this.permissionMask = PermissionMaskEnum.valueOf(permissionMask.value());
+        this.permissionMask = PermissionMaskEnum.valueOf(permissionMask.code());
     }
 
     private void resolvePasswordHash(EnumMapperValue passwordHash) {
-        this.passwordHash = PasswordHashEnum.valueOf(passwordHash.value());
+        this.passwordHash = PasswordHashEnum.valueOf(passwordHash.code());
     }
 
     private void resolveEncryptionType(EnumMapperValue encryptionType) {
-        this.encryptionType = EncryptionTypeEnum.valueOf(encryptionType.value());
+        this.encryptionType = EncryptionTypeEnum.valueOf(encryptionType.code());
     }
 
     protected void validate() {

@@ -20,7 +20,7 @@ import static com.ums.schedule.message.code.ChannelTypeEnum.EMAIL;
 public class EmailSendMessage extends SendMessage {
     private ContentTypeEnum contentType;
     private EncodingTypeEnum encodingType;
-    private EmailTemplate template;
+    private EmailTemplate emailTemplate;
     private List<Attachment> attachments = new ArrayList<>();
 
     public static EmailSendMessage of(EnumMapperValue templateType, String title, EmailTemplate template, List<Attachment> attachments) {
@@ -47,7 +47,7 @@ public class EmailSendMessage extends SendMessage {
 
     private EmailSendMessage(EnumMapperValue templateType, EmailTemplate template, String title) {
         super(fromEnumMapperType(EMAIL), templateType, title);
-        this.template = template;
+        this.emailTemplate = template;
     }
 
     public void resolveContentTypeEnum(EnumMapperValue contentType) {
