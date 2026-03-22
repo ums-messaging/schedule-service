@@ -62,8 +62,8 @@ class TemplateAssemblerTest {
         EmailTemplateDetailResponse detail = givenEmailDetailResponse(header, body, null);
 
         when(factory.findEnumMapperValue(any(), any())).thenReturn(fromEnumMapperType(TEXT));
-        when(textResolver.loadTemplate(any())).thenReturn(of(header.content()));
-        when(textResolver.loadTemplate(any())).thenReturn(of(body.content()));
+        when(textResolver.loadTemplate(any())).thenReturn(of(fromEnumMapperType(TEXT), header.content()));
+        when(textResolver.loadTemplate(any())).thenReturn(of(fromEnumMapperType(TEXT), body.content()));
 
         EmailTemplate result = assembler.assemble(detail, body);
 
@@ -79,8 +79,8 @@ class TemplateAssemblerTest {
         EmailTemplateDetailResponse detail = givenEmailDetailResponse(null, body, footer);
 
         when(factory.findEnumMapperValue(any(), any())).thenReturn(fromEnumMapperType(TEXT));
-        when(textResolver.loadTemplate(any())).thenReturn(of(footer.content()));
-        when(textResolver.loadTemplate(any())).thenReturn(of(body.content()));
+        when(textResolver.loadTemplate(any())).thenReturn(of(fromEnumMapperType(TEXT),footer.content()));
+        when(textResolver.loadTemplate(any())).thenReturn(of(fromEnumMapperType(TEXT),body.content()));
 
         EmailTemplate result = assembler.assemble(detail, body);
 
@@ -99,25 +99,6 @@ class TemplateAssemblerTest {
     }
 
     @Test
-    @DisplayName("title이 존재하지 않으면 예외가 발생한다.")
-    void shouldThrowException_wheniItleIsNull() {
-        EmailContentResponse body = givenContent(BODY);
-        EmailTemplateDetailResponse detail = new EmailTemplateDetailResponse(
-                UUID.randomUUID().toString(),
-                null,
-                "template/images",
-                List.of(body)
-        );
-
-        when(factory.findEnumMapperValue(any(), any())).thenReturn(fromEnumMapperType(TEXT));
-        when(textResolver.loadTemplate(any())).thenReturn(of(body.content()));
-
-        assertThatThrownBy(() -> assembler.assemble(detail, body))
-                .isInstanceOf(TemplateContentRequiredException.class)
-                .hasMessage(TemplateContentRequiredException.ofTitle().getMessage());
-    }
-
-    @Test
     @DisplayName("imageDir가 존재하지 않으면 예외가 발생한다.")
     void shouldThrowException_whenImageDirIsNull() {
         EmailContentResponse body = givenContent(BODY);
@@ -129,7 +110,7 @@ class TemplateAssemblerTest {
         );
 
         when(factory.findEnumMapperValue(any(), any())).thenReturn(fromEnumMapperType(TEXT));
-        when(textResolver.loadTemplate(any())).thenReturn(of(body.content()));
+        when(textResolver.loadTemplate(any())).thenReturn(of(fromEnumMapperType(TEXT),body.content()));
 
         assertThatThrownBy(() -> assembler.assemble(detail, body))
                 .isInstanceOf(TemplateContentRequiredException.class)

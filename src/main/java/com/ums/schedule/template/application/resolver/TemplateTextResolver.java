@@ -4,6 +4,7 @@ import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.template.application.response.email.EmailContentResponse;
 import com.ums.schedule.template.domain.email.EmailContent;
 
+import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
 import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.*;
 
 public class TemplateTextResolver implements TemplateFormatResolver {
@@ -14,6 +15,6 @@ public class TemplateTextResolver implements TemplateFormatResolver {
 
     @Override
     public EmailContent loadTemplate(EmailContentResponse content) {
-        return EmailContent.of(content.content());
+        return EmailContent.of(fromEnumMapperType(TEXT), content.content());
     }
 }

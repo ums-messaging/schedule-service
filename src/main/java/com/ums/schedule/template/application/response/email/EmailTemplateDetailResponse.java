@@ -18,11 +18,11 @@ public record EmailTemplateDetailResponse(
         List<EmailContentResponse> contents
 ) {
 
-    public Map<String, EmailContentResponse> getHeaderFooter() {
+    public Map<EmailTemplateSectionEnum, EmailContentResponse> getHeaderFooter() {
         return this.contents.stream()
-                .filter(content -> content.section().equals(HEADER.value()) || content.section().equals(FOOTER.value()))
+                .filter(content -> !content.section().equals(BODY))
                 .collect(Collectors.toMap(
-                        k -> k.section(), Function.identity(),
+                        k -> valueOf(k.section()), Function.identity(),
                         (o, n) -> n
                 ));
     }

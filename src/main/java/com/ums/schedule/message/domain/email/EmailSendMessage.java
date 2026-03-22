@@ -5,6 +5,7 @@ import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.message.code.ContentTypeEnum;
 import com.ums.schedule.message.code.EncodingTypeEnum;
 import com.ums.schedule.message.domain.SendMessage;
+import com.ums.schedule.template.domain.TemplateTypeContent;
 import com.ums.schedule.template.domain.code.TemplateTypeEnum;
 import com.ums.schedule.template.domain.email.EmailTemplate;
 import lombok.Getter;
@@ -20,20 +21,21 @@ import static com.ums.schedule.message.code.ChannelTypeEnum.EMAIL;
 public class EmailSendMessage extends SendMessage {
     private ContentTypeEnum contentType;
     private EncodingTypeEnum encodingType;
+    private TemplateTypeContent titleContent;
     private EmailTemplate emailTemplate;
     private List<Attachment> attachments = new ArrayList<>();
 
-    public static EmailSendMessage of(EnumMapperValue templateType, String title, EmailTemplate template, List<Attachment> attachments) {
-        EmailSendMessage sendMessage = new EmailSendMessage(templateType, template, title);
+    public static EmailSendMessage of(TemplateTypeContent title, EmailTemplate template, List<Attachment> attachments) {
+        EmailSendMessage sendMessage = new EmailSendMessage(template, title);
         sendMessage.toTemplate(template);
         sendMessage.addAttachment(attachments);
         return sendMessage;
     }
 
     private void toTemplate(EmailTemplate template) {
-        String header = template.getHeader().getContent();
+        String header = template.getHeaderContent();
         String body = template.getBody().getContent();
-        String footer = template.getFooter().getContent();
+        String footer = template.getFooterContent();
 
         writeTemplate(header+body+footer);
     }
@@ -45,8 +47,8 @@ public class EmailSendMessage extends SendMessage {
        );
     }
 
-    private EmailSendMessage(EnumMapperValue templateType, EmailTemplate template, String title) {
-        super(fromEnumMapperType(EMAIL), templateType, title);
+    private EmailSendMessage(EmailTemplate template, TemplateTypeContent titleContent) {
+        super(fromEnumMapperType(EMAIL), titleContent);
         this.emailTemplate = template;
     }
 

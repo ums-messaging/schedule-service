@@ -8,6 +8,7 @@ import com.ums.schedule.template.domain.email.EmailContent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
 import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.HTML;
 import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.valueOf;
 
@@ -24,6 +25,7 @@ public class TemplateFileResolver implements TemplateFormatResolver {
 
     @Override
     public EmailContent loadTemplate(EmailContentResponse content) {
-        return null;
+        String template = repository.getFileContent(content.fileKey());
+        return EmailContent.of(fromEnumMapperType(HTML), template);
     }
 }

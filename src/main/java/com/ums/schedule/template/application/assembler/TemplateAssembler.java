@@ -28,11 +28,10 @@ public class TemplateAssembler {
     private final EnumMapperFactory enumMapperFactory;
 
     public EmailTemplate assemble(EmailTemplateDetailResponse template, EmailContentResponse body) {
-        EmailContentResponse header = template.getHeaderFooter().get(HEADER.value());
-        EmailContentResponse footer = template.getHeaderFooter().get(FOOTER.value());
+        EmailContentResponse header = template.getHeaderFooter().get(HEADER);
+        EmailContentResponse footer = template.getHeaderFooter().get(FOOTER);
         EmailContentDto toDto = loadTemplate(header, body, footer);
         EmailTemplate toTemplate = EmailTemplate.of(template.emailContentId(), toDto);
-        toTemplate.defineTitle(template.msgTitle());
         toTemplate.defineImageDir(template.imageDir());
         return toTemplate;
     }
@@ -57,5 +56,4 @@ public class TemplateAssembler {
         EnumMapperValue enumMapperValue = enumMapperFactory.findEnumMapperValue(TEMPLATE_FORMAT, format);
         return TemplateContentFormatEnum.valueOf(enumMapperValue.value());
     }
-
 }

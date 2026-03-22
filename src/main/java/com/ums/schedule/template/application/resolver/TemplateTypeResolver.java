@@ -1,6 +1,8 @@
 package com.ums.schedule.template.application.resolver;
 
 
+import com.ums.schedule.template.domain.TemplateTypeContent;
+
 public interface TemplateTypeResolver {
-    String appendPrefixTexture(String content);
+    TemplateTypeContent appendPrefixTexture(String content);
 }

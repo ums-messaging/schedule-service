@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.HTML;
+import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.valueOf;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,13 +23,8 @@ public class EmailContent {
     private TemplateContentFormatEnum format;
     private String content;
 
-    public static EmailContent fromResponse(EmailContentResponse response) {
-        EmailContent content = new EmailContent(HTML);
-        return content;
-    }
-
-    public static EmailContent of(String content) {
-        EmailContent emailContent = new EmailContent(TemplateContentFormatEnum.TEXT);
+    public static EmailContent of(EnumMapperValue format, String content) {
+        EmailContent emailContent = new EmailContent(valueOf(format.value()));
         emailContent.applyTemplate(content);
         return emailContent;
     }
@@ -39,7 +35,7 @@ public class EmailContent {
 
 
     private void resolveTemplateContentFormat(EnumMapperValue contentFormat) {
-        this.format = TemplateContentFormatEnum.valueOf(contentFormat.value());
+        this.format = valueOf(contentFormat.value());
     }
 
     private void applyTemplate(String content) {
