@@ -1,9 +1,9 @@
 package com.ums.schedule.domain;
 
 import com.ums.schedule.common.code.*;
+import com.ums.schedule.schedule.domain.Schedule;
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.apache.kafka.common.network.Send;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

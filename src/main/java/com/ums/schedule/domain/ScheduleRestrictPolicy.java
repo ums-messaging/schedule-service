@@ -1,10 +1,9 @@
 package com.ums.schedule.domain;
 
 import com.ums.schedule.common.code.RestrictModeEnum;
+import com.ums.schedule.schedule.domain.Schedule;
 import jakarta.persistence.*;
 import lombok.Getter;
-
-import java.util.Optional;
 
 @Entity
 @Table(uniqueConstraints = {
