@@ -36,7 +36,7 @@ public class EmailMessageAssembler {
     private final Map<String, TemplateTypeResolver> resolverMap;
 
     public SendMessage createMessage(EmailMessageCommand command) {
-        EmailTemplateResponse response = templateClient.getTemplate(command.templateKey());
+        EmailTemplateResponse response = templateClient.getTemplate(command.sendRequest().templateKey());
         EmailTemplateDetailResponse emailTemplate = response.emailTemplate();
 
         EnumMapperValue templateType = enumMapperFactory.findEnumMapperValue(TEMPLATE_TYPE, response.template().templateType());

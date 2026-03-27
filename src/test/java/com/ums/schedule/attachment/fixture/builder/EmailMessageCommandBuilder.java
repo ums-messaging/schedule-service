@@ -34,7 +34,7 @@ public class EmailMessageCommandBuilder {
 
     public EmailMessageCommand build() {
         return new EmailMessageCommand(
-                this.templateKey,
+                null,
                 this.convertType,
                 this.encodingType,
                 this.securityPolicy

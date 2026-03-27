@@ -6,13 +6,13 @@ import com.ums.schedule.message.code.ContentTypeEnum;
 import com.ums.schedule.message.code.EncodingTypeEnum;
 import com.ums.schedule.message.domain.SendMessage;
 import com.ums.schedule.template.domain.TemplateTypeContent;
-import com.ums.schedule.template.domain.code.TemplateTypeEnum;
 import com.ums.schedule.template.domain.email.EmailTemplate;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
 import static com.ums.schedule.message.code.ChannelTypeEnum.EMAIL;
@@ -21,7 +21,6 @@ import static com.ums.schedule.message.code.ChannelTypeEnum.EMAIL;
 public class EmailSendMessage extends SendMessage {
     private ContentTypeEnum contentType;
     private EncodingTypeEnum encodingType;
-    private TemplateTypeContent titleContent;
     private EmailTemplate emailTemplate;
     private List<Attachment> attachments = new ArrayList<>();
 

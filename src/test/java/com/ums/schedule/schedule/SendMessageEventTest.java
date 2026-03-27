@@ -1,4 +1,4 @@
-package com.ums.schedule.domain;
+package com.ums.schedule.schedule;
 
 import com.ums.schedule.repository.SendMessageEventRepository;
 import org.junit.jupiter.api.BeforeEach;
