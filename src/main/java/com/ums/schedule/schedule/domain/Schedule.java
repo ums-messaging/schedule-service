@@ -1,7 +1,7 @@
 package com.ums.schedule.schedule.domain;
 
-import com.ums.schedule.domain.ScheduleRestrictPolicy;
-import com.ums.schedule.domain.SendRequest;
+import com.ums.schedule.message.application.domain.ScheduleRestrictPolicy;
+import com.ums.schedule.send.domain.request.SendRequest;
 import com.ums.schedule.schedule.code.ScheduleStatusEnum;
 import com.ums.schedule.schedule.code.ScheduleTypeEnum;
 import com.ums.schedule.schedule.domain.cycle_policy.ScheduleCyclePolicy;

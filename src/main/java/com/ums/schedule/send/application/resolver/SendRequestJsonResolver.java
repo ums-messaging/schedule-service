@@ -20,6 +20,8 @@ public class SendRequestJsonResolver implements SendRequestResolver {
 
     @Override
     public TargetUpload resolve(SendRequest sendRequest) {
-        return TargetUpload.of(sendRequest, fromEnumMapperType(JSON));
+        TargetUpload targetUpload = TargetUpload.of(fromEnumMapperType(JSON));
+        targetUpload.applySendRequest(sendRequest);
+        return targetUpload;
     }
 }

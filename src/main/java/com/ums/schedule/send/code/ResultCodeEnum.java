@@ -2,19 +2,14 @@ package com.ums.schedule.send.code;
 
 import com.ums.schedule.common.code.EnumMapperType;
 
-public enum SendRequestStatusEnum implements EnumMapperType {
-    CREATE("CRT", "발송 요청 등록"),
-    REQUEST("REQ", "발송요청"),
-    READY("RDY", "발송 준비"),
-    SCHEDULED("SCH", "스케쥴링"),
-    SENDING("SND", "발송중"),
-    COMPLETED("CMT", "발송완료")
-    ;
-
+public enum ResultCodeEnum implements EnumMapperType {
+    SUCCESS("OK", "처리 성공"),
+    FAIL("ERR", "처리 에러"),
+    RETRY("RTY", "재시도");
     String value;
     String description;
 
-    SendRequestStatusEnum(String value, String description) {
+    ResultCodeEnum(String value, String description) {
         this.value = value;
         this.description = description;
     }

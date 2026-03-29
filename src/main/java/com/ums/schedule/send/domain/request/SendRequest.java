@@ -1,30 +1,27 @@
 package com.ums.schedule.send.domain.request;
 
 import com.ums.schedule.common.code.EnumMapperValue;
+import com.ums.schedule.send.code.SendRequestEventEnum;
+import com.ums.schedule.send.code.SendRequestStatusEnum;
+import com.ums.schedule.send.domain.event.SendRequestEvent;
+import com.ums.schedule.send.domain.report.SendRequestReport;
 import com.ums.schedule.message.domain.SendMessage;
 import com.ums.schedule.schedule.domain.Schedule;
 import com.ums.schedule.send.application.model.dto.SendRequestDto;
-import com.ums.schedule.send.code.SendRequestStatusEnum;
-import com.ums.schedule.send.code.TargetUploadStatusEnum;
-import com.ums.schedule.send.domain.exception.SendRequestException;
-import com.ums.schedule.send.domain.reporing.SendReport;
-import com.ums.schedule.send.domain.request.status.RequestCreateStatus;
-import com.ums.schedule.send.domain.request.status.SchedulingStatus;
-import com.ums.schedule.send.domain.request.status.SendRequestStatus;
-import com.ums.schedule.send.domain.request.status.exception.SendReadyStatusException;
+import com.ums.schedule.send.domain.request.status.RequestCreateState;
+import com.ums.schedule.send.domain.request.status.SendRequestState;
 import com.ums.schedule.send.domain.target.SendTarget;
 import com.ums.schedule.send.domain.target.upload.TargetUpload;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.ums.schedule.send.code.TargetUploadStatusEnum.*;
+import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
+import static com.ums.schedule.send.code.SendRequestEventEnum.JOB_CREATED;
 
 //@Entity
 //@Table(name = "send_request",
@@ -49,38 +46,37 @@ public class SendRequest {
 //    @Column(name = "sender_key", nullable = false)
     private String senderKey;
 
-//    @Column(name = "status", nullable = false)
+    private SendRequestState state;
+    private SendRequestStatusEnum status;
 
     private CustomerRequestKey customerRequestKey;
-    private SendReport report;
+
     //    @ManyToOne
 //    @JoinColumn(name = "schedule_id", nullable = false)
 //    @Getter
     private Schedule schedule;
     //    @Getter
 //    @OneToMany(mappedBy = "sendRequest", cascade = { CascadeType.PERSIST })
-    private SendMessage sendMessage;
     private List<TargetUpload> targetUploadList = new ArrayList<>();
+
     private List<SendTarget> targetList = new ArrayList<>();
 
-    private String errorMessage;
-    private SendRequestEvent event;
+    @Getter(AccessLevel.PRIVATE)
+    private List<SendRequestEvent> eventList = new ArrayList<>();
 
+    private SendRequestReport report ;
+    private SendMessage sendMessage;
 
     public static SendRequest of(CustomerRequestKey customerRequestKey, SendRequestDto dto) {
         SendRequest sendRequest = new SendRequest();
         sendRequest.applyCustomerRequestKey(customerRequestKey);
         sendRequest.fromDto(dto);
-        sendRequest.markCreate();
+        sendRequest.createReport();
         return sendRequest;
     }
 
-    private void markCreate() {
-        this.event = new SendRequestEvent();
-    }
-
-    private void initReport(int totalCount) {
-        this.report = SendReport.of(totalCount);
+    private void createReport() {
+        this.report = SendRequestReport.of(this);
     }
 
     private void applyCustomerRequestKey(CustomerRequestKey customerRequestKey) {
@@ -91,7 +87,6 @@ public class SendRequest {
         this.senderKey = dto.senderKey();
         this.templateKey = dto.templateKey();
         initRetryMaxCount(dto.retryCnt());
-        initReport(dto.totalCount());
     }
 
     private void initRetryMaxCount(Integer retryCount) {
@@ -106,6 +101,39 @@ public class SendRequest {
     public void applySendMessage(SendMessage sendMessage) {
         this.sendMessage = sendMessage;
         sendMessage.getSendRequest().add(this);
-        this.event.markMessageCreated(this);
     }
+
+    public boolean canTransitionToReady() {
+        return isMessageCreated() && isTargetUploaded();
+    }
+
+    private boolean isMessageCreated() {
+        return Optional.ofNullable(this.sendMessage)
+                .filter(message -> message.getStatus().equals("ACTIVE"))
+                .map(message -> true)
+                .orElse(false);
+    }
+
+    private boolean isTargetUploaded() {
+        if(this.targetUploadList.size()>0) {
+            return this.targetUploadList
+                    .stream()
+                    .filter(upload -> upload.isProcess())
+                    .findAny()
+                    .map(upload -> false)
+                    .orElse(true);
+        }
+        return false;
+    }
+
+    public void addEventList(SendRequestEvent event) {
+        changeStatus(event);
+        this.eventList.add(event);
+    }
+
+    private void changeStatus(SendRequestEvent event) {
+        this.state = event.mark(this.state);
+        this.status = state.currentSendRequestStatus();
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.ums.schedule.domain;
+package com.ums.schedule.message.application.domain;
 
 import com.ums.schedule.common.code.RestrictModeEnum;
 import com.ums.schedule.schedule.domain.Schedule;

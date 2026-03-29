@@ -1,17 +1,5 @@
 package com.ums.schedule.repository.mapping;
 
-import com.netflix.discovery.converters.Auto;
-import com.ums.schedule.domain.Schedule;
-import com.ums.schedule.domain.ScheduleFixture;
-import com.ums.schedule.domain.SendRequest;
-import com.ums.schedule.repository.ScheduleRepository;
-import com.ums.schedule.repository.SendRequestRepository;
-import jakarta.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;

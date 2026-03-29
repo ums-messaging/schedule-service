@@ -22,7 +22,7 @@ public record TemplateTypeContent(
 
     public static TemplateTypeContent ofWithoutPrefix(EnumMapperValue templateType, String content) {
         return new TemplateTypeContent(
-                valueOf(templateType.value()),null, content);
+                valueOf(templateType.value()),"", content);
     }
 
     public String toWithPrefix() {

@@ -28,9 +28,8 @@ public class TargetUpload {
     private LocalDateTime uploadAt;
     private SendRequest sendRequest;
 
-    public static TargetUpload of(SendRequest sendRequest, EnumMapperValue uploadType) {
+    public static TargetUpload of(EnumMapperValue uploadType) {
         TargetUpload targetUpload = new TargetUpload();
-        targetUpload.applySendRequest(sendRequest);
         targetUpload.changeStatus(new TargetCreatedStatus());
         targetUpload.resolveUploadType(uploadType);
         return targetUpload;
@@ -40,12 +39,12 @@ public class TargetUpload {
         this.uploadType = TargetUploadTypeEnum.valueOf(uploadType.code());
     }
 
-    private void changeStatus(TargetUploadStatus uploadStatus) {
+    public void changeStatus(TargetUploadStatus uploadStatus) {
         this.uploadStatus = uploadStatus;
         this.status = uploadStatus.currentStatus();
     }
 
-    private void applySendRequest(SendRequest sendRequest) {
+    public void applySendRequest(SendRequest sendRequest) {
         this.sendRequest = sendRequest;
         this.sendRequest.getTargetUploadList().add(this);
         this.report = SendReport.of(sendRequest.getTargetList().size());
