@@ -1,6 +1,7 @@
 package com.ums.schedule.send.domain.request;
 
 import com.ums.schedule.common.code.EnumMapperValue;
+import com.ums.schedule.message.code.MessageStatusEnum;
 import com.ums.schedule.send.code.SendRequestEventEnum;
 import com.ums.schedule.send.code.SendRequestStatusEnum;
 import com.ums.schedule.send.domain.event.SendRequestEvent;
@@ -109,7 +110,7 @@ public class SendRequest {
 
     private boolean isMessageCreated() {
         return Optional.ofNullable(this.sendMessage)
-                .filter(message -> message.getStatus().equals("ACTIVE"))
+                .filter(message -> message.getStatus() == MessageStatusEnum.ACTIVE)
                 .map(message -> true)
                 .orElse(false);
     }

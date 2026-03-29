@@ -125,7 +125,9 @@ class SendRequestEventTest {
                 EmailContent.of(fromEnumMapperType(TEXT), "footer")
         );
         EmailTemplate template = EmailTemplate.of(UUID.randomUUID().toString(), dto);
-        return EmailSendMessage.of(content, template, List.of());
+        EmailSendMessage message = EmailSendMessage.of(content, template, List.of());
+        message.toComplete();
+        return message;
     }
 
 }

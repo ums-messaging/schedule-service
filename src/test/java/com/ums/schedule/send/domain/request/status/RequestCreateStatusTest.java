@@ -199,6 +199,9 @@ class RequestCreateStatusTest {
                 EmailContent.of(fromEnumMapperType(TEXT), "footer")
         );
         EmailTemplate template = EmailTemplate.of(UUID.randomUUID().toString(), dto);
+
+        EmailSendMessage message = EmailSendMessage.of(content, template, List.of());
+        message.toComplete();
         return EmailSendMessage.of(content, template, List.of());
     }
     private TargetUpload givenTargetUpload(SendRequest request) {
