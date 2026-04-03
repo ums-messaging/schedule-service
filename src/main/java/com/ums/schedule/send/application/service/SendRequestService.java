@@ -1,5 +1,6 @@
 package com.ums.schedule.send.application.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.ums.schedule.repository.SendRequestRepository;
 import com.ums.schedule.send.application.assembler.SendTargetAssembler;
 import com.ums.schedule.send.application.model.command.SendRequestCommand;

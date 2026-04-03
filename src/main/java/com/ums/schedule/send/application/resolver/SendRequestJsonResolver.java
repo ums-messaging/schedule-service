@@ -1,13 +1,8 @@
 package com.ums.schedule.send.application.resolver;
 
 import com.ums.schedule.common.code.EnumMapperValue;
-import com.ums.schedule.send.application.model.command.SendRequestCommand;
-import com.ums.schedule.send.application.model.command.SendTargetCreateCommand;
-import com.ums.schedule.send.code.TargetUploadTypeEnum;
 import com.ums.schedule.send.domain.request.SendRequest;
-import com.ums.schedule.send.domain.target.upload.TargetUpload;
-
-import java.util.List;
+import com.ums.schedule.send.domain.request.upload.TargetUpload;
 
 import static com.ums.schedule.common.code.EnumMapperValue.*;
 import static com.ums.schedule.send.code.TargetUploadTypeEnum.*;

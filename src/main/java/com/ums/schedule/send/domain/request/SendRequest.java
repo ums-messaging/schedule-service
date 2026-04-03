@@ -1,18 +1,15 @@
 package com.ums.schedule.send.domain.request;
 
-import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.message.code.MessageStatusEnum;
-import com.ums.schedule.send.code.SendRequestEventEnum;
 import com.ums.schedule.send.code.SendRequestStatusEnum;
 import com.ums.schedule.send.domain.event.SendRequestEvent;
 import com.ums.schedule.send.domain.report.SendRequestReport;
 import com.ums.schedule.message.domain.SendMessage;
 import com.ums.schedule.schedule.domain.Schedule;
 import com.ums.schedule.send.application.model.dto.SendRequestDto;
-import com.ums.schedule.send.domain.request.status.RequestCreateState;
 import com.ums.schedule.send.domain.request.status.SendRequestState;
 import com.ums.schedule.send.domain.target.SendTarget;
-import com.ums.schedule.send.domain.target.upload.TargetUpload;
+import com.ums.schedule.send.domain.request.upload.TargetUpload;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,9 +17,6 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
-import static com.ums.schedule.send.code.SendRequestEventEnum.JOB_CREATED;
 
 //@Entity
 //@Table(name = "send_request",

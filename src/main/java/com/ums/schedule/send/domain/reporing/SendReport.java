@@ -1,12 +1,19 @@
 package com.ums.schedule.send.domain.reporing;
 
+import com.ums.schedule.send.domain.target.SendTarget;
+import com.ums.schedule.send.domain.target.TargetError;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Getter
 public class SendReport {
     private Long totalCount;
     private Long successCount;
     private Long failCount;
+    private List<SendTarget> failTargetList = new ArrayList<>();
 
     public static SendReport of(int totalCount) {
         Long parseTotalCount = Long.parseLong(String.valueOf(totalCount));
@@ -20,4 +27,20 @@ public class SendReport {
         this.successCount = 0L;
         this.failCount = 0L;
     }
+
+    public Long increaseSuccessCount(int targetSize) {
+        AtomicLong getSuccessCount = new AtomicLong(this.successCount);
+        getSuccessCount.addAndGet(targetSize);
+        this.successCount = getSuccessCount.get();
+        return this.successCount;
+    }
+
+    public SendTarget reportUploadFailTarget(SendTarget target, String errMessage) {
+        AtomicLong failCount = new AtomicLong(this.failCount);
+//        target.toError(TargetError.ofErrorMessage(errMessage));
+        this.failTargetList.add(target);
+        this.failCount = failCount.incrementAndGet();
+        return target;
+    }
+
 }

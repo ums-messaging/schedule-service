@@ -1,4 +1,4 @@
-package com.ums.schedule.send.domain.target.upload.status;
+package com.ums.schedule.send.domain.request.upload.status;
 
 import com.ums.schedule.send.code.TargetUploadStatusEnum;
 

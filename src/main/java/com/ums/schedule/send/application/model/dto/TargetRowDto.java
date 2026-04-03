@@ -1,27 +1,21 @@
 package com.ums.schedule.send.application.model.dto;
 
-import com.ums.schedule.send.application.model.command.SendTargetCreateCommand;
-import com.ums.schedule.send.code.SendTargetStatusEnum;
 import com.ums.schedule.send.code.TargetColumnEnum;
-import com.ums.schedule.send.code.TargetUploadStatusEnum;
-import com.ums.schedule.send.domain.request.SendRequest;
-import com.ums.schedule.send.domain.target.SendTarget;
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.ums.schedule.send.code.TargetColumnEnum.*;
-
-
-public record SendTargetDto(
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public record TargetRowDto(
         Long rowNo,
         Map<Integer, String> headMap,
         Map<Long, String> targetData
 ) {
-    public static SendTargetDto of(Integer rowNo, Map<Integer, String> headMap, Map<Long, String> targetData) {
-        return new SendTargetDto((long) rowNo, headMap, targetData);
+    public static TargetRowDto of(Integer rowNo, Map<Integer, String> headMap, Map<Long, String> targetData) {
+        return new TargetRowDto((long) rowNo, headMap, targetData);
     }
 
     public Map<TargetColumnEnum, String> resolveTargetData() {

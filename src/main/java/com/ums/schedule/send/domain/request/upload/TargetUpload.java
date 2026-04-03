@@ -1,4 +1,4 @@
-package com.ums.schedule.send.domain.target.upload;
+package com.ums.schedule.send.domain.request.upload;
 
 import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.send.application.model.response.PresigedUrlResponse;
@@ -6,7 +6,7 @@ import com.ums.schedule.send.code.TargetUploadStatusEnum;
 import com.ums.schedule.send.code.TargetUploadTypeEnum;
 import com.ums.schedule.send.domain.reporing.SendReport;
 import com.ums.schedule.send.domain.request.SendRequest;
-import com.ums.schedule.send.domain.target.upload.status.*;
+import com.ums.schedule.send.domain.request.upload.status.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,9 +39,10 @@ public class TargetUpload {
         this.uploadType = TargetUploadTypeEnum.valueOf(uploadType.code());
     }
 
-    public void changeStatus(TargetUploadStatus uploadStatus) {
+    public TargetUploadStatus changeStatus(TargetUploadStatus uploadStatus) {
         this.uploadStatus = uploadStatus;
         this.status = uploadStatus.currentStatus();
+        return uploadStatus;
     }
 
     public void applySendRequest(SendRequest sendRequest) {

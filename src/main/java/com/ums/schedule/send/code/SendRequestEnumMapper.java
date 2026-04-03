@@ -7,6 +7,7 @@ public enum SendRequestEnumMapper implements EnumMapper {
     SEND_REQUEST_STATUS(SendRequestStatusEnum.class),
     TARGET_UPLOAD_STATUS(TargetUploadStatusEnum.class),
     TARGET_UPLOAD_TYPE(TargetUploadTypeEnum.class),
+    TARGET_COLUMN(TargetColumnEnum.class),
     RESULT_CODE(ResultCodeEnum.class),
     EVENT_TYPE(SendRequestEventEnum.class)
     ;

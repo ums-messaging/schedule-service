@@ -13,14 +13,4 @@ public record SendRequestCommand(
         String uploadType,
         List<SendTargetCreateCommand> targetList
 ) {
-    public SendRequestDto toDto() {
-        return SendRequestDto.of(this);
-    }
-
-    public List<SendTargetDto> toTargetDtoList() {
-        return targetList
-                .stream()
-                .map(target -> target.toDto())
-                .toList();
-    }
 }

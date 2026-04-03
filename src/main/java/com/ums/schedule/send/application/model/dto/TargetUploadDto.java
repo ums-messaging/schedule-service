@@ -1,7 +1,6 @@
 package com.ums.schedule.send.application.model.dto;
 
 import com.ums.schedule.send.application.model.response.PresigedUrlResponse;
-import com.ums.schedule.send.domain.target.upload.TargetUpload;
 
 import java.time.LocalDateTime;
 
