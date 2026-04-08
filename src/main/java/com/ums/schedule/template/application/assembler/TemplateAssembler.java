@@ -10,9 +10,11 @@ import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
 import com.ums.schedule.template.domain.code.TemplateContentFormatEnum;
 import com.ums.schedule.template.domain.email.EmailContent;
 import com.ums.schedule.template.domain.email.EmailTemplate;
+import freemarker.template.Template;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,25 +32,35 @@ public class TemplateAssembler {
     public EmailTemplate assemble(EmailTemplateDetailResponse template, EmailContentResponse body) {
         EmailContentResponse header = template.getHeaderFooter().get(HEADER);
         EmailContentResponse footer = template.getHeaderFooter().get(FOOTER);
-        EmailContentDto toDto = loadTemplate(header, body, footer);
-        EmailTemplate toTemplate = EmailTemplate.of(template.emailContentId(), toDto);
-        toTemplate.defineImageDir(template.imageDir());
-        return toTemplate;
+        Map<EmailTemplateSectionEnum, Template> templateMap = loadTemplate(header, body, footer);
+        EmailTemplate emailTemplate = EmailTemplate.of(template.emailContentId(), templateMap);
+        emailTemplate.defineImageDir(template.imageDir());
+        return emailTemplate;
     }
 
-    public EmailContentDto loadTemplate(EmailContentResponse header, EmailContentResponse body, EmailContentResponse footer) {
-        EmailContent readHeader = readContent(header);
-        EmailContent readBody = readContent(body);
-        EmailContent readFooter = readContent(footer);
+    public Map<EmailTemplateSectionEnum, Template> loadTemplate(EmailContentResponse header, EmailContentResponse body, EmailContentResponse footer) {
+        Template readHeader = readContent(header);
+        Template readBody = readContent(body);
+        Template readFooter = readContent(footer);
 
-        return new EmailContentDto(readHeader, readBody, readFooter);
+        return Map.of(
+                HEADER, readHeader,
+                BODY, readBody,
+                FOOTER, readFooter
+        );
     }
 
-    private EmailContent readContent(EmailContentResponse content) {
+    private Template readContent(EmailContentResponse content) {
         return Optional.ofNullable(content)
                 .map(c -> resolveTemplateFormatEnum(content.format()))
                 .map(format -> resolverMap.get(format.value()))
-                .map(resolver -> resolver.loadTemplate(content))
+                .map(resolver -> {
+                    try {
+                        return resolver.loadTemplate(content);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .orElse(null);
     }
 

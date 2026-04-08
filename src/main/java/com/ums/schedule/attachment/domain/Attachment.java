@@ -3,13 +3,14 @@ package com.ums.schedule.attachment.domain;
 import com.ums.schedule.attachment.application.command.SecurityPolicyCommand;
 import com.ums.schedule.attachment.code.AttachmentEnumMapper;
 import com.ums.schedule.common.code.EnumMapperValue;
-import com.ums.schedule.message.domain.SendMessage;
 import com.ums.schedule.message.domain.email.EmailSendMessage;
+import com.ums.schedule.template.application.response.email.EmailContentResponse;
 import com.ums.schedule.template.domain.code.ConvertTypeEnum;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.File;
 import java.util.Map;
 
 @Getter
@@ -19,7 +20,7 @@ public class Attachment {
     private SecurityPolicy securityPolicy;
     private AttachmentPolicy attachmentPolicy;
     private FileMetaData fileMetaData;
-    private SendMessage sendMessage;
+    private EmailSendMessage sendMessage;
 
     public static Attachment of(EnumMapperValue convertType) {
         Attachment attachment = new Attachment();
@@ -36,13 +37,17 @@ public class Attachment {
         return this;
     }
 
-    public Attachment defineAttachmentPolicy(AttachmentPolicy policy) {
-        this.attachmentPolicy = policy;
+    public Attachment defineAttachmentPolicy(String attachmentName, String downloadName) {
+        this.attachmentPolicy = AttachmentPolicy.of(attachmentName, downloadName);
         return this;
     }
 
-    public Attachment defineFileMetadata(FileMetaData fileMetaData) {
-        this.fileMetaData = fileMetaData;
+    public Attachment defineFileMetadata(File file) {
+        this.fileMetaData = FileMetaData.of(file);
+        return this;
+    }
+    public Attachment defineFileMetadata(EmailContentResponse response) {
+        this.fileMetaData = FileMetaData.fromResponse(response);
         return this;
     }
 

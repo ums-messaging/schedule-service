@@ -26,19 +26,9 @@ public class EmailSendMessage extends SendMessage {
 
     public static EmailSendMessage of(TemplateTypeContent title, EmailTemplate template, List<Attachment> attachments) {
         EmailSendMessage sendMessage = new EmailSendMessage(template, title);
-        sendMessage.toTemplate(template);
         sendMessage.addAttachment(attachments);
         return sendMessage;
     }
-
-    private void toTemplate(EmailTemplate template) {
-        String header = template.getHeaderContent();
-        String body = template.getBody().getContent();
-        String footer = template.getFooterContent();
-
-        writeTemplate(header+body+footer);
-    }
-
 
     private void addAttachment(List<Attachment> attachments) {
        attachments.stream().forEach(

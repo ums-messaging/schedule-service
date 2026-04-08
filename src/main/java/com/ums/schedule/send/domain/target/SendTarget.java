@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.ums.schedule.send.code.TargetColumnEnum.TARGET_KEY;
@@ -28,6 +30,7 @@ public class SendTarget {
     private Integer attemptNo;
 
     private SendRequest sendRequest;
+    private List<SendTarget> targetList = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime lastUploadedAt;

@@ -10,31 +10,53 @@ import com.ums.schedule.common.code.EnumMapper;
 import com.ums.schedule.common.code.EnumMapperFactory;
 import com.ums.schedule.common.code.EnumMapperType;
 import com.ums.schedule.common.code.EnumMapperValue;
-import com.ums.schedule.message.application.command.EmailMessageCommand;
-import com.ums.schedule.template.application.response.email.EmailContentResponse;
-import com.ums.schedule.template.domain.code.ConvertTypeEnum;
-import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
+import com.ums.schedule.send.application.model.dto.SendTargetDto;
+import com.ums.schedule.send.code.TargetColumnEnum;
+import freemarker.template.Template;
 import lombok.RequiredArgsConstructor;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.io.*;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.ums.schedule.attachment.code.AttachmentEnumMapper.*;
-import static com.ums.schedule.template.domain.code.ConvertTypeEnum.NONE;
 
 @Component
 @RequiredArgsConstructor
-public class SecurityPolicyHandler implements AttachmentHandler {
+public class SecurityPolicyHandler implements EmailBodyHandler {
+    private final EmailBodyHandler handler;
     private final EnumMapperFactory factory;
 
-    public Attachment handle(EmailMessageCommand command, EmailContentResponse body) {
-        EnumMapperValue convertType = resolveConvertTypeEnum(command);
-        Attachment attachment = Attachment.of(convertType);
-        return Optional.ofNullable(command.securityPolicy())
-                .map(cmd -> attachment.defineSecurityPolicy(cmd, toEnumMapperValue(cmd)))
-                .orElse(attachment);
+    public File handle(Attachment attachment, Template template, SendTargetDto targetDto) throws IOException {
+        File file = handler.handle(attachment, template, targetDto);
+        if(attachment.getSecurityPolicy() != null) {
+            ByteArrayOutputStream encryptedOut = new ByteArrayOutputStream();
+            InputStream inputStream = new FileInputStream(file);
+            PDDocument document = PDDocument.load(inputStream);
+
+            AccessPermission ap = new AccessPermission();
+            ap.setCanModify(true);
+            ap.setCanPrint(true);
+
+            StandardProtectionPolicy policy =
+                    new StandardProtectionPolicy(
+                            "owner-password",   // 소유자 비밀번호
+                            targetDto.resolveTargetData().get(TargetColumnEnum.TARGET_BIRTHDAY),    // 사용자 비밀번호
+                            ap);
+
+            policy.setEncryptionKeyLength(128); // 128 or 256
+            policy.setPermissions(ap);
+
+            document.protect(policy);
+            document.save(encryptedOut);
+            document.close();
+        }
+        return file;
     }
 
     private Map<AttachmentEnumMapper, EnumMapperValue> toEnumMapperValue(SecurityPolicyCommand secuCmd) {
@@ -52,16 +74,6 @@ public class SecurityPolicyHandler implements AttachmentHandler {
                 .orElse(EnumMapperValue.fromEnumMapperType(defaultValue));
     }
 
-    private EnumMapperValue resolveConvertTypeEnum(EmailMessageCommand command) {
-        return Optional.ofNullable(command.convertType())
-                        .filter(code -> !code.toUpperCase().equals("NONE"))
-                        .map(code -> factory.findEnumMapperValue(CONVERT_TYPE, command.convertType()))
-                        .orElse(
-                                Optional.ofNullable(command.securityPolicy())
-                                        .map(cmd -> EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.HTML))
-                                        .orElse(EnumMapperValue.fromEnumMapperType(NONE))
 
-                        );
-    }
 
 }

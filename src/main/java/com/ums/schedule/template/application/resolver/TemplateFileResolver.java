@@ -5,8 +5,13 @@ import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.template.application.response.email.EmailContentResponse;
 import com.ums.schedule.template.domain.code.TemplateContentFormatEnum;
 import com.ums.schedule.template.domain.email.EmailContent;
+import com.ums.schedule.template.domain.email.EmailTemplate;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
 import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.HTML;
@@ -16,6 +21,7 @@ import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.va
 @RequiredArgsConstructor
 public class TemplateFileResolver implements TemplateFormatResolver {
     private final AwsS3Repository repository;
+    private final Configuration configuration;
 
     @Override
     public boolean supports(EnumMapperValue mapperValue) {
@@ -24,8 +30,8 @@ public class TemplateFileResolver implements TemplateFormatResolver {
 
 
     @Override
-    public EmailContent loadTemplate(EmailContentResponse content) {
+    public Template loadTemplate(EmailContentResponse content) throws IOException {
         String template = repository.getFileContent(content.fileKey());
-        return EmailContent.of(fromEnumMapperType(HTML), template);
+        return new Template(content.section(), template, configuration);
     }
 }

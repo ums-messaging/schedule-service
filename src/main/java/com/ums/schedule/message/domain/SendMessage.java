@@ -7,6 +7,7 @@ import com.ums.schedule.message.domain.status.MessageActiveState;
 import com.ums.schedule.message.domain.status.MessageInActiveState;
 import com.ums.schedule.message.domain.status.MessageState;
 import com.ums.schedule.message.domain.status.MessageWaitState;
+import com.ums.schedule.send.domain.target.SendTarget;
 import com.ums.schedule.template.domain.TemplateTypeContent;
 import com.ums.schedule.send.domain.request.SendRequest;
 import lombok.AccessLevel;
@@ -25,7 +26,7 @@ public abstract class SendMessage {
     private MessageStatusEnum status;
     private String title;
     private String template;
-    private List<SendRequest> sendRequest = new ArrayList<>();
+    private SendTarget target;
 
     protected SendMessage(EnumMapperValue channelType, TemplateTypeContent titleContent) {
         this.titleContent = titleContent;

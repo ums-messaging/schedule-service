@@ -3,7 +3,8 @@ package com.ums.schedule.attachment.code;
 import com.ums.schedule.common.code.EnumMapperType;
 
 public enum StorageTypeEnum implements EnumMapperType {
-    S3("S3", "AWS");
+    S3("S3", "AWS"),
+    LOCAL("LOCAL", "LOCAL");
 
     private String value;
     private String description;

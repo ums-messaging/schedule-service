@@ -10,23 +10,32 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.util.Optional;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class FileMetaData {
-    private StorageTypeEnum storageType = StorageTypeEnum.S3;
-    private String contentType = "html/text";
+    private StorageTypeEnum storageType;
+    private String contentType;
     private Long fileSize = 1L;
-    private String fileKey = "template/template.html";
-    private String originalFileName = "template.html";
+    private String fileKey;
+    private String originalFileName;
 
     public static FileMetaData fromResponse(EmailContentResponse response) {
         FileMetaData metaData = new FileMetaData(response.fileKey());
         metaData.applyContentType(response.contentType());
         metaData.applyFileSize(response.fileSize());
         metaData.applyOriginalFileName(response.originalFileName());
+        return metaData;
+    }
+
+    public static FileMetaData of(File toFile) {
+        FileMetaData metaData = new FileMetaData(toFile.getPath()+ toFile.getName());
+//        metaData.applyContentType(conver);
+        metaData.applyFileSize(toFile.length());
+//        metaData.applyOriginalFileName(toFile.);
         return metaData;
     }
 

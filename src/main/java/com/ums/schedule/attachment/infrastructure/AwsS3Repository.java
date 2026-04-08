@@ -3,9 +3,16 @@ package com.ums.schedule.attachment.infrastructure;
 import com.ums.schedule.attachment.application.response.AwsS3FileMetadataResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
+
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
@@ -28,7 +35,11 @@ public class AwsS3Repository {
         );
     }
 
-    public String getFileContent(String key) {
-        return "";
+    public InputStreamReader getFileContent(String key) {
+        ResponseInputStream<GetObjectResponse> inputStream = s3Client.getObject(
+                GetObjectRequest.builder()
+                        .build()
+        );
+        return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
     }
 }

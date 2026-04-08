@@ -2,10 +2,9 @@ package com.ums.schedule.template.application.response.email;
 
 
 import com.ums.schedule.attachment.domain.Attachment;
-import com.ums.schedule.attachment.domain.AttachmentPolicy;
-import com.ums.schedule.attachment.domain.FileMetaData;
 import com.ums.schedule.common.code.EnumMapperValue;
-import com.ums.schedule.template.domain.code.ConvertTypeEnum;
+
+import static com.ums.schedule.template.domain.code.ConvertTypeEnum.NONE;
 
 public record EmailContentResponse(
         String section,
@@ -21,5 +20,10 @@ public record EmailContentResponse(
         String originalFileName,
         Long fileSize
 ) {
-
+    public Attachment toAttachment() {
+        Attachment attachment = Attachment.of(EnumMapperValue.fromEnumMapperType(NONE));
+        attachment.defineAttachmentPolicy(attachmentName, downloadName);
+        attachment.defineFileMetadata(this);
+        return attachment;
+    }
 }
