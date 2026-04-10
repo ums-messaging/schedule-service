@@ -1,21 +1,15 @@
 package com.ums.schedule.send.domain.request.status;
 
-import com.ums.schedule.common.code.EnumMapperType;
-import com.ums.schedule.common.code.EnumMapperValue;
-import com.ums.schedule.message.domain.email.EmailSendMessage;
+import com.ums.schedule.message.domain.EmailSendMessage;
 import com.ums.schedule.send.application.model.dto.SendRequestDto;
-import com.ums.schedule.send.code.SendRequestEventEnum;
-import com.ums.schedule.send.code.SendRequestStatusEnum;
 import com.ums.schedule.send.domain.event.SendRequestEvent;
 import com.ums.schedule.send.domain.request.CustomerRequestKey;
 import com.ums.schedule.send.domain.request.SendRequest;
 import com.ums.schedule.send.domain.request.status.exception.*;
-import com.ums.schedule.send.domain.target.status.SendTargetCreatedStatus;
-import com.ums.schedule.send.domain.target.status.SendTargetReadyStatus;
+import com.ums.schedule.target.domain.status.SendTargetCreatedStatus;
+import com.ums.schedule.target.domain.status.SendTargetReadyStatus;
 import com.ums.schedule.send.domain.target.upload.TargetUpload;
-import com.ums.schedule.template.application.dto.EmailContentDto;
-import com.ums.schedule.template.domain.TemplateTypeContent;
-import com.ums.schedule.template.domain.email.EmailContent;
+import com.ums.schedule.template.domain.email.EmailTitle;
 import com.ums.schedule.template.domain.email.EmailTemplate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +19,6 @@ import java.util.UUID;
 
 import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
 import static com.ums.schedule.send.code.SendRequestEventEnum.*;
-import static com.ums.schedule.send.code.SendRequestStatusEnum.READY;
 import static com.ums.schedule.send.code.TargetUploadTypeEnum.FILE;
 import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.TEXT;
 import static com.ums.schedule.template.domain.code.TemplateTypeEnum.ADVERTISE;
@@ -192,7 +185,7 @@ class RequestCreateStatusTest {
     }
 
     private EmailSendMessage givenSendMessage() {
-        TemplateTypeContent content = TemplateTypeContent.ofWithoutPrefix(fromEnumMapperType(ADVERTISE), "광고");
+        EmailTitle content = EmailTitle.ofWithoutPrefix(fromEnumMapperType(ADVERTISE), "광고");
         EmailContentDto dto = new EmailContentDto(
                 EmailContent.of(fromEnumMapperType(TEXT), "header"),
                 EmailContent.of(fromEnumMapperType(TEXT), "body"),

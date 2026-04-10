@@ -1,5 +1,7 @@
 package com.ums.schedule.attachment.application.handler;
 
+import com.ums.schedule.attachment.application.converter.handler.EmailBodyConvertHandler;
+import com.ums.schedule.attachment.application.converter.handler.HtmlUploadHandler;
 import com.ums.schedule.attachment.code.StorageTypeEnum;
 import com.ums.schedule.attachment.domain.Attachment;
 import com.ums.schedule.attachment.exception.AttachmentPolicyRequiredException;
@@ -9,30 +11,26 @@ import com.ums.schedule.common.code.EnumMapperFactory;
 import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.message.application.command.EmailMessageCommand;
 import com.ums.schedule.template.application.response.email.EmailContentResponse;
-import com.ums.schedule.template.domain.code.ConvertTypeEnum;
-import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.ums.schedule.template.domain.code.ConvertTypeEnum.PDF;
 import static com.ums.schedule.template.domain.code.EmailTemplateSectionEnum.ATTACHMENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FileMetadataHandlerTest {
     @Mock private EnumMapperFactory factory;
-    @Mock private AttachmentHandler nextHandler;
-    @InjectMocks FileMetadataHandler handler;
+    @Mock private EmailBodyConvertHandler nextHandler;
+    @InjectMocks
+    HtmlUploadHandler handler;
 
     @Test
     @DisplayName("ContentType이 존재하지 않으면 예외가 발생한다.")

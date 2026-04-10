@@ -1,5 +1,7 @@
 package com.ums.schedule.attachment.application.handler;
 
+import com.ums.schedule.attachment.application.converter.handler.EmailBodyConvertHandler;
+import com.ums.schedule.attachment.application.converter.handler.PdfConvertHandler;
 import com.ums.schedule.attachment.domain.Attachment;
 import com.ums.schedule.attachment.exception.AttachmentPolicyRequiredException;
 import com.ums.schedule.attachment.fixture.AttachmentFixture;
@@ -27,8 +29,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AttachmentPolicyHandlerTest {
-    @Mock private AttachmentHandler nextHandler;
-    @InjectMocks private AttachmentPolicyHandler handler;
+    @Mock private EmailBodyConvertHandler nextHandler;
+    @InjectMocks private PdfConvertHandler handler;
 
     @Test
     @DisplayName("첨부파일 입력 정보가 존재하지 않으면 예외가 발생한다. ")

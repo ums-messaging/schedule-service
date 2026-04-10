@@ -1,5 +1,7 @@
 package com.ums.schedule.attachment.application.handler;
 
+import com.ums.schedule.attachment.application.converter.handler.EmailBodyConvertHandler;
+import com.ums.schedule.attachment.application.converter.handler.PdfConvertHandler;
 import com.ums.schedule.attachment.domain.Attachment;
 import com.ums.schedule.attachment.fixture.AttachmentFixture;
 import com.ums.schedule.attachment.fixture.builder.EmailContentResponseBuilder;
@@ -24,8 +26,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SectionTypeHandlerTest {
-    @Mock private AttachmentHandler nextHandler;
-    @InjectMocks private SectionTypeHandler handler;
+    @Mock private EmailBodyConvertHandler nextHandler;
+    @InjectMocks private PdfConvertHandler handler;
 
     @Test
     @DisplayName("EmailContent의 Section이 BODY이면 다음 핸들러를 실행한다.")

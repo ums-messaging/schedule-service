@@ -1,49 +1,37 @@
 package com.ums.schedule.message.application.processor;
 
-import com.ums.schedule.attachment.application.handler.AttachmentPolicyHandler;
+import com.ums.schedule.attachment.application.converter.handler.PdfConvertHandler;
 import com.ums.schedule.attachment.domain.Attachment;
-import com.ums.schedule.attachment.exception.AttachmentPolicyRequiredException;
 import com.ums.schedule.attachment.fixture.builder.EmailContentResponseBuilder;
 import com.ums.schedule.attachment.fixture.builder.EmailMessageCommandBuilder;
 import com.ums.schedule.common.code.EnumMapperFactory;
-import com.ums.schedule.common.code.EnumMapperRegistry;
-import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.message.application.assembler.EmailMessageAssembler;
 import com.ums.schedule.message.application.command.EmailMessageCommand;
 import com.ums.schedule.message.code.ChannelTypeEnum;
 import com.ums.schedule.message.domain.SendMessage;
-import com.ums.schedule.message.domain.email.EmailSendMessage;
-import com.ums.schedule.template.application.assembler.TemplateAssembler;
-import com.ums.schedule.template.application.dto.EmailContentDto;
-import com.ums.schedule.template.application.resolver.AdvertisetypeResolver;
+import com.ums.schedule.message.domain.EmailSendMessage;
+import com.ums.schedule.template.application.assembler.EmailTemplateService;
 import com.ums.schedule.template.application.response.TemplateResponse;
 import com.ums.schedule.template.application.response.email.EmailContentResponse;
 import com.ums.schedule.template.application.response.email.EmailTemplateDetailResponse;
 import com.ums.schedule.template.application.response.email.EmailTemplateResponse;
-import com.ums.schedule.template.domain.TemplateTypeContent;
-import com.ums.schedule.template.domain.code.ConvertTypeEnum;
+import com.ums.schedule.template.domain.email.EmailTitle;
 import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
-import com.ums.schedule.template.domain.code.TemplateContentFormatEnum;
 import com.ums.schedule.template.domain.code.TemplateTypeEnum;
-import com.ums.schedule.template.domain.email.EmailContent;
 import com.ums.schedule.template.domain.email.EmailTemplate;
-import com.ums.schedule.template.exception.TemplateContentRequiredException;
 import com.ums.schedule.template.infrastructure.TemplateClient;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
-import static com.ums.schedule.template.domain.TemplateTypeContent.ofWithPrefix;
+import static com.ums.schedule.template.domain.email.EmailTitle.ofWithPrefix;
 import static com.ums.schedule.template.domain.code.ConvertTypeEnum.*;
 import static com.ums.schedule.template.domain.code.EmailTemplateSectionEnum.*;
 import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.TEXT;
@@ -57,9 +45,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class EmailMessageProcessorTest {
     @Mock private TemplateClient templateClient;
-    @Mock private AttachmentPolicyHandler handler;
+    @Mock private PdfConvertHandler handler;
     @Mock private EnumMapperFactory factory;
-    @Mock private TemplateAssembler assembler;
+    @Mock private EmailTemplateService assembler;
     @Mock private AdvertisetypeResolver resolver;
     private EmailMessageAssembler processor;
 
@@ -121,7 +109,7 @@ class EmailMessageProcessorTest {
         givenAttachmentHandler(null, List.of());
         givenTemplateAssembler(emailTemplateResponse, emailTemplateResponse.getBody().content());
 
-        TemplateTypeContent templateTypeContent = givenTemplateTypeResolver("(광고) ", "메시지 제목");
+        EmailTitle templateTypeContent = givenTemplateTypeResolver("(광고) ", "메시지 제목");
 
         // When
         SendMessage result = processor.createMessage(command);
@@ -150,7 +138,7 @@ class EmailMessageProcessorTest {
                 givenEmailTemplateDetailResponse(body, getContent(COVER));
 
         givenTemplateClient(emailTemplateResponse);
-        givenTemplateTypeResolver("(광고) ", "메시지 제목");
+        EmailTitle content = givenTemplateTypeResolver("(광고) ", "메시지 제목");
         givenTemplateAssembler(emailTemplateResponse, body.content());
 
         givenAttachmentHandler(null, List.of());
@@ -161,7 +149,7 @@ class EmailMessageProcessorTest {
         // Then
         String expected = body.content();
         assertThat(result.getTemplate()).contains(expected);
-        verify(assembler).assemble(emailTemplateResponse, body);
+        verify(assembler).assemble(content, emailTemplateResponse, body);
     }
 
     /**
@@ -183,7 +171,7 @@ class EmailMessageProcessorTest {
                 givenEmailTemplateDetailResponse(body, cover);
 
         givenTemplateClient(emailTemplateResponse);
-        givenTemplateTypeResolver("(광고) ", "메시지 제목");
+        EmailTitle content = givenTemplateTypeResolver("(광고) ", "메시지 제목");
         givenTemplateAssembler(emailTemplateResponse, cover.content());
         givenAttachmentHandler(Attachment.of(fromEnumMapperType(PDF)), List.of());
 
@@ -191,7 +179,7 @@ class EmailMessageProcessorTest {
         String expected = cover.content();
 
         assertThat(result.getTemplate()).contains(expected);
-        verify(assembler).assemble(emailTemplateResponse, cover);
+        verify(assembler).assemble(content, emailTemplateResponse, cover);
     }
 
     /**
@@ -281,7 +269,7 @@ class EmailMessageProcessorTest {
     }
     private void givenTemplateAssembler(EmailTemplateDetailResponse template, String body) {
         EmailContentDto content = new EmailContentDto(null, EmailContent.of(fromEnumMapperType(TEXT), body), null);
-        when(assembler.assemble(any(), any()))
+        when(assembler.assemble(any(), any(), any()))
                 .thenReturn(EmailTemplate.of(template.emailContentId(), content));
     }
 
@@ -297,9 +285,9 @@ class EmailMessageProcessorTest {
         when(handler.handle(any(), any(), any())).thenReturn(attachmentList);
     }
 
-    private TemplateTypeContent givenTemplateTypeResolver(String prefix, String title) {
+    private EmailTitle givenTemplateTypeResolver(String prefix, String title) {
         when(factory.findEnumMapperValue(any(), any())).thenReturn(fromEnumMapperType(ADVERTISE));
-        TemplateTypeContent templateTypeContent = ofWithPrefix(fromEnumMapperType(ADVERTISE), prefix, title);
+        EmailTitle templateTypeContent = ofWithPrefix(fromEnumMapperType(ADVERTISE), prefix, title);
         when(resolver.appendPrefixTexture(any())).thenReturn(templateTypeContent);
         return templateTypeContent;
     }

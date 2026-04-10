@@ -1,28 +1,20 @@
 package com.ums.schedule.template.application.assembler;
 
-import com.ums.schedule.attachment.exception.AttachmentPolicyRequiredException;
 import com.ums.schedule.attachment.fixture.builder.EmailContentResponseBuilder;
-import com.ums.schedule.attachment.infrastructure.AwsS3Repository;
 import com.ums.schedule.common.code.EnumMapperFactory;
-import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.template.application.resolver.TemplateFileResolver;
 import com.ums.schedule.template.application.resolver.TemplateFormatResolver;
 import com.ums.schedule.template.application.resolver.TemplateTextResolver;
 import com.ums.schedule.template.application.response.email.EmailContentResponse;
 import com.ums.schedule.template.application.response.email.EmailTemplateDetailResponse;
 import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
-import com.ums.schedule.template.domain.code.TemplateContentFormatEnum;
-import com.ums.schedule.template.domain.email.EmailContent;
 import com.ums.schedule.template.domain.email.EmailTemplate;
 import com.ums.schedule.template.exception.TemplateContentRequiredException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
@@ -34,7 +26,6 @@ import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.*;
 import static com.ums.schedule.template.domain.email.EmailContent.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -44,11 +35,11 @@ class TemplateAssemblerTest {
     @Mock private TemplateFormatResolver resolver;
     @Mock private TemplateTextResolver textResolver;
     @Mock private TemplateFileResolver fileResolver;
-    private TemplateAssembler assembler;
+    private EmailTemplateService assembler;
 
     @BeforeEach
     void setUp() {
-        assembler = new TemplateAssembler(
+        assembler = new EmailTemplateService(
                 Map.of("TEXT", textResolver, "HTML", fileResolver),
                 factory
         );

@@ -1,13 +1,12 @@
 package com.ums.schedule.send.domain.request.status;
 
 import com.ums.schedule.send.application.model.dto.SendRequestDto;
-import com.ums.schedule.send.code.SendRequestStatusEnum;
 import com.ums.schedule.send.domain.event.SendRequestEvent;
 import com.ums.schedule.send.domain.request.CustomerRequestKey;
 import com.ums.schedule.send.domain.request.SendRequest;
 import com.ums.schedule.send.domain.request.status.exception.*;
-import com.ums.schedule.send.domain.target.status.SendTargetCreatedStatus;
-import com.ums.schedule.send.domain.target.status.SendTargetReadyStatus;
+import com.ums.schedule.target.domain.status.SendTargetCreatedStatus;
+import com.ums.schedule.target.domain.status.SendTargetReadyStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

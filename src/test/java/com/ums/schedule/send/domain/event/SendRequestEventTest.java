@@ -1,27 +1,19 @@
 package com.ums.schedule.send.domain.event;
 
 import com.ums.schedule.common.code.EnumMapperValue;
-import com.ums.schedule.message.domain.email.EmailSendMessage;
+import com.ums.schedule.message.domain.EmailSendMessage;
 import com.ums.schedule.send.application.model.dto.SendRequestDto;
 import com.ums.schedule.send.code.*;
 import com.ums.schedule.send.domain.request.CustomerRequestKey;
 import com.ums.schedule.send.domain.request.SendRequest;
-import com.ums.schedule.send.domain.request.status.RequestCreateState;
 import com.ums.schedule.send.domain.request.status.RequestState;
-import com.ums.schedule.send.domain.request.status.SendReadyState;
-import com.ums.schedule.send.domain.request.status.SendRequestState;
-import com.ums.schedule.send.domain.request.status.exception.SendRequestStatusException;
 import com.ums.schedule.send.domain.request.status.exception.SendStatusException;
 import com.ums.schedule.send.domain.request.status.exception.SendingStatusException;
-import com.ums.schedule.send.domain.target.status.SendTargetCreatedStatus;
 import com.ums.schedule.send.domain.target.upload.TargetUpload;
 import com.ums.schedule.send.domain.target.upload.status.TargetCompletedStatus;
 import com.ums.schedule.send.domain.target.upload.status.TargetUploadStatus;
-import com.ums.schedule.template.application.dto.EmailContentDto;
-import com.ums.schedule.template.domain.TemplateTypeContent;
-import com.ums.schedule.template.domain.email.EmailContent;
+import com.ums.schedule.template.domain.email.EmailTitle;
 import com.ums.schedule.template.domain.email.EmailTemplate;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,7 +79,7 @@ class SendRequestEventTest {
     }
 
     private SendRequest givenMessageCreatedEvent(SendRequest request, EnumMapperValue eventType) {
-        request.applySendMessage(givenSendMessage());
+        request.(givenSendMessage());
         givenEvent(request, eventType);
         return request;
     }
@@ -118,7 +110,7 @@ class SendRequestEventTest {
     }
 
     private EmailSendMessage givenSendMessage() {
-        TemplateTypeContent content = TemplateTypeContent.ofWithoutPrefix(fromEnumMapperType(ADVERTISE), "광고");
+        EmailTitle content = EmailTitle.ofWithoutPrefix(fromEnumMapperType(ADVERTISE), "광고");
         EmailContentDto dto = new EmailContentDto(
                 EmailContent.of(fromEnumMapperType(TEXT), "header"),
                 EmailContent.of(fromEnumMapperType(TEXT), "body"),
