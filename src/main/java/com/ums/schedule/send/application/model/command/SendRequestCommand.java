@@ -1,7 +1,5 @@
 package com.ums.schedule.send.application.model.command;
 
-import com.ums.schedule.send.application.model.dto.SendRequestDto;
-import com.ums.schedule.send.application.model.dto.SendTargetDto;
 import java.util.List;
 
 public record SendRequestCommand(

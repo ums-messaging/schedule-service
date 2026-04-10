@@ -1,6 +1,7 @@
 package com.ums.schedule.schedule.domain;
 
 import com.ums.schedule.message.application.domain.ScheduleRestrictPolicy;
+import com.ums.schedule.schedule.application.model.dto.ScheduleDto;
 import com.ums.schedule.send.domain.request.SendRequest;
 import com.ums.schedule.schedule.code.ScheduleStatusEnum;
 import com.ums.schedule.schedule.code.ScheduleTypeEnum;
@@ -30,9 +31,6 @@ public class Schedule {
 
     @Column(name = "schedule_name", nullable = false)
     private String name;
-
-    @Column(name = "schedule_type", nullable = false)
-    private ScheduleTypeEnum type;
 
     @Embedded
     private ScheduleCyclePolicy cyclePolicy;
@@ -97,5 +95,9 @@ public class Schedule {
     public void changeScheduleStatus(ScheduleStatus scheduleStatus) {
         this.scheduleStatus = scheduleStatus;
         this.status = scheduleStatus.currentScheduleStatus();
+    }
+
+    public ScheduleDto toDto() {
+        return ScheduleDto.fromSchedule(this);
     }
 }

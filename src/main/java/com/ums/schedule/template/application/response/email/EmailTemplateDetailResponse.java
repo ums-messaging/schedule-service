@@ -1,7 +1,5 @@
 package com.ums.schedule.template.application.response.email;
 
-import com.ums.schedule.attachment.domain.Attachment;
-import com.ums.schedule.message.domain.email.EmailSendMessage;
 import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
 
 import java.util.List;

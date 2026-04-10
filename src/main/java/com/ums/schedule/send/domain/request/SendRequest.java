@@ -1,112 +1,103 @@
 package com.ums.schedule.send.domain.request;
 
-import com.ums.schedule.message.code.MessageStatusEnum;
+import com.ums.schedule.common.code.EnumMapperValue;
+import com.ums.schedule.message.code.ChannelTypeEnum;
+import com.ums.schedule.message.code.ContentTypeEnum;
+import com.ums.schedule.send.application.model.command.SendTargetCreateCommand;
+import com.ums.schedule.send.code.SendRequestEventEnum;
 import com.ums.schedule.send.code.SendRequestStatusEnum;
+import com.ums.schedule.send.code.TargetColumnEnum;
 import com.ums.schedule.send.domain.event.SendRequestEvent;
 import com.ums.schedule.send.domain.report.SendRequestReport;
-import com.ums.schedule.message.domain.SendMessage;
 import com.ums.schedule.schedule.domain.Schedule;
 import com.ums.schedule.send.application.model.dto.SendRequestDto;
+import com.ums.schedule.send.domain.request.status.RequestCreateState;
 import com.ums.schedule.send.domain.request.status.SendRequestState;
-import com.ums.schedule.send.domain.target.SendTarget;
 import com.ums.schedule.send.domain.request.upload.TargetUpload;
+import com.ums.schedule.send.domain.target.EmailSendTarget;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
-//@Entity
-//@Table(name = "send_request",
-//        uniqueConstraints =
-//        {@UniqueConstraint(name="uq_customer_request", columnNames = {"customer_id", "customer_request_id"})}
-//)
+@Entity
+@Table(name = "send_request",
+        uniqueConstraints =
+        {@UniqueConstraint(name="uq_customer_request", columnNames = {"customer_id", "customer_request_id"})}
+)
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SendRequest {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-//    @Column(name = "send_request_id")
+public abstract class SendRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "send_request_id")
     @Getter
     private Long id;
 
-//    @Column(name = "template_key", nullable = false)
+    @Column(name = "template_key", nullable = false)
     private String templateKey;
 
-//    @Column(name = "retry_cnt", nullable = false)
+    @Column(name = "retry_cnt", nullable = false)
     private Integer retryCnt;
 
-//    @Column(name = "sender_key", nullable = false)
+    @Column(name = "sender_key", nullable = false)
     private String senderKey;
 
+    @Transient
     private SendRequestState state;
     private SendRequestStatusEnum status;
 
+    @Embedded
     private CustomerRequestKey customerRequestKey;
 
-    //    @ManyToOne
-//    @JoinColumn(name = "schedule_id", nullable = false)
-//    @Getter
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", nullable = false)
+    @Getter
     private Schedule schedule;
-    //    @Getter
-//    @OneToMany(mappedBy = "sendRequest", cascade = { CascadeType.PERSIST })
+
+    @Getter
+    @OneToMany(mappedBy = "sendRequest", cascade = { CascadeType.PERSIST })
     private List<TargetUpload> targetUploadList = new ArrayList<>();
 
-    private List<SendTarget> targetList = new ArrayList<>();
-
     @Getter(AccessLevel.PRIVATE)
+    @OneToMany(mappedBy = "sendRequest")
     private List<SendRequestEvent> eventList = new ArrayList<>();
 
-    private SendRequestReport report ;
-    private SendMessage sendMessage;
+    @ManyToOne
+    private SendRequestReport report;
 
-    public static SendRequest of(CustomerRequestKey customerRequestKey, SendRequestDto dto) {
-        SendRequest sendRequest = new SendRequest();
-        sendRequest.applyCustomerRequestKey(customerRequestKey);
-        sendRequest.fromDto(dto);
-        sendRequest.createReport();
-        return sendRequest;
-    }
-
-    private void createReport() {
-        this.report = SendRequestReport.of(this);
-    }
-
-    private void applyCustomerRequestKey(CustomerRequestKey customerRequestKey) {
+    public void applyCustomerRequestKey(CustomerRequestKey customerRequestKey) {
         this.customerRequestKey = customerRequestKey;
     }
 
-    private void fromDto(SendRequestDto dto) {
-        this.senderKey = dto.senderKey();
-        this.templateKey = dto.templateKey();
-        initRetryMaxCount(dto.retryCnt());
+    public void setSenderAndTemplateKey(String senderKey, String templateKey) {
+        this.senderKey = senderKey;
+        this.templateKey = templateKey;
     }
 
-    private void initRetryMaxCount(Integer retryCount) {
+    public void initRetryMaxCount(Integer retryCount) {
         this.retryCnt = retryCount;
     }
-
     public void applySchedule(Schedule schedule) {
         this.schedule = schedule;
         this.schedule.getSendRequests().add(this);
     }
 
-    public void applySendMessage(SendMessage sendMessage) {
-        this.sendMessage = sendMessage;
-        sendMessage.getSendRequest().add(this);
-    }
+//    public boolean canTransitionToReady() {
+//        return isMessageCreated() && isTargetUploaded();
+//    }
 
-    public boolean canTransitionToReady() {
-        return isMessageCreated() && isTargetUploaded();
-    }
+//    private boolean isMessageCreated() {
+//        return Optional.ofNullable(this.sendMessage)
+//                .filter(message -> message.getStatus() == MessageStatusEnum.ACTIVE)
+//                .map(message -> true)
+//                .orElse(false);
+//    }
 
-    private boolean isMessageCreated() {
-        return Optional.ofNullable(this.sendMessage)
-                .filter(message -> message.getStatus() == MessageStatusEnum.ACTIVE)
-                .map(message -> true)
-                .orElse(false);
+    protected SendRequest() {
+        this.state = new RequestCreateState();
     }
 
     private boolean isTargetUploaded() {
@@ -130,5 +121,17 @@ public class SendRequest {
         this.state = event.mark(this.state);
         this.status = state.currentSendRequestStatus();
     }
+
+
+    public ContentTypeEnum getContentType() {
+        return resolveContentType();
+    }
+
+    public String getContact(Map<TargetColumnEnum, String> targetData) {
+        return resolvedContactByChannel(targetData);
+    }
+
+    protected abstract String resolvedContactByChannel(Map<TargetColumnEnum, String> targetData);
+    protected abstract ContentTypeEnum resolveContentType();
 
 }

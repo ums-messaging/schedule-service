@@ -1,11 +1,10 @@
 package com.ums.schedule.attachment.domain;
 
-import com.ums.schedule.attachment.application.command.SecurityPolicyCommand;
-import com.ums.schedule.attachment.code.AttachmentEnumMapper;
-import com.ums.schedule.common.code.EnumMapperValue;
-import com.ums.schedule.message.domain.email.EmailSendMessage;
+import com.ums.schedule.attachment.application.model.AttachmentDto;
+import com.ums.schedule.send.domain.target.EmailSendTarget;
 import com.ums.schedule.template.application.response.email.EmailContentResponse;
 import com.ums.schedule.template.domain.code.ConvertTypeEnum;
+import com.ums.schedule.template.domain.email.EmailAttachment;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,44 +15,32 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Attachment {
-    private ConvertTypeEnum convertType;
-    private SecurityPolicy securityPolicy;
     private AttachmentPolicy attachmentPolicy;
     private FileMetaData fileMetaData;
-    private EmailSendMessage sendMessage;
+    private EmailSendTarget target;
 
-    public static Attachment of(EnumMapperValue convertType) {
+    public static Attachment of(AttachmentDto dto, EmailSendTarget target) {
         Attachment attachment = new Attachment();
-        attachment.resolveConvertType(convertType);
+        attachment.applySendTarget(target);
+        attachment.defineAttachmentPolicy(dto.getAttachmentPolicy());
         return attachment;
     }
 
-    private void resolveConvertType(EnumMapperValue convertType) {
-        this.convertType = ConvertTypeEnum.valueOf(convertType.value());
-    }
-
-    public Attachment defineSecurityPolicy(SecurityPolicyCommand command, Map<AttachmentEnumMapper, EnumMapperValue> enumMapperMap) {
-        this.securityPolicy = SecurityPolicy.of(command.passwordPolicy(), command.passwordFormat(), enumMapperMap);
-        return this;
-    }
-
-    public Attachment defineAttachmentPolicy(String attachmentName, String downloadName) {
+    private Attachment defineAttachmentPolicy(AttachmentPolicy policy) {
+        String attachmentName = this.target.parse(policy.getAttachmentName());
+        String downloadName = this.target.parse(policy.getDownloadName());
         this.attachmentPolicy = AttachmentPolicy.of(attachmentName, downloadName);
         return this;
     }
 
-    public Attachment defineFileMetadata(File file) {
-        this.fileMetaData = FileMetaData.of(file);
-        return this;
-    }
-    public Attachment defineFileMetadata(EmailContentResponse response) {
-        this.fileMetaData = FileMetaData.fromResponse(response);
+    public Attachment defineFileMetadata(FileMetaData fileMetaData) {
+        this.fileMetaData = fileMetaData;
         return this;
     }
 
-    public Attachment applySendMessage(EmailSendMessage sendMessage) {
-        sendMessage.getAttachments().add(this);
-        this.sendMessage = sendMessage;
+    public Attachment applySendTarget(EmailSendTarget target) {
+        target.getAttachment().add(this);
+        this.target = target;
         return this;
     }
 }

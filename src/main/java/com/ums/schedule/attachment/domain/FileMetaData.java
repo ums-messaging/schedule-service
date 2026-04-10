@@ -1,5 +1,6 @@
 package com.ums.schedule.attachment.domain;
 
+import com.ums.schedule.attachment.application.response.AwsS3FileMetadataResponse;
 import com.ums.schedule.attachment.code.StorageTypeEnum;
 import com.ums.schedule.attachment.exception.AttachmentPolicyRequiredException;
 import com.ums.schedule.common.code.EnumMapperValue;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class FileMetaData {
     private StorageTypeEnum storageType;
     private String contentType;
-    private Long fileSize = 1L;
+    private Long fileSize;
     private String fileKey;
     private String originalFileName;
 
@@ -28,6 +29,15 @@ public class FileMetaData {
         metaData.applyContentType(response.contentType());
         metaData.applyFileSize(response.fileSize());
         metaData.applyOriginalFileName(response.originalFileName());
+        return metaData;
+    }
+
+    public static FileMetaData of(AwsS3FileMetadataResponse response, String fileKey, String uploadKey) {
+        FileMetaData metaData = new FileMetaData(uploadKey);
+        metaData.applyContentType(response.contentType());
+        metaData.applyFileSize(response.contentLength());
+        metaData.resolveStorageType(EnumMapperValue.fromEnumMapperType(StorageTypeEnum.S3));
+        metaData.applyOriginalFileName(fileKey);
         return metaData;
     }
 

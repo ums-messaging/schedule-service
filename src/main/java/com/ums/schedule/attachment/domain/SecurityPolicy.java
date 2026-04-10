@@ -8,6 +8,7 @@ import com.ums.schedule.attachment.exception.PasswordPolicyRequiredException;
 import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.message.code.EncodingTypeEnum;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
@@ -16,6 +17,7 @@ import java.util.Map;
 import static com.ums.schedule.attachment.code.AttachmentEnumMapper.ENCRYPTION_TYPE;
 import static com.ums.schedule.attachment.code.AttachmentEnumMapper.PASSWORD_HASH;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SecurityPolicy {
     private EncryptionTypeEnum encryptionType;
@@ -43,7 +45,6 @@ public class SecurityPolicy {
         resolveEncryptionType(enumMapperMap.get(ENCRYPTION_TYPE));
         resolvePasswordHash(enumMapperMap.get(PASSWORD_HASH));
         resolvePermissionMask(enumMapperMap.get(AttachmentEnumMapper.PERMISSION_MASK));
-
     }
 
     private void resolvePermissionMask(EnumMapperValue permissionMask) {

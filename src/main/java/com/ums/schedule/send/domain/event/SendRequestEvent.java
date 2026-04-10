@@ -9,6 +9,8 @@ import com.ums.schedule.send.domain.request.SendRequest;
 import com.ums.schedule.send.domain.request.status.RequestCreateState;
 import com.ums.schedule.send.domain.request.status.SendRequestState;
 import com.ums.schedule.send.domain.request.status.exception.SendStatusException;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -18,12 +20,16 @@ import static com.ums.schedule.send.code.SendRequestEventEnum.MESSAGE_CREATED;
 import static com.ums.schedule.send.code.SendRequestEventEnum.TARGET_UPLOADED;
 
 @Getter
+@Entity
 public class SendRequestEvent {
     private String eventId;
     private SendRequestEventEnum eventType;
     private ResultCodeEnum resultCode;
     private String resultMessage;
+
+    @ManyToOne
     private SendRequest sendRequest;
+
     private LocalDateTime issuedAt;
 
     public static SendRequestEvent of(SendRequest sendRequest, EnumMapperValue eventType) {

@@ -1,24 +1,45 @@
 package com.ums.schedule.send.application.model.dto;
 
-import com.ums.schedule.send.application.model.response.PresigedUrlResponse;
+import com.ums.schedule.attachment.infrastructure.PresigendUrlResponse;
+import com.ums.schedule.common.code.EnumMapperValue;
+import com.ums.schedule.send.code.TargetUploadTypeEnum;
+import com.ums.schedule.send.domain.reporing.SendReport;
+import com.ums.schedule.send.domain.request.upload.TargetUpload;
 
 import java.time.LocalDateTime;
 
 public record TargetUploadDto(
+        String uploadId,
+        EnumMapperValue uploadType,
         String objectKey,
         String presignedUrl,
-        Long fileSize,
+        Long totalCount,
+        Long successCount,
+        Long failCount,
         LocalDateTime expiredAt
 ) {
-
-    public static TargetUploadDto of(Long totalCount) {
-        return new TargetUploadDto(null, null, null, null);
+    public static TargetUploadDto ofResponse(String uploadId, PresigendUrlResponse response) {
+        return new TargetUploadDto(
+                            uploadId,
+                            EnumMapperValue.fromEnumMapperType(TargetUploadTypeEnum.FILE),
+                            response.objectKey(),
+                            response.presignedUrl(),
+                            0L,
+                            0L,
+                            0L,
+                            response.expiredAt());
     }
 
-    public static TargetUploadDto ofResponse(PresigedUrlResponse response) {
-        return new TargetUploadDto(response.objectKey(),
-                                    response.presignedUrl(),
-                                    response.fileSize(),
-                                    response.expiredAt());
+    public static TargetUploadDto of(TargetUpload targetUpload) {
+        SendReport report = targetUpload.getReport();
+        return new TargetUploadDto(targetUpload.getUploadId(),
+                EnumMapperValue.fromEnumMapperType(TargetUploadTypeEnum.JSON),
+                targetUpload.getObjectKey(),
+                null,
+                report.getTotalCount(),
+                report.getSuccessCount(),
+                report.getFailCount(),
+                null
+                );
     }
 }

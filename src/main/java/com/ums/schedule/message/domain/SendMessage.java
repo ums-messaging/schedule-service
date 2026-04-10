@@ -3,35 +3,30 @@ package com.ums.schedule.message.domain;
 import com.ums.schedule.common.code.EnumMapperValue;
 import com.ums.schedule.message.code.ChannelTypeEnum;
 import com.ums.schedule.message.code.MessageStatusEnum;
-import com.ums.schedule.message.domain.status.MessageActiveState;
-import com.ums.schedule.message.domain.status.MessageInActiveState;
 import com.ums.schedule.message.domain.status.MessageState;
 import com.ums.schedule.message.domain.status.MessageWaitState;
-import com.ums.schedule.send.domain.target.SendTarget;
-import com.ums.schedule.template.domain.TemplateTypeContent;
-import com.ums.schedule.send.domain.request.SendRequest;
+import com.ums.schedule.send.domain.target.EmailSendTarget;
+import com.ums.schedule.template.domain.email.EmailTitle;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class SendMessage {
     private ChannelTypeEnum channelType;
-    private TemplateTypeContent titleContent;
+    private EmailTitle titleContent;
     private MessageState state;
     private MessageStatusEnum status;
     private String title;
     private String template;
-    private SendTarget target;
 
-    protected SendMessage(EnumMapperValue channelType, TemplateTypeContent titleContent) {
+    private EmailSendTarget target;
+
+    protected SendMessage(EnumMapperValue channelType, EmailTitle titleContent, EmailSendTarget target) {
         this.titleContent = titleContent;
         this.title = titleContent.toWithPrefix();
-
+        this.target = target;
         resolveChannelTypeEnum(channelType);
         changeMessageStatus(new MessageWaitState());
     }

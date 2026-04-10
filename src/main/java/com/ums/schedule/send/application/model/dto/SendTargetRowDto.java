@@ -8,16 +8,19 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public record TargetRowDto(
+public record SendTargetRowDto(
         Long rowNo,
         Map<Integer, String> headMap,
         Map<Long, String> targetData
-) {
-    public static TargetRowDto of(Integer rowNo, Map<Integer, String> headMap, Map<Long, String> targetData) {
-        return new TargetRowDto((long) rowNo, headMap, targetData);
+) implements TargetDataTransfer {
+
+    public static SendTargetRowDto of(Integer rowNo, Map<Integer, String> headMap, Map<Long, String> targetData) {
+        return new SendTargetRowDto((long) rowNo, headMap, targetData);
     }
 
+    @Override
     public Map<TargetColumnEnum, String> resolveTargetData() {
         return Arrays.stream(TargetColumnEnum.class.getEnumConstants())
                 .filter(col -> headMap.containsValue(col.value()))
@@ -27,16 +30,19 @@ public record TargetRowDto(
                         (oldVal, newVal) -> newVal
                 ));
     }
-
+    @Override
     public Map<String, Object> extractMessageVariable() {
-        return headMap.entrySet()
+        Map<String, Object> dataParam = headMap.entrySet()
                 .stream()
                 .filter(entry -> isMessageVariable(entry.getValue()))
                 .collect(Collectors.toMap(
                         entry -> entry.getValue(),
-                        entry -> targetData.get(entry.getKey()),
+                        entry -> this.targetData.get(entry.getKey()),
                         (oldVal, newVal) -> newVal));
+        return dataParam;
     }
+
+
     private Boolean isMessageVariable(String value) {
         return Arrays.stream(TargetColumnEnum.class.getEnumConstants())
                 .filter(col -> !value.equals(col.value()))
@@ -44,5 +50,4 @@ public record TargetRowDto(
                 .map(col -> true)
                 .orElse(false);
     }
-
 }

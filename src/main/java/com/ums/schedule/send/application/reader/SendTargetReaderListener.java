@@ -2,27 +2,25 @@ package com.ums.schedule.send.application.reader;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.ums.schedule.message.domain.SendMessage;
+import com.ums.schedule.send.application.assembler.TargetDbUploadService;
 import com.ums.schedule.send.application.model.dto.SendTargetDto;
-import com.ums.schedule.send.application.model.dto.TargetRowDto;
+import com.ums.schedule.send.application.model.dto.SendTargetRowDto;
 import com.ums.schedule.send.application.service.SendTargetService;
-import com.ums.schedule.send.code.TargetColumnEnum;
 import com.ums.schedule.send.domain.request.SendRequest;
+import com.ums.schedule.send.domain.request.upload.TargetUpload;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, String>> {
-    private final List<SendTargetDto> targetList = new ArrayList<>();
-    private final List<SendTargetDto> targetFailures = new ArrayList<>();
-    private final Map<String, String> targetKeyMap = new HashMap<>();
-    private Map<Integer, String> headMap;
-    private SendTargetService targetService;
-    private SendRequest request;
+    private final List<SendTargetRowDto> targetList = new ArrayList<>();
+    private final TargetUpload targetUpload;
+    private final TargetDbUploadService uploadService;
 
-    public SendTargetReaderListener(SendRequest request, SendTargetService targetService) {
-        this.request = request;
-        this.targetService = targetService;
+    private Map<Integer, String> headMap;
+
+    public SendTargetReaderListener(TargetUpload targetUpload, TargetDbUploadService uploadService) {
+        this.uploadService = uploadService;
+        this.targetUpload = targetUpload;
     }
 
     @Override
@@ -32,12 +30,10 @@ public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, St
 
     @Override
     public void invoke(Map<Long, String> targetData, AnalysisContext context) {
-        SendTargetDto targetDto = SendTargetDto.of(context.readRowHolder().getRowIndex(), headMap, targetData);
-
-
+        SendTargetRowDto row = SendTargetRowDto.of(context.readRowHolder().getRowIndex(), headMap, targetData);
+        targetList.add(row);
         if (targetList.size() % 10000 == 0) {
-            targetService.saveList(request, targetList);
-            this.targetList.clear();
+            uploadTargets();
         }
     }
 
@@ -45,7 +41,16 @@ public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, St
     public void doAfterAllAnalysed(AnalysisContext context) {
         // 나머지 큐로 빼기
         if(!targetList.isEmpty()) {
-            targetService.saveList(request, targetList);
+            uploadTargets();
         }
+        targetUpload.completed();
+    }
+
+    private void uploadTargets() {
+        List<SendTargetDto> dtos = targetList.stream()
+                .map(targetRow -> SendTargetDto.of(targetRow, targetUpload.getUploadId()))
+                .toList();
+        uploadService.create(this.targetUpload.getSendRequest(), dtos);
+        this.targetList.clear();
     }
 }

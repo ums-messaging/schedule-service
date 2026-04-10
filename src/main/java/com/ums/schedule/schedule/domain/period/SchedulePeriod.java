@@ -47,4 +47,7 @@ public class SchedulePeriod {
         }
     }
 
+    public void compareToNow(LocalDateTime now) {
+
+    }
 }

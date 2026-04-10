@@ -1,13 +1,17 @@
 package com.ums.schedule.send.domain.report;
 
 import com.ums.schedule.send.domain.request.SendRequest;
-import com.ums.schedule.send.domain.target.SendTarget;
+import com.ums.schedule.send.domain.target.EmailSendTarget;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-//@Entity
+@Entity
 @NoArgsConstructor
 public class SendRequestReport {
 //    @Id
@@ -34,9 +38,9 @@ public class SendRequestReport {
 //    @Column(name = "aggregated_at", nullable = false)
     private LocalDateTime aggregatedAt;
 
-//    @Getter
-//    @ManyToOne
-//    @JoinColumn(name = "send_request_id", nullable = false)
+    @Getter
+    @ManyToOne
+    @JoinColumn(name = "send_request_id", nullable = false)
     private SendRequest sendRequest;
 
     public static SendRequestReport of(SendRequest sendRequest) {
@@ -50,7 +54,7 @@ public class SendRequestReport {
         this.totalCount = countTargetList(sendRequest.getTargetList());
     }
 
-    private Long countTargetList(List<SendTarget> targetList) {
+    private Long countTargetList(List<EmailSendTarget> targetList) {
         return Long.parseLong(String.valueOf(targetList.size()));
     }
 }

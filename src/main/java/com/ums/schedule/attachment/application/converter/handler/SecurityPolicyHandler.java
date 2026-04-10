@@ -1,18 +1,18 @@
-package com.ums.schedule.attachment.application.handler;
+package com.ums.schedule.attachment.application.converter.handler;
 
 import com.ums.schedule.attachment.application.command.SecurityPolicyCommand;
+import com.ums.schedule.attachment.application.model.AttachmentDto;
 import com.ums.schedule.attachment.code.AttachmentEnumMapper;
 import com.ums.schedule.attachment.code.EncryptionTypeEnum;
 import com.ums.schedule.attachment.code.PasswordHashEnum;
 import com.ums.schedule.attachment.code.PermissionMaskEnum;
-import com.ums.schedule.attachment.domain.Attachment;
 import com.ums.schedule.common.code.EnumMapper;
 import com.ums.schedule.common.code.EnumMapperFactory;
 import com.ums.schedule.common.code.EnumMapperType;
 import com.ums.schedule.common.code.EnumMapperValue;
-import com.ums.schedule.send.application.model.dto.SendTargetDto;
 import com.ums.schedule.send.code.TargetColumnEnum;
-import freemarker.template.Template;
+import com.ums.schedule.send.domain.request.EmailBody;
+import com.ums.schedule.send.domain.target.EmailSendTarget;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
@@ -28,13 +28,13 @@ import static com.ums.schedule.attachment.code.AttachmentEnumMapper.*;
 
 @Component
 @RequiredArgsConstructor
-public class SecurityPolicyHandler implements EmailBodyHandler {
-    private final EmailBodyHandler handler;
+public class SecurityPolicyHandler implements EmailBodyConvertHandler {
+    private final EmailBodyConvertHandler handler;
     private final EnumMapperFactory factory;
 
-    public File handle(Attachment attachment, Template template, SendTargetDto targetDto) throws IOException {
-        File file = handler.handle(attachment, template, targetDto);
-        if(attachment.getSecurityPolicy() != null) {
+    public File handle(AttachmentDto attachment, EmailBody body, EmailSendTarget target) throws IOException {
+        File file = handler.handle(attachment, body, target);
+        if(body.getSecurityPolicy() != null) {
             ByteArrayOutputStream encryptedOut = new ByteArrayOutputStream();
             InputStream inputStream = new FileInputStream(file);
             PDDocument document = PDDocument.load(inputStream);
@@ -46,7 +46,7 @@ public class SecurityPolicyHandler implements EmailBodyHandler {
             StandardProtectionPolicy policy =
                     new StandardProtectionPolicy(
                             "owner-password",   // 소유자 비밀번호
-                            targetDto.resolveTargetData().get(TargetColumnEnum.TARGET_BIRTHDAY),    // 사용자 비밀번호
+                            (String) target.getDataParam().get(TargetColumnEnum.TARGET_BIRTHDAY),    // 사용자 비밀번호
                             ap);
 
             policy.setEncryptionKeyLength(128); // 128 or 256
