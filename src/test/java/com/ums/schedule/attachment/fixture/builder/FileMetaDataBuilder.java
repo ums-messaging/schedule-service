@@ -1,7 +1,6 @@
 package com.ums.schedule.attachment.fixture.builder;
 
-import com.ums.schedule.attachment.code.StorageTypeEnum;
-import com.ums.schedule.attachment.domain.FileMetaData;
+import com.ums.schedule.domain.channel.email.attachment.FileMetaData;
 
 public class FileMetaDataBuilder {
     private StorageTypeEnum storageType;

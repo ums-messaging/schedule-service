@@ -1,25 +1,22 @@
 package com.ums.schedule.message.application.processor;
 
-import com.ums.schedule.attachment.application.converter.handler.PdfConvertHandler;
-import com.ums.schedule.attachment.domain.Attachment;
+import com.ums.schedule.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.application.channel.email.converter.handler.PdfConvertHandler;
+import com.ums.schedule.domain.channel.email.attachment.Attachment;
 import com.ums.schedule.attachment.fixture.builder.EmailContentResponseBuilder;
 import com.ums.schedule.attachment.fixture.builder.EmailMessageCommandBuilder;
-import com.ums.schedule.common.code.EnumMapperFactory;
-import com.ums.schedule.message.application.assembler.EmailMessageAssembler;
-import com.ums.schedule.message.application.command.EmailMessageCommand;
-import com.ums.schedule.message.code.ChannelTypeEnum;
-import com.ums.schedule.message.domain.SendMessage;
+import com.ums.schedule.code.EnumMapperFactory;
+import com.ums.schedule.domain.send.application.assembler.EmailMessageAssembler;
+import com.ums.schedule.adapter.api.send.email.EmailSendCreateRequest;
 import com.ums.schedule.message.domain.EmailSendMessage;
-import com.ums.schedule.template.application.assembler.EmailTemplateService;
-import com.ums.schedule.template.application.response.TemplateResponse;
-import com.ums.schedule.template.application.response.email.EmailContentResponse;
-import com.ums.schedule.template.application.response.email.EmailTemplateDetailResponse;
-import com.ums.schedule.template.application.response.email.EmailTemplateResponse;
-import com.ums.schedule.template.domain.email.EmailTitle;
-import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
-import com.ums.schedule.template.domain.code.TemplateTypeEnum;
-import com.ums.schedule.template.domain.email.EmailTemplate;
-import com.ums.schedule.template.infrastructure.TemplateClient;
+import com.ums.schedule.application.channel.email.template.EmailTemplateService;
+import com.ums.schedule.adapter.api.template.TemplateResponse;
+import com.ums.schedule.adapter.api.template.email.EmailContentResponse;
+import com.ums.schedule.adapter.api.template.email.EmailTemplateDetailResponse;
+import com.ums.schedule.adapter.api.template.email.EmailTemplateResponse;
+import com.ums.schedule.domain.channel.email.message.EmailTitle;
+import com.ums.schedule.domain.channel.email.message.EmailTemplate;
+import com.ums.schedule.adapter.api.template.email.EmailTemplateClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,12 +27,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
-import static com.ums.schedule.template.domain.email.EmailTitle.ofWithPrefix;
-import static com.ums.schedule.template.domain.code.ConvertTypeEnum.*;
-import static com.ums.schedule.template.domain.code.EmailTemplateSectionEnum.*;
-import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.TEXT;
-import static com.ums.schedule.template.domain.code.TemplateTypeEnum.ADVERTISE;
+import static com.ums.schedule.code.EnumMapperValue.fromEnumMapperType;
+import static com.ums.schedule.domain.channel.email.message.EmailTitle.ofWithPrefix;
+import static com.ums.schedule.domain.template.domain.code.ConvertTypeEnum.*;
+import static com.ums.schedule.domain.template.domain.code.EmailTemplateSectionEnum.*;
+import static com.ums.schedule.domain.template.domain.code.TemplateContentFormatEnum.TEXT;
+import static com.ums.schedule.domain.template.domain.code.TemplateTypeEnum.ADVERTISE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,22 +41,14 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EmailMessageProcessorTest {
-    @Mock private TemplateClient templateClient;
+    @Mock private EmailTemplateClient templateClient;
     @Mock private PdfConvertHandler handler;
     @Mock private EnumMapperFactory factory;
     @Mock private EmailTemplateService assembler;
-    @Mock private AdvertisetypeResolver resolver;
-    private EmailMessageAssembler processor;
 
     @BeforeEach
     public void setUp() {
-        processor = new EmailMessageAssembler(
-                templateClient,
-                factory,
-                handler,
-                assembler,
-                Map.of(ADVERTISE.value(), resolver)
-        );
+
     }
 
     /**
@@ -74,7 +63,7 @@ class EmailMessageProcessorTest {
     @Test
     @DisplayName("TemplateType이 Advertise이면, TemplateTypeResolver가 실행된다. ")
     void shouldContainAdvertiseTexture_whenTemplateTypeIsAdvertise() {
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailTemplateDetailResponse emailTemplateResponse = givenEmailTemplateDetailResponse(getContent(BODY));
 
         givenTemplateClient(emailTemplateResponse);
@@ -102,7 +91,7 @@ class EmailMessageProcessorTest {
     @DisplayName("TemplateType이 Advertise이면 EmailTemplate제목에 '(광고)' 문구가 붙는다.")
     void shouldReturnTitlePrefixAdvertise_whenTemplateTypeIsAdvertise() {
         // Given
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailTemplateDetailResponse emailTemplateResponse = givenEmailTemplateDetailResponse(getContent(BODY));
 
         givenTemplateClient(emailTemplateResponse);
@@ -132,7 +121,7 @@ class EmailMessageProcessorTest {
     @DisplayName("Body가 Attachment로 변환한 결과가 NULL이면 템플릿 내용에는 BODY 내용이 포함된다.")
     void shouldReturnTemplateContainsBody_whenBodyConvertToNull(){
         // Given
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailContentResponse body = getContent(BODY);
         EmailTemplateDetailResponse emailTemplateResponse =
                 givenEmailTemplateDetailResponse(body, getContent(COVER));
@@ -164,7 +153,7 @@ class EmailMessageProcessorTest {
     @Test
     @DisplayName("Body가 Attachment로 변환한 결과가 NULL이 아니면 템플릿 내용에는 COVER 내용이 포함된다.")
     void shouldReturnTemplateContainsCover_whenBodyConvertToNotNull(){
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailContentResponse body = getContent(BODY);
         EmailContentResponse cover = getContent(COVER);
         EmailTemplateDetailResponse emailTemplateResponse =
@@ -195,7 +184,7 @@ class EmailMessageProcessorTest {
     @Test
     @DisplayName("Body가 Attachment로 변환한 결과가 NULL이면 SendMessage는 첨부파일만 추가된다.")
     void shouldAddAttachmentOnly_whenBodyConvertToNull(){
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailContentResponse body = getContent(BODY);
         EmailTemplateDetailResponse emailTemplateResponse =
                 givenEmailTemplateDetailResponse(body, getContent(COVER), getContent(ATTACHMENT));
@@ -229,7 +218,7 @@ class EmailMessageProcessorTest {
     @Test
     @DisplayName("Body가 Attachment로 변환한 결과가 NULL이 아니면 SendMessage는 변환된 BODY와 첨부파일만 추가된다.")
     void shouldAddAttachmentWithBody_whenBodyConvertToNotNull(){
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailContentResponse body = getContent(BODY);
         EmailTemplateDetailResponse emailTemplateResponse =
                 givenEmailTemplateDetailResponse(body, getContent(COVER), getContent(ATTACHMENT));

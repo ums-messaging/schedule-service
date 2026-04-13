@@ -1,6 +1,6 @@
 package com.ums.schedule.attachment.fixture.builder;
 
-import com.ums.schedule.attachment.application.command.SecurityPolicyCommand;
+import com.ums.schedule.adapter.api.send.email.EmailSecurityPolicyRequest;
 
 public class SecurityPolicyCommandBuilder {
     private String encryptionType = "ASE-256";
@@ -16,8 +16,8 @@ public class SecurityPolicyCommandBuilder {
         return new SecurityPolicyCommandBuilder();
     }
 
-    public SecurityPolicyCommand build() {
-        return new SecurityPolicyCommand(
+    public EmailSecurityPolicyRequest build() {
+        return new EmailSecurityPolicyRequest(
             encryptionType,
             passwordPolicy,
             passwordHash,

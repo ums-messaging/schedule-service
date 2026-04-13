@@ -1,15 +1,15 @@
 package com.ums.schedule.template.application.assembler;
 
 import com.ums.schedule.attachment.fixture.builder.EmailContentResponseBuilder;
-import com.ums.schedule.common.code.EnumMapperFactory;
-import com.ums.schedule.template.application.resolver.TemplateFileResolver;
-import com.ums.schedule.template.application.resolver.TemplateFormatResolver;
-import com.ums.schedule.template.application.resolver.TemplateTextResolver;
-import com.ums.schedule.template.application.response.email.EmailContentResponse;
-import com.ums.schedule.template.application.response.email.EmailTemplateDetailResponse;
-import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
-import com.ums.schedule.template.domain.email.EmailTemplate;
-import com.ums.schedule.template.exception.TemplateContentRequiredException;
+import com.ums.schedule.code.EnumMapperFactory;
+import com.ums.schedule.application.channel.email.template.EmailTemplateService;
+import com.ums.schedule.application.channel.email.template.loader.TemplateFileLoader;
+import com.ums.schedule.application.channel.email.template.loader.EmailTemplateLoader;
+import com.ums.schedule.application.channel.email.template.loader.TemplateTextLoader;
+import com.ums.schedule.adapter.api.template.email.EmailContentResponse;
+import com.ums.schedule.adapter.api.template.email.EmailTemplateDetailResponse;
+import com.ums.schedule.domain.channel.email.message.EmailTemplate;
+import com.ums.schedule.domain.channel.email.exception.TemplateContentRequiredException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,9 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
-import static com.ums.schedule.template.domain.code.EmailTemplateSectionEnum.*;
-import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.*;
+import static com.ums.schedule.code.EnumMapperValue.fromEnumMapperType;
+import static com.ums.schedule.domain.template.domain.code.EmailTemplateSectionEnum.*;
+import static com.ums.schedule.domain.template.domain.code.TemplateContentFormatEnum.*;
 import static com.ums.schedule.template.domain.email.EmailContent.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,9 +32,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TemplateAssemblerTest {
     @Mock private EnumMapperFactory factory;
-    @Mock private TemplateFormatResolver resolver;
-    @Mock private TemplateTextResolver textResolver;
-    @Mock private TemplateFileResolver fileResolver;
+    @Mock private EmailTemplateLoader resolver;
+    @Mock private TemplateTextLoader textResolver;
+    @Mock private TemplateFileLoader fileResolver;
     private EmailTemplateService assembler;
 
     @BeforeEach

@@ -1,16 +1,15 @@
 package com.ums.schedule.attachment.application.handler;
 
-import com.ums.schedule.attachment.application.converter.handler.EmailBodyConvertHandler;
-import com.ums.schedule.attachment.application.converter.handler.HtmlUploadHandler;
-import com.ums.schedule.attachment.code.StorageTypeEnum;
-import com.ums.schedule.attachment.domain.Attachment;
-import com.ums.schedule.attachment.exception.AttachmentPolicyRequiredException;
+import com.ums.schedule.application.channel.email.converter.handler.EmailBodyConvertHandler;
+import com.ums.schedule.application.channel.email.converter.handler.HtmlUploadHandler;
+import com.ums.schedule.domain.channel.email.attachment.Attachment;
+import com.ums.schedule.domain.channel.email.exception.AttachmentPolicyRequiredException;
 import com.ums.schedule.attachment.fixture.builder.EmailContentResponseBuilder;
 import com.ums.schedule.attachment.fixture.builder.EmailMessageCommandBuilder;
-import com.ums.schedule.common.code.EnumMapperFactory;
-import com.ums.schedule.common.code.EnumMapperValue;
-import com.ums.schedule.message.application.command.EmailMessageCommand;
-import com.ums.schedule.template.application.response.email.EmailContentResponse;
+import com.ums.schedule.code.EnumMapperFactory;
+import com.ums.schedule.code.EnumMapperValue;
+import com.ums.schedule.adapter.api.send.email.EmailSendCreateRequest;
+import com.ums.schedule.adapter.api.template.email.EmailContentResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.ums.schedule.template.domain.code.ConvertTypeEnum.PDF;
-import static com.ums.schedule.template.domain.code.EmailTemplateSectionEnum.ATTACHMENT;
+import static com.ums.schedule.domain.template.domain.code.ConvertTypeEnum.PDF;
+import static com.ums.schedule.domain.template.domain.code.EmailTemplateSectionEnum.ATTACHMENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +34,7 @@ class FileMetadataHandlerTest {
     @Test
     @DisplayName("ContentType이 존재하지 않으면 예외가 발생한다.")
     void shouldThrowException_whenContentTypeDoesNotExist() {
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailContentResponse content = EmailContentResponseBuilder
                 .builder()
                 .section(ATTACHMENT)
@@ -56,7 +55,7 @@ class FileMetadataHandlerTest {
     @Test
     @DisplayName("fileSize가 존재하지 않으면 예외가 발생한다.")
     void shouldThrowException_whenFileSizeDoesNotExist() {
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailContentResponse content = EmailContentResponseBuilder
                 .builder()
                 .section(ATTACHMENT)
@@ -77,7 +76,7 @@ class FileMetadataHandlerTest {
     @Test
     @DisplayName("fileKey가 존재하지 않으면 예외가 발생한다.")
     void shouldThrowException_whenFileKeyDoesNotExist() {
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailContentResponse content = EmailContentResponseBuilder
                 .builder()
                 .section(ATTACHMENT)
@@ -97,7 +96,7 @@ class FileMetadataHandlerTest {
     @Test
     @DisplayName("originalFileName이 존재하지 않으면 예외가 발생한다.")
     void shouldThrowException_whenOriginalFileNameDoesNotExist() {
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailContentResponse content = EmailContentResponseBuilder
                 .builder()
                 .section(ATTACHMENT)
@@ -118,7 +117,7 @@ class FileMetadataHandlerTest {
     @Test
     @DisplayName("Attachment의 FileMetaData는 NULL이 아니다.")
     void shouldReturnFileMetaDataIsNotNull() {
-        EmailMessageCommand command = EmailMessageCommandBuilder.builder().build();
+        EmailSendCreateRequest command = EmailMessageCommandBuilder.builder().build();
         EmailContentResponse content = EmailContentResponseBuilder
                 .builder()
                 .section(ATTACHMENT)

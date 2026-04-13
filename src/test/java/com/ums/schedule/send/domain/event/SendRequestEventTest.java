@@ -1,19 +1,19 @@
 package com.ums.schedule.send.domain.event;
 
-import com.ums.schedule.common.code.EnumMapperValue;
+import com.ums.schedule.code.EnumMapperValue;
+import com.ums.schedule.domain.request.event.SendRequestEvent;
 import com.ums.schedule.message.domain.EmailSendMessage;
-import com.ums.schedule.send.application.model.dto.SendRequestDto;
-import com.ums.schedule.send.code.*;
-import com.ums.schedule.send.domain.request.CustomerRequestKey;
-import com.ums.schedule.send.domain.request.SendRequest;
-import com.ums.schedule.send.domain.request.status.RequestState;
-import com.ums.schedule.send.domain.request.status.exception.SendStatusException;
-import com.ums.schedule.send.domain.request.status.exception.SendingStatusException;
+import com.ums.schedule.application.request.dto.SendRequestDto;
+import com.ums.schedule.domain.request.CustomerRequestKey;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.status.RequestState;
+import com.ums.schedule.domain.request.exception.status.SendStatusException;
+import com.ums.schedule.domain.request.exception.status.SendingStatusException;
 import com.ums.schedule.send.domain.target.upload.TargetUpload;
 import com.ums.schedule.send.domain.target.upload.status.TargetCompletedStatus;
 import com.ums.schedule.send.domain.target.upload.status.TargetUploadStatus;
-import com.ums.schedule.template.domain.email.EmailTitle;
-import com.ums.schedule.template.domain.email.EmailTemplate;
+import com.ums.schedule.domain.channel.email.message.EmailTitle;
+import com.ums.schedule.domain.channel.email.message.EmailTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,12 +21,11 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
+import static com.ums.schedule.code.EnumMapperValue.fromEnumMapperType;
 
-import static com.ums.schedule.send.code.SendRequestEventEnum.*;
-import static com.ums.schedule.send.code.TargetUploadTypeEnum.FILE;
-import static com.ums.schedule.template.domain.code.TemplateContentFormatEnum.TEXT;
-import static com.ums.schedule.template.domain.code.TemplateTypeEnum.ADVERTISE;
+import static com.ums.schedule.domain.send.code.TargetUploadTypeEnum.FILE;
+import static com.ums.schedule.domain.template.domain.code.TemplateContentFormatEnum.TEXT;
+import static com.ums.schedule.domain.template.domain.code.TemplateTypeEnum.ADVERTISE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SendRequestEventTest {

@@ -1,9 +1,6 @@
 package com.ums.schedule.attachment.fixture.builder;
 
-import com.ums.schedule.attachment.code.StorageTypeEnum;
-import com.ums.schedule.template.application.response.email.EmailContentResponse;
-import com.ums.schedule.template.domain.code.EmailTemplateSectionEnum;
-import com.ums.schedule.template.domain.code.TemplateContentFormatEnum;
+import com.ums.schedule.adapter.api.template.email.EmailContentResponse;
 
 import java.util.UUID;
 

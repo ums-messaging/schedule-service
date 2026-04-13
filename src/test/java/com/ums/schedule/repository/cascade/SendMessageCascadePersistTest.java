@@ -1,9 +1,6 @@
 package com.ums.schedule.repository.cascade;
 
-import com.ums.schedule.repository.ScheduleRepository;
-import com.ums.schedule.repository.SendMessageRepository;
-import com.ums.schedule.schedule.ScheduleFixture;
-import jakarta.persistence.EntityManager;
+import com.ums.schedule.domain.schedule.ScheduleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

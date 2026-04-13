@@ -1,13 +1,8 @@
 package com.ums.schedule.repository.lazy;
 
-import com.ums.schedule.schedule.ScheduleFixture;
-import com.ums.schedule.repository.ScheduleRepository;
-import com.ums.schedule.repository.SendRequestRepository;
+import com.ums.schedule.domain.schedule.ScheduleRepository;
+import com.ums.schedule.domain.request.SendRequestRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceUnitUtil;
-import org.hibernate.LazyInitializationException;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 

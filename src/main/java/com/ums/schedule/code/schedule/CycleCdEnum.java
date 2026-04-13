@@ -1,0 +1,35 @@
+package com.ums.schedule.code.schedule;
+
+import com.ums.schedule.code.EnumMapperType;
+
+public enum CycleCdEnum implements EnumMapperType {
+    ONCE("ONCE", "한번만"),
+    ALWAYS("ALWAYS","항상"),
+    MONTH("MONTH","월 주기"),
+    DAY("DAY","일 주기"),
+    HOUR("HOUR", "시간 주기"),
+    MINUTE("MINUTE", "분 주기");
+
+    String value;
+    String description;
+
+    CycleCdEnum(String value, String description) {
+        this.value = value;
+        this.description = description;
+    }
+
+    @Override
+    public String code() {
+        return null;
+    }
+
+    @Override
+    public String value() {
+        return null;
+    }
+
+    @Override
+    public String description() {
+        return null;
+    }
+}

@@ -1,7 +1,7 @@
 package com.ums.schedule.message.domain.status;
 
-import com.ums.schedule.message.code.MessageStatusEnum;
-import org.assertj.core.api.Assertions;
+import com.ums.schedule.domain.send.domain.status.MessageState;
+import com.ums.schedule.domain.send.domain.status.MessageWaitState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

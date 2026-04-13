@@ -1,6 +1,6 @@
 package com.ums.schedule.repository.cascade;
 
-import com.ums.schedule.repository.ScheduleRepository;
+import com.ums.schedule.domain.schedule.ScheduleRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

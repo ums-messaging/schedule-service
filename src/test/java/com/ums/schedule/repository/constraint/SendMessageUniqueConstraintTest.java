@@ -1,7 +1,6 @@
 package com.ums.schedule.repository.constraint;
 
-import com.ums.schedule.repository.ScheduleRepository;
-import com.ums.schedule.repository.SendMessageRepository;
+import com.ums.schedule.domain.schedule.ScheduleRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

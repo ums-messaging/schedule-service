@@ -1,19 +1,17 @@
 package com.ums.schedule.send.domain.request;
 
-import com.ums.schedule.send.application.model.dto.SendRequestDto;
-import com.ums.schedule.send.code.SendRequestStatusEnum;
-import com.ums.schedule.send.domain.exception.CustomerKeyRequiredException;
-import com.ums.schedule.send.domain.reporing.SendReport;
+import com.ums.schedule.application.request.dto.SendRequestDto;
+import com.ums.schedule.domain.request.exception.CustomerKeyRequiredException;
 
+import com.ums.schedule.domain.request.CustomerRequestKey;
+import com.ums.schedule.domain.request.SendRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class SendRequestDomainTest {
 

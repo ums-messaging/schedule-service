@@ -1,9 +1,9 @@
 package com.ums.schedule.repository.mapping;
 
-import com.ums.schedule.send.domain.request.SendRequest;
-import com.ums.schedule.repository.ScheduleRepository;
-import com.ums.schedule.repository.SendRequestReportRepository;
-import com.ums.schedule.repository.SendRequestRepository;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.schedule.ScheduleRepository;
+import com.ums.schedule.domain.request.report.SendRequestReportRepository;
+import com.ums.schedule.domain.request.SendRequestRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

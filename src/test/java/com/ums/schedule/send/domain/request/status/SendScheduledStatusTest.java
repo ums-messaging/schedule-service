@@ -1,10 +1,15 @@
 package com.ums.schedule.send.domain.request.status;
 
-import com.ums.schedule.send.application.model.dto.SendRequestDto;
-import com.ums.schedule.send.domain.event.SendRequestEvent;
-import com.ums.schedule.send.domain.request.CustomerRequestKey;
-import com.ums.schedule.send.domain.request.SendRequest;
-import com.ums.schedule.send.domain.request.status.exception.*;
+import com.ums.schedule.application.request.dto.SendRequestDto;
+import com.ums.schedule.domain.request.event.SendRequestEvent;
+import com.ums.schedule.domain.request.CustomerRequestKey;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.status.SendReadyState;
+import com.ums.schedule.domain.request.status.SendRequestState;
+import com.ums.schedule.domain.request.exception.status.SchedulingStatusException;
+import com.ums.schedule.domain.request.exception.status.SendCompletedStatusException;
+import com.ums.schedule.domain.request.exception.status.SendRequestStatusException;
+import com.ums.schedule.domain.request.exception.status.SendingStatusException;
 import com.ums.schedule.target.domain.status.SendTargetCreatedStatus;
 import com.ums.schedule.target.domain.status.SendTargetReadyStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -12,9 +17,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static com.ums.schedule.common.code.EnumMapperValue.fromEnumMapperType;
-import static com.ums.schedule.send.code.SendRequestEventEnum.*;
-import static com.ums.schedule.send.code.SendRequestEventEnum.SEND_END;
+import static com.ums.schedule.code.EnumMapperValue.fromEnumMapperType;
+import static com.ums.schedule.domain.send.code.SendRequestEventEnum.SEND_END;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

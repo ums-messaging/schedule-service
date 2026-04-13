@@ -1,7 +1,7 @@
 package com.ums.schedule.attachment.fixture.builder;
 
-import com.ums.schedule.attachment.application.command.SecurityPolicyCommand;
-import com.ums.schedule.message.application.command.EmailMessageCommand;
+import com.ums.schedule.adapter.api.send.email.EmailSecurityPolicyRequest;
+import com.ums.schedule.adapter.api.send.email.EmailSendCreateRequest;
 
 import java.util.UUID;
 
@@ -9,7 +9,7 @@ public class EmailMessageCommandBuilder {
     private String templateKey = UUID.randomUUID().toString();
     private String convertType = "NONE";
     private String encodingType;
-    private SecurityPolicyCommand securityPolicy;
+    private EmailSecurityPolicyRequest securityPolicy;
 
     private EmailMessageCommandBuilder() { }
 
@@ -27,13 +27,13 @@ public class EmailMessageCommandBuilder {
         return this;
     }
 
-    public EmailMessageCommandBuilder securityPolicy(SecurityPolicyCommand securityPolicy) {
+    public EmailMessageCommandBuilder securityPolicy(EmailSecurityPolicyRequest securityPolicy) {
         this.securityPolicy = securityPolicy;
         return this;
     }
 
-    public EmailMessageCommand build() {
-        return new EmailMessageCommand(
+    public EmailSendCreateRequest build() {
+        return new EmailSendCreateRequest(
                 null,
                 this.convertType,
                 this.encodingType,
