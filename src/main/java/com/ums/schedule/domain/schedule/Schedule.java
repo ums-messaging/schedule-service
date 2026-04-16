@@ -69,7 +69,6 @@ public class Schedule {
     public void addSendRequestList(SendRequest sendRequest) {
         validateSchedulePeriodAndStatus();
         this.sendRequests.add(sendRequest);
-        sendRequest.applySchedule(this);
     }
 
     private void validateSchedulePeriodAndStatus() {

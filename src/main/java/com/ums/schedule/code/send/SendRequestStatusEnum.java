@@ -4,6 +4,7 @@ import com.ums.schedule.code.EnumMapperType;
 
 public enum SendRequestStatusEnum implements EnumMapperType {
     CREATE("CRT", "발송 요청 등록"),
+    PENDING("PDG", "업로드 대기"),
     REQUEST("REQ", "발송요청"),
     READY("RDY", "발송 준비"),
     SCHEDULED("SCH", "스케쥴링"),

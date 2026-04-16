@@ -1,9 +1,13 @@
 package com.ums.schedule.domain.request;
 
+import com.ums.schedule.code.EnumMapperValue;
 import com.ums.schedule.code.send.ContentTypeEnum;
+import com.ums.schedule.code.send.SendRequestEventEnum;
 import com.ums.schedule.code.send.SendRequestStatusEnum;
 import com.ums.schedule.code.send.TargetColumnEnum;
 import com.ums.schedule.domain.request.event.SendRequestEvent;
+import com.ums.schedule.domain.request.exception.DuplicateCustomerKeyException;
+import com.ums.schedule.domain.request.exception.TargetUploadException;
 import com.ums.schedule.domain.request.report.SendRequestReport;
 import com.ums.schedule.domain.request.status.RequestCreateState;
 import com.ums.schedule.domain.request.status.SendRequestState;
@@ -62,8 +66,11 @@ public abstract class SendRequest {
     @ManyToOne
     private SendRequestReport report;
 
-    public void applyCustomerRequestKey(CustomerRequestKey customerRequestKey) {
-        this.customerRequestKey = customerRequestKey;
+    public void applyCustomerRequestKey(CustomerRequestKey customerRequestKey, boolean exists) {
+        if(!exists) {
+            this.customerRequestKey = customerRequestKey;
+        }
+         throw DuplicateCustomerKeyException.of();
     }
 
     public void setSenderAndTemplateKey(String senderKey, String templateKey) {
@@ -76,7 +83,7 @@ public abstract class SendRequest {
     }
     public void applySchedule(Schedule schedule) {
         this.schedule = schedule;
-        this.schedule.getSendRequests().add(this);
+        this.schedule.addSendRequestList(this);
     }
 
 //    public boolean canTransitionToReady() {
@@ -92,6 +99,18 @@ public abstract class SendRequest {
 
     protected SendRequest() {
         this.state = new RequestCreateState();
+    }
+
+    public void addTargetUploadList(TargetUpload targetUpload) {
+        if(availableTargetUpload()) {
+            this.targetUploadList.add(targetUpload);
+            changeStatus(SendRequestEvent.of(this, EnumMapperValue.fromEnumMapperType(SendRequestEventEnum.TARGET_UPLOADED)));
+        }
+        throw TargetUploadException.addTargetUpload();
+    }
+
+    private boolean availableTargetUpload() {
+        return status == SendRequestStatusEnum.CREATE || status == SendRequestStatusEnum.PENDING || status == SendRequestStatusEnum.READY;
     }
 
     private boolean isTargetUploaded() {

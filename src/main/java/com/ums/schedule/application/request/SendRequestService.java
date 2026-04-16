@@ -22,12 +22,11 @@ public class SendRequestService {
 
     public SendRequest create(String customerId, SendCreateRequest command, SendRequest sendRequest) {
         CustomerRequestKey key = CustomerRequestKey.of(customerId, command.customerSendRequestId());
-        existsCustomerKey(customerId, key);
 
         Schedule schedule = scheduleService.findScheduleById(command.scheduleId());
 
         sendRequest.applySchedule(schedule);
-        sendRequest.applyCustomerRequestKey(key);
+        sendRequest.applyCustomerRequestKey(key, existsCustomerKey(customerId, command.customerSendRequestId()));
         sendRequest.initRetryMaxCount(command.retryCnt());
         sendRequest.setSenderAndTemplateKey(command.senderKey(), command.templateKey());
 
@@ -35,10 +34,7 @@ public class SendRequestService {
     }
 
 
-    private void existsCustomerKey(String customerId, CustomerRequestKey key) {
-        boolean is = sendRequestRepository.existsByCustomerIdAAndCustomerRequestId(customerId, key.getCustomerRequestId());
-        if(is) {
-
-        }
+    private boolean existsCustomerKey(String customerId, String customerRequestId) {
+        return sendRequestRepository.existsByCustomerIdAAndCustomerRequestId(customerId, customerRequestId);
     }
 }
