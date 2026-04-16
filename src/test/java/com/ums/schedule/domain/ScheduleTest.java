@@ -1,12 +1,15 @@
 package com.ums.schedule.domain;
 
-import com.ums.schedule.code.schedule.CycleCdEnum;
 import com.ums.schedule.code.schedule.ScheduleStatusEnum;
-import com.ums.schedule.code.schedule.ScheduleTypeEnum;
+import com.ums.schedule.domain.channel.email.EmailSendRequest;
+import com.ums.schedule.domain.channel.email.message.EmailBody;
+import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.cycle_policy.ReservationPolicyValue;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
+import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
 import com.ums.schedule.domain.schedule.period.SchedulePeriod;
 import com.ums.schedule.domain.schedule.status.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.status.ScheduleRunningStatus;
@@ -51,7 +54,7 @@ class ScheduleTest {
             ScheduleCyclePolicy policy = new ScheduleCyclePolicy(REALTIME, ALWAYS, null);
 
             Schedule schedule = Schedule.of("스케쥴", period, policy);
-            schedule.changeScheduleStatus(new ScheduleRunningStatus());
+            schedule.toRunning();
 
             assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleRunningStatus.class);
             assertThat(schedule.getStatus()).isEqualTo(ScheduleStatusEnum.RUNNING);
@@ -115,5 +118,35 @@ class ScheduleTest {
         }
     }
 
+    @Test
+    @DisplayName("SendRequest를 추가할 때, 스케쥴 상태가 유효하지 않으면 익셉션이 발생한다.")
+    void shouldThrowException_whenScheduleStatusInvalid() {
+        SchedulePeriod period = SchedulePeriod.of(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusMonths(1));
+        LocalDateTime now = LocalDateTime.now().plusDays(3).withSecond(0).withNano(0);
+        String reservationDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss"));
 
+        ReservationPolicyValue policyValue = ReservationPolicyValue.of(reservationDate);
+        ScheduleCyclePolicy policy = ScheduleCyclePolicy.of(policyValue);
+        Schedule result = Schedule.of("스케쥴 명", period, policy);
+        result.toInActive();
+
+        assertThatThrownBy(() -> result.addSendRequestList(EmailSendRequest.of(EmailBody.of())))
+                .isInstanceOf(InvalidScheduleStatusException.class);
+    }
+
+    @Test
+    @DisplayName("SendRequest를 추가할 때, 스케쥴 기간이 유효하지 않으면 익셉션이 발생한다.")
+    void shouldThrowException_whenSchedulePeriodIsInvalid() {
+        SchedulePeriod period = SchedulePeriod.of(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusMonths(1));
+        LocalDateTime now = LocalDateTime.now().plusDays(3).withSecond(0).withNano(0);
+        String reservationDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss"));
+
+        ReservationPolicyValue policyValue = ReservationPolicyValue.of(reservationDate);
+        ScheduleCyclePolicy policy = ScheduleCyclePolicy.of(policyValue);
+        Schedule result = Schedule.of("스케쥴 명", period, policy);
+
+        assertThatThrownBy(() -> result.addSendRequestList(EmailSendRequest.of(EmailBody.of())))
+                .isInstanceOf(InvalidSchedulePeriodException.class);
+
+    }
 }

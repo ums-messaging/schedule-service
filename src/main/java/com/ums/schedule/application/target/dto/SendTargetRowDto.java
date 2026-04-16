@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public record SendTargetRowDto(
         Long rowNo,
         Map<Integer, String> headMap,

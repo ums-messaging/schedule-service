@@ -1,5 +1,6 @@
 package com.ums.schedule.intergration.schedule_status;
 
+import com.ums.schedule.code.schedule.ScheduleStatusEnum;
 import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
 import com.ums.schedule.domain.schedule.status.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.status.ScheduleInActiveStatus;

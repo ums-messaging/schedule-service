@@ -17,9 +17,6 @@ public class ScheduleService {
 
     public Schedule findScheduleById(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
-        LocalDateTime now = LocalDateTime.now();
-        SchedulePeriod schedulePeriod = schedule.getSchedulePeriod();
-        schedulePeriod.compareToNow(now);
         return schedule;
     }
 }

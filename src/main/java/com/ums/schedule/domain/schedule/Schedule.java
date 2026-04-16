@@ -54,12 +54,27 @@ public class Schedule {
     @OneToMany(mappedBy = "schedule", cascade = { CascadeType.ALL })
     private List<SendRequest> sendRequests = new ArrayList<>();
 
+    private Schedule(String scheduleName) {
+        this.name = scheduleName;
+    }
+
     public static Schedule of(String scheduleName, SchedulePeriod schedulePeriod, ScheduleCyclePolicy cyclePolicy) {
         Schedule schedule = new Schedule(scheduleName);
         schedule.applySchedulePeriod(schedulePeriod);
         schedule.applyScheduleCyclePolicy(cyclePolicy);
         schedule.changeScheduleStatus(new ScheduleActiveStatus());
         return schedule;
+    }
+
+    public void addSendRequestList(SendRequest sendRequest) {
+        validateSchedulePeriodAndStatus();
+        this.sendRequests.add(sendRequest);
+        sendRequest.applySchedule(this);
+    }
+
+    private void validateSchedulePeriodAndStatus() {
+        this.scheduleStatus.validateCurrentStatus();
+        this.schedulePeriod.validateScheduleWindow();
     }
 
     private void applyScheduleCyclePolicy(ScheduleCyclePolicy cyclePolicy) {
@@ -89,12 +104,18 @@ public class Schedule {
         this.schedulePeriod = schedulePeriod;
     }
 
-    private Schedule(String scheduleName) {
-        this.name = scheduleName;
-    }
-
-    public void changeScheduleStatus(ScheduleStatus scheduleStatus) {
+    private void changeScheduleStatus(ScheduleStatus scheduleStatus) {
         this.scheduleStatus = scheduleStatus;
         this.status = scheduleStatus.currentScheduleStatus();
+    }
+
+    public void toRunning() {
+        ScheduleStatus status = this.scheduleStatus.toRunning();
+        changeScheduleStatus(status);
+    }
+
+    public void toInActive() {
+        ScheduleStatus status = this.scheduleStatus.toInActive();
+        changeScheduleStatus(status);
     }
 }

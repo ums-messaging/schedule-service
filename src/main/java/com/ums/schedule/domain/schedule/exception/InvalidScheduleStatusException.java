@@ -10,4 +10,8 @@ public class InvalidScheduleStatusException  extends  ScheduleDomainException {
         String message = String.format("%s에서 %s 상태로 변경 불가합니다.", from, to);
         return new InvalidScheduleStatusException(message);
     }
+
+    public static InvalidScheduleStatusException of() {
+        return new InvalidScheduleStatusException("실행 중인 스케쥴이 아닙니다.");
+    }
 }

@@ -47,7 +47,10 @@ public class SchedulePeriod {
         }
     }
 
-    public void compareToNow(LocalDateTime now) {
-
+    public void validateScheduleWindow() {
+        LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay();
+        if(today.isBefore(scheduleStartAt) || today.isAfter(scheduleEndAt)) {
+            throw InvalidSchedulePeriodException.outOfSchedulePeriod();
+        }
     }
 }
