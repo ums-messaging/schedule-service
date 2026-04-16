@@ -35,4 +35,18 @@ public class SchedulePeriodTest {
                 () -> SchedulePeriod.of(scheduleStartAt, scheduleEndAt)
         ).isInstanceOf(InvalidSchedulePeriodException.class);
     }
+
+    @Test
+    @DisplayName("현재 시각이 스케쥴 기간에 해당하지 않으면 익셉션이 발생한다.")
+    void shouldThrowException_whenCurrentDateTimeDoesNotContainSchedulePeriod() {
+        LocalDateTime scheduleStartAt = LocalDateTime.now().minusDays(2);
+        LocalDateTime scheduleEndAt = scheduleStartAt.plusDays(1);
+
+        SchedulePeriod schedulePeriod = SchedulePeriod.of(scheduleStartAt, scheduleEndAt);
+
+        // When, Then
+        assertThatThrownBy(
+                () -> schedulePeriod.validateScheduleWindow())
+                .isInstanceOf(InvalidSchedulePeriodException.class);
+    }
 }
