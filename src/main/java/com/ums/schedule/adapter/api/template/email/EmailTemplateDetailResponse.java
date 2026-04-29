@@ -1,5 +1,8 @@
 package com.ums.schedule.adapter.api.template.email;
 
+import com.ums.schedule.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.domain.channel.email.message.EmailBody;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -34,5 +37,9 @@ public record EmailTemplateDetailResponse(
                 .stream()
                 .filter(content->content.section().equals(EmailTemplateSectionEnum.ATTACHMENT.value()))
                 .collect(Collectors.toList());
+    }
+
+    public void body(EmailBody body) {
+
     }
 }

@@ -1,5 +1,6 @@
 package com.ums.schedule.adapter.storage;
 
+import com.ums.schedule.code.send.ContentTypeEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.ResponseInputStream;

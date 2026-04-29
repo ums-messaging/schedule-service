@@ -4,7 +4,12 @@ import com.ums.schedule.code.email.ConvertTypeEnum;
 import com.ums.schedule.code.email.EmailTemplateSectionEnum;
 import com.ums.schedule.application.channel.email.dto.AttachmentDto;
 import com.ums.schedule.adapter.api.template.email.EmailTemplateDetailResponse;
+import com.ums.schedule.domain.channel.ChannelTemplate;
+import com.ums.schedule.domain.channel.email.EmailSendRequest;
+import com.ums.schedule.domain.channel.email.attachment.Attachment;
+import com.ums.schedule.domain.channel.email.attachment.FileMetaData;
 import com.ums.schedule.domain.channel.email.exception.TemplateContentRequiredException;
+import com.ums.schedule.domain.target.SendTarget;
 import freemarker.template.Template;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,9 +25,10 @@ import java.util.stream.Stream;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class EmailTemplate {
+public class EmailTemplate implements ChannelTemplate  {
     private String templateKey;
     private String title;
+    private EmailBody emailBody;
     private Template header;
     private Template body;
     private Template footer;
@@ -59,14 +65,26 @@ public class EmailTemplate {
         this.title = title.title();
     }
 
+    public String getTitle(SendTarget target) {
+        return target.parse(this.title);
+    }
+
     public void defineAttachment(EmailBody body, EmailTemplateDetailResponse template) {
         this.attachments = Stream.concat(
-                Optional.ofNullable(body.toAttachmentDto(template.getBody()))
+                Optional.ofNullable(AttachmentDto.of(template.getBody(), body))
                         .map(Stream::of)
                         .orElseGet(Stream::empty),
                 template.getAttachmentList()
                         .stream()
-                        .map(content -> AttachmentDto.of(content, ConvertTypeEnum.NONE))
+                        .map(content -> AttachmentDto.of(content, null))
                 ).toList();
+    }
+
+    @Override
+    public String compile(SendTarget target) {
+        String header = target.compile(this.header);
+        String body = target.compile(this.body);
+        String footer = target.compile(this.footer);
+        return header + body + footer;
     }
 }

@@ -7,6 +7,7 @@ import com.ums.schedule.domain.channel.email.attachment.Attachment;
 import com.ums.schedule.domain.channel.email.attachment.FileMetaData;
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.domain.channel.email.message.EmailBody;
+import com.ums.schedule.domain.channel.email.message.EmailTemplate;
 import com.ums.schedule.domain.target.SendTarget;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,9 +22,9 @@ public class EmailBodyConverter {
     private final EmailBodyConvertHandler handler;
     private final AwsS3Repository repository;
 
-    public List<Attachment> createAttachment(EmailBody body, List<AttachmentDto> templates, SendTarget target)  {
-        List<Attachment> attachmentList = templates.stream()
-                .map(dto -> create(body, target, dto))
+    public List<Attachment> createAttachment(EmailTemplate template, SendTarget target)  {
+        List<Attachment> attachmentList = template.getAttachments().stream()
+                .map(dto -> create(template.getEmailBody(), target, dto))
                 .toList();
         return attachmentList;
     }

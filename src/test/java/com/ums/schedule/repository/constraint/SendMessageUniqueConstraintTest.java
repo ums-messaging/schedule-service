@@ -12,7 +12,6 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 @DataJpaTest
 public class SendMessageUniqueConstraintTest {
     @Autowired private ScheduleRepository scheduleRepository;
-    @Autowired private SendMessageRepository sendMessageRepository;
     @Autowired private EntityManager entityManager;
 //    private SendRequest sendRequest;
 //    private Schedule schedule;

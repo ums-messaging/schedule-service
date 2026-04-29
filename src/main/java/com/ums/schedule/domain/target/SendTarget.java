@@ -5,17 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ums.schedule.code.send.ContentTypeEnum;
 import com.ums.schedule.code.send.SendTargetStatusEnum;
 import com.ums.schedule.code.send.TargetColumnEnum;
-import com.ums.schedule.domain.channel.email.attachment.Attachment;
+import com.ums.schedule.domain.channel.ChannelTemplate;
 import com.ums.schedule.application.target.dto.SendTargetDto;
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.target.status.SendTargetCreatedStatus;
-import com.ums.schedule.domain.target.status.SendTargetReadyStatus;
-import com.ums.schedule.domain.target.status.SendTargetStatus;
-import com.ums.schedule.domain.channel.email.message.EmailTemplate;
-import com.ums.schedule.domain.target.upload.TargetUpload;
+import com.ums.schedule.domain.target.state.SendTargetReadyState;
+import com.ums.schedule.domain.target.state.SendTargetState;
 import com.ums.schedule.domain.channel.email.exception.TemplateContentRequiredException;
+import com.ums.schedule.domain.target.upload.TargetUpload;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
 import lombok.Getter;
 
@@ -27,14 +27,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Getter
-//@Entity
+@Entity
 public class SendTarget {
+    @Id
     private String id;
     private String targetKey;
     private String targetName;
     private String contact;
     private String messageVariable;
-    private TargetUpload targetUpload;
+
+
 
     private SendTargetStatusEnum status; // ready, retrying, success, fail, sending,
 
@@ -44,30 +46,25 @@ public class SendTarget {
     private String title;
     private String content;
 
-    private SendRequest sendRequest;
-    private List<Attachment> attachment = new ArrayList<>();
+    @ManyToOne
+    private TargetUpload targetUpload;
 
     private LocalDateTime createdAt;
     private LocalDateTime lastUploadedAt;
 
     @Transient
-    private SendTargetStatus state;
+    private SendTargetState state;
 
     @Transient
     private Map<String, Object> dataParam = new HashMap<>();
 
-    public static SendTarget of(SendTargetDto dto, EmailTemplate template) {
+    public static SendTarget of(SendTargetDto dto, ChannelTemplate template) {
         SendTarget sendTarget = new SendTarget(dto.targetData());
-        sendTarget.changeTargetStatus(new SendTargetCreatedStatus());
+        sendTarget.changeTargetStatus(new SendTargetReadyState());
         sendTarget.dataParamToJson(dto.dataParam());
         sendTarget.makeMessage(template);
         return sendTarget;
     }
-
-    public void resolveContact(SendRequest request, Map<TargetColumnEnum, String> targetData) {
-        this.contact = request.getContact(targetData);
-    }
-
     private void dataParamToJson(Map<String, Object> dataParam) {
         ObjectMapper mapper = new ObjectMapper();
         String json = null;
@@ -81,7 +78,7 @@ public class SendTarget {
         this.messageVariable = json;
     }
 
-    private void changeTargetStatus(SendTargetStatus state) {
+    private void changeTargetStatus(SendTargetState state) {
         this.state = state;
         this.status = state.currentStatusCode();
         this.lastUploadedAt = LocalDateTime.now();
@@ -94,11 +91,6 @@ public class SendTarget {
         this.attemptNo = 1;
     }
 
-    public SendTarget applySendRequest(SendRequest sendRequest) {
-        this.sendRequest = sendRequest;
-        this.contentType = sendRequest.getContentType();
-        return this;
-    }
 
     public String parse(String content) {
         Set<String> keySet = getKeySet(content);
@@ -122,23 +114,20 @@ public class SendTarget {
         return keySet;
     }
 
-    private void makeMessage(EmailTemplate template) {
+    private void makeMessage(ChannelTemplate template) {
         makeTitle(template);
         makeBody(template);
     }
 
-    private void makeTitle(EmailTemplate template) {
-        this.title = parse(template.getTitle());
+    private void makeTitle(ChannelTemplate template) {
+        this.title = template.getTitle(this);
     }
 
-    private void makeBody(EmailTemplate template) {
-        String header = compile(template.getHeader());
-        String body = compile(template.getBody());
-        String footer = compile(template.getFooter());
-        this.content = header + body + footer;
+    private void makeBody(ChannelTemplate template) {
+        this.contact = template.compile(this);
     }
 
-    private String compile(Template template) {
+    public String compile(Template template) {
         return Optional.ofNullable(template)
                 .map(t -> {
                     StringWriter writer = new StringWriter();
@@ -153,7 +142,7 @@ public class SendTarget {
     }
 
     public SendTarget toReady() {
-        changeTargetStatus(new SendTargetReadyStatus());
+        changeTargetStatus(new SendTargetReadyState());
         return this;
     }
 }

@@ -1,5 +1,6 @@
 package com.ums.schedule.domain.channel.email.exception;
 
+import com.ums.schedule.code.email.EmailTemplateSectionEnum;
 import com.ums.schedule.domain.channel.email.exception.template.RequiredException;
 
 public class TemplateContentRequiredException extends RequiredException {

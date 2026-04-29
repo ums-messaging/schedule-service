@@ -3,8 +3,8 @@ package com.ums.schedule.application.schedule.factory.schedule_policy;
 import com.ums.schedule.code.EnumMapperValue;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 
-import static com.ums.schedule.domain.schedule.code.CycleCdEnum.ALWAYS;
-import static com.ums.schedule.domain.schedule.code.ScheduleTypeEnum.REALTIME;
+import static com.ums.schedule.code.schedule.CycleCdEnum.ALWAYS;
+import static com.ums.schedule.code.schedule.ScheduleTypeEnum.REALTIME;
 
 public class RealtimeScheduleFactory implements SchedulePolicyFactory {
 

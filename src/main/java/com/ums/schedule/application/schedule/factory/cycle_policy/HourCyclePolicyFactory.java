@@ -6,7 +6,8 @@ import com.ums.schedule.domain.schedule.cycle_policy.SchedulePolicyValue;
 import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
 import org.springframework.stereotype.Component;
 
-import static com.ums.schedule.domain.schedule.code.CycleCdEnum.HOUR;
+import static com.ums.schedule.code.schedule.CycleCdEnum.HOUR;
+
 
 @Component
 public class HourCyclePolicyFactory implements CyclePolicy {

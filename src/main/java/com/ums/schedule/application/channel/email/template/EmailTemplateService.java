@@ -1,11 +1,14 @@
 package com.ums.schedule.application.channel.email.template;
 
+import com.ums.schedule.application.channel.email.EmailSendRequestService;
 import com.ums.schedule.application.channel.email.template.loader.EmailTemplateLoader;
 import com.ums.schedule.code.email.EmailTemplateSectionEnum;
 import com.ums.schedule.code.email.TemplateContentFormatEnum;
 import com.ums.schedule.code.email.TemplateEnumMapper;
 import com.ums.schedule.code.EnumMapperFactory;
 import com.ums.schedule.code.EnumMapperValue;
+import com.ums.schedule.domain.channel.email.EmailSendRequest;
+import com.ums.schedule.domain.channel.email.EmailSendRequestJpaRepository;
 import com.ums.schedule.domain.channel.email.message.EmailTemplate;
 import com.ums.schedule.adapter.api.template.email.EmailTemplateClient;
 import com.ums.schedule.domain.channel.email.message.EmailBody;
@@ -25,15 +28,13 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class EmailTemplateService implements TemplateService {
+public class EmailTemplateService {
     @Value("${template.message_type.prefix}")
     private final String TEMPLATE_MESSAGE_TYPE_PREFIX;
     private final EnumMapperFactory enumMapperFactory;
-    private final EmailTemplateClient templateClient;
     private final Map<String, EmailTemplateLoader> resolverMap;
 
-    public EmailTemplate assemble(String templateKey, EmailBody body) {
-        EmailTemplateResponse response = templateClient.getTemplate(templateKey);
+    public EmailTemplate assemble(EmailBody body, EmailTemplateResponse response) {
         Map<EmailTemplateSectionEnum, Template> templateMap = getTemplateMap(body, response.emailTemplate());
         EmailTitle title = getEmailTitle(response.template().templateType(), response.emailTemplate().msgTitle());
         return createEmailTemplate(response, templateMap, title, body);

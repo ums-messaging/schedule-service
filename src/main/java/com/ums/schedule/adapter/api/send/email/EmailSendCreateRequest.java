@@ -13,10 +13,4 @@ public record EmailSendCreateRequest(
         String downloadNameFormat,
         EmailSecurityPolicyRequest securityPolicy
 ) {
-    public List<SendTargetDto> toDtos(String uploadId) {
-        return sendRequest.targetList()
-                .stream()
-                .map(command -> SendTargetDto.of(command, uploadId))
-                .toList();
-    }
 }

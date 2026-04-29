@@ -3,11 +3,10 @@ package com.ums.schedule.code.send;
 import com.ums.schedule.code.EnumMapperType;
 
 public enum SendTargetStatusEnum implements EnumMapperType {
-    CREATED("CRT", ""),
-    READY("RDY", ""),
-    RETRYING("RTY", ""),
-    FAIL("FAIL", ""),
-    COMPLETED("CMP", "완료")
+    READY("R", "준비"),
+    RETRYING("T", "재시도"),
+    FAIL("O", "실패"),
+    COMPLETED("E", "완료")
     ;
 
     String value;
@@ -20,16 +19,16 @@ public enum SendTargetStatusEnum implements EnumMapperType {
 
     @Override
     public String code() {
-        return null;
+        return this.name();
     }
 
     @Override
     public String value() {
-        return null;
+        return this.value;
     }
 
     @Override
     public String description() {
-        return null;
+        return this.description;
     }
 }

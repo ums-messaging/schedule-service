@@ -2,23 +2,29 @@ package com.ums.schedule.application.target.reader;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.ums.schedule.application.ChannelFactory;
 import com.ums.schedule.application.target.upload.TargetDbUploadService;
 import com.ums.schedule.application.target.dto.SendTargetDto;
 import com.ums.schedule.application.target.dto.SendTargetRowDto;
+import com.ums.schedule.domain.target.event.TargetUploadCreatedEvent;
+import com.ums.schedule.domain.target.SendTarget;
 import com.ums.schedule.domain.target.upload.TargetUpload;
 
 import java.util.*;
 
 public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, String>> {
+    private final int BATCH_SIZE = 1000;
     private final List<SendTargetRowDto> targetList = new ArrayList<>();
-    private final TargetUpload targetUpload;
     private final TargetDbUploadService uploadService;
+    private final ChannelFactory factory;
+    private final TargetUploadCreatedEvent event;
 
     private Map<Integer, String> headMap;
 
-    public SendTargetReaderListener(TargetUpload targetUpload, TargetDbUploadService uploadService) {
+    public SendTargetReaderListener(ChannelFactory factory, TargetUploadCreatedEvent event, TargetDbUploadService uploadService) {
+        this.factory = factory;
+        this.event = event;
         this.uploadService = uploadService;
-        this.targetUpload = targetUpload;
     }
 
     @Override
@@ -28,9 +34,9 @@ public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, St
 
     @Override
     public void invoke(Map<Long, String> targetData, AnalysisContext context) {
-        SendTargetRowDto row = SendTargetRowDto.of(context.readRowHolder().getRowIndex(), headMap, targetData);
+        SendTargetRowDto row = SendTargetRowDto.of(context.readRowHolder().getRowIndex()+1, headMap, targetData);
         targetList.add(row);
-        if (targetList.size() % 10000 == 0) {
+        if (targetList.size() >= BATCH_SIZE) {
             uploadTargets();
         }
     }
@@ -41,14 +47,21 @@ public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, St
         if(!targetList.isEmpty()) {
             uploadTargets();
         }
-        targetUpload.completed();
     }
 
     private void uploadTargets() {
         List<SendTargetDto> dtos = targetList.stream()
-                .map(targetRow -> SendTargetDto.of(targetRow, targetUpload.getUploadId()))
+                .map(row -> SendTargetDto.of(row))
                 .toList();
-        uploadService.create(this.targetUpload.getSendRequest(), dtos);
+
+        List<SendTarget> targetList = factory.makeMessage(event.template(), dtos);
+        TargetUpload targetUpload = uploadService.create(event.uploadId(), targetList);
+
         this.targetList.clear();
+
+    }
+
+    public int getTotalCount() {
+        return 0;
     }
 }

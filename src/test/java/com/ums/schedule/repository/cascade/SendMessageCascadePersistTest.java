@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class SendMessageCascadePersistTest {
     @Autowired private ScheduleRepository scheduleRepository;
-    @Autowired private SendMessageRepository sendMessageRepository;
 //    @Autowired private EntityManager entityManager;
 
     @Test

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.ums.schedule.domain.schedule.code.ScheduleEnumMapper.SCHEDULE_TYPE;
+import static com.ums.schedule.code.schedule.ScheduleEnumMapper.SCHEDULE_TYPE;
 
 @Component
 @RequiredArgsConstructor

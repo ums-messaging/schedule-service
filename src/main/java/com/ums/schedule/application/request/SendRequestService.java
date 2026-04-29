@@ -1,40 +1,51 @@
 package com.ums.schedule.application.request;
 
+import com.ums.schedule.adapter.api.send.SendCreateRequest;
+import com.ums.schedule.application.schedule.ScheduleService;
+import com.ums.schedule.code.schedule.ScheduleTypeEnum;
+import com.ums.schedule.code.send.ChannelTypeEnum;
+import com.ums.schedule.domain.request.SendRequestEvent;
+import com.ums.schedule.domain.request.event.SendRequestedEvent;
+import com.ums.schedule.domain.request.CustomerRequestKey;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.request.SendRequestRepository;
-import com.ums.schedule.application.schedule.ScheduleService;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.application.target.upload.TargetUploadService;
-import com.ums.schedule.adapter.api.send.SendCreateRequest;
-import com.ums.schedule.domain.request.CustomerRequestKey;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
-
 
 @Component
 @RequiredArgsConstructor
 public class SendRequestService {
-    private final ScheduleService scheduleService;
+    private final ApplicationEventPublisher publisher;
     private final SendRequestRepository sendRequestRepository;
-    private final Map<String, TargetUploadService> targetUploadServiceMap;
+    private final ScheduleService scheduleService;
 
-    public SendRequest create(String customerId, SendCreateRequest command, SendRequest sendRequest) {
-        CustomerRequestKey key = CustomerRequestKey.of(customerId, command.customerSendRequestId());
-
+    public SendRequest createSendRequest(String customerId, ChannelTypeEnum channelType, SendCreateRequest command) {
         Schedule schedule = scheduleService.findScheduleById(command.scheduleId());
+        boolean exists = existsCustomerKey(customerId, command.customerSendRequestId());
+        CustomerRequestKey customerKey = CustomerRequestKey.of(customerId, command.customerSendRequestId(), exists);
 
-        sendRequest.applySchedule(schedule);
-        sendRequest.applyCustomerRequestKey(key, existsCustomerKey(customerId, command.customerSendRequestId()));
-        sendRequest.initRetryMaxCount(command.retryCnt());
-        sendRequest.setSenderAndTemplateKey(command.senderKey(), command.templateKey());
+        SendRequestEvent event = SendRequestEvent.of(schedule, customerKey, channelType);
+        SendRequest request = event.getSendRequest();
+        request.initRetryMaxCount(command.retryCnt());
+        request.setSenderAndTemplateKey(command.senderKey(), command.templateKey());
 
-        return sendRequest;
+        return request;
     }
-
 
     private boolean existsCustomerKey(String customerId, String customerRequestId) {
         return sendRequestRepository.existsByCustomerIdAAndCustomerRequestId(customerId, customerRequestId);
+    }
+
+    public void requestSendRequest(Long requestId) {
+        SendRequest request = sendRequestRepository.findById(requestId).orElseThrow();
+        SendRequestedEvent event = SendRequestedEvent.of(request);
+
+        Schedule schedule = request.getSchedule();
+        ScheduleTypeEnum scheduleType = schedule.getCyclePolicy().scheduleType();
+        if(scheduleType == ScheduleTypeEnum.REALTIME) {
+            publisher.publishEvent(event);
+        }
     }
 }

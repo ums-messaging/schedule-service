@@ -9,10 +9,7 @@ public interface ScheduleStatus {
     ScheduleStatus toInActive();
     ScheduleStatusEnum currentScheduleStatus();
 
-    default void validateCurrentStatus() {
-        if(currentScheduleStatus() != ScheduleStatusEnum.RUNNING) {
-            throw InvalidScheduleStatusException.of();
-        }
+    default boolean isRunning() {
+        return currentScheduleStatus() == ScheduleStatusEnum.RUNNING;
     }
-
 }

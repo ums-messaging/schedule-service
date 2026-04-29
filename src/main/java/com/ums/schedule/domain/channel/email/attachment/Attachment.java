@@ -33,7 +33,6 @@ public class Attachment {
     }
 
     public Attachment applySendTarget(SendTarget target) {
-        target.getAttachment().add(this);
         this.target = target;
         return this;
     }

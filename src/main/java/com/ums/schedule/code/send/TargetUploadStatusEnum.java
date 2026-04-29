@@ -3,12 +3,15 @@ package com.ums.schedule.code.send;
 import com.ums.schedule.code.EnumMapperType;
 
 public enum TargetUploadStatusEnum implements EnumMapperType  {
-    CREATED("CREATED", "PRESIGNED_URL 발급"),
-    UPLOAD("UPLOADED", "업로드 완료"),
+    CREATED("CREATED", "대상자 업로드 생성"),
+    PENDING("PENDING", "업로드 대기"),
+    REQUEST("REQUEST", "업로드 요청"),
+    UPLOAD("UPLOAD", "업로드 완료"),
     PARSING("PARSING", "대상자 처리 진행 중"),
-    COMPLETED("COMPLETED", "처리 완료"),
+    COMPLETED("COMPLETE", "처리 완료"),
     FAIL("FAIL", "처리 실패")
     ;
+
     String value;
     String description;
 

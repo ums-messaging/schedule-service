@@ -9,7 +9,7 @@ public enum SendRequestEnumMapper implements EnumMapper {
     TARGET_UPLOAD_TYPE(TargetUploadTypeEnum.class),
     TARGET_COLUMN(TargetColumnEnum.class),
     RESULT_CODE(ResultCodeEnum.class),
-    EVENT_TYPE(SendRequestEventEnum.class)
+    EVENT_TYPE(SendRequestEventTypeEnum.class)
     ;
 
     Class<? extends EnumMapperType> code;

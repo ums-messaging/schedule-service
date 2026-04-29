@@ -66,14 +66,8 @@ public class Schedule {
         return schedule;
     }
 
-    public void addSendRequestList(SendRequest sendRequest) {
-        validateSchedulePeriodAndStatus();
-        this.sendRequests.add(sendRequest);
-    }
-
-    private void validateSchedulePeriodAndStatus() {
-        this.scheduleStatus.validateCurrentStatus();
-        this.schedulePeriod.validateScheduleWindow();
+    public boolean availableSchedulePeriodAndStatus() {
+        return this.scheduleStatus.isRunning() && this.schedulePeriod.isScheduleWindow();
     }
 
     private void applyScheduleCyclePolicy(ScheduleCyclePolicy cyclePolicy) {
@@ -115,6 +109,11 @@ public class Schedule {
 
     public void toInActive() {
         ScheduleStatus status = this.scheduleStatus.toInActive();
+        changeScheduleStatus(status);
+    }
+
+    public void toActive() {
+        ScheduleStatus status = this.scheduleStatus.toActive();
         changeScheduleStatus(status);
     }
 }

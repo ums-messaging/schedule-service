@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DataJpaTest
 public class SendMessageEventLazyLoadingTest {
     @Autowired private ScheduleRepository scheduleRepository;
-    @Autowired private SendMessageRepository sendMessageRepository;
     @Autowired private EntityManager entityManager;
 
 //    @Test

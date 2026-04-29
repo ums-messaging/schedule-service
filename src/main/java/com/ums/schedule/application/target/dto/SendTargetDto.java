@@ -1,20 +1,20 @@
 package com.ums.schedule.application.target.dto;
 
 import com.ums.schedule.code.send.TargetColumnEnum;
+import com.ums.schedule.domain.channel.ChannelTemplate;
 
 import java.util.Map;
 
 public record SendTargetDto(
-        String uploadId,
         Map<TargetColumnEnum, String> targetData,
         Map<String, Object> dataParam
 ) {
 
-    public static SendTargetDto of(TargetDataTransfer targetDto, String uploadId) {
+    public static SendTargetDto of(TargetDataTransfer targetDto) {
         Map<TargetColumnEnum, String> targetData = targetDto.resolveTargetData();
         Map<String, Object> param = targetDto.extractMessageVariable();
-        SendTargetDto dto = new SendTargetDto(uploadId, targetData, param);
-        dto.putTargetData();
+        SendTargetDto dto = new SendTargetDto(targetData, param);
+//        dto.putTargetData();
         return dto;
     }
 

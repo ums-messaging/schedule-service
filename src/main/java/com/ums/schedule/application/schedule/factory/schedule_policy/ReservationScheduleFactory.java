@@ -5,8 +5,7 @@ import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.cycle_policy.ReservationPolicyValue;
 import com.ums.schedule.domain.schedule.cycle_policy.SchedulePolicyValue;
 
-import static com.ums.schedule.domain.schedule.code.ScheduleTypeEnum.RESERVATION;
-import static java.time.LocalDateTime.now;
+import static com.ums.schedule.code.schedule.ScheduleTypeEnum.RESERVATION;
 
 public class ReservationScheduleFactory implements SchedulePolicyFactory {
     @Override

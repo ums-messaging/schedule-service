@@ -38,10 +38,6 @@ public class EmailBody {
         this.securityPolicy = policy;
     }
 
-    public AttachmentDto toAttachmentDto(EmailContentResponse body) {
-        return this.convertType != ConvertTypeEnum.NONE ? null : AttachmentDto.of(body, convertType);
-    }
-
     public void writeTemplate(Template template) {
         this.template = template;
     }

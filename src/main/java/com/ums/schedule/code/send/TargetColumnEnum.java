@@ -24,7 +24,7 @@ public enum TargetColumnEnum implements EnumMapperType {
 
     @Override
     public String value() {
-        return this.value();
+        return this.value;
     }
 
     @Override

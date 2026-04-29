@@ -7,6 +7,8 @@ import com.ums.schedule.domain.schedule.status.ScheduleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.ums.schedule.code.schedule.ScheduleStatusEnum.ACTIVE;
+import static com.ums.schedule.code.schedule.ScheduleStatusEnum.RUNNING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

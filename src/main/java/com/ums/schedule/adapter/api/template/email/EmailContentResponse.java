@@ -3,6 +3,7 @@ package com.ums.schedule.adapter.api.template.email;
 
 import com.ums.schedule.domain.channel.email.attachment.AttachmentPolicy;
 import com.ums.schedule.domain.channel.email.attachment.FileMetaData;
+import com.ums.schedule.domain.channel.email.message.EmailBody;
 
 public record EmailContentResponse(
         String contentId,
@@ -25,5 +26,9 @@ public record EmailContentResponse(
 
     public AttachmentPolicy getAttachmentPolicy() {
         return AttachmentPolicy.of(this.attachmentName, this.downloadName);
+    }
+
+    public void getBody(EmailBody body) {
+
     }
 }
