@@ -75,9 +75,9 @@ public class CycleScheduleFactoryTest {
 
         ScheduleCyclePolicy result = factory.create(MONTH.value(), "3");
 
-        assertThat(result.scheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
-        assertThat(result.cycleCd()).isEqualTo(MONTH);
-        assertThat(result.policyValue().getCycleValue()).isEqualTo("3");
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
+        assertThat(result.getCycleCd()).isEqualTo(MONTH);
+        assertThat(result.getPolicyValue().getCycleValue()).isEqualTo("3");
     }
 
     @Test
@@ -90,9 +90,9 @@ public class CycleScheduleFactoryTest {
 
         ScheduleCyclePolicy result = factory.create(DAY.value(), "3");
 
-        assertThat(result.scheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
-        assertThat(result.cycleCd()).isEqualTo(DAY);
-        assertThat(result.policyValue().getCycleValue()).isEqualTo("3");
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
+        assertThat(result.getCycleCd()).isEqualTo(DAY);
+        assertThat(result.getPolicyValue().getCycleValue()).isEqualTo("3");
     }
 
     @Test
@@ -105,9 +105,9 @@ public class CycleScheduleFactoryTest {
 
         ScheduleCyclePolicy result = factory.create(MINUTE.value(), "3");
 
-        assertThat(result.scheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
-        assertThat(result.cycleCd()).isEqualTo(MINUTE);
-        assertThat(result.policyValue().getCycleValue()).isEqualTo("3");
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
+        assertThat(result.getCycleCd()).isEqualTo(MINUTE);
+        assertThat(result.getPolicyValue().getCycleValue()).isEqualTo("3");
     }
 
     @Test
@@ -120,9 +120,9 @@ public class CycleScheduleFactoryTest {
 
         ScheduleCyclePolicy result = factory.create(HOUR.value(), "3");
 
-        assertThat(result.scheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
-        assertThat(result.cycleCd()).isEqualTo(HOUR);
-        assertThat(result.policyValue().getCycleValue()).isEqualTo("3");
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
+        assertThat(result.getCycleCd()).isEqualTo(HOUR);
+        assertThat(result.getPolicyValue().getCycleValue()).isEqualTo("3");
     }
 
 

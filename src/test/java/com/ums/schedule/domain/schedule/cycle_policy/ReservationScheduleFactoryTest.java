@@ -36,9 +36,9 @@ class ReservationScheduleFactoryTest {
         ScheduleCyclePolicy result = factory.create(null, format);
 
         // then
-        assertThat(result.scheduleType()).isEqualTo(ScheduleTypeEnum.RESERVATION);
-        assertThat(result.cycleCd()).isEqualTo(CycleCdEnum.ONCE);
-        assertThat(result.policyValue().getCycleValue()).isEqualTo(format);
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.RESERVATION);
+        assertThat(result.getCycleCd()).isEqualTo(CycleCdEnum.ONCE);
+        assertThat(result.getPolicyValue().getCycleValue()).isEqualTo(format);
     }
 
 }

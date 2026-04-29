@@ -28,7 +28,7 @@ class RealtimeScheduleFactoryTest {
         ScheduleCyclePolicy policy = cyclePolicy.create(null, null);
 
         // Then
-        assertThat(policy.cycleCd()).isEqualTo(CycleCdEnum.ALWAYS);
-        assertThat(policy.scheduleType()).isEqualTo(ScheduleTypeEnum.REALTIME);
+        assertThat(policy.getCycleCd()).isEqualTo(CycleCdEnum.ALWAYS);
+        assertThat(policy.getScheduleType()).isEqualTo(ScheduleTypeEnum.REALTIME);
     }
 }
