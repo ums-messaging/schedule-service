@@ -27,6 +27,5 @@ public class ScheduleRestrictPolicy {
 
     public void applySchedule(Schedule schedule) {
         this.schedule = schedule;
-        this.schedule.getRestrictPolicies().add(this);
     }
 }

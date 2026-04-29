@@ -5,8 +5,7 @@ import com.ums.schedule.code.send.TargetColumnEnum;
 import com.ums.schedule.domain.channel.email.message.EmailBody;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.target.upload.TargetUpload;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +14,15 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class EmailSendRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
     @MapsId
     @OneToOne
     private SendRequest sendRequest;
+    @Transient
     private EmailBody body;
     private String mailFrom;
     private String mailFromName;

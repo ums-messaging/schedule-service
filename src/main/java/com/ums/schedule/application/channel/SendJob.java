@@ -15,7 +15,7 @@ public record SendJob(
         return new SendJob(
                 request.getId(),
                 request.getChannelType(),
-                request.getSchedule().getCyclePolicy().scheduleType(),
+                request.getSchedule().getCyclePolicy().getScheduleType(),
                 request.getChannelType().value()
         );
     }

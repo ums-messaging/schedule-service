@@ -16,7 +16,7 @@ public record SendRequestedEvent(
         return new SendRequestedEvent(
                 request.getId(),
                 request.getChannelType(),
-                request.getSchedule().getCyclePolicy().scheduleType()
+                request.getSchedule().getCyclePolicy().getScheduleType()
         );
     }
 

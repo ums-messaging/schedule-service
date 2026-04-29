@@ -4,6 +4,7 @@ import com.ums.schedule.code.schedule.ScheduleStatusEnum;
 import com.ums.schedule.code.schedule.ScheduleTypeEnum;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
+import com.ums.schedule.domain.schedule.exception.ScheduleNameRequiredException;
 import com.ums.schedule.domain.schedule.restrict.ScheduleRestrictPolicy;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.schedule.period.SchedulePeriod;
@@ -13,6 +14,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,10 +45,6 @@ public class Schedule {
     @Embedded
     private SchedulePeriod schedulePeriod;
 
-    @Getter
-    @OneToMany(mappedBy = "schedule", cascade = { CascadeType.PERSIST})
-    private List<ScheduleRestrictPolicy> restrictPolicies = new ArrayList<>();
-
     @Transient
     private ScheduleStatus scheduleStatus;
 
@@ -55,6 +53,9 @@ public class Schedule {
     private List<SendRequest> sendRequests = new ArrayList<>();
 
     private Schedule(String scheduleName) {
+        if(!StringUtils.hasText(scheduleName.trim())) {
+            throw ScheduleNameRequiredException.of();
+        }
         this.name = scheduleName;
     }
 
@@ -76,7 +77,7 @@ public class Schedule {
     }
 
     private void validateSchedulePeriodToReservationDate(ScheduleCyclePolicy cyclePolicy) {
-        if(cyclePolicy.scheduleType() == ScheduleTypeEnum.RESERVATION) {
+        if(cyclePolicy.getScheduleType() == ScheduleTypeEnum.RESERVATION) {
             LocalDateTime reservationDate = getParseReservationDate(cyclePolicy);
             if(compareTo(reservationDate)) {
                 throw InvalidCycleValueException.compareToReservationDate();
@@ -86,7 +87,7 @@ public class Schedule {
 
     private LocalDateTime getParseReservationDate(ScheduleCyclePolicy cyclePolicy) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss");
-        return LocalDateTime.parse(cyclePolicy.policyValue().getCycleValue(), formatter);
+        return LocalDateTime.parse(cyclePolicy.getPolicyValue().getCycleValue(), formatter);
     }
 
     private boolean compareTo(LocalDateTime reservationDate) {

@@ -19,7 +19,6 @@ public class CyclePolicyValue implements SchedulePolicyValue {
         this.cycle = cycle;
     }
 
-
     @Override
     public ScheduleTypeEnum getScheduleType() {
         return ScheduleTypeEnum.CYCLE;

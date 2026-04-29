@@ -1,6 +1,7 @@
 package com.ums.schedule.application.schedule.factory.schedule_policy;
 
 import com.ums.schedule.code.EnumMapperValue;
+import com.ums.schedule.domain.schedule.cycle_policy.CyclePolicyValue;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 
 import static com.ums.schedule.code.schedule.CycleCdEnum.ALWAYS;
@@ -15,6 +16,6 @@ public class RealtimeScheduleFactory implements SchedulePolicyFactory {
 
     @Override
     public ScheduleCyclePolicy create(String cycleCd, String cycleValue) {
-        return new ScheduleCyclePolicy(REALTIME, ALWAYS, null);
+        return ScheduleCyclePolicy.realtimeOf();
     }
 }

@@ -35,15 +35,17 @@ public class SendRequestService {
     }
 
     private boolean existsCustomerKey(String customerId, String customerRequestId) {
-        return sendRequestRepository.existsByCustomerIdAAndCustomerRequestId(customerId, customerRequestId);
+//        return sendRequestRepository.existsByCustomerIdAAndCustomerRequestId(customerId, customerRequestId);
+        return false;
     }
+
 
     public void requestSendRequest(Long requestId) {
         SendRequest request = sendRequestRepository.findById(requestId).orElseThrow();
         SendRequestedEvent event = SendRequestedEvent.of(request);
 
         Schedule schedule = request.getSchedule();
-        ScheduleTypeEnum scheduleType = schedule.getCyclePolicy().scheduleType();
+        ScheduleTypeEnum scheduleType = schedule.getCyclePolicy().getScheduleType();
         if(scheduleType == ScheduleTypeEnum.REALTIME) {
             publisher.publishEvent(event);
         }
