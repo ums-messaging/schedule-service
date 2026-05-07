@@ -24,7 +24,7 @@ public class SendRequestDomainFixture {
     }
     public static SendRequest createSendRequest(Schedule schedule) {
         CustomerRequestKey key = CustomerRequestKey.of(UUID.randomUUID().toString(), UUID.randomUUID().toString(), false);
-        SendRequest request = SendRequest.of(schedule, key, ChannelTypeEnum.EMAIL);
+        SendRequest request = SendRequestTestBuilder.builder().build();
         request.setSenderAndTemplateKey("senderKey", "templateKey");
         request.initRetryMaxCount(3);
         return request;

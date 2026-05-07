@@ -32,16 +32,15 @@ public class SendRequestService {
     public SendRequest createSendRequest(String customerId, ChannelTypeEnum channelType, SendCreateRequest request) {
         Schedule schedule = scheduleService.findScheduleById(request.scheduleId());
         boolean exists = existsCustomerKey(customerId, request.customerSendRequestId());
-        CustomerRequestKey customerKey = CustomerRequestKey.of(customerId, request.customerSendRequestId(), exists);
         EnumMapperValue channelTypeValue = EnumMapperValue.fromEnumMapperType(channelType);
         EnumMapperValue uploadTypeValue = factory.findEnumMapperValue(SendRequestEnumMapper.TARGET_UPLOAD_TYPE, request.uploadType());
 
-        Map<EnumMapper, EnumMapperValue> mapperValue = Map.of(SendRequestEnumMapper.CHANNEL_TYPE, channelTypeValue, SendRequestEnumMapper.TARGET_UPLOAD_TYPE, uploadTypeValue);
-        SendRequestCommand command = SendRequestCommand.of(schedule, customerKey, mapperValue, request);
-        SendRequestEvent event = SendRequestEvent.of(command);
-        SendRequest sendRequest = event.getSendRequest();
+//        Map<EnumMapper, EnumMapperValue> mapperValue = Map.of(SendRequestEnumMapper.CHANNEL_TYPE, channelTypeValue, SendRequestEnumMapper.TARGET_UPLOAD_TYPE, uploadTypeValue);
+//        SendRequestCommand command = SendRequestCommand.of(schedule, customerKey, mapperValue, request);
+//        SendRequestEvent event = SendRequestEvent.of(command);
+//        SendRequest sendRequest = SendRequest.of(command);
 
-        return sendRequest;
+        return null;
     }
 
 

@@ -1,8 +1,11 @@
 package com.ums.schedule.repository.constraint.channel;
 
 import com.ums.schedule.domain.channel.email.EmailSendRequest;
+import com.ums.schedule.domain.channel.email.EmailSendRequestTestBuilder;
 import com.ums.schedule.domain.channel.email.message.EmailBody;
+import com.ums.schedule.domain.channel.email.message.EmailBodyTestBuilder;
 import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import com.ums.schedule.domain.target.upload.TargetUpload;
@@ -17,7 +20,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.UUID;
 
@@ -27,30 +29,29 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class EmailSendRequestNotNullConstraintTest {
     private static final String ERROR_MESSAGE = DbErrorMessage.NOT_NULL_CONSTRAINT.getMessage();
     @Autowired private EntityManager entityManager;
-    private Long scheduleId;
+    private Long requestId;
 
     @BeforeEach
     void setUp() {
         Schedule schedule = ScheduleTestBuilder.builder().build();
+        SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
         entityManager.persist(schedule);
+        entityManager.persist(sendRequest);
         entityManager.flush();
 
-        this.scheduleId = schedule.getId();
+        this.requestId = sendRequest.getId();
         entityManager.clear();
     }
 
     @Test
     @DisplayName("mail_from은 NULL을 허용하지 않는다.")
     void shouldThrowException_whenMailFromIsNull() {
-        Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest sendRequest = SendRequestDomainFixture.createSendRequest(schedule);
-        TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload(sendRequest);
-        EmailSendRequest emailSendRequest = EmailSendRequest.of(EmailBody.of(), targetUpload);
-        init(emailSendRequest);
+        SendRequest sendRequest = entityManager.find(SendRequest.class, requestId);
+        EmailSendRequest emailSendRequest = EmailSendRequestTestBuilder.builder()
+                .sendRequest(sendRequest)
+                .mailFrom(null).build();
 
         EmailSendRequestField field = EmailSendRequestField.MAIL_FROM;
-
-        ReflectionTestUtils.setField(emailSendRequest, field.value(), null);
 
         entityManager.persist(emailSendRequest);
 
@@ -64,15 +65,12 @@ public class EmailSendRequestNotNullConstraintTest {
     @Test
     @DisplayName("mail_from_name은 NULL을 허용하지 않는다.")
     void shouldThrowException_whenMailFromNameIsNull() {
-        Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest sendRequest = SendRequestDomainFixture.createSendRequest(schedule);
-        TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload(sendRequest);
-        EmailSendRequest emailSendRequest = EmailSendRequest.of(EmailBody.of(), targetUpload);
-        init(emailSendRequest);
+        SendRequest sendRequest = entityManager.find(SendRequest.class, requestId);
+        EmailSendRequest emailSendRequest = EmailSendRequestTestBuilder.builder()
+                .sendRequest(sendRequest)
+                .mailFromName(null).build();
 
         EmailSendRequestField field = EmailSendRequestField.MAIL_FROM_NAME;
-
-        ReflectionTestUtils.setField(emailSendRequest, field.value(), null);
 
         entityManager.persist(emailSendRequest);
 
@@ -85,15 +83,14 @@ public class EmailSendRequestNotNullConstraintTest {
     @Test
     @DisplayName("email_template_key는 NULL을 허용하지 않는다.")
     void shouldThrowException_whenEmailTemplateKeyIsNull() {
-        Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest sendRequest = SendRequestDomainFixture.createSendRequest(schedule);
-        TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload(sendRequest);
-        EmailSendRequest emailSendRequest = EmailSendRequest.of(EmailBody.of(), targetUpload);
-        init(emailSendRequest);
+        SendRequest sendRequest = entityManager.find(SendRequest.class, requestId);
+        EmailSendRequest emailSendRequest = EmailSendRequestTestBuilder.builder()
+                .sendRequest(sendRequest)
+                .emailTemplateKey(null)
+                .build();
 
         EmailSendRequestField field = EmailSendRequestField.EMAIL_TEMPLATE_KEY;
 
-        ReflectionTestUtils.setField(emailSendRequest, field.value(), null);
 
         entityManager.persist(emailSendRequest);
 
@@ -105,18 +102,14 @@ public class EmailSendRequestNotNullConstraintTest {
     @Test
     @DisplayName("convert_type은 NULL을 허용하지 않는다.")
     void shouldThrowException_whenConvertTypeIsNull() {
-        Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest sendRequest = SendRequestDomainFixture.createSendRequest(schedule);
-        TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload(sendRequest);
-        EmailSendRequest emailSendRequest = EmailSendRequest.of(EmailBody.of(), targetUpload);
-        init(emailSendRequest);
+        SendRequest sendRequest = entityManager.find(SendRequest.class, requestId);
+        EmailBody body = EmailBodyTestBuilder.builder().convertType(null).build();
+        EmailSendRequest emailSendRequest = EmailSendRequestTestBuilder.builder()
+                .sendRequest(sendRequest)
+                .emailBody(body)
+                .build();
 
         EmailSendRequestField field = EmailSendRequestField.CONVERT_TYPE;
-        EmailBody body = EmailBody.of();
-
-        ReflectionTestUtils.setField(body, field.value(), null);
-        ReflectionTestUtils.setField(emailSendRequest, EmailSendRequestField.EMAIL_BODY.value(), body);
-
 
         entityManager.persist(emailSendRequest);
 
@@ -124,10 +117,4 @@ public class EmailSendRequestNotNullConstraintTest {
                 .isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContainingAll(ERROR_MESSAGE, field.name());
     }
-
-    private void init(EmailSendRequest emailSendRequest) {
-        emailSendRequest.applyTemplateKey(UUID.randomUUID().toString());
-        emailSendRequest.applyMailFrom("jang314@naver.com", "jang");
-    }
-
 }

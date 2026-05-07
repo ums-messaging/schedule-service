@@ -37,20 +37,20 @@ public class EmailSendRequest {
     @Column(name = "email_template_key", nullable = false)
     private String emailTemplateKey;
 
-    public static EmailSendRequest of(EmailBody body, TargetUpload targetUpload) {
-        EmailSendRequest request = new EmailSendRequest();
-        request.setEmailBody(body);
-        request.setSendRequest(targetUpload.getSendRequest());
-        return request;
+    public static EmailSendRequest of(EmailBody body, SendRequest request) {
+        EmailSendRequest emailSendRequest = new EmailSendRequest();
+        emailSendRequest.setEmailBody(body);
+        return emailSendRequest;
+    }
+
+    public void setEmailBody(EmailBody body) {
+        this.body = body;
     }
 
     private void setSendRequest(SendRequest sendRequest) {
         this.sendRequest = sendRequest;
     }
 
-    private void setEmailBody(EmailBody body) {
-        this.body = body;
-    }
 
     public void applyTemplateKey(String key) {
         this.emailTemplateKey = key;

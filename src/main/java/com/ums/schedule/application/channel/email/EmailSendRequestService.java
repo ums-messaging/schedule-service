@@ -23,7 +23,7 @@ public class EmailSendRequestService  {
     public EmailSendRequest create(String customerId, EmailSendCreateRequest command) {
         EmailBody emailBody = assembler.createEmailBody(command);
         TargetUpload targetUpload = targetUploadService.create(customerId, ChannelTypeEnum.EMAIL, command.sendRequest());
-        EmailSendRequest request = EmailSendRequest.of(emailBody, targetUpload);
+        EmailSendRequest request = null;
         return repository.save(request);
     }
 }

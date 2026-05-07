@@ -51,16 +51,6 @@ public class SendRequestEvent {
 
     private LocalDateTime issuedAt;
 
-    public static SendRequestEvent of(SendRequestCommand command) {
-        SendRequestEvent requestEvent = new SendRequestEvent(REQUEST_CREATED);
-        ChannelTypeEnum channelType = ChannelTypeEnum.valueOf(command.channel().code());
-        TargetUploadTypeEnum uploadType = TargetUploadTypeEnum.valueOf(command.uploadType().code());
-        SendRequest request = SendRequest.of(command.schedule(), command.customerRequestKey(), channelType);
-        TargetUpload.of(uploadType, request);
-        requestEvent.applySendRequest(request);
-        return requestEvent;
-    }
-
     public static SendRequestEvent of(SendRequest sendRequest, SendEvent sendEvent) {
         SendRequestEvent event = new SendRequestEvent(sendEvent.getEventType());
         sendRequest.onEvent(event);

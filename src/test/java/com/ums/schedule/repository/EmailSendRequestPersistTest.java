@@ -31,7 +31,6 @@ public class EmailSendRequestPersistTest {
         Schedule schedule = ScheduleTestBuilder.builder().build();
 
         entityManager.persist(schedule);
-
         entityManager.flush();
         scheduleId = schedule.getId();
 

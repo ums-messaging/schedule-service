@@ -1,5 +1,7 @@
 package com.ums.schedule.domain.request;
 
+import com.ums.schedule.application.request.dto.SendRequestCommand;
+import com.ums.schedule.code.EnumMapperValue;
 import com.ums.schedule.code.send.*;
 import com.ums.schedule.domain.request.exception.InvalidScheduleException;
 import com.ums.schedule.domain.request.state.SendRequestCreateState;
@@ -72,21 +74,21 @@ public class SendRequest {
     @OneToMany(mappedBy = "sendRequest")
     private List<TargetUpload> targetUploadList = new ArrayList<>();
 
-    public static SendRequest of(Schedule schedule, CustomerRequestKey key, ChannelTypeEnum channelType) {
+    public static SendRequest of(Schedule schedule, SendRequestCommand command) {
         SendRequest request = new SendRequest();
         request.applySchedule(schedule);
-        request.applyCustomerRequestKey(key);
-        request.setChannelType(channelType);
+        request.applyCustomerRequestKey(command.customerId(), command.customerKey(), command.existsKey());
+        request.setChannelType(command.channel());
         request.changeStatus(new SendRequestCreateState());
         return request;
     }
 
-    private void setChannelType(ChannelTypeEnum channelType) {
-        this.channelType = channelType;
+    private void setChannelType(EnumMapperValue channelType) {
+        this.channelType = ChannelTypeEnum.valueOf(channelType.code());
     }
 
-    public void applyCustomerRequestKey(CustomerRequestKey customerRequestKey) {
-        this.customerRequestKey = customerRequestKey;
+    public void applyCustomerRequestKey(String customerId, String customerKey, boolean exists) {
+        this.customerRequestKey = CustomerRequestKey.of(customerId, customerKey, exists);
     }
 
     public void setSenderAndTemplateKey(String senderKey, String templateKey) {

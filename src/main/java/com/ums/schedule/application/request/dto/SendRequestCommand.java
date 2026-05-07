@@ -13,13 +13,17 @@ public record SendRequestCommand(
         Schedule schedule,
         EnumMapperValue channel,
         EnumMapperValue uploadType,
-        CustomerRequestKey customerRequestKey
+        String customerKey,
+        String customerId,
+        boolean existsKey
 ) {
     public static SendRequestCommand of(Schedule schedule, CustomerRequestKey customerRequestKey, Map<EnumMapper, EnumMapperValue> mapperValueMap, SendCreateRequest request) {
         return new SendRequestCommand(schedule,
                 mapperValueMap.get(SendRequestEnumMapper.CHANNEL_TYPE),
                 mapperValueMap.get(SendRequestEnumMapper.TARGET_UPLOAD_TYPE),
-                customerRequestKey
+                customerRequestKey.getCustomerId(),
+                customerRequestKey.getCustomerRequestId(),
+                false
         );
 
     }

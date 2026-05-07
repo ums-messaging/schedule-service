@@ -26,8 +26,9 @@ public class TargetUploadDomainFixture {
     public static TargetUpload createTargetUpload(TargetUploadTypeEnum targetUploadType){
         Schedule schedule = ScheduleDomainFixture.createSchedule();
         schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
-        SendRequest request = SendRequest.of(schedule, null, ChannelTypeEnum.EMAIL);
-        return TargetUpload.of(targetUploadType, request);
+//        SendRequest request = SendRequest.of(schedule, null, ChannelTypeEnum.EMAIL);
+//        return TargetUpload.of(targetUploadType, request);
+        return null;
     }
 
     public static TargetUpload createTargetUpload(){

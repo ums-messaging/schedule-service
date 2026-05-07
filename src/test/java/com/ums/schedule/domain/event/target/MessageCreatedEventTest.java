@@ -7,6 +7,7 @@ import com.ums.schedule.code.send.ChannelTypeEnum;
 import com.ums.schedule.code.send.TargetUploadStatusEnum;
 import com.ums.schedule.code.send.TargetUploadTypeEnum;
 import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import com.ums.schedule.domain.schedule.cycle_policy.CyclePolicyValue;
@@ -28,8 +29,7 @@ class MessageCreatedEventTest {
     @Test
     @DisplayName("TargetUpload의 상태가 REQUEST일 때, MessageCreatedEvent가 발행되면, TargetUpload의 상태는 PARSING이 반환된다.")
     void shouldReturnTargetUploadStateIsRequest_whenTargetUploadStateIsPending() {
-        Schedule schedule = createSchedule();
-        SendRequest request = SendRequest.of(schedule, null, ChannelTypeEnum.EMAIL);
+        SendRequest request = SendRequestTestBuilder.builder().build();
         TargetUpload targetUpload = TargetUpload.of(TargetUploadTypeEnum.JSON, request);
 
 
@@ -39,26 +39,10 @@ class MessageCreatedEventTest {
         assertThat(targetUpload.getStatus()).isEqualTo(TargetUploadStatusEnum.PARSING);
     }
 
-    private Schedule createSchedule() {
-        LocalDateTime startDt = LocalDateTime.now();
-        LocalDateTime endDt = LocalDateTime.now().plusMonths(1);
-
-        SchedulePeriod period = SchedulePeriodTestBuilder.builder().build();
-        ScheduleCyclePolicy cyclePolicy = ScheduleCyclePolicy.of(CyclePolicyValue.of(CycleCdEnum.ALWAYS, 0));
-        ScheduleCreateRequest request = new ScheduleCreateRequest("schedule", "REALTIME", null, null,
-                startDt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                endDt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        );
-        Schedule schedule = ScheduleTestBuilder.builder().build();
-        schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
-        return schedule;
-    }
-
     @Test
     @DisplayName("TargetUpload의 상태가 CREATE일 때, MessageCreateEvent가 발행되면, 익셉션이 발생한다.")
     void shouldThrowException_whenTargetUploadStateIsCreate() {
-        Schedule schedule = createSchedule();
-        SendRequest request = SendRequest.of(schedule, null, ChannelTypeEnum.EMAIL);
+        SendRequest request = SendRequestTestBuilder.builder().build();
         TargetUpload targetUpload = TargetUpload.of(TargetUploadTypeEnum.JSON, request);
 
         // when
