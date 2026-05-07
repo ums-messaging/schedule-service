@@ -1,9 +1,11 @@
 package com.ums.schedule.fixture;
 
 import com.ums.schedule.domain.schedule.Schedule;
+import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import com.ums.schedule.domain.schedule.cycle_policy.ReservationPolicyValue;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.period.SchedulePeriod;
+import com.ums.schedule.domain.schedule.period.SchedulePeriodTestBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,9 +13,9 @@ import java.time.format.DateTimeFormatter;
 public class ScheduleDomainFixture {
 
     public static Schedule createSchedule() {
-        SchedulePeriod period = ScheduleDomainFixture.createSchedulePeriod();
+        SchedulePeriod period = SchedulePeriodTestBuilder.builder().build();
         ScheduleCyclePolicy policy = ScheduleDomainFixture.createReservationSchedulePolicy();
-        return Schedule.of("schedule", period, policy);
+        return ScheduleTestBuilder.builder().build();
     }
 
     public static ScheduleCyclePolicy createReservationSchedulePolicy() {
@@ -24,9 +26,4 @@ public class ScheduleDomainFixture {
         return ScheduleCyclePolicy.of(policyValue);
     }
 
-    public static SchedulePeriod createSchedulePeriod() {
-        LocalDateTime startAt = LocalDateTime.now();
-        LocalDateTime endAt = startAt.plusMonths(3);
-        return SchedulePeriod.of(startAt, endAt);
-    }
 }

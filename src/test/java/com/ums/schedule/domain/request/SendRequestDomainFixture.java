@@ -2,6 +2,7 @@ package com.ums.schedule.domain.request;
 
 import com.ums.schedule.adapter.api.schedule.ScheduleCreateRequest;
 import com.ums.schedule.code.schedule.CycleCdEnum;
+import com.ums.schedule.code.schedule.ScheduleEventEnum;
 import com.ums.schedule.code.send.ChannelTypeEnum;
 import com.ums.schedule.domain.request.CustomerRequestKey;
 import com.ums.schedule.domain.request.SendRequest;
@@ -18,7 +19,7 @@ import java.util.UUID;
 public class SendRequestDomainFixture {
     public static SendRequest createSendRequest() {
         Schedule schedule = ScheduleDomainFixture.createSchedule();
-        schedule.toRunning();
+        schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
         return createSendRequest(schedule);
     }
     public static SendRequest createSendRequest(Schedule schedule) {

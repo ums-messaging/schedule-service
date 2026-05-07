@@ -1,17 +1,16 @@
 package com.ums.schedule.domain.schedule;
 
-import com.ums.schedule.application.schedule.factory.cycle_policy.CyclePolicy;
+import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
+import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
 import com.ums.schedule.code.schedule.ScheduleStatusEnum;
-import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.period.SchedulePeriod;
 import com.ums.schedule.domain.schedule.period.SchedulePeriodTestBuilder;
-import com.ums.schedule.domain.schedule.status.ScheduleRunningStatus;
-import com.ums.schedule.domain.schedule.status.ScheduleStatus;
+import com.ums.schedule.domain.state.schedule.ScheduleRunningStatus;
+import com.ums.schedule.domain.state.schedule.ScheduleStatus;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class ScheduleTestBuilder {
@@ -20,7 +19,6 @@ public class ScheduleTestBuilder {
     private ScheduleStatus scheduleStatus = new ScheduleRunningStatus();
     private ScheduleStatusEnum status = ScheduleStatusEnum.RUNNING;
     private SchedulePeriod schedulePeriod = SchedulePeriodTestBuilder.builder().build();
-    private List<SendRequest> sendRequests = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
     private String createdBy = UUID.randomUUID().toString();
@@ -41,7 +39,7 @@ public class ScheduleTestBuilder {
 
     public ScheduleTestBuilder status(ScheduleStatus status) {
         this.scheduleStatus = status;
-        this.status = (scheduleStatus != null) ? status.currentScheduleStatus() : null;
+        this.status = (scheduleStatus != null) ? status.getCurrentCode() : null;
         return this;
     }
 
@@ -73,10 +71,23 @@ public class ScheduleTestBuilder {
                 scheduleStatus,
                 status,
                 schedulePeriod,
-                sendRequests,
                 createdAt,
                 lastUpdatedAt,
                 createdBy
         );
+    }
+
+    public ScheduleCreateCommand toCommand() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return new ScheduleCreateCommand(
+                this.name,
+                this.schedulePeriod.getScheduleStartAt().format(formatter),
+                this.schedulePeriod.getScheduleEndAt().format(formatter),
+                this.createdBy
+        );
+    }
+
+    public ScheduleUpdateCommand toUpdateCommand() {
+        return new ScheduleUpdateCommand(this.name);
     }
 }

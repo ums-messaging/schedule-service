@@ -1,9 +1,11 @@
-package com.ums.schedule.intergration.schedule_status;
+package com.ums.schedule.domain.schedule.status;
 
+import com.ums.schedule.code.schedule.ScheduleEventEnum;
 import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
-import com.ums.schedule.domain.schedule.status.ScheduleActiveStatus;
-import com.ums.schedule.domain.schedule.status.ScheduleRunningStatus;
-import com.ums.schedule.domain.schedule.status.ScheduleStatus;
+import com.ums.schedule.domain.state.StatusState;
+import com.ums.schedule.domain.state.schedule.ScheduleActiveStatus;
+import com.ums.schedule.domain.state.schedule.ScheduleRunningStatus;
+import com.ums.schedule.domain.state.schedule.ScheduleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,10 +22,10 @@ class ScheduleRunningTest {
         ScheduleStatus status = new ScheduleActiveStatus();
 
         // When
-        ScheduleStatus toStatus = status.toRunning();
+        StatusState toStatus = status.onEvent(ScheduleEventEnum.TO_RUNNING);
 
         // Then
-        assertThat(toStatus.currentScheduleStatus()).isEqualTo(RUNNING);
+        assertThat(toStatus.getCurrentCode()).isEqualTo(RUNNING);
     }
 
     @Test
@@ -33,7 +35,7 @@ class ScheduleRunningTest {
         ScheduleStatus status = new ScheduleRunningStatus();
 
         // Then
-        assertThatThrownBy(() -> status.toRunning())
+        assertThatThrownBy(() -> status.onEvent(ScheduleEventEnum.TO_RUNNING))
                 .isInstanceOf(InvalidScheduleStatusException.class);
     }
 
@@ -43,16 +45,16 @@ class ScheduleRunningTest {
     void shouldReturnRunningToActive() {
         ScheduleStatus status = new ScheduleRunningStatus();
 
-        ScheduleActiveStatus toStatus = status.toActive();
+        StatusState toStatus = status.onEvent(ScheduleEventEnum.TO_ACTIVE);
 
-        assertThat(toStatus.currentScheduleStatus()).isEqualTo(ACTIVE);
+        assertThat(toStatus.getCurrentCode()).isEqualTo(ACTIVE);
     }
 
     @Test
     @DisplayName("Running 상태에서 INACTIVE 상태로 변경 불가하다.")
     void shouldRejectRunningToInactive() {
         ScheduleStatus status = new ScheduleRunningStatus();
-        assertThatThrownBy(() -> status.toInActive())
+        assertThatThrownBy(() -> status.onEvent(ScheduleEventEnum.TO_INACTIVE))
                 .isInstanceOf(InvalidScheduleStatusException.class);
     }
 

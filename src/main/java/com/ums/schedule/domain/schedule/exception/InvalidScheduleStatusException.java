@@ -11,7 +11,11 @@ public class InvalidScheduleStatusException  extends  ScheduleDomainException {
         return new InvalidScheduleStatusException(message);
     }
 
-    public static InvalidScheduleStatusException of() {
+    public static InvalidScheduleStatusException notRunning() {
         return new InvalidScheduleStatusException("실행 중인 스케쥴이 아닙니다.");
+    }
+
+    public static InvalidScheduleStatusException invalidStatus() {
+        return new InvalidScheduleStatusException("실행 중인 상태에서는 변경할 수 없습니다.");
     }
 }

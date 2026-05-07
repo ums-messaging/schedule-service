@@ -7,9 +7,11 @@ import com.ums.schedule.domain.request.exception.InvalidScheduleException;
 import com.ums.schedule.domain.request.state.SendRequestCreateState;
 import com.ums.schedule.domain.request.state.SendRequestState;
 import com.ums.schedule.domain.schedule.Schedule;
+import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import com.ums.schedule.domain.schedule.cycle_policy.CyclePolicyValue;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.period.SchedulePeriod;
+import com.ums.schedule.domain.schedule.period.SchedulePeriodTestBuilder;
 import com.ums.schedule.fixture.ScheduleDomainFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,12 +52,12 @@ class SendRequestTest {
     void shouldThrowException_whenTodayDoesNotContainInSchedulePeriod() {
         LocalDateTime startDtm = LocalDateTime.now().plusDays(1);
         LocalDateTime endDtm = startDtm.plusMonths(1);
-        SchedulePeriod schedulePeriod = SchedulePeriod.of(startDtm, endDtm);
+        SchedulePeriod schedulePeriod = SchedulePeriodTestBuilder.builder().build();
 
         ScheduleCyclePolicy cyclePolicy = ScheduleCyclePolicy.of(CyclePolicyValue.of(CycleCdEnum.ALWAYS, 0));
         CustomerRequestKey key = CustomerRequestKey.of(UUID.randomUUID().toString(), UUID.randomUUID().toString(), false);
 
-        Schedule given = Schedule.of("Schedule", schedulePeriod, cyclePolicy);
+        Schedule given = ScheduleTestBuilder.builder().build();
 
         InvalidScheduleException expect = InvalidScheduleException.invalidSchedule();
 

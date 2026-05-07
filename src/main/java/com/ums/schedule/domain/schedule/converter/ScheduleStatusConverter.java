@@ -1,11 +1,11 @@
 package com.ums.schedule.domain.schedule.converter;
 
-import com.ums.schedule.code.EnumMapperConverter;
 import com.ums.schedule.code.schedule.ScheduleStatusEnum;
+import com.ums.schedule.domain.state.StatusStateConverter;
 import jakarta.persistence.Converter;
 
 @Converter
-public class ScheduleStatusConverter extends EnumMapperConverter  {
+public class ScheduleStatusConverter extends StatusStateConverter {
     public ScheduleStatusConverter() {
         super(ScheduleStatusEnum.class);
     }

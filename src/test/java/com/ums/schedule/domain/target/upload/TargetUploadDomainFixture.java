@@ -3,6 +3,7 @@ package com.ums.schedule.domain.target.upload;
 import com.ums.schedule.adapter.api.schedule.ScheduleCreateRequest;
 import com.ums.schedule.application.target.dto.TargetDataTransfer;
 import com.ums.schedule.code.schedule.CycleCdEnum;
+import com.ums.schedule.code.schedule.ScheduleEventEnum;
 import com.ums.schedule.code.send.ChannelTypeEnum;
 import com.ums.schedule.code.send.TargetColumnEnum;
 import com.ums.schedule.code.send.TargetUploadTypeEnum;
@@ -21,24 +22,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TargetUploadDomainFixture {
-    private static Schedule createSchedule() {
-        LocalDateTime startDt = LocalDateTime.now();
-        LocalDateTime endDt = LocalDateTime.now().plusMonths(1);
-
-        SchedulePeriod period = SchedulePeriod.of(startDt, endDt);
-        ScheduleCyclePolicy cyclePolicy = ScheduleCyclePolicy.of(CyclePolicyValue.of(CycleCdEnum.ALWAYS, 0));
-        ScheduleCreateRequest request = new ScheduleCreateRequest("schedule", "REALTIME", null, null,
-                startDt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                endDt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        );
-        Schedule schedule = Schedule.of(request.scheduleName(), period, cyclePolicy);
-        schedule.toRunning();
-        return schedule;
-    }
 
     public static TargetUpload createTargetUpload(TargetUploadTypeEnum targetUploadType){
         Schedule schedule = ScheduleDomainFixture.createSchedule();
-        schedule.toRunning();
+        schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
         SendRequest request = SendRequest.of(schedule, null, ChannelTypeEnum.EMAIL);
         return TargetUpload.of(targetUploadType, request);
     }

@@ -11,6 +11,7 @@ import com.ums.schedule.adapter.api.schedule.ScheduleCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -26,10 +27,9 @@ public class ScheduleAssembler {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm");
 
     public Schedule createSchedule(ScheduleCreateRequest command) {
-        SchedulePeriod schedulePeriod = parseToSchedulePeriod(command.scheduleStartAt(), command.scheduleEndAt());
         EnumMapperValue scheduleType = enumMapperFactory.findEnumMapperValue(SCHEDULE_TYPE, command.scheduleType());
         ScheduleCyclePolicy cyclePolicy = resolveCyclePolicy(command, scheduleType);
-        return Schedule.of(command.scheduleName(), schedulePeriod, cyclePolicy);
+        return null;
     }
 
     private ScheduleCyclePolicy resolveCyclePolicy(ScheduleCreateRequest command, EnumMapperValue scheduleType) {
@@ -39,13 +39,5 @@ public class ScheduleAssembler {
                 .findFirst()
                 .orElseThrow();
     }
-
-    private SchedulePeriod parseToSchedulePeriod(String startAt, String endAt) {
-        LocalDateTime scheduleStartAt = LocalDateTime.parse(startAt, formatter);
-        LocalDateTime scheduleEndAt = LocalDateTime.parse(endAt, formatter);
-
-        return SchedulePeriod.of(scheduleStartAt, scheduleEndAt);
-    }
-
 
 }

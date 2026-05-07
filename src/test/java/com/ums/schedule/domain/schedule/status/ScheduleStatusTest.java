@@ -1,11 +1,12 @@
 package com.ums.schedule.domain.schedule.status;
 
-import org.assertj.core.api.Assertions;
+import com.ums.schedule.domain.state.schedule.ScheduleActiveStatus;
+import com.ums.schedule.domain.state.schedule.ScheduleRunningStatus;
+import com.ums.schedule.domain.state.schedule.ScheduleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ScheduleStatusTest {
     @Test

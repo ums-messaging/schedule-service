@@ -2,14 +2,17 @@ package com.ums.schedule.domain.event.target;
 
 import com.ums.schedule.adapter.api.schedule.ScheduleCreateRequest;
 import com.ums.schedule.code.schedule.CycleCdEnum;
+import com.ums.schedule.code.schedule.ScheduleEventEnum;
 import com.ums.schedule.code.send.ChannelTypeEnum;
 import com.ums.schedule.code.send.TargetUploadStatusEnum;
 import com.ums.schedule.code.send.TargetUploadTypeEnum;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.schedule.Schedule;
+import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import com.ums.schedule.domain.schedule.cycle_policy.CyclePolicyValue;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.period.SchedulePeriod;
+import com.ums.schedule.domain.schedule.period.SchedulePeriodTestBuilder;
 import com.ums.schedule.domain.target.upload.TargetUpload;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,14 +43,14 @@ class MessageCreatedEventTest {
         LocalDateTime startDt = LocalDateTime.now();
         LocalDateTime endDt = LocalDateTime.now().plusMonths(1);
 
-        SchedulePeriod period = SchedulePeriod.of(startDt, endDt);
+        SchedulePeriod period = SchedulePeriodTestBuilder.builder().build();
         ScheduleCyclePolicy cyclePolicy = ScheduleCyclePolicy.of(CyclePolicyValue.of(CycleCdEnum.ALWAYS, 0));
         ScheduleCreateRequest request = new ScheduleCreateRequest("schedule", "REALTIME", null, null,
                 startDt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 endDt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         );
-        Schedule schedule = Schedule.of(request.scheduleName(), period, cyclePolicy);
-        schedule.toRunning();
+        Schedule schedule = ScheduleTestBuilder.builder().build();
+        schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
         return schedule;
     }
 

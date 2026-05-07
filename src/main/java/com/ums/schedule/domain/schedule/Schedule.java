@@ -1,15 +1,21 @@
 package com.ums.schedule.domain.schedule;
 
+import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
+import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
+import com.ums.schedule.code.schedule.ScheduleEventEnum;
 import com.ums.schedule.domain.schedule.converter.ScheduleStatusConverter;
 import com.ums.schedule.code.schedule.ScheduleStatusEnum;
 import com.ums.schedule.code.schedule.ScheduleTypeEnum;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
+import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
 import com.ums.schedule.domain.schedule.exception.ScheduleNameRequiredException;
-import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.schedule.period.SchedulePeriod;
-import com.ums.schedule.domain.schedule.status.ScheduleActiveStatus;
-import com.ums.schedule.domain.schedule.status.ScheduleStatus;
+import com.ums.schedule.domain.state.StatusState;
+import com.ums.schedule.domain.state.schedule.ScheduleActiveStatus;
+import com.ums.schedule.domain.state.schedule.ScheduleInActiveStatus;
+import com.ums.schedule.domain.state.schedule.ScheduleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,10 +23,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -40,20 +45,15 @@ public class Schedule {
     @Embedded
     private ScheduleCyclePolicy cyclePolicy;
 
-    @Transient
+    @Column(name = "status", nullable = false, updatable = false)
+    @Convert(converter = ScheduleStatusConverter.class)
     private ScheduleStatus scheduleStatus;
 
-    @Column(name = "status", nullable = false, updatable = false,
-            columnDefinition = "VARCHAR(10) DEFAULT 'ACTIVE' CHECK (STATUS IN ('ACTIVE', 'RUNNING', 'INACTIVE'))")
-    @Convert(converter = ScheduleStatusConverter.class)
+    @Transient
     private ScheduleStatusEnum status;
 
     @Embedded
     private SchedulePeriod schedulePeriod;
-
-    @Getter
-    @OneToMany(mappedBy = "schedule", cascade = { CascadeType.ALL })
-    private List<SendRequest> sendRequests = new ArrayList<>();
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -62,13 +62,13 @@ public class Schedule {
     @Column(name = "created_by", nullable = false)
     private String createdBy;
 
-    public static Schedule of(String scheduleName, SchedulePeriod schedulePeriod, ScheduleCyclePolicy cyclePolicy) {
+    public static Schedule of(ScheduleCreateCommand command, ScheduleCyclePolicy cyclePolicy) {
         Schedule schedule = new Schedule();
-        schedule.applyScheduleName(scheduleName);
-        schedule.applySchedulePeriod(schedulePeriod);
-        schedule.applyScheduleCyclePolicy(cyclePolicy);
+        schedule.applyScheduleName(command.scheduleName());
+        schedule.applySchedulePeriod(command.scheduleStartAt(), command.scheduleEndAt());
         schedule.changeScheduleStatus(new ScheduleActiveStatus());
-        schedule.applyCreatedBy("jang314");
+        schedule.applyCreatedBy(command.createdBy());
+        schedule.applyScheduleCyclePolicy(cyclePolicy);
         return schedule;
     }
 
@@ -84,7 +84,7 @@ public class Schedule {
     }
 
     public boolean availableSchedulePeriodAndStatus() {
-        return this.status == ScheduleStatusEnum.RUNNING && this.schedulePeriod.isScheduleWindow();
+        return this.status == ScheduleStatusEnum.RUNNING && this.schedulePeriod.isScheduleWindow(LocalDateTime.now());
     }
 
     private void applyScheduleCyclePolicy(ScheduleCyclePolicy cyclePolicy) {
@@ -95,7 +95,7 @@ public class Schedule {
     private void validateSchedulePeriodToReservationDate(ScheduleCyclePolicy cyclePolicy) {
         if(cyclePolicy.getScheduleType() == ScheduleTypeEnum.RESERVATION) {
             LocalDateTime reservationDate = getParseReservationDate(cyclePolicy);
-            if(compareTo(reservationDate)) {
+            if(!schedulePeriod.isScheduleWindow(reservationDate)) {
                 throw InvalidCycleValueException.compareToReservationDate();
             }
         }
@@ -106,32 +106,17 @@ public class Schedule {
         return LocalDateTime.parse(cyclePolicy.getPolicyValue().getCycleValue(), formatter);
     }
 
-    private boolean compareTo(LocalDateTime reservationDate) {
-        return reservationDate.isBefore(schedulePeriod.getScheduleStartAt()) || reservationDate.isAfter(schedulePeriod.getScheduleEndAt());
-    }
-
-    private void applySchedulePeriod(SchedulePeriod schedulePeriod) {
-        this.schedulePeriod = schedulePeriod;
+    private void applySchedulePeriod(String scheduleStartAt, String scheduleEndAt) {
+        this.schedulePeriod = SchedulePeriod.of(scheduleStartAt, scheduleEndAt);
     }
 
     private void changeScheduleStatus(ScheduleStatus scheduleStatus) {
         this.scheduleStatus = scheduleStatus;
-        this.status = scheduleStatus.currentScheduleStatus();
     }
 
-    public void toRunning() {
-        ScheduleStatus status = this.scheduleStatus.toRunning();
-        changeScheduleStatus(status);
-    }
-
-    public void toInActive() {
-        ScheduleStatus status = this.scheduleStatus.toInActive();
-        changeScheduleStatus(status);
-    }
-
-    public void toActive() {
-        ScheduleStatus status = this.scheduleStatus.toActive();
-        changeScheduleStatus(status);
+    public void toStatus(ScheduleEventEnum event) {
+        ScheduleStatus toState = this.scheduleStatus.onEvent(event);
+        changeScheduleStatus(toState);
     }
 
     @PrePersist
@@ -146,4 +131,26 @@ public class Schedule {
     public void preUpdate() {
         this.lastUpdatedAt = LocalDateTime.now();
     }
+
+    public void update(ScheduleUpdateCommand command) {
+        validateState();
+        validateExpiredPeriod();
+        applyScheduleName(command.scheduleName());
+    }
+
+    private void validateExpiredPeriod() {
+        if(schedulePeriod.isExpired()) {
+            if(!this.scheduleStatus.isInActive()) {
+                changeScheduleStatus(new ScheduleInActiveStatus());
+            }
+            throw InvalidSchedulePeriodException.expired();
+       }
+    }
+
+    private void validateState() {
+        if(this.scheduleStatus.isRunning()) {
+            throw InvalidScheduleStatusException.invalidStatus();
+        }
+    }
+
 }
