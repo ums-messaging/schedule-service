@@ -10,6 +10,7 @@ import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.cycle_policy.CyclePolicyValue;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.period.SchedulePeriod;
+import com.ums.schedule.fixture.ScheduleDomainFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,10 +35,9 @@ class SendRequestTest {
     @Test
     @DisplayName("스케쥴 추가 시 스케쥴 상태가 RUNNING 이 아니면 익셉션이 발생한다. ")
     void shouldThrowException_whenScheduleStatusIsNotRunning() {
-        Schedule schedule = SendRequestDomainFixture.createSchedule();
+        Schedule schedule = ScheduleDomainFixture.createSchedule();
         CustomerRequestKey key = CustomerRequestKey.of(UUID.randomUUID().toString(), UUID.randomUUID().toString(), false);
 
-        schedule.toActive();
         InvalidScheduleException expect = InvalidScheduleException.invalidSchedule();
 
         assertThatThrownBy(() -> SendRequest.of(schedule, key, ChannelTypeEnum.EMAIL))

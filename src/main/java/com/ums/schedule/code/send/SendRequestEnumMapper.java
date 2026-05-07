@@ -4,6 +4,7 @@ import com.ums.schedule.code.EnumMapper;
 import com.ums.schedule.code.EnumMapperType;
 
 public enum SendRequestEnumMapper implements EnumMapper {
+    CHANNEL_TYPE(ChannelTypeEnum.class),
     SEND_REQUEST_STATUS(SendRequestStatusEnum.class),
     TARGET_UPLOAD_STATUS(TargetUploadStatusEnum.class),
     TARGET_UPLOAD_TYPE(TargetUploadTypeEnum.class),

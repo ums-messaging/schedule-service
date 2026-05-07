@@ -2,6 +2,7 @@ package com.ums.schedule.domain.schedule.cycle_policy;
 
 import com.ums.schedule.code.schedule.CycleCdEnum;
 import com.ums.schedule.code.schedule.ScheduleTypeEnum;
+import com.ums.schedule.domain.schedule.converter.ScheduleTypeConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScheduleCyclePolicy {
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ScheduleTypeConverter.class)
     @Column(nullable = false)
     private ScheduleTypeEnum scheduleType;
 

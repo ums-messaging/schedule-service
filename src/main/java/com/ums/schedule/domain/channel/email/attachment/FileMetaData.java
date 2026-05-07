@@ -5,6 +5,9 @@ import com.ums.schedule.code.email.StorageTypeEnum;
 import com.ums.schedule.domain.channel.email.exception.AttachmentPolicyRequiredException;
 import com.ums.schedule.code.EnumMapperValue;
 import com.ums.schedule.adapter.api.template.email.EmailContentResponse;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +21,17 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class FileMetaData {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "storage_type", nullable = false)
     private StorageTypeEnum storageType;
+    @Column(name = "content_type", nullable = false)
     private String contentType;
+    @Column(name = "file_size", nullable = false)
     private Long fileSize;
+
+    @Column(name="file_key", nullable = false)
     private String fileKey;
+    @Column(name = "original_file_name")
     private String originalFileName;
 
     public static FileMetaData fromResponse(EmailContentResponse response) {
@@ -57,8 +67,6 @@ public class FileMetaData {
     private void applyFileSize(Long fileSize) {
         this.fileSize = Optional.ofNullable(fileSize)
                 .orElseThrow(() -> AttachmentPolicyRequiredException.ofFileMetadata("File size "));
-
-
     }
 
     private FileMetaData(String fileKey) {

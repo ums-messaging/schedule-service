@@ -15,9 +15,4 @@ public record SendCreateRequest(
         List<SendTargetUploadRequest> targetList
 ) {
 
-    public List<SendTargetDto> toTargetDtos() {
-        return this.targetList.stream()
-                .map(target -> SendTargetDto.of(target))
-                .toList();
-    }
 }

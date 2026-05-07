@@ -11,6 +11,8 @@ import com.ums.schedule.domain.channel.email.EmailSendRequest;
 import com.ums.schedule.domain.channel.email.EmailSendRequestJpaRepository;
 import com.ums.schedule.domain.channel.email.message.EmailTemplate;
 import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.upload.TargetUpload;
+import com.ums.schedule.domain.target.upload.TargetUploadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,15 +21,17 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class EmailFactory implements ChannelFactory<EmailTemplate> {
+    private final TargetUploadRepository targetUploadRepository;
     private final EmailSendRequestJpaRepository repository;
     private final EmailTemplateService templateService;
     private final EmailBodyConverter converter;
     private final EmailTemplateClient templateClient;
 
     @Override
-    public List<SendTarget> makeMessage(EmailTemplate template, List<SendTargetDto> targetList) {
+    public List<SendTarget> makeMessage(Long uploadId, EmailTemplate template, List<SendTargetDto> targetList) {
+        TargetUpload targetUpload = targetUploadRepository.getReferenceById(uploadId);
         return targetList.stream()
-                .map(dto -> SendTarget.of(dto, template))
+                .map(dto -> SendTarget.of(targetUpload, dto, template))
                 .map(target -> {
                     converter.createAttachment(template, target);
                     return target;
@@ -39,7 +43,8 @@ public class EmailFactory implements ChannelFactory<EmailTemplate> {
     public EmailTemplate getTemplate(Long requestId, String templateKey) {
         EmailSendRequest request = repository.findById(requestId).orElseThrow();
         EmailTemplateResponse template = templateClient.getTemplate(templateKey);
+        String key = template.emailTemplate().emailContentId();
+        request.applyTemplateKey(key);
         return templateService.assemble(request.getBody(), template);
     }
-
 }

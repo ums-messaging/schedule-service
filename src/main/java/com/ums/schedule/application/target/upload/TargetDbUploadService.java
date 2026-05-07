@@ -4,6 +4,7 @@ import com.ums.schedule.application.target.SendTargetService;
 import com.ums.schedule.domain.target.SendTarget;
 import com.ums.schedule.domain.target.upload.TargetUpload;
 import com.ums.schedule.domain.target.exeption.SendTargetException;
+import com.ums.schedule.domain.target.upload.TargetUploadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ public class TargetDbUploadService{
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public TargetUpload create(Long uploadId, List<SendTarget> targetList) {
-
         try {
             targetService.saveTargetList(uploadId, targetList);
         } catch (SendTargetException | DataIntegrityViolationException e) {

@@ -20,15 +20,4 @@ public record EmailContentResponse(
         String originalFileName,
         Long fileSize
 ) {
-    public FileMetaData getFileMetaData() {
-        return FileMetaData.fromResponse(this);
-    }
-
-    public AttachmentPolicy getAttachmentPolicy() {
-        return AttachmentPolicy.of(this.attachmentName, this.downloadName);
-    }
-
-    public void getBody(EmailBody body) {
-
-    }
 }

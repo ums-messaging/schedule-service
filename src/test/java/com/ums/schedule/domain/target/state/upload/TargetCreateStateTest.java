@@ -8,6 +8,7 @@ import com.ums.schedule.domain.target.state.upload.TargetUploadFailState;
 import com.ums.schedule.domain.target.state.upload.TargetUploadState;
 import com.ums.schedule.domain.target.upload.TargetUpload;
 import com.ums.schedule.domain.target.upload.TargetUploadDomainFixture;
+import com.ums.schedule.fixture.FakeTemplate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class TargetCreateStateTest {
             TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
 
             TargetUploadCreateState state = new TargetUploadCreateState();
-            TargetUploadCreatedEvent given = TargetUploadCreatedEvent.of(targetUpload, TargetUploadDomainFixture.createTemplate());
+            TargetUploadCreatedEvent given = TargetUploadCreatedEvent.of(targetUpload, new FakeTemplate());
             TargetUploadCreateStateException expect = TargetUploadCreateStateException.of(TargetUploadStatusEnum.CREATED);
 
             assertThatThrownBy(() -> state.onEvent(given))
@@ -75,7 +76,7 @@ class TargetCreateStateTest {
 
             TargetUploadState status = new TargetUploadCreateState();
             TargetUploadCreateStateException exception = TargetUploadCreateStateException.of(TargetUploadStatusEnum.PARSING);
-            TargetMessageCreatedEvent given = TargetMessageCreatedEvent.of(targetUpload, TargetUploadDomainFixture.createTemplate(), List.of());
+            TargetMessageCreatedEvent given = TargetMessageCreatedEvent.of(targetUpload, new FakeTemplate(), List.of());
 
             assertThatThrownBy(() -> status.onEvent(given))
                     .isInstanceOf(exception.getClass())

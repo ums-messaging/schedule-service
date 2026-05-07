@@ -9,6 +9,7 @@ import com.ums.schedule.domain.target.state.upload.TargetUploadPendingState;
 import com.ums.schedule.domain.target.state.upload.TargetUploadState;
 import com.ums.schedule.domain.target.upload.TargetUpload;
 import com.ums.schedule.domain.target.upload.TargetUploadDomainFixture;
+import com.ums.schedule.fixture.FakeTemplate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ class TargetPendingStateTest {
             TargetUploadState status = new TargetUploadPendingState();
             TargetUploadPendingStateException exception = TargetUploadPendingStateException.of(TargetUploadStatusEnum.PARSING);
 
-            assertThatThrownBy(() -> status.onEvent(TargetMessageCreatedEvent.of(targetUpload, TargetUploadDomainFixture.createTemplate(), List.of())))
+            assertThatThrownBy(() -> status.onEvent(TargetMessageCreatedEvent.of(targetUpload, new FakeTemplate(), List.of())))
                     .isInstanceOf(exception.getClass())
                     .hasMessage(exception.getMessage());
         }

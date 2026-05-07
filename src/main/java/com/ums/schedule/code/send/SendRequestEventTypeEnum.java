@@ -8,10 +8,9 @@ public enum SendRequestEventTypeEnum implements EnumMapperType {
     TARGET_UPLOAD_REQUEST("TARGET_UPLOAD_REQUESTED","대상자 업로드 요청"),
     TARGET_UPLOAD_COMPLETED("TARGET_UPLOAD_COMPLETED","대상자 업로드 완료"),
     JOB_CREATED("JOB_CREATED", "JOB 생성"),
-    ERROR("ERR", "처리 오류"),
     SCHEDULED("SCHEDULED", "스케쥴링"),
-    SEND_STARTED("MESSAGE", "메시지 생성 완료"),
-    SEND_ENDED("COMPLETED", "발송 종료");
+    SEND_STARTED("SEND_STARTED", "발송 시작"),
+    SEND_ENDED("SEND_ENDED", "발송 종료");
 
     String value;
     String description;

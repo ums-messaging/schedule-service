@@ -6,6 +6,7 @@ public enum ResultCodeEnum implements EnumMapperType {
     SUCCESS("OK", "처리 성공"),
     FAIL("ERR", "처리 에러"),
     RETRY("RTY", "재시도");
+
     String value;
     String description;
 

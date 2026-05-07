@@ -10,6 +10,7 @@ import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.request.SendRequestRepository;
 import com.ums.schedule.domain.target.SendTarget;
 import com.ums.schedule.domain.target.upload.TargetUpload;
+import com.ums.schedule.domain.target.upload.TargetUploadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import static com.ums.schedule.code.send.TargetUploadTypeEnum.JSON;
 @Component
 @RequiredArgsConstructor
 public class TargetUploadRequestService {
+    private final TargetUploadRepository targetUploadRepository;
     private final SendRequestRepository requestRepository;
     private final Map<String, ChannelFactory> factoryMap;
 
@@ -30,9 +32,10 @@ public class TargetUploadRequestService {
         SendRequest sendRequest = requestRepository.getReferenceById(event.requestId());
         ChannelFactory factory = factoryMap.get(event.channelType().value());
         ChannelTemplate template = factory.getTemplate(event.requestId(), event.templateKey());
-
-        List<SendTarget> targetList = factory.makeMessage(template, targetDtoList);
-        return TargetUpload.of(JSON, sendRequest);
+        TargetUpload targetUpload = TargetUpload.of(JSON, sendRequest);
+        targetUploadRepository.saveAndFlush(targetUpload);
+        factory.makeMessage(targetUpload.getUploadId(), template, targetDtoList);
+        return targetUpload;
     }
 
     public boolean supports(EnumMapperValue mapperValue ) {

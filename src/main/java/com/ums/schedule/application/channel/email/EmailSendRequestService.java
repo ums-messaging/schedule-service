@@ -19,13 +19,11 @@ public class EmailSendRequestService  {
     private final TargetUploadService targetUploadService;
     private final EmailSendRequestJpaRepository repository;
 
-
     @Transactional
     public EmailSendRequest create(String customerId, EmailSendCreateRequest command) {
         EmailBody emailBody = assembler.createEmailBody(command);
         TargetUpload targetUpload = targetUploadService.create(customerId, ChannelTypeEnum.EMAIL, command.sendRequest());
         EmailSendRequest request = EmailSendRequest.of(emailBody, targetUpload);
-
-        return repository.saveAndFlush(request);
+        return repository.save(request);
     }
 }

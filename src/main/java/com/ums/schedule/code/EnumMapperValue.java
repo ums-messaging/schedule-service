@@ -1,6 +1,6 @@
 package com.ums.schedule.code;
 
-public record EnumMapperValue(
+public record EnumMapperValue<T>(
         String code,
         String value,
         String description

@@ -1,15 +1,10 @@
 package com.ums.schedule.domain.target.upload;
 
 import com.ums.schedule.application.target.dto.SendTargetDto;
-import com.ums.schedule.code.send.SendRequestStatusEnum;
 import com.ums.schedule.code.send.TargetUploadStatusEnum;
 import com.ums.schedule.code.send.TargetUploadTypeEnum;
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestDomainFixture;
 import com.ums.schedule.domain.request.SendRequestEvent;
 import com.ums.schedule.domain.request.event.SendEvent;
-import com.ums.schedule.domain.request.state.SendRequestReadyState;
-import com.ums.schedule.domain.request.state.SendRequestState;
 import com.ums.schedule.domain.target.SendTarget;
 import com.ums.schedule.domain.target.event.*;
 import com.ums.schedule.domain.target.exeption.TargetMessageCreatedEventException;
@@ -17,6 +12,8 @@ import com.ums.schedule.domain.target.exeption.upload.TargetUploadObjectKeyRequi
 import com.ums.schedule.domain.target.exeption.upload.TargetUploadCompleteStateException;
 import com.ums.schedule.domain.target.exeption.upload.TargetUploadRequestStateException;
 import com.ums.schedule.domain.target.state.upload.*;
+import com.ums.schedule.fixture.FakeTemplate;
+import com.ums.schedule.fixture.SendTargetDomainFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -90,8 +87,8 @@ class TargetUploadTest {
         TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
         targetUpload.createTargetUploadUrlEvent("objectKey");
         targetUpload.requestTargetUpload();
-        targetUpload.parseMessage(TargetUploadDomainFixture.createTemplate(), List.of());
-        targetUpload.addTargetList(SendTarget.of(SendTargetDto.of(TargetUploadDomainFixture.createTargetDto()), TargetUploadDomainFixture.createTemplate()));
+        targetUpload.parseMessage(new FakeTemplate(), List.of());
+        targetUpload.addTargetList(SendTargetDomainFixture.createSendTarget());
         targetUpload.uploadComplete(1);
 
         SendRequestEvent requestEvent = targetUpload.assignTargetUpload();
@@ -130,7 +127,7 @@ class TargetUploadTest {
         TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
         targetUpload.createTargetUploadUrlEvent("ObjectKey");
         targetUpload.requestTargetUpload();
-        targetUpload.parseMessage(TargetUploadDomainFixture.createTemplate(), List.of());
+        targetUpload.parseMessage(new FakeTemplate(), List.of());
 
         TargetUploadState expect = targetUpload.getUploadStatus();
 
@@ -145,7 +142,7 @@ class TargetUploadTest {
         targetUpload.createTargetUploadUrlEvent("ObjectKey");
         targetUpload.requestTargetUpload();
 
-        TargetUploadEvent expect = targetUpload.parseMessage(TargetUploadDomainFixture.createTemplate(), List.of());
+        TargetUploadEvent expect = targetUpload.parseMessage(new FakeTemplate(), List.of());
 
         assertThat(expect).isInstanceOf(TargetMessageCreatedEvent.class);
     }
@@ -170,10 +167,10 @@ class TargetUploadTest {
         TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
         targetUpload.createTargetUploadUrlEvent("ObjectKey");
         targetUpload.requestTargetUpload();
-        targetUpload.parseMessage(TargetUploadDomainFixture.createTemplate(), List.of());
+        targetUpload.parseMessage(new FakeTemplate(), List.of());
 
         // when
-        targetUpload.addTargetList(SendTarget.of(SendTargetDto.of(TargetUploadDomainFixture.createTargetDto()), TargetUploadDomainFixture.createTemplate()));
+        targetUpload.addTargetList(SendTargetDomainFixture.createSendTarget());
 
         TargetUploadState expect = targetUpload.getUploadStatus();
         assertThat(expect).isInstanceOf(TargetUploadUploadedState.class);
@@ -186,10 +183,10 @@ class TargetUploadTest {
         TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
         targetUpload.createTargetUploadUrlEvent("ObjectKey");
         targetUpload.requestTargetUpload();
-        targetUpload.parseMessage(TargetUploadDomainFixture.createTemplate(), List.of());
+        targetUpload.parseMessage(new FakeTemplate(), List.of());
 
         // when
-        TargetUploadEvent expect = targetUpload.addTargetList(SendTarget.of(SendTargetDto.of(TargetUploadDomainFixture.createTargetDto()), TargetUploadDomainFixture.createTemplate()));
+        TargetUploadEvent expect = targetUpload.addTargetList(SendTargetDomainFixture.createSendTarget());
 
         assertThat(expect).isInstanceOf(TargetUploadUploadedEvent.class);
     }
@@ -200,8 +197,8 @@ class TargetUploadTest {
         TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
         targetUpload.createTargetUploadUrlEvent("ObjectKey");
         targetUpload.requestTargetUpload();
-        targetUpload.parseMessage(TargetUploadDomainFixture.createTemplate(), List.of());
-        targetUpload.addTargetList(SendTarget.of(SendTargetDto.of(TargetUploadDomainFixture.createTargetDto()), TargetUploadDomainFixture.createTemplate()));
+        targetUpload.parseMessage(new FakeTemplate(), List.of());
+        targetUpload.addTargetList(SendTargetDomainFixture.createSendTarget());
 
         targetUpload.uploadComplete(1);
         TargetUploadState expect = targetUpload.getUploadStatus();
@@ -217,8 +214,8 @@ class TargetUploadTest {
         TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
         targetUpload.createTargetUploadUrlEvent("ObjectKey");
         targetUpload.requestTargetUpload();
-        targetUpload.parseMessage(TargetUploadDomainFixture.createTemplate(), List.of());
-        targetUpload.addTargetList(SendTarget.of(SendTargetDto.of(TargetUploadDomainFixture.createTargetDto()), TargetUploadDomainFixture.createTemplate()));
+        targetUpload.parseMessage(new FakeTemplate(), List.of());
+        targetUpload.addTargetList(SendTargetDomainFixture.createSendTarget());
 
         SendRequestEvent requestEvent = targetUpload.uploadComplete(1);
         SendEvent expect = requestEvent.getEvent();
@@ -232,8 +229,8 @@ class TargetUploadTest {
         TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
         targetUpload.createTargetUploadUrlEvent("ObjectKey");
         targetUpload.requestTargetUpload();
-        targetUpload.parseMessage(TargetUploadDomainFixture.createTemplate(), List.of());
-        targetUpload.addTargetList(SendTarget.of(SendTargetDto.of(TargetUploadDomainFixture.createTargetDto()), TargetUploadDomainFixture.createTemplate()));
+        targetUpload.parseMessage(new FakeTemplate(), List.of());
+        targetUpload.addTargetList(SendTargetDomainFixture.createSendTarget());
 
         TargetUploadCompleteStateException expect = TargetUploadCompleteStateException.ofDifferentTargetSize(0, 1);
 

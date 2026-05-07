@@ -54,8 +54,8 @@ public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, St
                 .map(row -> SendTargetDto.of(row))
                 .toList();
 
-        List<SendTarget> targetList = factory.makeMessage(event.template(), dtos);
-        TargetUpload targetUpload = uploadService.create(event.uploadId(), targetList);
+        List<SendTarget> targetList = factory.makeMessage(event.uploadId(), event.template(), dtos);
+        uploadService.create(event.uploadId(), targetList);
 
         this.targetList.clear();
 

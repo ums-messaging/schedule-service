@@ -2,21 +2,20 @@ package com.ums.schedule.domain.request;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ums.schedule.application.request.dto.SendRequestCommand;
 import com.ums.schedule.code.send.ChannelTypeEnum;
 import com.ums.schedule.code.send.ResultCodeEnum;
 import com.ums.schedule.code.send.SendRequestEventTypeEnum;
+import com.ums.schedule.code.send.TargetUploadTypeEnum;
 import com.ums.schedule.domain.request.event.SendEvent;
-import com.ums.schedule.domain.request.event.SendRequestedEvent;
 import com.ums.schedule.domain.request.exception.SendRequestException;
 import com.ums.schedule.domain.request.exception.state.SendRequestStateException;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.target.event.TargetUploadRequestedEvent;
 import com.ums.schedule.domain.target.upload.TargetUpload;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
+import io.hypersistence.utils.hibernate.id.Tsid;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,15 +27,22 @@ import static com.ums.schedule.code.send.SendRequestEventTypeEnum.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SendRequestEvent {
     @Id
-    private String eventId;
+    @Tsid
+    private Long eventId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_type", nullable = false)
     private SendRequestEventTypeEnum eventType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "result_code", nullable = false)
     private ResultCodeEnum resultCode;
     private String resultMessage;
 
-    @ManyToOne
+    @JoinColumn(name = "request_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private SendRequest sendRequest;
 
     @Transient
@@ -45,15 +51,19 @@ public class SendRequestEvent {
 
     private LocalDateTime issuedAt;
 
-    public static SendRequestEvent of(Schedule schedule, CustomerRequestKey customerKey, ChannelTypeEnum channelType) {
+    public static SendRequestEvent of(SendRequestCommand command) {
         SendRequestEvent requestEvent = new SendRequestEvent(REQUEST_CREATED);
-        SendRequest request = SendRequest.of(schedule, customerKey, channelType);
+        ChannelTypeEnum channelType = ChannelTypeEnum.valueOf(command.channel().code());
+        TargetUploadTypeEnum uploadType = TargetUploadTypeEnum.valueOf(command.uploadType().code());
+        SendRequest request = SendRequest.of(command.schedule(), command.customerRequestKey(), channelType);
+        TargetUpload.of(uploadType, request);
         requestEvent.applySendRequest(request);
         return requestEvent;
     }
 
     public static SendRequestEvent of(SendRequest sendRequest, SendEvent sendEvent) {
         SendRequestEvent event = new SendRequestEvent(sendEvent.getEventType());
+        sendRequest.onEvent(event);
         event.applySendEvent(sendEvent);
         event.applySendRequest(sendRequest);
         return event;
@@ -67,7 +77,7 @@ public class SendRequestEvent {
 
     private void applySendRequest(SendRequest sendRequest) {
         try {
-            this.sendRequest = sendRequest.onEvent(this);
+            this.sendRequest = sendRequest;
         } catch (SendRequestStateException e) {
             onError(sendRequest, e);
         }
@@ -76,7 +86,6 @@ public class SendRequestEvent {
     private SendRequestEvent(SendRequestEventTypeEnum eventType) {
         this.eventType = eventType;
         this.resultCode = ResultCodeEnum.SUCCESS;
-        this.issuedAt = LocalDateTime.now();
     }
 
     private void onError(SendRequest sendRequest, SendRequestException e) {
@@ -102,5 +111,10 @@ public class SendRequestEvent {
     private void setResult(ResultCodeEnum code, String message) {
         this.resultCode = code;
         this.resultMessage = message;
+    }
+
+    @PrePersist
+    public void prePersist(){
+        this.issuedAt = LocalDateTime.now();
     }
 }

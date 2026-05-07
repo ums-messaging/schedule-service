@@ -5,6 +5,7 @@ import com.ums.schedule.domain.target.event.*;
 import com.ums.schedule.domain.target.exeption.upload.TargetUploadFailStateException;
 import com.ums.schedule.domain.target.upload.TargetUpload;
 import com.ums.schedule.domain.target.upload.TargetUploadDomainFixture;
+import com.ums.schedule.fixture.FakeTemplate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,7 @@ class TargetUploadFailStateTest {
             TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
 
             TargetUploadState status = new TargetUploadFailState();
-            TargetMessageCreatedEvent given = TargetMessageCreatedEvent.of(targetUpload, TargetUploadDomainFixture.createTemplate(), List.of());
+            TargetMessageCreatedEvent given = TargetMessageCreatedEvent.of(targetUpload, new FakeTemplate(), List.of());
             TargetUploadFailStateException expect = TargetUploadFailStateException.of(given.getToStatus().currentStatus());
 
             assertThatThrownBy(() -> status.onEvent(given))

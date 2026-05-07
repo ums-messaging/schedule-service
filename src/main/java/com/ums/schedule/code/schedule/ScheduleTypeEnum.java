@@ -3,9 +3,9 @@ package com.ums.schedule.code.schedule;
 import com.ums.schedule.code.EnumMapperType;
 
 public enum ScheduleTypeEnum implements EnumMapperType {
-    REALTIME("REALTIME", "실시간"),
-    RESERVATION("RESERVATION", "예약"),
-    CYCLE("CYCLE", "주기");
+    REALTIME("RT", "실시간"),
+    RESERVATION("RV", "예약"),
+    CYCLE("CL", "주기");
 
     String value;
     String description;

@@ -6,10 +6,12 @@ import com.ums.schedule.domain.channel.email.attachment.AttachmentPolicy;
 import com.ums.schedule.domain.channel.email.attachment.FileMetaData;
 import com.ums.schedule.adapter.api.template.email.EmailContentResponse;
 import com.ums.schedule.domain.channel.email.message.EmailBody;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
 @Getter
+@AllArgsConstructor
 public class AttachmentDto {
     private EmailBody body;
     private AttachmentPolicy attachmentPolicy;

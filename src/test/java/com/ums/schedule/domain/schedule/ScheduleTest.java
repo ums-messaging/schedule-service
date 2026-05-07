@@ -9,6 +9,7 @@ import com.ums.schedule.domain.schedule.period.SchedulePeriod;
 import com.ums.schedule.domain.schedule.status.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.status.ScheduleInActiveStatus;
 import com.ums.schedule.domain.schedule.status.ScheduleRunningStatus;
+import com.ums.schedule.fixture.ScheduleDomainFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

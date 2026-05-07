@@ -3,19 +3,27 @@ package com.ums.schedule.domain.channel.email.message;
 import com.ums.schedule.domain.channel.email.security.SecurityPolicy;
 import com.ums.schedule.code.email.ConvertTypeEnum;
 import com.ums.schedule.code.send.ContentTypeEnum;
-import com.ums.schedule.application.channel.email.dto.AttachmentDto;
 import com.ums.schedule.code.EnumMapperValue;
-import com.ums.schedule.adapter.api.template.email.EmailContentResponse;
 import freemarker.template.Template;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailBody {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "convert_type", nullable = false)
     private ConvertTypeEnum convertType;
+
+    @Embedded
     private SecurityPolicy securityPolicy;
+
+    @Transient
     private Template template;
 
     public static EmailBody of(EnumMapperValue convertType, SecurityPolicy securityPolicy) {

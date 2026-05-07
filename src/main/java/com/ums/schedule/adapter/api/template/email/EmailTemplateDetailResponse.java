@@ -38,8 +38,4 @@ public record EmailTemplateDetailResponse(
                 .filter(content->content.section().equals(EmailTemplateSectionEnum.ATTACHMENT.value()))
                 .collect(Collectors.toList());
     }
-
-    public void body(EmailBody body) {
-
-    }
 }

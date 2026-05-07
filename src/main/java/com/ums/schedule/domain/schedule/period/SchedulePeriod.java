@@ -8,11 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Embeddable
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SchedulePeriod {
     @Column(name = "schedule_start_at", nullable = false)
@@ -48,8 +49,8 @@ public class SchedulePeriod {
     }
 
     public boolean isScheduleWindow() {
-        LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay();
-        return !(today.isBefore(scheduleStartAt.toLocalDate().atStartOfDay()) || today.isAfter(scheduleEndAt.toLocalDate().atStartOfDay()));
+        LocalDateTime today = LocalDateTime.now();
 
+        return !(today.isBefore(scheduleStartAt.toLocalDate().atStartOfDay()) || today.isAfter(scheduleEndAt.toLocalDate().atStartOfDay()));
     }
 }

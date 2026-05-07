@@ -1,6 +1,7 @@
 package com.ums.schedule.domain.target.upload;
 
 import com.ums.schedule.application.target.dto.SendTargetDto;
+import com.ums.schedule.code.send.TargetColumnEnum;
 import com.ums.schedule.code.send.TargetUploadStatusEnum;
 import com.ums.schedule.code.send.TargetUploadTypeEnum;
 import com.ums.schedule.domain.channel.ChannelTemplate;
@@ -8,6 +9,7 @@ import com.ums.schedule.domain.request.SendRequest;
 
 import com.ums.schedule.domain.request.SendRequestEvent;
 import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.converter.TargetUploadTypeConverter;
 import com.ums.schedule.domain.target.event.*;
 import com.ums.schedule.domain.target.exeption.TargetMessageCreatedEventException;
 import com.ums.schedule.domain.target.exeption.upload.TargetUploadException;
@@ -17,6 +19,7 @@ import com.ums.schedule.domain.target.state.upload.TargetUploadCreateState;
 import com.ums.schedule.domain.target.state.upload.TargetUploadState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
@@ -24,37 +27,47 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TargetUpload {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long uploadId;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "upload_type", nullable = false)
+    @Convert(converter = TargetUploadTypeConverter.class)
     private TargetUploadTypeEnum uploadType;
-
-    private Integer totalCount;
 
     @Transient
     private TargetUploadState uploadStatus;
 
     @Enumerated(EnumType.STRING)
     private TargetUploadStatusEnum status;
+
+    @Column(name = "result_message")
     private String resultMessage;
 
+    @Column(name = "file_size")
     private Long fileSize;
+
+    @Column(name = "object_key")
     private String objectKey;
 
+    @Column(name = "uploaded_at")
     private LocalDateTime uploadedAt;
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id", nullable = false)
     private SendRequest sendRequest;
 
-    @OneToMany
+    @OneToMany(mappedBy = "targetUpload")
     private List<SendTarget> targetList = new ArrayList<>();
 
     public static TargetUpload of(TargetUploadTypeEnum uploadType, SendRequest sendRequest) {
@@ -81,9 +94,9 @@ public class TargetUpload {
         return uploadStatus;
     }
 
-    private void applySendRequest(SendRequest sendRequest) {
+    public void applySendRequest(SendRequest sendRequest) {
+        sendRequest.addTargetUploadList(this);
         this.sendRequest = sendRequest;
-        this.sendRequest.addTargetUploadList(this);
     }
 
     public TargetUploadEvent createTargetUploadUrlEvent(String objectKey) {
@@ -116,7 +129,6 @@ public class TargetUpload {
     public SendRequestEvent uploadComplete(int totalSize) {
         if(this.targetList.size() == totalSize) {
             TargetUploadCompletedEvent event = TargetUploadCompletedEvent.of(this);
-            this.totalCount = this.targetList.size();
             onEvent(event);
             return SendRequestEvent.of(sendRequest, event);
         }
@@ -142,5 +154,22 @@ public class TargetUpload {
         TargetUploadRequestedEvent event = TargetUploadRequestedEvent.of(this);
         this.sendRequest.assignToTargetUpload(this);
         return SendRequestEvent.of(this.sendRequest, event);
+    }
+
+    public String resolveTargetContact(Map<TargetColumnEnum, String> targetData) {
+        switch (sendRequest.getChannelType()) {
+            case EMAIL -> {
+                return targetData.get(TargetColumnEnum.TARGET_EMAIL);
+            }
+        }
+        return null; // Exception 처리
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        if(this.status == null) {
+            this.changeStatus(new TargetUploadCreateState());
+        }
     }
 }

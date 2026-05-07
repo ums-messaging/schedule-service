@@ -7,6 +7,9 @@ import com.ums.schedule.code.email.PermissionMaskEnum;
 import com.ums.schedule.domain.channel.email.exception.PasswordPolicyRequiredException;
 import com.ums.schedule.code.EnumMapperValue;
 import com.ums.schedule.domain.target.SendTarget;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +17,16 @@ import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
+@Embeddable
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SecurityPolicy {
+    @Enumerated(EnumType.STRING)
     private EncryptionTypeEnum encryptionType;
+    @Enumerated(EnumType.STRING)
     private PasswordHashEnum passwordHash;
+
+    @Enumerated(EnumType.STRING)
     private PermissionMaskEnum permissionMask;
 
     private String passwordPolicy;

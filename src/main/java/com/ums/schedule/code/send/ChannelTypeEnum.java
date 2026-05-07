@@ -4,7 +4,7 @@ import com.ums.schedule.code.EnumMapperType;
 
 public enum ChannelTypeEnum implements EnumMapperType {
 
-    EMAIL("EMAIL", "이메일")
+    EMAIL("E", "이메일")
 
     ;
 

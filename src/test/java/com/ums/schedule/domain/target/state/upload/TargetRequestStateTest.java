@@ -9,6 +9,7 @@ import com.ums.schedule.domain.target.state.upload.TargetUploadRequestState;
 import com.ums.schedule.domain.target.state.upload.TargetUploadState;
 import com.ums.schedule.domain.target.upload.TargetUpload;
 import com.ums.schedule.domain.target.upload.TargetUploadDomainFixture;
+import com.ums.schedule.fixture.FakeTemplate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -69,7 +70,7 @@ class TargetRequestStateTest {
             TargetUpload targetUpload = TargetUploadDomainFixture.createTargetUpload();
 
             TargetUploadState status = new TargetUploadRequestState();
-            TargetUploadState result = status.onEvent(TargetMessageCreatedEvent.of(targetUpload, TargetUploadDomainFixture.createTemplate(), List.of()));
+            TargetUploadState result = status.onEvent(TargetMessageCreatedEvent.of(targetUpload, new FakeTemplate(), List.of()));
 
             assertThat(result.currentStatus()).isEqualTo(PARSING);
         }

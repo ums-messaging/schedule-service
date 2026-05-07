@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CustomerRequestKey {
     private String customerId;
     private String customerRequestId;

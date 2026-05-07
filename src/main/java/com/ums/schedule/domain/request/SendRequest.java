@@ -1,26 +1,22 @@
 package com.ums.schedule.domain.request;
 
 import com.ums.schedule.code.send.*;
-import com.ums.schedule.domain.request.event.SendEvent;
 import com.ums.schedule.domain.request.exception.InvalidScheduleException;
-import com.ums.schedule.domain.request.exception.SendRequestException;
-import com.ums.schedule.domain.request.report.SendRequestReport;
 import com.ums.schedule.domain.request.state.SendRequestCreateState;
 import com.ums.schedule.domain.request.state.SendRequestErrorState;
 import com.ums.schedule.domain.request.state.SendRequestState;
-import com.ums.schedule.domain.target.event.TargetUploadCompletedEvent;
-import com.ums.schedule.domain.target.event.TargetUploadRequestedEvent;
-import com.ums.schedule.domain.target.event.TargetUploadUrlCreatedEvent;
-import com.ums.schedule.domain.target.exeption.upload.TargetUploadCompleteStateException;
 import com.ums.schedule.domain.target.upload.TargetUpload;
 import com.ums.schedule.domain.schedule.Schedule;
+import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "send_request",
@@ -32,8 +28,10 @@ import java.util.List;
 )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SendRequest {
     @Id
+    @Tsid
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "send_request_id")
     @Getter
@@ -48,31 +46,31 @@ public class SendRequest {
     @Column(name = "sender_key", nullable = false)
     private String senderKey;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "channel_type", nullable = false)
+    @Convert(converter = ChanelTypeConverter.class)
     private ChannelTypeEnum channelType;
 
     @Transient
     @Getter
     private SendRequestState state;
+
+    @Column(name = "status", nullable = false, columnDefinition = "varchar(10) default 'CREATE'")
     private SendRequestStatusEnum status;
 
     @Embedded
     private CustomerRequestKey customerRequestKey;
 
-    @OneToOne
+    @JoinColumn(name = "upload_id")
+    @OneToOne(fetch = FetchType.LAZY)
     private TargetUpload currentTargetUpload;
 
-    @ManyToOne
-    @JoinColumn(name = "schedule_id", nullable = false)
     @Getter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
-    @Getter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "sendRequest", cascade = { CascadeType.PERSIST })
+    @OneToMany(mappedBy = "sendRequest")
     private List<TargetUpload> targetUploadList = new ArrayList<>();
-
-    @ManyToOne
-    private SendRequestReport report;
 
     public static SendRequest of(Schedule schedule, CustomerRequestKey key, ChannelTypeEnum channelType) {
         SendRequest request = new SendRequest();
@@ -129,5 +127,17 @@ public class SendRequest {
 
     public void assignToTargetUpload(TargetUpload targetUpload) {
         this.currentTargetUpload = targetUpload;
+        if(targetUpload.getUploadId() == null) {
+            targetUpload.applySendRequest(this);
+            this.targetUploadList.add(targetUpload);
+        }
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if(state == null) {
+            changeStatus(new SendRequestCreateState());
+        }
+        this.retryCnt = Optional.ofNullable(this.retryCnt).orElse(3);
     }
 }

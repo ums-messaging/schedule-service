@@ -1,0 +1,91 @@
+package com.ums.schedule.repository.mapping.channel;
+
+import com.ums.schedule.domain.channel.email.EmailSendRequest;
+import com.ums.schedule.domain.channel.email.EmailSendRequestTestBuilder;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.schedule.Schedule;
+import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.field.EmailSendRequestField;
+import com.ums.schedule.repository.DbErrorMessage;
+import jakarta.persistence.EntityManager;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.id.IdentifierGenerationException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+@DataJpaTest
+public class EmailSendRequestMappingTest {
+    @Autowired
+    private EntityManager entityManager;
+    private Long scheduleId;
+
+    @BeforeEach
+    void setUp() {
+        Schedule schedule = ScheduleTestBuilder.builder().build();
+        entityManager.persist(schedule);
+        entityManager.flush();
+
+        scheduleId = schedule.getId();
+        entityManager.clear();
+    }
+
+    @Nested
+    @DisplayName("send_request 연관관계 테스트")
+    class SendRequestMappingTest {
+        @Test
+        @DisplayName("send_request에서 연관관계를 설정하면 FK는 저장되지 않는다.")
+        void shouldNotPersistSendRequestFK_whenSetByInverseOnlySide() {
+            Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
+            SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
+
+            EmailSendRequestTestBuilder.builder().sendRequest(sendRequest).build();
+
+            entityManager.persist(sendRequest);
+            entityManager.flush();
+
+            Long id = sendRequest.getId();
+            entityManager.clear();
+
+            EmailSendRequest expect = entityManager.find(EmailSendRequest.class, id);
+            assertThat(expect).isNull();
+        }
+
+        @Test
+        @DisplayName("email_send_request에서 send_request와 연관관계를 설정하면 FK가 저장된다.")
+        void shouldPersistFkSendRequest_whenSetByEmailSendRequest() {
+            Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
+            SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
+
+            EmailSendRequest emailSendRequest = EmailSendRequestTestBuilder.builder().sendRequest(sendRequest).build();
+
+            entityManager.persist(emailSendRequest);
+            entityManager.flush();
+
+            Long id = sendRequest.getId();
+            entityManager.clear();
+
+            EmailSendRequest expect = entityManager.find(EmailSendRequest.class, id);
+            assertThat(expect.getId()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("FK인 send_request은 NULL을 허용하지 않는다.")
+        void shouldThrowException_whenSendRequestIsNull() {
+            EmailSendRequest emailSendRequest = EmailSendRequestTestBuilder.builder()
+                    .sendRequest(null).build();
+
+            assertThatThrownBy(() -> {
+                entityManager.persist(emailSendRequest);
+                entityManager.flush();
+            }).isInstanceOf(IdentifierGenerationException.class);
+        }
+    }
+}

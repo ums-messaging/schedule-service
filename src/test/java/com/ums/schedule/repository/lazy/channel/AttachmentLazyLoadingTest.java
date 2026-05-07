@@ -1,0 +1,83 @@
+package com.ums.schedule.repository.lazy.channel;
+
+import com.ums.schedule.domain.channel.email.attachment.Attachment;
+import com.ums.schedule.domain.channel.email.attachment.AttachmentTestBuilder;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.schedule.Schedule;
+import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.SendTargetTestBuilder;
+import com.ums.schedule.domain.target.upload.TargetUpload;
+import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
+import jakarta.persistence.EntityManager;
+import org.hibernate.Hibernate;
+import org.hibernate.LazyInitializationException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+@DataJpaTest
+public class AttachmentLazyLoadingTest {
+    @Autowired private EntityManager entityManager;
+    private UUID attachmentId;
+    @BeforeEach
+    void setUp() {
+        Schedule schedule = ScheduleTestBuilder.builder().build();
+        SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).build();
+        TargetUpload targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
+        SendTarget target = SendTargetTestBuilder.builder().targetUpload(targetUpload).build();
+        Attachment attachment = AttachmentTestBuilder.builder().sendTarget(target).build();
+
+        entityManager.persist(schedule);
+        entityManager.persist(request);
+        entityManager.persist(targetUpload);
+        entityManager.persist(target);
+        entityManager.persist(attachment);
+        entityManager.flush();
+
+        this.attachmentId = attachment.getId();
+        entityManager.clear();
+    }
+
+    @Nested
+    @DisplayName("send_target 조회 테스트")
+    class SendTargetLazyLoadingTest {
+        @Test
+        @DisplayName("attachment 조회 시 send_target은 조회되지 않는다.")
+        void shouldNotLoadSendTarget_whenFindAttachment() {
+            Attachment attachment = entityManager.find(Attachment.class, attachmentId);
+
+            assertThat(Hibernate.isInitialized(attachment.getTarget())).isFalse();
+        }
+
+        @Test
+        @DisplayName("attachment 조회 시 send_target에 접근하면 쿼리가 실행된다.")
+        void shouldLoadSendTarget_whenGetSendTarget() {
+            Attachment attachment = entityManager.find(Attachment.class, attachmentId);
+
+            attachment.getTarget().getTargetKey();
+
+            assertThat(Hibernate.isInitialized(attachment.getTarget())).isTrue();
+        }
+
+        @Test
+        @DisplayName("트랜잭션 밖에서 Lazy 접근 시 예외가 발생한다.")
+        void shouldThrowLazyInitializationException_whenGetSendTargetOutsideTransaction() {
+            Attachment attachment = entityManager.find(Attachment.class, attachmentId);
+
+            entityManager.clear();
+
+            assertThatThrownBy(() -> attachment.getTarget().getTargetKey())
+                    .isInstanceOf(LazyInitializationException.class);
+        }
+    }
+}

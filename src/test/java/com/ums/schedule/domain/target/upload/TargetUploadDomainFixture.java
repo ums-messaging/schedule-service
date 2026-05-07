@@ -13,6 +13,7 @@ import com.ums.schedule.domain.schedule.cycle_policy.CyclePolicyValue;
 import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.period.SchedulePeriod;
 import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.fixture.ScheduleDomainFixture;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +37,8 @@ public class TargetUploadDomainFixture {
     }
 
     public static TargetUpload createTargetUpload(TargetUploadTypeEnum targetUploadType){
-        Schedule schedule = TargetUploadDomainFixture.createSchedule();
+        Schedule schedule = ScheduleDomainFixture.createSchedule();
+        schedule.toRunning();
         SendRequest request = SendRequest.of(schedule, null, ChannelTypeEnum.EMAIL);
         return TargetUpload.of(targetUploadType, request);
     }
@@ -45,41 +47,9 @@ public class TargetUploadDomainFixture {
         return TargetUploadDomainFixture.createTargetUpload(TargetUploadTypeEnum.JSON);
     }
 
-    public static ChannelTemplate createTemplate() {
-        return new FakeTemplate();
+    public static TargetUpload createTargetUpload(SendRequest sendRequest) {
+        return TargetUpload.of(TargetUploadTypeEnum.JSON, sendRequest);
     }
 
-    public static FakeSendTarget createTargetDto() {
-        return new FakeSendTarget();
-    }
 
-    static class FakeTemplate implements ChannelTemplate {
-
-        @Override
-        public String compile(SendTarget target) {
-            return null;
-        }
-
-        @Override
-        public String getTitle(SendTarget target) {
-            return null;
-        }
-    }
-
-    static class FakeSendTarget implements TargetDataTransfer {
-
-        @Override
-        public Map<String, Object> extractMessageVariable() {
-            return Map.of("serial_no", UUID.randomUUID().toString());
-        }
-
-        @Override
-        public Map<TargetColumnEnum, String> resolveTargetData() {
-            return Map.of(
-                    TargetColumnEnum.TARGET_KEY, UUID.randomUUID().toString(),
-                    TargetColumnEnum.TARGET_EMAIL, "jang314@naver.com",
-                    TargetColumnEnum.TARGET_NAME, "jang"
-            );
-        }
-    }
 }

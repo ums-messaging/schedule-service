@@ -5,6 +5,7 @@ import com.ums.schedule.code.EnumMapperType;
 
 public enum PasswordHashEnum implements EnumMapperType {
     SHA256("SHA-256","SHA-256");
+
     String value;
     String description;
 
