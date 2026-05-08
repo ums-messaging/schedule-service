@@ -63,7 +63,7 @@ public class SendRequest {
     private CustomerRequestKey customerRequestKey;
 
     @JoinColumn(name = "upload_id")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private TargetUpload currentTargetUpload;
 
     @Getter
