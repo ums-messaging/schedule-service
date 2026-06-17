@@ -1,7 +1,7 @@
 package com.ums.schedule.repository;
 
 import com.ums.schedule.domain.send.group.SendGroupEvent;
-import com.ums.schedule.domain.event.SendRequestEventTestBuilder;
+import com.ums.schedule.domain.send.group.SendGroupTestBuilder;
 import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
@@ -38,7 +38,7 @@ public class SendRequestEventPersistTest {
     void shouldPersist_whenSendRequestEventCreate() {
         SendRequest request = entityManager.getReference(SendRequest.class, requestId);
 
-        SendGroupEvent event = SendRequestEventTestBuilder.builder()
+        SendGroupEvent event = SendGroupTestBuilder.builder()
                 .sendRequest(request).build();
 
         entityManager.persist(event);

@@ -1,7 +1,7 @@
 package com.ums.schedule.repository.mapping.request;
 
 import com.ums.schedule.domain.send.group.SendGroupEvent;
-import com.ums.schedule.domain.event.SendRequestEventTestBuilder;
+import com.ums.schedule.domain.send.group.SendGroupTestBuilder;
 import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
@@ -45,7 +45,7 @@ public class SendRequestEventMappingTest {
         void shouldNotPersistSendRequestFK_whenSetByInverseOnlySide() {
             SendRequest request = entityManager.getReference(SendRequest.class, requestId);
 
-            SendGroupEvent event = SendRequestEventTestBuilder.builder()
+            SendGroupEvent event = SendGroupTestBuilder.builder()
                     .sendRequest(request)
                     .build();
 
@@ -65,7 +65,7 @@ public class SendRequestEventMappingTest {
         void shouldPersistFkSendRequest_whenSetBySendRequestEvent() {
             SendRequest request = entityManager.getReference(SendRequest.class, requestId);
 
-            SendGroupEvent event = SendRequestEventTestBuilder.builder()
+            SendGroupEvent event = SendGroupTestBuilder.builder()
                     .sendRequest(request)
                     .build();
 
@@ -86,7 +86,7 @@ public class SendRequestEventMappingTest {
         @DisplayName("FK인 send_request은 NULL을 허용하지 않는다.")
         void shouldThrowException_whenSendRequestIsNull() {
             SendGroupEvent event =
-                    SendRequestEventTestBuilder.builder()
+                    SendGroupTestBuilder.builder()
                             .sendRequest(null)
                             .build();
 

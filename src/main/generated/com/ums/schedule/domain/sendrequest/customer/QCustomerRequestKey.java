@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEmbeddableSerializer")
 public class QCustomerRequestKey extends BeanPath<CustomerRequestKey> {
 
-    private static final long serialVersionUID = 720559960L;
+    private static final long serialVersionUID = 1600712356L;
 
     public static final QCustomerRequestKey customerRequestKey = new QCustomerRequestKey("customerRequestKey");
 

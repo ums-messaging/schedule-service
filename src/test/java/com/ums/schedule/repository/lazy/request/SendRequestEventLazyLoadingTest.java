@@ -2,7 +2,7 @@ package com.ums.schedule.repository.lazy.request;
 
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.send.group.SendGroupEvent;
-import com.ums.schedule.domain.event.SendRequestEventTestBuilder;
+import com.ums.schedule.domain.send.group.SendGroupTestBuilder;
 import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
@@ -28,7 +28,7 @@ public class SendRequestEventLazyLoadingTest {
     void setUp() {
         Schedule schedule = ScheduleTestBuilder.builder().build();
         SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
-        SendGroupEvent event = SendRequestEventTestBuilder.builder().sendRequest(sendRequest).build();
+        SendGroupEvent event = SendGroupTestBuilder.builder().sendRequest(sendRequest).build();
 
         entityManager.persist(schedule);
         entityManager.persist(sendRequest);

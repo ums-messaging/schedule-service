@@ -1,7 +1,7 @@
 package com.ums.schedule.repository.lazy.channel;
 
 import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
-import com.ums.schedule.domain.send.email.EmailAttachmentBuilder;
+import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachmentBuilder;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;

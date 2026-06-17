@@ -1,7 +1,6 @@
 package com.ums.schedule.application.sendrequest.target.assembler;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.domain.sendrequest.ChannelTemplate;
 import com.ums.schedule.domain.sendrequest.target.code.SendTargetStatusEnum;
 import com.ums.schedule.domain.sendrequest.template.ChannelTemplate;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;

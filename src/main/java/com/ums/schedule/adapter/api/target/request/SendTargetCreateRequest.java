@@ -21,11 +21,11 @@ public record SendTargetCreateRequest(
 
     public Map<TargetColumnEnum, String> resolveTargetData() {
         return Map.of(
-               TARGET_KEY, targetKey,
-               TARGET_NAME, targetName,
-               TARGET_EMAIL, email,
-               TARGET_PHONE, phoneNumber,
-               TARGET_BIRTHDAY, birthday
+                TargetColumnEnum.TARGET_KEY, targetKey,
+                TargetColumnEnum.TARGET_NAME, targetName,
+                TargetColumnEnum.TARGET_EMAIL, email,
+                TargetColumnEnum.TARGET_PHONE, phoneNumber,
+                TargetColumnEnum.TARGET_BIRTHDAY, birthday
         );
     }
 }

@@ -18,8 +18,9 @@ import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriodTestBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.upload.TargetUploadTestBuilder;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -66,27 +67,32 @@ class SendRequestServiceTest {
         doReturn(Optional.ofNullable(givenSchedule)).when(scheduleRepository).findById(any());
         doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
 
-        ValidationException expect = RequiredException.fieldOf("channel type");
+        ValidationException expect = RequiredException.fieldOf("channel_type");
 
         assertThatThrownBy(() -> sendRequestService.create(UUID.randomUUID().toString(), null, request))
                 .isInstanceOf(expect.getClass())
                 .hasMessage(expect.getMessage());
     }
 
-    @Test
-    @DisplayName("스케쥴이 NULL이면 익셉션이 발생한다.")
-    void shouldThrowException_whenScheduleIsNull() {
-        SendRequestCreateRequest request = SendRequestCreateRequestBuilder.builder().build();
+    @Nested
+    @DisplayName("스케쥴 테스트")
+    class WhenSchedule {
+        @Test
+        @DisplayName("스케쥴이 NULL이면 익셉션이 발생한다.")
+        void shouldThrowException_whenScheduleIsNull() {
+            SendRequestCreateRequest request = SendRequestCreateRequestBuilder.builder().build();
 
-        doReturn(Optional.ofNullable(null)).when(scheduleRepository).findById(any());
-        doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
+            doReturn(Optional.ofNullable(null)).when(scheduleRepository).findById(any());
+            doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
 
-        ScheduleNotFoundException expect = ScheduleNotFoundException.of();
+            ScheduleNotFoundException expect = ScheduleNotFoundException.of();
 
-        assertThatThrownBy(() -> sendRequestService.create(UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL, request))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+            assertThatThrownBy(() -> sendRequestService.create(UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL, request))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
     }
+
 
     @Test
     @DisplayName("스케쥴 상태가 비활성화 상태이면 예외가 발생한다.")
@@ -137,5 +143,11 @@ class SendRequestServiceTest {
         sendRequestService.create(UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL, request);
 
         verify(targetUploadService).create(any(),any(), any());
+    }
+
+    @Test
+    @DisplayName("sendRequest가 저장된다.")
+    void shouldSaveSendRequest() {
+
     }
 }
