@@ -1,12 +1,12 @@
 package com.ums.schedule.repository.constraint.target;
 
-import com.ums.schedule.code.send.TargetUploadStatusEnum;
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadStatusEnum;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.target.upload.TargetUpload;
-import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.sendrequest.upload.TargetUploadTestBuilder;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,13 +40,13 @@ public class TargetUploadDefaultConstraintTest {
     @DisplayName("status의 기본 값은 CREATE이다.")
     void shouldReturnStatusIsCreate_whenStatusIsNull() {
         SendRequest sendRequest = entityManager.getReference(SendRequest.class, requestId);
-        TargetUpload targetUpload = TargetUploadTestBuilder.builder()
+        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
                 .sendRequest(sendRequest)
                 .uploadStatus(null).build();
 
         entityManager.persist(targetUpload);
 
-        assertThat(targetUpload.getStatus()).isEqualTo(TargetUploadStatusEnum.CREATED);
+        assertThat(targetUpload.getState().getCurrentCode()).isEqualTo(TargetUploadStatusEnum.CREATED);
 
     }
 
@@ -54,7 +54,7 @@ public class TargetUploadDefaultConstraintTest {
     @DisplayName("created_at의 기본 값은 현재 시각이다.")
     void shouldReturnCurrentTime_whenCreatedAtIsNull() {
         SendRequest sendRequest = entityManager.getReference(SendRequest.class, requestId);
-        TargetUpload targetUpload = TargetUploadTestBuilder.builder()
+        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
                 .sendRequest(sendRequest)
                 .createdAt(null)
                 .build();

@@ -1,13 +1,13 @@
 package com.ums.schedule.repository.constraint.target;
 
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.target.SendTargetTestBuilder;
-import com.ums.schedule.domain.target.upload.TargetUpload;
-import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.sendrequest.upload.TargetUploadTestBuilder;
 import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -32,7 +32,7 @@ public class SendTargetUniqueConstraintTest {
     void setUp() {
         Schedule schedule = ScheduleTestBuilder.builder().build();
         SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
-        TargetUpload targetUpload = TargetUploadTestBuilder.builder().sendRequest(sendRequest).build();
+        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(sendRequest).build();
         SendTarget target = SendTargetTestBuilder.builder().targetUpload(targetUpload)
                 .contact("jang314@naver.com")
                 .targetKey("test")
@@ -51,7 +51,7 @@ public class SendTargetUniqueConstraintTest {
     @Test
     @DisplayName("upload_id와 contact가 중복되면 익셉션이 발생한다.")
     void shouldThrowException_whenUploadIdAndContactAreDuplicated(){
-        TargetUpload targetUpload = entityManager.getReference(TargetUpload.class, uploadId);
+        TargetUploadReport targetUpload = entityManager.getReference(TargetUploadReport.class, uploadId);
         SendTarget target = SendTargetTestBuilder.builder()
                 .targetUpload(targetUpload)
                 .targetKey("test2")
@@ -69,7 +69,7 @@ public class SendTargetUniqueConstraintTest {
     @Test
     @DisplayName("upload_id와 target_key가 중복되면 익셉션이 발생한다.")
     void shouldThrowException_whenUploadIdAndTargetKeyAreDuplicated() {
-        TargetUpload targetUpload = entityManager.getReference(TargetUpload.class, uploadId);
+        TargetUploadReport targetUpload = entityManager.getReference(TargetUploadReport.class, uploadId);
         SendTarget sendTarget = SendTargetTestBuilder.builder().targetUpload(targetUpload)
                 .contact("jang315@naver.com")
                 .targetKey("test").build();
@@ -87,7 +87,7 @@ public class SendTargetUniqueConstraintTest {
     @Test
     @DisplayName("target_key와 contact가 중복되지 않으면 저장된다.")
     void shouldPersist_whenTargetKeyAndContactAreNotDuplicated() {
-        TargetUpload targetUpload = entityManager.getReference(TargetUpload.class, uploadId);
+        TargetUploadReport targetUpload = entityManager.getReference(TargetUploadReport.class, uploadId);
         SendTarget sendTarget = SendTargetTestBuilder.builder().targetUpload(targetUpload)
                 .contact("jang315@naver.com")
                 .targetKey("test1").build();

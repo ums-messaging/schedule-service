@@ -1,6 +1,8 @@
 package com.ums.schedule.repository.mapping.request;
 
-import com.ums.schedule.domain.request.*;
+import com.ums.schedule.domain.send.group.SendGroupEvent;
+import com.ums.schedule.domain.event.SendRequestEventTestBuilder;
+import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import jakarta.persistence.EntityManager;
@@ -43,7 +45,7 @@ public class SendRequestEventMappingTest {
         void shouldNotPersistSendRequestFK_whenSetByInverseOnlySide() {
             SendRequest request = entityManager.getReference(SendRequest.class, requestId);
 
-            SendRequestEvent event = SendRequestEventTestBuilder.builder()
+            SendGroupEvent event = SendRequestEventTestBuilder.builder()
                     .sendRequest(request)
                     .build();
 
@@ -51,7 +53,7 @@ public class SendRequestEventMappingTest {
             entityManager.flush();
             entityManager.clear();
 
-            List<SendRequestEvent> expect = entityManager.createQuery("select s from SendRequestEvent s where s.sendRequest.id = :id", SendRequestEvent.class)
+            List<SendGroupEvent> expect = entityManager.createQuery("select s from SendGroupEvent s where s.sendRequest.id = :id", SendGroupEvent.class)
                     .setParameter("id", requestId)
                     .getResultList();
 
@@ -63,7 +65,7 @@ public class SendRequestEventMappingTest {
         void shouldPersistFkSendRequest_whenSetBySendRequestEvent() {
             SendRequest request = entityManager.getReference(SendRequest.class, requestId);
 
-            SendRequestEvent event = SendRequestEventTestBuilder.builder()
+            SendGroupEvent event = SendRequestEventTestBuilder.builder()
                     .sendRequest(request)
                     .build();
 
@@ -72,8 +74,8 @@ public class SendRequestEventMappingTest {
             entityManager.clear();
 
 
-            List<SendRequestEvent> expect = entityManager
-                    .createQuery("select s from SendRequestEvent s where s.sendRequest.id = :id", SendRequestEvent.class)
+            List<SendGroupEvent> expect = entityManager
+                    .createQuery("select s from SendGroupEvent s where s.sendRequest.id = :id", SendGroupEvent.class)
                     .setParameter("id", requestId)
                     .getResultList();
 
@@ -83,7 +85,7 @@ public class SendRequestEventMappingTest {
         @Test
         @DisplayName("FK인 send_request은 NULL을 허용하지 않는다.")
         void shouldThrowException_whenSendRequestIsNull() {
-            SendRequestEvent event =
+            SendGroupEvent event =
                     SendRequestEventTestBuilder.builder()
                             .sendRequest(null)
                             .build();

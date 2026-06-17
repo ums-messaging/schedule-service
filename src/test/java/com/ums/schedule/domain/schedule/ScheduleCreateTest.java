@@ -1,16 +1,16 @@
 package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
-import com.ums.schedule.code.schedule.ScheduleEventEnum;
-import com.ums.schedule.domain.schedule.cycle_policy.ReservationPolicyValue;
-import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
+import com.ums.schedule.domain.schedule.code.ScheduleEventEnum;
+import com.ums.schedule.common.exception.validation.RequiredException;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
+import com.ums.schedule.domain.schedule.policy.cycle.ReservationPolicyValue;
+import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
-import com.ums.schedule.domain.schedule.exception.ScheduleNameRequiredException;
-import com.ums.schedule.domain.schedule.period.SchedulePeriod;
-import com.ums.schedule.domain.schedule.period.SchedulePeriodTestBuilder;
-import com.ums.schedule.domain.state.schedule.ScheduleActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleInActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleRunningStatus;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriodTestBuilder;
+import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,7 +42,7 @@ class ScheduleCreateTest {
         void shouldThrowException_whenScheduleNameIsEmpty() {
             ScheduleCreateCommand command = ScheduleTestBuilder.builder().scheduleName("").toCommand();
 
-            ScheduleNameRequiredException expect = ScheduleNameRequiredException.of();
+            RequiredException expect = RequiredException.fieldOf("schedule name");
 
             assertThatThrownBy(() -> Schedule.of(command, ScheduleCyclePolicy.realtimeOf()))
                     .isInstanceOf(expect.getClass())

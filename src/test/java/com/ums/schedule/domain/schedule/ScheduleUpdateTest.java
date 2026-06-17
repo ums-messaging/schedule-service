@@ -1,14 +1,14 @@
 package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
+import com.ums.schedule.common.exception.validation.RequiredException;
 import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
 import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
-import com.ums.schedule.domain.schedule.exception.ScheduleNameRequiredException;
-import com.ums.schedule.domain.schedule.period.SchedulePeriod;
-import com.ums.schedule.domain.schedule.period.SchedulePeriodTestBuilder;
-import com.ums.schedule.domain.state.schedule.ScheduleActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleInActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleRunningStatus;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriodTestBuilder;
+import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -81,7 +81,7 @@ public class ScheduleUpdateTest {
 
         ScheduleUpdateCommand command = ScheduleTestBuilder.builder().scheduleName(" ").toUpdateCommand();
 
-        ScheduleNameRequiredException expect = ScheduleNameRequiredException.of();
+        RequiredException expect = RequiredException.fieldOf("schedule name");
 
         assertThatThrownBy(() -> schedule.update(command))
                 .isInstanceOf(expect.getClass())

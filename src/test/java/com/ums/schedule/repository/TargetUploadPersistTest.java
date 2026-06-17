@@ -1,12 +1,11 @@
 package com.ums.schedule.repository;
 
-import com.ums.schedule.code.send.TargetUploadTypeEnum;
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.target.upload.TargetUpload;
-import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.sendrequest.upload.TargetUploadTestBuilder;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,33 +19,40 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class TargetUploadPersistTest {
     @Autowired private EntityManager entityManager;
-    private Long requestId;
+    private Long scheduleId;
 
     @BeforeEach
     void setUp() {
         Schedule schedule = ScheduleTestBuilder.builder().build();
-        SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
         entityManager.persist(schedule);
-        entityManager.persist(sendRequest);
         entityManager.flush();
-
-        this.requestId = sendRequest.getId();
+        scheduleId = schedule.getId();
         entityManager.clear();
     }
 
     @Test
     @DisplayName("target_upload 생성 시 저장된다.")
     void shouldPersist_whenTargetUploadCreate() {
-        SendRequest request = entityManager.getReference(SendRequest.class, requestId);
-        TargetUpload targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
+        Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
+        TargetUploadReport targetUploadReport = TargetUploadTestBuilder.builder().id(null).build();
+        SendRequest sendRequest = SendRequestTestBuilder.builder()
+                .id(null)
+                .schedule(schedule)
+                .currentTargetUpload(targetUploadReport)
+                .build();
 
-        entityManager.persist(targetUpload);
+        targetUploadReport.assignSendRequest(sendRequest);
+
+        entityManager.persist(sendRequest);
         entityManager.flush();
 
-        Long uploadId = targetUpload.getUploadId();
+        Long requestId = sendRequest.getId();
         entityManager.clear();
 
-        TargetUpload expect = entityManager.find(TargetUpload.class, uploadId);
-        assertThat(expect.getUploadId()).isNotNull();
+        SendRequest findSendRequest = entityManager.find(SendRequest.class, requestId);
+        assertThat(findSendRequest.getCurrentTargetUpload()).isNotNull();
+
+        TargetUploadReport findTargetUpload = findSendRequest.getCurrentTargetUpload();
+        assertThat(findTargetUpload.getSendRequest()).isNotNull();
     }
 }

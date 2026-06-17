@@ -1,7 +1,7 @@
 package com.ums.schedule.repository.constraint.request;
 
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import com.ums.schedule.repository.DbErrorMessage;

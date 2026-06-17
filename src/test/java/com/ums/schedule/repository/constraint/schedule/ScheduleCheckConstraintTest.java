@@ -1,22 +1,17 @@
 package com.ums.schedule.repository.constraint.schedule;
 
-import com.ums.schedule.code.schedule.ScheduleStatusEnum;
-import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleRepository;
-import com.ums.schedule.fixture.ScheduleDomainFixture;
-import com.ums.schedule.fixture.field.ScheduleField;
+import com.ums.schedule.domain.schedule.ScheduleJpaRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 public class ScheduleCheckConstraintTest {
-    @Autowired private ScheduleRepository scheduleRepository;
+    @Autowired private ScheduleJpaRepository scheduleRepository;
 
     @Nested
     @DisplayName("status 허용 범위 테스트")

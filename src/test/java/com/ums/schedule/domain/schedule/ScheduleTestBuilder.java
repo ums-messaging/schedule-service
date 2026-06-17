@@ -2,12 +2,12 @@ package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
 import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
-import com.ums.schedule.code.schedule.ScheduleStatusEnum;
-import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
-import com.ums.schedule.domain.schedule.period.SchedulePeriod;
-import com.ums.schedule.domain.schedule.period.SchedulePeriodTestBuilder;
-import com.ums.schedule.domain.state.schedule.ScheduleRunningStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleStatus;
+import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
+import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriodTestBuilder;
+import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

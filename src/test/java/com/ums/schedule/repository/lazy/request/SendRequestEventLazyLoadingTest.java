@@ -1,9 +1,9 @@
 package com.ums.schedule.repository.lazy.request;
 
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestEvent;
-import com.ums.schedule.domain.request.SendRequestEventTestBuilder;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.send.group.SendGroupEvent;
+import com.ums.schedule.domain.event.SendRequestEventTestBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import jakarta.persistence.EntityManager;
@@ -28,7 +28,7 @@ public class SendRequestEventLazyLoadingTest {
     void setUp() {
         Schedule schedule = ScheduleTestBuilder.builder().build();
         SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
-        SendRequestEvent event = SendRequestEventTestBuilder.builder().sendRequest(sendRequest).build();
+        SendGroupEvent event = SendRequestEventTestBuilder.builder().sendRequest(sendRequest).build();
 
         entityManager.persist(schedule);
         entityManager.persist(sendRequest);
@@ -46,7 +46,7 @@ public class SendRequestEventLazyLoadingTest {
         @Test
         @DisplayName("send_request_event 조회 시 send_request는 조회되지 않는다.")
         void shouldNotLoadSendRequest_whenFindSendRequestEvent() {
-            SendRequestEvent event = entityManager.find(SendRequestEvent.class, eventId);
+            SendGroupEvent event = entityManager.find(SendGroupEvent.class, eventId);
 
             assertThat(Hibernate.isInitialized(event.getSendRequest()))
                     .isFalse();
@@ -55,7 +55,7 @@ public class SendRequestEventLazyLoadingTest {
         @Test
         @DisplayName("send_request_event 조회 시 send_request에 접근하면 쿼리가 실행된다.")
         void shouldLoadSendRequest_whenGetSendRequest() {
-            SendRequestEvent event = entityManager.find(SendRequestEvent.class, eventId);
+            SendGroupEvent event = entityManager.find(SendGroupEvent.class, eventId);
 
             event.getSendRequest().getChannelType();
 
@@ -66,7 +66,7 @@ public class SendRequestEventLazyLoadingTest {
         @Test
         @DisplayName("트랜잭션 밖에서 Lazy 접근 시 예외가 발생한다.")
         void shouldThrowLazyInitializationException_whenGetSendRequestOutsideTransaction() {
-            SendRequestEvent event = entityManager.find(SendRequestEvent.class, eventId);
+            SendGroupEvent event = entityManager.find(SendGroupEvent.class, eventId);
 
             entityManager.clear();
 

@@ -1,15 +1,12 @@
 package com.ums.schedule.repository.mapping.channel;
 
-import com.ums.schedule.domain.channel.email.EmailSendRequest;
-import com.ums.schedule.domain.channel.email.EmailSendRequestTestBuilder;
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
+import com.ums.schedule.domain.send.email.EmailAttachmentBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.fixture.field.EmailSendRequestField;
-import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;
-import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.id.IdentifierGenerationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +43,7 @@ public class EmailSendRequestMappingTest {
             Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
             SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
 
-            EmailSendRequestTestBuilder.builder().sendRequest(sendRequest).build();
+            EmailAttachmentBuilder.builder().sendRequest(sendRequest).build();
 
             entityManager.persist(sendRequest);
             entityManager.flush();
@@ -54,7 +51,7 @@ public class EmailSendRequestMappingTest {
             Long id = sendRequest.getId();
             entityManager.clear();
 
-            EmailSendRequest expect = entityManager.find(EmailSendRequest.class, id);
+            EmailAttachment expect = entityManager.find(EmailAttachment.class, id);
             assertThat(expect).isNull();
         }
 
@@ -64,7 +61,7 @@ public class EmailSendRequestMappingTest {
             Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
             SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
 
-            EmailSendRequest emailSendRequest = EmailSendRequestTestBuilder.builder().sendRequest(sendRequest).build();
+            EmailAttachment emailSendRequest = EmailAttachmentBuilder.builder().sendRequest(sendRequest).build();
 
             entityManager.persist(emailSendRequest);
             entityManager.flush();
@@ -72,14 +69,14 @@ public class EmailSendRequestMappingTest {
             Long id = sendRequest.getId();
             entityManager.clear();
 
-            EmailSendRequest expect = entityManager.find(EmailSendRequest.class, id);
+            EmailAttachment expect = entityManager.find(EmailAttachment.class, id);
             assertThat(expect.getId()).isNotNull();
         }
 
         @Test
         @DisplayName("FK인 send_request은 NULL을 허용하지 않는다.")
         void shouldThrowException_whenSendRequestIsNull() {
-            EmailSendRequest emailSendRequest = EmailSendRequestTestBuilder.builder()
+            EmailAttachment emailSendRequest = EmailAttachmentBuilder.builder()
                     .sendRequest(null).build();
 
             assertThatThrownBy(() -> {

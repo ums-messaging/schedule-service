@@ -1,8 +1,9 @@
 package com.ums.schedule.domain.target;
 
-import com.ums.schedule.code.send.SendTargetStatusEnum;
-import com.ums.schedule.domain.target.state.SendTargetState;
-import com.ums.schedule.domain.target.upload.TargetUpload;
+import com.ums.schedule.domain.sendrequest.target.SendTarget;
+import com.ums.schedule.domain.sendrequest.target.code.SendTargetStatusEnum;
+import com.ums.schedule.domain.sendrequest.target.state.SendTargetState;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -13,12 +14,13 @@ public class SendTargetTestBuilder {
     private String targetKey = UUID.randomUUID().toString();
     private String targetName = "jang";
     private String contact="jang314@naver.com";
+    private String resourceJson;
     private String messageVariable;
     private SendTargetStatusEnum status = SendTargetStatusEnum.READY;
     private Integer attemptNo = 1;
     private String title = "title";
     private String content = "content";
-    private TargetUpload targetUpload;
+    private TargetUploadReport targetUpload;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime lastUploadedAt;
     private SendTargetState state;
@@ -53,7 +55,7 @@ public class SendTargetTestBuilder {
         return this;
     }
 
-    public SendTargetTestBuilder targetUpload(TargetUpload targetUpload) {
+    public SendTargetTestBuilder targetUpload(TargetUploadReport targetUpload) {
         this.targetUpload = targetUpload;
         return this;
     }
@@ -66,7 +68,8 @@ public class SendTargetTestBuilder {
         return this;
     }
     public SendTarget build() {
-        return new SendTarget(null,
+        return new SendTarget(
+                UUID.randomUUID(),
                 targetKey,
                 targetName,
                 contact,
@@ -75,11 +78,11 @@ public class SendTargetTestBuilder {
                 attemptNo,
                 title,
                 content,
+                resourceJson,
                 targetUpload,
                 createdAt,
                 lastUploadedAt,
-                state,
-                dataParam);
+                state);
     }
 
 

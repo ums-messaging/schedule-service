@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.schedule;
 
-import com.ums.schedule.domain.schedule.period.SchedulePeriod;
 import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -97,7 +97,7 @@ public class SchedulePeriodTest {
         LocalDateTime givenAt = scheduleStartAt.minusDays(1);
 
         SchedulePeriod schedulePeriod = SchedulePeriod.of(scheduleStartAt.format(formatter), scheduleEndAt.format(formatter));
-        boolean expect = schedulePeriod.isScheduleWindow(givenAt);
+        boolean expect = schedulePeriod.contains(givenAt);
 
         assertThat(expect).isFalse();
     }
@@ -110,7 +110,7 @@ public class SchedulePeriodTest {
         LocalDateTime givenAt = scheduleEndAt.plusDays(1);
 
         SchedulePeriod schedulePeriod = SchedulePeriod.of(scheduleStartAt.format(formatter), scheduleEndAt.format(formatter));
-        boolean expect = schedulePeriod.isScheduleWindow(givenAt);
+        boolean expect = schedulePeriod.contains(givenAt);
 
         assertThat(expect).isFalse();
     }
@@ -122,7 +122,7 @@ public class SchedulePeriodTest {
         LocalDate scheduleEndAt = scheduleStartAt.plusDays(1);
 
         SchedulePeriod schedulePeriod = SchedulePeriod.of(scheduleStartAt.format(formatter), scheduleEndAt.format(formatter));
-        boolean expect = schedulePeriod.isScheduleWindow(LocalDateTime.now());
+        boolean expect = schedulePeriod.contains(LocalDateTime.now());
 
         assertThat(expect).isTrue();
     }

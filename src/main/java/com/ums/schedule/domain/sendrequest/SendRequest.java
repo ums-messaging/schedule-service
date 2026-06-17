@@ -1,0 +1,246 @@
+package com.ums.schedule.domain.sendrequest;
+
+import com.github.f4b6a3.tsid.TsidCreator;
+import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
+import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
+import com.ums.schedule.common.code.mapper.EnumMapperValue;
+import com.ums.schedule.common.util.FileUtil;
+import com.ums.schedule.common.util.ValidationUtils;
+import com.ums.schedule.domain.sendrequest.code.SendRequestEventEnum;
+import com.ums.schedule.domain.send.email.job.SendJob;
+import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
+import com.ums.schedule.domain.sendrequest.converter.ChannelTypeConverter;
+import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
+import com.ums.schedule.domain.sendrequest.state.SendRequestCreateState;
+import com.ums.schedule.domain.sendrequest.state.SendRequestState;
+import com.ums.schedule.domain.sendrequest.converter.SendRequestStateConverter;
+import com.ums.schedule.domain.schedule.exception.ScheduleNotFoundException;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.schedule.Schedule;
+import com.ums.schedule.domain.sendrequest.target.upload.exception.InvalidTargetUploadReportMismatchException;
+import com.ums.schedule.domain.sendrequest.target.upload.exception.TargetUploadReportNotFoundException;
+import io.hypersistence.utils.hibernate.id.Tsid;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+@Entity
+@Table(name = "send_request", uniqueConstraints = {
+            @UniqueConstraint(
+                    name="uq_customer_request",
+                    columnNames = {"customer_id", "customer_request_id"}
+            )})
+@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class SendRequest {
+    @Id
+    @Tsid
+    @Column(name = "send_request_id")
+    private Long id;
+
+    @Column(name = "retry_cnt", nullable = false)
+    private Integer retryCnt;
+
+    @Column(name = "sender_key", nullable = false)
+    private String senderKey;
+
+    @Column(name = "template_key", nullable = false)
+    private String templateKey;
+
+    @Column(name = "channel_type", nullable = false)
+    @Convert(converter = ChannelTypeConverter.class)
+    private ChannelTypeEnum channelType;
+
+    @Convert(converter = SendRequestStateConverter.class)
+    @Column(name = "status", nullable = false, columnDefinition = "varchar(10) default 'CREATE'")
+    private SendRequestState state;
+
+    @Transient
+    private SendRequestEventEnum event;
+
+    @Embedded
+    private CustomerRequestKey customerRequestKey;
+
+    @JoinColumn(name = "upload_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private TargetUploadReport currentTargetUpload;
+
+    @Getter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime requestedAt;
+    private LocalDateTime sendStartedAt;
+    private LocalDateTime sendCompletedAt;
+
+    public static SendRequest of(Schedule schedule, EnumMapperValue channelType, CustomerRequestKey customerKey, SendRequestCreateCommand command) {
+        SendRequest request = new SendRequest();
+        request.assignChannelType(channelType);
+        request.assignCustomerKey(customerKey, command.exists());
+        request.assignSchedule(schedule);
+        request.assignSenderAndTemplate(command.senderKey(), command.templateKey());
+        request.initializeRetryCount(command.retryCnt());
+        request.initializeStatusAndEvent();
+        request.initializeCreateAt();
+        return request;
+    }
+
+    private void assignChannelType(EnumMapperValue channelType) {
+        ValidationUtils.isEmpty("channel_type", channelType);
+        this.channelType = ChannelTypeEnum.valueOf(channelType.code());
+    }
+
+    private void assignCurrentTargetUploadReport(TargetUploadReport targetUploadReport) {
+        if(targetUploadReport == null) {
+            TargetUploadReportNotFoundException.of();
+        }
+        this.currentTargetUpload = targetUploadReport;
+    }
+
+    protected SendRequest() {
+        this.id = TsidCreator.getTsid().toLong();
+    }
+
+
+    private void initializeStatusAndEvent() {
+        this.event = SendRequestEventEnum.SEND_REQUEST_CREATED;
+        changeStatus(new SendRequestCreateState());
+    }
+    private void assignSenderAndTemplate(String senderKey, String templateKey) {
+        assignSender(senderKey);
+        assignTemplate(templateKey);
+    }
+    private void assignSender(String senderKey) {
+        ValidationUtils.isEmpty("sender_key", senderKey);
+        this.senderKey = senderKey;
+    }
+
+    private void assignTemplate(String templateKey) {
+        ValidationUtils.isEmpty("template_key", templateKey);
+        this.templateKey = templateKey;
+    }
+
+    private void initializeRetryCount(Integer retryCount) {
+        this.retryCnt = (retryCount == null) ? 3 : retryCount;
+    }
+
+    private void initializeCreateAt() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    private void assignSchedule(Schedule schedule) {
+        checkScheduleExists(schedule);
+        schedule.checkScheduleAvailability();
+        this.schedule = schedule;
+    }
+
+    private void checkScheduleExists(Schedule schedule){
+        if(schedule == null) {
+            throw ScheduleNotFoundException.of();
+        }
+    }
+
+    private void assignCustomerKey(CustomerRequestKey customerRequestKey, boolean exists) {
+        customerRequestKey.validateDuplicateKey(exists);
+        this.customerRequestKey = customerRequestKey;
+    }
+
+    public SendRequest updateSendRequest(Schedule schedule, TargetUploadReport targetUpload, SendRequestUpdateCommand command) {
+        updateStateByTargetUploadReport(targetUpload);
+        assignSchedule(Optional.ofNullable(schedule).orElse(this.schedule));
+        updateStateByTargetUploadReport(targetUpload);
+        assignSenderAndTemplate(command.senderKey(), command.templateKey());
+        initializeRetryCount(command.retryCount());
+        return this;
+    }
+
+    public void updateStateByTargetUploadReport(TargetUploadReport targetUpload) {
+        onEvent(SendRequestEventEnum.SEND_REQUEST_UPDATED);
+        if(targetUpload != null) {
+            if(targetUpload.isCompleted()) {
+                onEvent(SendRequestEventEnum.SEND_REQUEST_READY);
+            }
+            assignTargetUpload(targetUpload);
+        }
+    }
+
+    public void requestSend(Long totalTargetCount) {
+        initializeRequestedAt();
+        schedule.checkExecutableSchedule(this.requestedAt);
+        onEvent(SendRequestEventEnum.SEND_REQUEST_REQUESTED);
+    }
+
+    private void initializeRequestedAt() {
+        this.requestedAt = LocalDateTime.now();
+    }
+
+    public SendRequestEventEnum onEvent(SendRequestEventEnum event) {
+        SendRequestState toState = this.state.onEvent(event);
+        changeStatus(toState);
+        this.event = event;
+        return event;
+    }
+
+    private void changeStatus(SendRequestState toState) {
+        this.state = toState;
+    }
+
+    public void assignTargetUpload(TargetUploadReport targetUpload) {
+        if (targetUpload == null) {
+            throw TargetUploadReportNotFoundException.of();
+        }
+        this.currentTargetUpload = targetUpload;
+    }
+
+    public SendJob createSendJob() {
+        return SendJob.of(this, schedule, currentTargetUpload);
+    }
+
+    public String generateRequestUploadDir(ChannelTypeEnum channelType) {
+        String customerId = customerRequestKey.getCustomerId();
+        return FileUtil.generateFilePaths(customerId, channelType.code().toLowerCase());
+    }
+
+    public void prepareForUpload(TargetUploadReport targetUploadReport) {
+        if(this.currentTargetUpload != null) {
+            validateCurrentTargetUploadReport(targetUploadReport);
+            if(isValidTargetUploadState(targetUploadReport)) {
+                onEvent(SendRequestEventEnum.SEND_REQUEST_UPDATED);
+                return;
+            }
+        }
+        throw TargetUploadReportNotFoundException.of();
+    }
+
+    public void readyForSendRequest(TargetUploadReport targetUploadReport) {
+        validateCurrentTargetUploadReport(targetUploadReport);
+        if(targetUploadReport.isCompleted()) {
+            onEvent(SendRequestEventEnum.SEND_REQUEST_READY);
+        }
+    }
+
+    private boolean isValidTargetUploadState(TargetUploadReport targetUploadReport) {
+        return targetUploadReport.isReadyForUpload();
+    }
+
+    private void validateCurrentTargetUploadReport(TargetUploadReport targetUploadReport) {
+        if(!isEqualToCurrentTargetUpload(targetUploadReport)) {
+            throw InvalidTargetUploadReportMismatchException.of(this.currentTargetUpload.getUploadId(), targetUploadReport.getUploadId());
+        }
+    }
+
+    private boolean isEqualToCurrentTargetUpload(TargetUploadReport targetUploadReport) {
+        return this.currentTargetUpload == targetUploadReport;
+    }
+
+    public Long getCurrentUploadId() {
+        return this.currentTargetUpload.getUploadId();
+    }
+
+}

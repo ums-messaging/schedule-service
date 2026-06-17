@@ -2,9 +2,9 @@ package com.ums.schedule.repository;
 
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.state.schedule.ScheduleActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleInActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleRunningStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

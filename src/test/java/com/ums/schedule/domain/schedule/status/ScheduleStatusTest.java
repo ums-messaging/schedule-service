@@ -1,8 +1,8 @@
 package com.ums.schedule.domain.schedule.status;
 
-import com.ums.schedule.domain.state.schedule.ScheduleActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleRunningStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

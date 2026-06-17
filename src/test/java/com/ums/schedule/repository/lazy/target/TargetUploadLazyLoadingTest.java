@@ -1,11 +1,11 @@
 package com.ums.schedule.repository.lazy.target;
 
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.target.upload.TargetUpload;
-import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.sendrequest.upload.TargetUploadTestBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
@@ -28,7 +28,7 @@ public class TargetUploadLazyLoadingTest {
     void setUp() {
         Schedule schedule = ScheduleTestBuilder.builder().build();
         SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).build();
-        TargetUpload targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
+        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
 
         entityManager.persist(schedule);
         entityManager.persist(request);
@@ -46,7 +46,7 @@ public class TargetUploadLazyLoadingTest {
         @Test
         @DisplayName("target_upload 조회 시 send_request는 조회되지 않는다.")
         void shouldNotLoadSendRequest_whenFindSendRequestEvent() {
-            TargetUpload targetUpload = entityManager.find(TargetUpload.class, uploadId);
+            TargetUploadReport targetUpload = entityManager.find(TargetUploadReport.class, uploadId);
 
             assertThat(Hibernate.isInitialized(targetUpload.getSendRequest()))
                     .isFalse();
@@ -55,7 +55,7 @@ public class TargetUploadLazyLoadingTest {
         @Test
         @DisplayName("target_upload 조회 시 send_request에 접근하면 쿼리가 실행된다.")
         void shouldLoadSendRequest_whenGetSendRequest() {
-            TargetUpload targetUpload = entityManager.find(TargetUpload.class, uploadId);
+            TargetUploadReport targetUpload = entityManager.find(TargetUploadReport.class, uploadId);
 
             targetUpload.getSendRequest().getChannelType();
 
@@ -66,7 +66,7 @@ public class TargetUploadLazyLoadingTest {
         @Test
         @DisplayName("트랜잭션 밖에서 Lazy 접근 시 예외가 발생한다.")
         void shouldThrowLazyInitializationException_whenGetSendRequestOutsideTransaction() {
-            TargetUpload targetUpload = entityManager.find(TargetUpload.class, uploadId);
+            TargetUploadReport targetUpload = entityManager.find(TargetUploadReport.class, uploadId);
 
             entityManager.clear();
 

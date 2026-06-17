@@ -1,11 +1,11 @@
 package com.ums.schedule.domain.schedule.status;
 
-import com.ums.schedule.code.schedule.ScheduleEventEnum;
-import com.ums.schedule.code.schedule.ScheduleStatusEnum;
+import com.ums.schedule.domain.schedule.code.ScheduleEventEnum;
+import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
 import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
-import com.ums.schedule.domain.state.StatusState;
-import com.ums.schedule.domain.state.schedule.ScheduleActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleStatus;
+import com.ums.schedule.common.converter.StatusState;
+import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

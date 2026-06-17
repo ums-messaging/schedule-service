@@ -1,8 +1,8 @@
 package com.ums.schedule.application.schedule.factory.cycle_policy;
 
-import com.ums.schedule.code.EnumMapperSelector;
-import com.ums.schedule.domain.schedule.cycle_policy.SchedulePolicyValue;
-import com.ums.schedule.domain.schedule.exception.InvalidNumberFormatException;
+import com.ums.schedule.common.code.mapper.EnumMapperSelector;
+import com.ums.schedule.domain.schedule.policy.cycle.SchedulePolicyValue;
+import com.ums.schedule.common.exception.validation.InvalidNumberFormatException;
 
 public interface CyclePolicy extends EnumMapperSelector  {
     SchedulePolicyValue create(int cycleValue);

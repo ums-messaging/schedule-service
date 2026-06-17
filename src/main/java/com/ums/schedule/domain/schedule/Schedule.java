@@ -2,20 +2,20 @@ package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
 import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
-import com.ums.schedule.code.schedule.ScheduleEventEnum;
+import com.ums.schedule.domain.schedule.code.ScheduleEventEnum;
+import com.ums.schedule.common.exception.validation.RequiredException;
 import com.ums.schedule.domain.schedule.converter.ScheduleStatusConverter;
-import com.ums.schedule.code.schedule.ScheduleStatusEnum;
-import com.ums.schedule.code.schedule.ScheduleTypeEnum;
-import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
+import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
+import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
+import com.ums.schedule.domain.schedule.exception.ScheduleNotExecutableException;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
+import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
 import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
 import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
-import com.ums.schedule.domain.schedule.exception.ScheduleNameRequiredException;
-import com.ums.schedule.domain.schedule.period.SchedulePeriod;
-import com.ums.schedule.domain.state.StatusState;
-import com.ums.schedule.domain.state.schedule.ScheduleActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleInActiveStatus;
-import com.ums.schedule.domain.state.schedule.ScheduleStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -78,13 +77,13 @@ public class Schedule {
 
     private void applyScheduleName(String scheduleName) {
         if(!StringUtils.hasText(scheduleName.trim())) {
-            throw ScheduleNameRequiredException.of();
+            throw RequiredException.fieldOf("schedule name");
         }
         this.name = scheduleName;
     }
 
     public boolean availableSchedulePeriodAndStatus() {
-        return this.status == ScheduleStatusEnum.RUNNING && this.schedulePeriod.isScheduleWindow(LocalDateTime.now());
+        return this.status == ScheduleStatusEnum.RUNNING && this.schedulePeriod.contains(LocalDateTime.now());
     }
 
     private void applyScheduleCyclePolicy(ScheduleCyclePolicy cyclePolicy) {
@@ -95,7 +94,7 @@ public class Schedule {
     private void validateSchedulePeriodToReservationDate(ScheduleCyclePolicy cyclePolicy) {
         if(cyclePolicy.getScheduleType() == ScheduleTypeEnum.RESERVATION) {
             LocalDateTime reservationDate = getParseReservationDate(cyclePolicy);
-            if(!schedulePeriod.isScheduleWindow(reservationDate)) {
+            if(!schedulePeriod.contains(reservationDate)) {
                 throw InvalidCycleValueException.compareToReservationDate();
             }
         }
@@ -151,6 +150,28 @@ public class Schedule {
         if(this.scheduleStatus.isRunning()) {
             throw InvalidScheduleStatusException.invalidStatus();
         }
+    }
+
+    public void checkScheduleAvailability() {
+        if(this.scheduleStatus.isInActive()) {
+            throw ScheduleNotExecutableException.inActiveOf();
+        }
+        if(schedulePeriod.isExpired()) {
+            throw ScheduleNotExecutableException.expiredOf();
+        }
+    }
+
+    public void checkExecutableSchedule(LocalDateTime requestedAt) {
+        if(!isExecutable(requestedAt)) {
+            throw InvalidScheduleStatusException.notRunning();
+        }
+
+    }
+
+    private boolean isExecutable(LocalDateTime requestedAt) {
+        return schedulePeriod.contains(requestedAt) &&
+                this.scheduleStatus.isRunning() &&
+                cyclePolicy.satisfiedCyclePolicy(requestedAt);
     }
 
 }

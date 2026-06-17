@@ -1,29 +1,11 @@
 package com.ums.schedule.template.application.assembler;
 
-import com.ums.schedule.code.EnumMapperFactory;
-import com.ums.schedule.application.channel.email.template.EmailTemplateService;
-import com.ums.schedule.application.channel.email.template.loader.TemplateFileLoader;
-import com.ums.schedule.application.channel.email.template.loader.EmailTemplateLoader;
-import com.ums.schedule.application.channel.email.template.loader.TemplateTextLoader;
-import com.ums.schedule.adapter.api.template.email.EmailContentResponse;
-import com.ums.schedule.adapter.api.template.email.EmailTemplateDetailResponse;
-import com.ums.schedule.domain.channel.email.message.EmailTemplate;
-import com.ums.schedule.domain.channel.email.exception.TemplateContentRequiredException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
-import java.util.stream.Stream;
-
-import static com.ums.schedule.code.EnumMapperValue.fromEnumMapperType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TemplateAssemblerTest {

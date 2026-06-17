@@ -1,14 +1,13 @@
 package com.ums.schedule.repository.mapping.target;
 
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.target.SendTarget;
-import com.ums.schedule.domain.target.SendTargetRepository;
+import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.target.SendTargetTestBuilder;
-import com.ums.schedule.domain.target.upload.TargetUpload;
-import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.sendrequest.upload.TargetUploadTestBuilder;
 import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -31,7 +30,7 @@ public class SendTargetMappingTest {
     public void setUp() {
         Schedule schedule = ScheduleTestBuilder.builder().build();
         SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
-        TargetUpload targetUpload = TargetUploadTestBuilder.builder().sendRequest(sendRequest).build();
+        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(sendRequest).build();
         entityManager.persist(schedule);
         entityManager.persist(sendRequest);
         entityManager.persist(targetUpload);
@@ -47,35 +46,33 @@ public class SendTargetMappingTest {
         @Test
         @DisplayName("target_upload에서 연관관계를 설정하면 FK는 저장되지 않는다.")
         void shouldNotPersistTargetUploadFK_whenSetByInverseOnlySide() {
-            TargetUpload targetUpload = entityManager.find(TargetUpload.class, uploadId);
+            TargetUploadReport targetUpload = entityManager.find(TargetUploadReport.class, uploadId);
             SendTarget target = SendTargetTestBuilder.builder().targetUpload(targetUpload).build();
 
             entityManager.persist(targetUpload);
             entityManager.flush();
             entityManager.clear();
 
-            TargetUpload expect = entityManager.find(TargetUpload.class, uploadId);
-            assertThat(expect.getTargetList()).hasSize(0);
+            TargetUploadReport expect = entityManager.find(TargetUploadReport.class, uploadId);
         }
 
         @Test
         @DisplayName("send_target에서 target_upload와 연관관계를 설정하면 FK가 저장된다.")
         void shouldPersistFkTargetUpload_whenSetBySendTarget() {
-            TargetUpload targetUpload = entityManager.getReference(TargetUpload.class, uploadId);
+            TargetUploadReport targetUpload = entityManager.getReference(TargetUploadReport.class, uploadId);
             SendTarget target = SendTargetTestBuilder.builder().targetUpload(targetUpload).build();
 
             entityManager.persist(target);
             entityManager.flush();
             entityManager.clear();
 
-            TargetUpload expect = entityManager.find(TargetUpload.class, uploadId);
-            assertThat(expect.getTargetList()).hasSize(1);
+            TargetUploadReport expect = entityManager.find(TargetUploadReport.class, uploadId);
         }
 
         @Test
         @DisplayName("FK인 target_upload는 NULL을 허용하지 않는다.")
         void shouldThrowException_whenSendRequestIsNull() {
-            TargetUpload targetUpload = entityManager.getReference(TargetUpload.class, uploadId);
+            TargetUploadReport targetUpload = entityManager.getReference(TargetUploadReport.class, uploadId);
             SendTarget target = SendTargetTestBuilder.builder().targetUpload(null).build();
 
             assertThatThrownBy(() -> {

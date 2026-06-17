@@ -1,9 +1,9 @@
 package com.ums.schedule.repository.cascade.channel;
 
-import com.ums.schedule.domain.channel.email.EmailSendRequest;
-import com.ums.schedule.domain.channel.email.EmailSendRequestTestBuilder;
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
+import com.ums.schedule.domain.send.email.EmailAttachmentBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import jakarta.persistence.EntityManager;
@@ -35,7 +35,7 @@ public class EmailSendRequestCascadePersistTest {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
 
         SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
-        EmailSendRequest emailSendRequest = EmailSendRequestTestBuilder.builder().sendRequest(sendRequest).build();
+        EmailAttachment emailSendRequest = EmailAttachmentBuilder.builder().sendRequest(sendRequest).build();
 
         entityManager.persist(emailSendRequest);
         entityManager.flush();

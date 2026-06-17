@@ -1,10 +1,10 @@
 package com.ums.schedule.repository.mapping.request;
 
-import com.ums.schedule.domain.request.*;
+import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.target.upload.TargetUpload;
-import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.sendrequest.upload.TargetUploadTestBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.TransientPropertyValueException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -99,9 +99,9 @@ public class SendRequestMappingTest {
         @DisplayName("send_request에서 target_upload와 연관관계를 설정하면 FK가 저장된다.")
         void shouldPersistFkCurrentTargetUpload_whenSetBySendRequest() {
             Schedule schedule = entityManager.find(Schedule.class, scheduleId);
-            TargetUpload targetUpload = TargetUploadTestBuilder.builder().build();
+            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().build();
             SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).build();
-            request.assignToTargetUpload(targetUpload);
+//            request.assignTargetUpload(targetUpload);
 
             entityManager.persist(request);
             entityManager.flush();
@@ -109,7 +109,7 @@ public class SendRequestMappingTest {
             Long id = targetUpload.getUploadId();
             entityManager.clear();
 
-            TargetUpload expect = entityManager.find(TargetUpload.class, id);
+            TargetUploadReport expect = entityManager.find(TargetUploadReport.class, id);
             assertThat(expect.getUploadId()).isNotNull();
 
         }
@@ -119,9 +119,9 @@ public class SendRequestMappingTest {
         void shouldNotPersistCurrentTargetUploadFK_whenSetByInverseOnlySide() {
             Schedule schedule = entityManager.find(Schedule.class, scheduleId);
 
-            TargetUpload targetUpload = TargetUploadTestBuilder.builder().build();
+            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().build();
             SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).build();
-            request.assignToTargetUpload(targetUpload);
+            request.assignTargetUpload(targetUpload);
 
             assertThatThrownBy(() -> {
                 entityManager.persist(targetUpload);

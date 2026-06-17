@@ -1,14 +1,10 @@
 package com.ums.schedule.repository;
 
-import com.ums.schedule.code.send.TargetUploadTypeEnum;
-import com.ums.schedule.domain.request.*;
-import com.ums.schedule.domain.request.event.SendEvent;
+import com.ums.schedule.domain.send.group.SendGroupEvent;
+import com.ums.schedule.domain.event.SendRequestEventTestBuilder;
+import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.target.event.TargetUploadRequestedEvent;
-import com.ums.schedule.domain.target.upload.TargetUpload;
-import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
-import com.ums.schedule.fixture.ScheduleDomainFixture;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +38,8 @@ public class SendRequestEventPersistTest {
     void shouldPersist_whenSendRequestEventCreate() {
         SendRequest request = entityManager.getReference(SendRequest.class, requestId);
 
-        SendRequestEvent event = SendRequestEventTestBuilder.builder().sendRequest(request).build();
+        SendGroupEvent event = SendRequestEventTestBuilder.builder()
+                .sendRequest(request).build();
 
         entityManager.persist(event);
         entityManager.flush();
@@ -50,7 +47,7 @@ public class SendRequestEventPersistTest {
         Long id = event.getEventId();
         entityManager.clear();
 
-        SendRequestEvent expect = entityManager.find(SendRequestEvent.class, id);
+        SendGroupEvent expect = entityManager.find(SendGroupEvent.class, id);
         assertThat(expect.getEventId()).isNotNull();
     }
 }

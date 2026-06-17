@@ -18,4 +18,8 @@ public class InvalidScheduleStatusException  extends  ScheduleDomainException {
     public static InvalidScheduleStatusException invalidStatus() {
         return new InvalidScheduleStatusException("실행 중인 상태에서는 변경할 수 없습니다.");
     }
+
+    public static InvalidScheduleStatusException inActiveSchedule() {
+        return new InvalidScheduleStatusException("비활성화 된 스케쥴입니다.");
+    }
 }

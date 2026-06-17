@@ -1,13 +1,13 @@
 package com.ums.schedule.repository.lazy.target;
 
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.target.SendTargetTestBuilder;
-import com.ums.schedule.domain.target.upload.TargetUpload;
-import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.sendrequest.upload.TargetUploadTestBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
@@ -32,7 +32,7 @@ public class SendTargetLazyLoadingTest {
     void setUp() {
         Schedule schedule = ScheduleTestBuilder.builder().build();
         SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).build();
-        TargetUpload targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
+        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
         SendTarget target = SendTargetTestBuilder.builder().targetUpload(targetUpload).build();
 
         entityManager.persist(schedule);
@@ -62,7 +62,7 @@ public class SendTargetLazyLoadingTest {
         void shouldLoadTargetUpload_whenGetTargetUpload() {
             SendTarget sendTarget = entityManager.find(SendTarget.class, targetId);
 
-            sendTarget.getTargetUpload().getStatus();
+            sendTarget.getTargetUpload().getState();
 
             assertThat(Hibernate.isInitialized(sendTarget.getTargetUpload())).isTrue();
         }
@@ -74,7 +74,7 @@ public class SendTargetLazyLoadingTest {
 
             entityManager.clear();
 
-            assertThatThrownBy(() -> sendTarget.getTargetUpload().getStatus())
+            assertThatThrownBy(() -> sendTarget.getTargetUpload().getState())
                     .isInstanceOf(LazyInitializationException.class);
         }
     }

@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.schedule.converter;
 
-import com.ums.schedule.code.schedule.ScheduleStatusEnum;
-import com.ums.schedule.domain.state.StatusStateConverter;
+import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
+import com.ums.schedule.common.converter.StatusStateConverter;
 import jakarta.persistence.Converter;
 
 @Converter

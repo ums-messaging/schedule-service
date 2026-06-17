@@ -1,13 +1,11 @@
 package com.ums.schedule.repository.constraint.schedule;
 
-import com.ums.schedule.application.schedule.factory.cycle_policy.CyclePolicy;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicy;
-import com.ums.schedule.domain.schedule.cycle_policy.ScheduleCyclePolicyTestBuilder;
-import com.ums.schedule.domain.schedule.period.SchedulePeriod;
-import com.ums.schedule.domain.schedule.period.SchedulePeriodTestBuilder;
-import com.ums.schedule.fixture.ScheduleDomainFixture;
+import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
+import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicyTestBuilder;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriodTestBuilder;
 import com.ums.schedule.fixture.field.ScheduleField;
 import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;

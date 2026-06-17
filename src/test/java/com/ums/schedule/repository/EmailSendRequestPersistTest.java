@@ -1,17 +1,11 @@
 package com.ums.schedule.repository;
 
-import com.ums.schedule.code.send.TargetUploadTypeEnum;
-import com.ums.schedule.domain.channel.email.EmailSendRequest;
-import com.ums.schedule.domain.channel.email.EmailSendRequestTestBuilder;
-import com.ums.schedule.domain.channel.email.message.EmailBody;
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
+import com.ums.schedule.domain.send.email.EmailAttachmentBuilder;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.domain.target.upload.TargetUpload;
-import com.ums.schedule.domain.target.upload.TargetUploadTestBuilder;
-import com.ums.schedule.fixture.ScheduleDomainFixture;
-import com.ums.schedule.domain.request.SendRequestDomainFixture;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,8 +38,8 @@ public class EmailSendRequestPersistTest {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
         SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
 
-        EmailSendRequest emailSendRequest =
-                EmailSendRequestTestBuilder.builder().sendRequest(sendRequest).build();
+        EmailAttachment emailSendRequest =
+                EmailAttachmentBuilder.builder().sendRequest(sendRequest).build();
 
         // when
         entityManager.persist(emailSendRequest);
@@ -55,7 +49,7 @@ public class EmailSendRequestPersistTest {
         entityManager.clear();
 
         // then
-        EmailSendRequest expect = entityManager.find(EmailSendRequest.class, requestId);
+        EmailAttachment expect = entityManager.find(EmailAttachment.class, requestId);
         assertThat(expect.getId()).isNotNull();
     }
 }

@@ -1,8 +1,8 @@
 package com.ums.schedule.repository.constraint.request;
 
-import com.ums.schedule.code.send.SendRequestStatusEnum;
-import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.SendRequestTestBuilder;
+import com.ums.schedule.domain.sendrequest.code.SendRequestStatusEnum;
+import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
 import com.ums.schedule.fixture.field.SendRequestField;
@@ -43,7 +43,7 @@ public class SendRequestDefaultConstraintTest {
 
         entityManager.persist(request);
         entityManager.flush();
-        assertThat(request.getStatus()).isEqualTo(SendRequestStatusEnum.CREATE);
+        assertThat(request.getState().getCurrentCode()).isEqualTo(SendRequestStatusEnum.CREATE);
     }
 
     @Test
