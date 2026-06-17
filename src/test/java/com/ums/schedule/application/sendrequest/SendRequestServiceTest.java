@@ -1,8 +1,8 @@
 package com.ums.schedule.application.sendrequest;
 
-import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
+import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
 import com.ums.schedule.adapter.api.sendrequest.email.request.SendRequestCreateRequestBuilder;
-import com.ums.schedule.application.sendrequest.target.report.TargetUploadReportFactory;
+import com.ums.schedule.application.sendrequest.target.report.TargetUploadReportService;
 import com.ums.schedule.common.exception.PolicyViolationException;
 import com.ums.schedule.common.exception.validation.DuplicateViolationException;
 import com.ums.schedule.common.exception.validation.RequiredException;
@@ -17,9 +17,8 @@ import com.ums.schedule.domain.schedule.exception.ScheduleNotFoundException;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriodTestBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.upload.TargetUploadTestBuilder;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.*;
 class SendRequestServiceTest {
     @Mock private ScheduleJpaRepository scheduleRepository;
     @Mock private SendRequestRepository sendRequestRepository;
-    @Mock private TargetUploadReportFactory targetUploadService;
+    @Mock private TargetUploadReportService targetUploadService;
     @InjectMocks private SendRequestService sendRequestService;
 
     @Test
@@ -66,27 +65,32 @@ class SendRequestServiceTest {
         doReturn(Optional.ofNullable(givenSchedule)).when(scheduleRepository).findById(any());
         doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
 
-        ValidationException expect = RequiredException.fieldOf("channel type");
+        ValidationException expect = RequiredException.fieldOf("channel_type");
 
         assertThatThrownBy(() -> sendRequestService.create(UUID.randomUUID().toString(), null, request))
                 .isInstanceOf(expect.getClass())
                 .hasMessage(expect.getMessage());
     }
 
-    @Test
-    @DisplayName("스케쥴이 NULL이면 익셉션이 발생한다.")
-    void shouldThrowException_whenScheduleIsNull() {
-        SendRequestCreateRequest request = SendRequestCreateRequestBuilder.builder().build();
+    @Nested
+    @DisplayName("스케쥴 테스트")
+    class WhenSchedule {
+        @Test
+        @DisplayName("스케쥴이 NULL이면 익셉션이 발생한다.")
+        void shouldThrowException_whenScheduleIsNull() {
+            SendRequestCreateRequest request = SendRequestCreateRequestBuilder.builder().build();
 
-        doReturn(Optional.ofNullable(null)).when(scheduleRepository).findById(any());
-        doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
+            doReturn(Optional.ofNullable(null)).when(scheduleRepository).findById(any());
+            doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
 
-        ScheduleNotFoundException expect = ScheduleNotFoundException.of();
+            ScheduleNotFoundException expect = ScheduleNotFoundException.of();
 
-        assertThatThrownBy(() -> sendRequestService.create(UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL, request))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+            assertThatThrownBy(() -> sendRequestService.create(UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL, request))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
     }
+
 
     @Test
     @DisplayName("스케쥴 상태가 비활성화 상태이면 예외가 발생한다.")
@@ -124,18 +128,16 @@ class SendRequestServiceTest {
     }
 
     @Test
-    @DisplayName("TargetUploadReport가 생성된다.")
-    void shouldCreateTargetUploadReport() {
+    @DisplayName("sendRequest가 저장된다.")
+    void shouldSaveSendRequest() {
         Schedule schedule = ScheduleTestBuilder.builder().build();
         SendRequestCreateRequest request = SendRequestCreateRequestBuilder.builder().build();
-        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().build();
 
         doReturn(Optional.ofNullable(schedule)).when(scheduleRepository).findById(any());
         doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
-        doReturn(targetUpload).when(targetUploadService).create(any(), any(), any());
 
         sendRequestService.create(UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL, request);
 
-        verify(targetUploadService).create(any(),any(), any());
+        verify(sendRequestRepository).save(any());
     }
 }

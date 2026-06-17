@@ -3,7 +3,6 @@ package com.ums.schedule.application.message.email.command;
 import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
 import com.ums.schedule.application.sendrequest.message.email.command.SecurityPolicyCreateCommand;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.message.email.code.*;
 import com.ums.schedule.domain.sendrequest.resource.email.code.*;
 
 import java.util.*;

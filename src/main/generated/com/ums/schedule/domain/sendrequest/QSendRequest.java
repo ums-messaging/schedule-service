@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QSendRequest extends EntityPathBase<SendRequest> {
 
-    private static final long serialVersionUID = -980236427L;
+    private static final long serialVersionUID = 1232104557L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -26,7 +26,7 @@ public class QSendRequest extends EntityPathBase<SendRequest> {
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
-    public final com.ums.schedule.domain.sendrequest.upload.QTargetUploadReport currentTargetUpload;
+    public final com.ums.schedule.domain.sendrequest.target.upload.QTargetUploadReport currentTargetUpload;
 
     public final com.ums.schedule.domain.sendrequest.customer.QCustomerRequestKey customerRequestKey;
 
@@ -66,7 +66,7 @@ public class QSendRequest extends EntityPathBase<SendRequest> {
 
     public QSendRequest(Class<? extends SendRequest> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.currentTargetUpload = inits.isInitialized("currentTargetUpload") ? new com.ums.schedule.domain.sendrequest.upload.QTargetUploadReport(forProperty("currentTargetUpload"), inits.get("currentTargetUpload")) : null;
+        this.currentTargetUpload = inits.isInitialized("currentTargetUpload") ? new com.ums.schedule.domain.sendrequest.target.upload.QTargetUploadReport(forProperty("currentTargetUpload"), inits.get("currentTargetUpload")) : null;
         this.customerRequestKey = inits.isInitialized("customerRequestKey") ? new com.ums.schedule.domain.sendrequest.customer.QCustomerRequestKey(forProperty("customerRequestKey")) : null;
         this.schedule = inits.isInitialized("schedule") ? new com.ums.schedule.domain.schedule.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
     }

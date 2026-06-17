@@ -1,7 +1,7 @@
 package com.ums.schedule.repository.constraint.event;
 
 import com.ums.schedule.domain.send.group.SendGroupEvent;
-import com.ums.schedule.domain.event.SendRequestEventTestBuilder;
+import com.ums.schedule.domain.send.group.SendGroupTestBuilder;
 import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
@@ -40,7 +40,7 @@ public class SendRequestEventNotNullConstraintTest {
     @DisplayName("event_type은 NULL을 허용하지 않는다.")
     void shouldThrowException_whenEventTypeIsNull() {
         SendRequest sendRequest = entityManager.getReference(SendRequest.class, requestId);
-        SendGroupEvent event = SendRequestEventTestBuilder.builder().sendRequest(sendRequest)
+        SendGroupEvent event = SendGroupTestBuilder.builder().sendRequest(sendRequest)
                 .eventType(null)
                 .build();
 
@@ -59,7 +59,7 @@ public class SendRequestEventNotNullConstraintTest {
     @DisplayName("result_code는 NULL을 허용하지 않는다.")
     void shouldThrowException_whenResultCodeIsNull() {
         SendRequest sendRequest = entityManager.getReference(SendRequest.class, requestId);
-        SendGroupEvent event = SendRequestEventTestBuilder.builder().sendRequest(sendRequest)
+        SendGroupEvent event = SendGroupTestBuilder.builder().sendRequest(sendRequest)
                 .resultCode(null)
                 .build();
 

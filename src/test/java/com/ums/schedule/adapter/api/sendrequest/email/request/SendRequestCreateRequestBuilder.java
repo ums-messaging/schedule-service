@@ -1,6 +1,6 @@
 package com.ums.schedule.adapter.api.sendrequest.email.request;
 
-import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
+import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
 
 import java.util.UUID;
 
@@ -14,6 +14,11 @@ public class SendRequestCreateRequestBuilder {
 
     public static SendRequestCreateRequestBuilder builder() {
         return new SendRequestCreateRequestBuilder();
+    }
+
+    public SendRequestCreateRequestBuilder scheduleId(Long scheduleId) {
+        this.scheduleId = scheduleId;
+        return this;
     }
 
     public SendRequestCreateRequest build() {

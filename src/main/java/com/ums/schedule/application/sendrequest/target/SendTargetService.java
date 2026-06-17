@@ -1,5 +1,6 @@
 package com.ums.schedule.application.sendrequest.target;
 
+import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
 import com.ums.schedule.domain.sendrequest.target.code.SendTargetStatusEnum;
 import com.ums.schedule.domain.sendrequest.target.SendTargetRepository;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
@@ -16,17 +17,17 @@ import java.util.stream.Collectors;
 public class SendTargetService {
     private final SendTargetRepository repository;
 
-    public List<SendTarget> saveTargetList(List<SendTarget> targetList) {
+    public SendTargetSaveResult saveTargetList(List<SendTarget> targetList) {
         try {
             repository.saveAll(targetList);
         } catch (Exception e) {
             throw e;
         }
-        return targetList;
+        return SendTargetSaveResult.of(targetList);
     }
 
-    public Map<SendTargetStatusEnum, List<SendTarget>> saveTarget(List<SendTarget> targetList) {
-        return targetList.stream()
+    public SendTargetSaveResult saveTarget(List<SendTarget> targetList) {
+        Map<SendTargetStatusEnum, List<SendTarget>> targetResultMap = targetList.stream()
                 .map(target -> {
                     try {
                         return repository.saveAndFlush(target);
@@ -34,6 +35,8 @@ public class SendTargetService {
                         return target.onError(e.getMessage());
                     }
                 })
-                .collect(Collectors.groupingBy(SendTarget::getStatus));
+                .collect(Collectors.groupingBy(target -> target.getState().currentStatusCode()));
+
+        return SendTargetSaveResult.of(targetResultMap);
     }
 }

@@ -1,10 +1,9 @@
 package com.ums.schedule.application.sendrequest;
 
-import com.ums.schedule.adapter.api.request.request.EmailSendCreateRequest;
+import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.adapter.api.request.response.EmailSendRequestCreateResponse;
-import com.ums.schedule.application.sendrequest.SendRequestService;
 import com.ums.schedule.application.sendrequest.message.email.EmailMessageCreateService;
-import com.ums.schedule.application.sendrequest.target.report.TargetUploadReportFactory;
+import com.ums.schedule.application.sendrequest.target.report.TargetUploadReportService;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
 import com.ums.schedule.domain.sendrequest.SendRequest;
@@ -18,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmailSendRequestCreateService {
     private final EmailMessageCreateService messageService;
     private final SendRequestService sendRequestService;
-    private final TargetUploadReportFactory targetUploadService;
+    private final TargetUploadReportService targetUploadService;
 
     @Transactional
     public EmailSendRequestCreateResponse create(String customerId, EmailSendCreateRequest emailCreateRequest) {

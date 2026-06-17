@@ -1,7 +1,7 @@
 package com.ums.schedule.adapter.api.request;
 
 import com.ums.schedule.adapter.api.request.response.EmailSendRequestCreateResponse;
-import com.ums.schedule.adapter.api.request.request.EmailSendCreateRequest;
+import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.application.sendrequest.EmailSendRequestCreateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

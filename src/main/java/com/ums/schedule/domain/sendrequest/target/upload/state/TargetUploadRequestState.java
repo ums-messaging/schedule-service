@@ -13,6 +13,9 @@ public class TargetUploadRequestState implements TargetUploadState {
             case TARGET_UPLOAD_STARTED -> {
                 return new TargetUploadParsingState();
             }
+            case TARGET_UPLOAD_FAIL -> {
+                return new TargetUploadFailState();
+            }
         }
         throw InvalidTargetUploadReportStateException.of(getCurrentCode(), eventCode);
     }

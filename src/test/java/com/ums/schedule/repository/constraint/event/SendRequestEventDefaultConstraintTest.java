@@ -1,7 +1,7 @@
 package com.ums.schedule.repository.constraint.event;
 
 import com.ums.schedule.domain.send.group.SendGroupEvent;
-import com.ums.schedule.domain.event.SendRequestEventTestBuilder;
+import com.ums.schedule.domain.send.group.SendGroupTestBuilder;
 import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
@@ -43,7 +43,7 @@ public class SendRequestEventDefaultConstraintTest {
         SendRequestEventField field = SendRequestEventField.ISSUED_AT;
 
         SendGroupEvent event =
-                SendRequestEventTestBuilder.builder()
+                SendGroupTestBuilder.builder()
                         .sendRequest(sendRequest)
                         .issuedAt(null)
                         .build();

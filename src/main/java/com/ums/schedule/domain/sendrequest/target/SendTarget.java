@@ -1,20 +1,19 @@
 package com.ums.schedule.domain.sendrequest.target;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.f4b6a3.uuid.UuidCreator;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailTargetMessageResult;
+import com.ums.schedule.application.sendrequest.message.email.EmailResourceCommand;
 import com.ums.schedule.common.util.JsonUtil;
 import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
+import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
+import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetContentParsingException;
+import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetTitleParsingException;
+import com.ums.schedule.domain.sendrequest.target.state.SendTargetCreateState;
+import com.ums.schedule.domain.sendrequest.target.state.SendTargetFailState;
 import com.ums.schedule.domain.sendrequest.template.email.EmailTemplate;
 import com.ums.schedule.domain.sendrequest.target.converter.SendTargetStatusConverter;
-import com.ums.schedule.domain.sendrequest.target.code.SendTargetStatusEnum;
 import com.ums.schedule.domain.sendrequest.target.code.TargetColumnEnum;
-import com.ums.schedule.domain.sendrequest.template.ChannelTemplate;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.domain.sendrequest.target.state.SendTargetReadyState;
 import com.ums.schedule.domain.sendrequest.target.state.SendTargetState;
-import com.ums.schedule.domain.sendrequest.template.exception.TemplateContentRequiredException;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -23,6 +22,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -66,7 +66,10 @@ public class SendTarget {
 
     @Column(name = "status", nullable = false)
     @Convert(converter = SendTargetStatusConverter.class)
-    private SendTargetStatusEnum status;
+    private SendTargetState state;
+
+    @Column(name = "result_message")
+    private String resultMessage;
 
     @Column(name = "attempt_no", nullable = false)
     private Integer attemptNo;
@@ -91,45 +94,49 @@ public class SendTarget {
     private LocalDateTime lastUploadedAt;
 
     @Transient
-    private SendTargetState state;
+    private Map<String, Object> dataParamMap = new HashMap<>();
 
 
     public static SendTarget of(TargetUploadReport targetUpload, TargetMessageData dto, EmailTemplate template) {
         SendTarget sendTarget = new SendTarget(dto.targetData());
-        sendTarget.changeTargetStatus(new SendTargetReadyState());
-        sendTarget.dataParamToJson(dto.dataParam());
+        sendTarget.changeTargetStatus(new SendTargetCreateState());
+        sendTarget.dataParamToJson(dto);
         sendTarget.applyTargetUpload(targetUpload);
-        sendTarget.applyContact(targetUpload, dto.targetData());
+        sendTarget.generateMessage(template);
         return sendTarget;
+    }
+
+    private void generateMessage(EmailTemplate template) {
+        this.title = parse(template.getTitle());
+        this.content = compile(template.getBody());
     }
 
     public static SendTarget failureOf(TargetMessageData dto, String reason) {
         SendTarget target = new SendTarget(dto.targetData());
+        target.changeTargetStatus(new SendTargetFailState());
+        target.assignResultMessage(reason);
         return target;
     }
 
-    private void applyContact(TargetUploadReport targetUpload, Map<TargetColumnEnum, String> targetData) {
-//        this.contact = targetUpload.resolveTargetContact(targetData);
+    private void assignResultMessage(String message) {
+        this.resultMessage = message;
+    }
+
+
+    public void assignContact(String contact) {
+        this.contact = contact;
     }
 
     private void applyTargetUpload(TargetUploadReport targetUpload) {
         this.targetUpload = targetUpload;
     }
 
-    private void dataParamToJson(Map<String, Object> dataParam) {
-        ObjectMapper mapper = new ObjectMapper();
-        String json = null;
-        try {
-            json = mapper.writeValueAsString(dataParam);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        this.messageVariable = json;
+    private void dataParamToJson(TargetMessageData dataParam) {
+        this.messageVariable = JsonUtil.toJson(dataParam.getTargetParam());
     }
 
     public void changeTargetStatus(SendTargetState state) {
         this.state = state;
-        this.status = state.currentStatusCode();
         this.lastUploadedAt = LocalDateTime.now();
     }
 
@@ -147,36 +154,24 @@ public class SendTarget {
         Set<String> keySet = getKeySet(content);
         for(String key : keySet) {
             Map<String, Object> dataParam = getDataParam();
-            String value = (String) dataParam.getOrDefault(key, null);
+            Object value = dataParam.get(key);
             if(value == null) {
-                throw new RuntimeException();
+                throw SendTargetTitleParsingException.of(targetKey, key);
             }
-            content = content.replace("#{".concat(key).concat("}"), value);
+            String valueTo = String.valueOf(value);
+            content = content.replace("${".concat(key).concat("}"), valueTo);
         }
         return content;
     }
 
     private Set<String> getKeySet(String content) {
-        Pattern pattern = Pattern.compile("#\\{([^}]+)\\}");
+        Pattern pattern = Pattern.compile("\\$\\{([^}]+)\\}");
         Matcher matcher = pattern.matcher(content);
         Set<String> keySet = new HashSet<>();
         while(matcher.find()) {
             keySet.add(matcher.group(1));
         }
         return keySet;
-    }
-
-    private void makeMessage(ChannelTemplate template) {
-        makeTitle(template);
-        makeBody(template);
-    }
-
-    private void makeTitle(ChannelTemplate template) {
-        this.title = template.getTitle(this);
-    }
-
-    private void makeBody(ChannelTemplate template) {
-        this.content = template.compile(this);
     }
 
     public String compile(Template template) {
@@ -187,7 +182,7 @@ public class SendTarget {
                         Map<String, Object> dataParam = getDataParam();
                         t.process(dataParam, writer);
                     } catch (IOException | TemplateException e) {
-                        throw TemplateContentRequiredException.ofTemplateKey();
+                        throw SendTargetContentParsingException.of(e);
                     }
                     return writer.toString();
                 })
@@ -205,14 +200,17 @@ public class SendTarget {
         this.attemptNo = Optional.ofNullable(this.attemptNo).orElse(1);
     }
 
-    public void assignResources(List<EmailTargetMessageResult> resources) {
-        if (resources.size() > 00) {
-            String json = JsonUtil.toJson(resources);
-            this.resourceJson = json;
+    public List<EmailResourceCommand> generateAttachments(List<EmailResourceCommand> resources) {
+        if(!resources.isEmpty()) {
+            this.resourceJson = JsonUtil.toJson(resources);
         }
+        return resources;
     }
 
     public Map<String, Object> getDataParam() {
+        if(!StringUtils.hasText(this.messageVariable) && dataParamMap.isEmpty()) {
+           return Collections.emptyMap();
+        }
         return JsonUtil.toMap(this.messageVariable, Object.class);
     }
 }

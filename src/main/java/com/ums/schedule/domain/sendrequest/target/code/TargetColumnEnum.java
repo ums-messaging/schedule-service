@@ -3,7 +3,8 @@ package com.ums.schedule.domain.sendrequest.target.code;
 import com.ums.schedule.common.code.mapper.EnumMapperType;
 
 public enum TargetColumnEnum implements EnumMapperType {
-    TARGET_KEY("id", "대상자 KEY"),
+    TARGET_ID("targetId", "대상자 ID"),
+    TARGET_KEY("targetKey", "대상자 KEY"),
     TARGET_NAME("name", "이름"),
     TARGET_EMAIL("email","이메일 주소"),
     TARGET_PHONE("phone", "핸드폰 번호"),

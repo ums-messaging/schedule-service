@@ -1,6 +1,7 @@
 package com.ums.schedule.application.sendrequest;
 
-import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
+import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
+import com.ums.schedule.application.exception.ScheduleNotFoundException;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.SendRequest;
@@ -21,7 +22,8 @@ public class SendRequestService {
 
     @Transactional
     public SendRequest create(String customerId, ChannelTypeEnum channelType, SendRequestCreateRequest request) {
-        Schedule schedule = scheduleRepository.findById(request.scheduleId()).orElse(null);
+        Schedule schedule = scheduleRepository.findById(request.scheduleId())
+                .orElseThrow(() -> ScheduleNotFoundException.of(request.scheduleId()));
 
         CustomerRequestKey customerKey = CustomerRequestKey.of(customerId, request.customerRequestKey());
         boolean existsKey = sendRequestRepository.existsByCustomerRequestKey(customerKey);

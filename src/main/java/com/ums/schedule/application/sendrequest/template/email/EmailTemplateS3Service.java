@@ -1,6 +1,6 @@
 package com.ums.schedule.application.sendrequest.template.email;
 
-import com.ums.schedule.adapter.api.request.request.EmailSendCreateRequest;
+import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.adapter.storage.AwsS3FileMetadataResponse;
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.application.sendrequest.message.email.result.EmailContentResult;

@@ -1,6 +1,6 @@
 package com.ums.schedule.application.sendrequest.command;
 
-import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
+import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;

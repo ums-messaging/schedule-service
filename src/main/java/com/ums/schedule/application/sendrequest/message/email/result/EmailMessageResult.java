@@ -1,7 +1,7 @@
 package com.ums.schedule.application.sendrequest.message.email.result;
 
-import com.ums.schedule.adapter.api.request.request.EmailSecurityPolicyRequest;
-import com.ums.schedule.adapter.api.request.request.EmailAttachmentRequest;
+import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
+import com.ums.schedule.adapter.api.request.email.EmailAttachmentRequest;
 import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
 import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;

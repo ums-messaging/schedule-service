@@ -1,6 +1,6 @@
 package com.ums.schedule.application.sendrequest.target.processor;
 
-import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
+import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.adapter.storage.PresigendUrlResponse;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
