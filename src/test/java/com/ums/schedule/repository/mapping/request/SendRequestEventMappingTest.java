@@ -4,7 +4,8 @@ import com.ums.schedule.domain.send.group.SendGroupEvent;
 import com.ums.schedule.domain.send.group.SendGroupTestBuilder;
 import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,8 +28,8 @@ public class SendRequestEventMappingTest {
 
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
-        SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
+        SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule).build();
         entityManager.persist(schedule);
         entityManager.persist(sendRequest);
         entityManager.flush();

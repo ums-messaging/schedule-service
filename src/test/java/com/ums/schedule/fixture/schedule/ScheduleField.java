@@ -1,4 +1,4 @@
-package com.ums.schedule.fixture.field;
+package com.ums.schedule.fixture.schedule;
 
 public enum ScheduleField {
     SCHEDULE_NAME("name"),

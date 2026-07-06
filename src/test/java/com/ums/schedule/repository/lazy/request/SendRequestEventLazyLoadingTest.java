@@ -3,9 +3,9 @@ package com.ums.schedule.repository.lazy.request;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.send.group.SendGroupEvent;
 import com.ums.schedule.domain.send.group.SendGroupTestBuilder;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
@@ -26,8 +26,8 @@ public class SendRequestEventLazyLoadingTest {
 
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
-        SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
+        SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule).build();
         SendGroupEvent event = SendGroupTestBuilder.builder().sendRequest(sendRequest).build();
 
         entityManager.persist(schedule);

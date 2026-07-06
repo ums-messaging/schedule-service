@@ -1,28 +1,8 @@
 package com.ums.schedule.domain.sendrequest.target.upload;
 
-import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.sendrequest.target.command.TargetUploadCreateCommand;
-import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.exception.validation.RequiredException;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
-import com.ums.schedule.domain.sendrequest.exception.SendRequestNotFoundException;
-import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetListExceedViolationException;
-import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetNotFoundException;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.builder.TargetUploadCreateCommandBuilder;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadEventEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadFormatEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadStatusEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.exception.UploadKeyGeneratedViolationException;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -30,7 +10,7 @@ import static org.mockito.Mockito.mock;
 
 public class TargetUploadReportCreateTest {
     private final TargetUploadCreateCommandBuilder command = TargetUploadCreateCommandBuilder.builder();
-    private final SendRequest sendRequest = SendRequestTestBuilder.builder().build();
+    private final SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
 
 //    @Test
 //    @DisplayName("SendRequest가 NULL이면 익셉션이 발생한다.")

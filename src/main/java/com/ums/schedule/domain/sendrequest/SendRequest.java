@@ -13,6 +13,9 @@ import com.ums.schedule.domain.send.email.job.SendJob;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.converter.ChannelTypeConverter;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
+import com.ums.schedule.domain.sendrequest.exception.DefaultRetryCountNotConfiguredException;
+import com.ums.schedule.domain.sendrequest.exception.SendMessageNotFoundException;
+import com.ums.schedule.domain.sendrequest.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.state.SendRequestCreateState;
 import com.ums.schedule.domain.sendrequest.state.SendRequestState;
 import com.ums.schedule.domain.sendrequest.converter.SendRequestStateConverter;
@@ -37,7 +40,7 @@ import java.util.Optional;
                     columnNames = {"customer_id", "customer_request_id"}
             )})
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class SendRequest {
     @Id
     @Tsid
@@ -71,10 +74,13 @@ public class SendRequest {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private TargetUploadReport currentTargetUpload;
 
-    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
+
+    @OneToOne
+    @JoinColumn(name = "message_id", nullable = false)
+    private SendMessage sendMessage;
 
     private LocalDateTime createdAt;
     private LocalDateTime requestedAt;
@@ -86,11 +92,17 @@ public class SendRequest {
         request.assignChannelType(context.channelType());
         request.assignCustomerKey(context.customerKey());
         request.assignSchedule(context.schedule());
+        request.assignSendMessage(context.sendMessage());
         request.assignSenderAndTemplate(context.senderKey(), context.templateKey());
         request.initializeRetryCount(context.retryCnt());
         request.initializeStatusAndEvent();
         request.initializeCreateAt();
         return request;
+    }
+
+    private void assignSendMessage(SendMessage sendMessage) {
+        this.sendMessage = Optional.ofNullable(sendMessage)
+                .orElseThrow(SendMessageNotFoundException::of);
     }
 
     private void assignChannelType(ChannelTypeEnum channelType) {
@@ -129,7 +141,9 @@ public class SendRequest {
     }
 
     private void initializeRetryCount(Integer retryCount) {
-        this.retryCnt = (retryCount == null) ? 3 : retryCount;
+        this.retryCnt = Optional.ofNullable(retryCount)
+                .filter(count -> count >= 0)
+                .orElseThrow(DefaultRetryCountNotConfiguredException::of);
     }
 
     private void initializeCreateAt() {

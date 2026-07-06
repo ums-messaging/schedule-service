@@ -1,12 +1,12 @@
 package com.ums.schedule.repository.constraint.schedule;
 
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicyTestBuilder;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
-import com.ums.schedule.domain.schedule.policy.SchedulePeriodTestBuilder;
-import com.ums.schedule.fixture.field.ScheduleField;
+import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleField;
 import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -27,7 +27,7 @@ public class ScheduleNotNullConstraintTest {
     @Test
     @DisplayName("schedule_name 필드는 NULL을 허용하지 않는다.")
     void shouldThrowException_whenScheduleNameIsNull() {
-        Schedule schedule = ScheduleTestBuilder.builder().scheduleName(null).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().scheduleName(null).build();
         ScheduleField field = ScheduleField.SCHEDULE_NAME;
 
         assertThatThrownBy(() -> entityManager.persist(schedule))
@@ -42,7 +42,7 @@ public class ScheduleNotNullConstraintTest {
                 .scheduleType(null)
                 .build();
 
-        Schedule schedule = ScheduleTestBuilder.builder().cyclePolicy(policy).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().cyclePolicy(policy).build();
         ScheduleField field = ScheduleField.SCHEDULE_TYPE;
 
         assertThatThrownBy(() -> entityManager.persist(schedule))
@@ -57,7 +57,7 @@ public class ScheduleNotNullConstraintTest {
                 .cycleCd(null)
                 .build();
 
-        Schedule schedule = ScheduleTestBuilder.builder().cyclePolicy(policy).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().cyclePolicy(policy).build();
         ScheduleField field = ScheduleField.CYCLE_CD;
 
 
@@ -69,8 +69,8 @@ public class ScheduleNotNullConstraintTest {
     @Test
     @DisplayName("schedule_start_at은 NULL을 허용하지 않는다.")
     void shouldThrowException_whenScheduleStartAtIsNull() {
-        SchedulePeriod period = SchedulePeriodTestBuilder.builder().scheduleStartAt(null).build();
-        Schedule schedule = ScheduleTestBuilder.builder().schedulePeriod(period).build();
+        SchedulePeriod period = SchedulePeriodEntityBuilder.builder().scheduleStartAt(null).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().schedulePeriod(period).build();
         ScheduleField field = ScheduleField.SCHEDULE_START_AT;
 
         assertThatThrownBy(() -> entityManager.persist(schedule))
@@ -81,8 +81,8 @@ public class ScheduleNotNullConstraintTest {
     @Test
     @DisplayName("schedule_end_at은 NULL을 허용하지 않는다.")
     void shouldThrowException_whenScheduleEndAtIsNull() {
-        SchedulePeriod period = SchedulePeriodTestBuilder.builder().scheduleEndAt(null).build();
-        Schedule schedule = ScheduleTestBuilder.builder().schedulePeriod(period).build();
+        SchedulePeriod period = SchedulePeriodEntityBuilder.builder().scheduleEndAt(null).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().schedulePeriod(period).build();
         ScheduleField field = ScheduleField.SCHEDULE_END_AT;
 
         assertThatThrownBy(() -> entityManager.persist(schedule))
@@ -93,7 +93,7 @@ public class ScheduleNotNullConstraintTest {
     @Test
     @DisplayName("created_by는 NULL을 허용하지 않는다.")
     void shouldThrowException_whenCreatedByIsNull() {
-        Schedule schedule = ScheduleTestBuilder.builder().createdBy(null).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().createdBy(null).build();
         ScheduleField field = ScheduleField.CREATED_BY;
 
         ReflectionTestUtils.setField(schedule, field.value(), null);

@@ -1,83 +1,221 @@
 package com.ums.schedule.domain.sendrequest;
 
-import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
-import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
+import com.ums.schedule.application.sendrequest.context.SendRequestCreateContext;
+import com.ums.schedule.common.exception.validation.DuplicateViolationException;
+import com.ums.schedule.common.exception.validation.RequiredException;
+import com.ums.schedule.domain.schedule.exception.ScheduleExpiredException;
+import com.ums.schedule.domain.schedule.exception.ScheduleNotExecutableException;
+import com.ums.schedule.domain.schedule.exception.ScheduleNotFoundException;
+import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
+import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
+import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
 import com.ums.schedule.domain.sendrequest.code.SendRequestEventEnum;
 import com.ums.schedule.domain.sendrequest.code.SendRequestStatusEnum;
+import com.ums.schedule.domain.sendrequest.exception.DefaultRetryCountNotConfiguredException;
 import com.ums.schedule.domain.sendrequest.exception.InvalidSendRequestStateException;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
+import com.ums.schedule.domain.sendrequest.exception.SendMessageNotFoundException;
+import com.ums.schedule.domain.sendrequest.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.state.*;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.sendrequest.target.upload.state.TargetUploadCompleteState;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestCreateContextBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestField;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
-public class SendRequestCreateTest {
+public class SendRequestDomainTest {
+    private SendRequestCreateContextBuilder contextBuilder;
+    private ScheduleEntityBuilder scheduleBuilder;
+
+    @BeforeEach
+    void setUp() {
+        SendMessage sendMessage = mock(SendMessage.class);
+        CustomerRequestKey customerRequestKey = givenCustomerRequestKey();
+        Schedule schedule = givenSchedule();
+        contextBuilder = SendRequestCreateContextBuilder
+                .builder()
+                .customerKey(customerRequestKey)
+                .schedule(schedule)
+                .sendMessage(sendMessage);
+    }
+
+    private Schedule givenSchedule() {
+        SchedulePeriod schedulePeriod = SchedulePeriodEntityBuilder.builder()
+                .scheduleStartAt(LocalDate.now())
+                .scheduleEndAt(LocalDate.now().plusMonths(1))
+                .build();
+        scheduleBuilder = ScheduleEntityBuilder.builder()
+                .status(new ScheduleActiveStatus())
+                .schedulePeriod(schedulePeriod);
+        return scheduleBuilder.build();
+    }
+
+    private CustomerRequestKey givenCustomerRequestKey() {
+        String customerId = String.valueOf(SendRequestField.CUSTOMER_ID.getGivenValue());
+        String customerKey = String.valueOf(SendRequestField.CUSTOMER_REQUEST_ID.getGivenValue());
+        return new CustomerRequestKey(customerId, customerKey);
+    }
+
     @Nested
-    @DisplayName("발송 요청 생성 시 ")
+    @DisplayName("발송 요청 생성")
     class whenSendRequestCreate {
+
         @Test
-        @DisplayName("발송 상태는 CREATE이어야 한다.")
-        void shouldReturnStateIsCreate() {
-            Schedule schedule = ScheduleTestBuilder.builder()
-                    .status(new ScheduleActiveStatus())
-                    .build();
+        @DisplayName("발송 상태는 CREATE이다.")
+        void shouldReturnCreate() {
+            SendRequestCreateContext context = contextBuilder.build();
 
-            SendRequestCreateCommand createCommand = SendRequestTestBuilder.builder().toCreateCommand(TargetUploadTypeEnum.JSON, false);
-            CustomerRequestKey customerKey = givenCustomerKey();
-
-            SendRequest givenSendRequest = SendRequest.of(null);
+            SendRequest givenSendRequest = SendRequest.of(context);
 
             assertThat(givenSendRequest.getState()).isInstanceOf(SendRequestCreateState.class);
         }
 
-        private CustomerRequestKey givenCustomerKey() {
-            return CustomerRequestKey.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
-        }
-
         @Test
-        @DisplayName("SendRequestCreatedEvent가 발행된다.")
-        void shouldPublishSendRequestCreatedEvent() {
-            Schedule schedule = ScheduleTestBuilder.builder().build();
-            SendRequestCreateCommand command = SendRequestTestBuilder.builder()
-                    .toCreateCommand();
+        @DisplayName("발송 요청 생성 시각이 생성된다.")
+        void shouldCreateCreatedAt() {
+            SendRequestCreateContext context = contextBuilder.build();
 
-            CustomerRequestKey customerKey = givenCustomerKey();
-
-//            ChannelMessage emailRequest = EmailSendMessageBuilder.builder().build();
-            SendRequest request =  SendRequest.of(null);
-
-            assertThat(request.getEvent()).isEqualTo(SendRequestEventEnum.SEND_REQUEST_CREATED);
-        }
-
-        @Test
-        @DisplayName("createdAt은 현재 시각으로 생성된다.")
-        void shouldReturnCreatedAtIsCurrentTime() {
-            Schedule schedule = ScheduleTestBuilder.builder().build();
-            SendRequestCreateCommand createCommand = SendRequestTestBuilder.builder()
-                    .toCreateCommand();
-            CustomerRequestKey customerKey = CustomerRequestKey.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
-
-//            ChannelMessage emailRequest = EmailSendMessageBuilder.builder().build();
-            SendRequest givenRequest =  SendRequest.of(null);
+            SendRequest givenRequest =  SendRequest.of(context);
 
             assertThat(givenRequest.getCreatedAt().toLocalDate())
                     .isEqualTo(LocalDate.now());
+        }
+
+        @Test
+        @DisplayName("고객 요청 키가 존재하지 않을 경우, 예외가 발생한다.")
+        void shouldThrowException_whenCustomerRequestKeyDoesNotExist() {
+            SendRequestCreateContext context = contextBuilder
+                    .customerKey(null)
+                    .build();
+
+            DuplicateViolationException expect = DuplicateViolationException.fieldOf("customer_key");
+
+            assertThatThrownBy(() -> SendRequest.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+        @Test
+        @DisplayName("스케쥴이 존재하지 않으면 예외가 발생한다.")
+        void shouldThrowException_whenScheduleDoesNotExist() {
+            SendRequestCreateContext context = contextBuilder
+                    .schedule(null)
+                    .build();
+
+            ScheduleNotFoundException expect = ScheduleNotFoundException.of();
+
+            assertThatThrownBy(() -> SendRequest.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+        @Test
+        @DisplayName("만료된 스케쥴이면 예외가 발생한다.")
+        void shouldThrowException_whenExpiredSchedule() {
+            SchedulePeriod schedulePeriod = SchedulePeriodEntityBuilder.builder()
+                    .scheduleStartAt(LocalDate.now().minusMonths(1))
+                    .scheduleEndAt(LocalDate.now().minusWeeks(1)).build();
+            Schedule schedule = scheduleBuilder.schedulePeriod(schedulePeriod).build();
+
+            SendRequestCreateContext context = contextBuilder
+                    .schedule(schedule)
+                    .build();
+
+            ScheduleExpiredException expect = ScheduleExpiredException.of(schedule.getId(), schedulePeriod);
+
+            assertThatThrownBy(() -> SendRequest.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("비활성화 된 스케쥴이면 예외가 발생한다.")
+        void shouldThrowException_whenInActiveSchedule() {
+            Schedule schedule = scheduleBuilder.status(new ScheduleInActiveStatus()).build();
+            SendRequestCreateContext context = contextBuilder
+                    .schedule(schedule)
+                    .build();
+
+            ScheduleNotExecutableException expect = ScheduleNotExecutableException.inActiveOf();
+
+            assertThatThrownBy(() -> SendRequest.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("메시지가 존재하지 않으면 예외가 발생한다.")
+        void shouldThrowException_whenMessageDoesNotExist() {
+            SendRequestCreateContext context = contextBuilder.sendMessage(null).build();
+
+            SendMessageNotFoundException expect = SendMessageNotFoundException.of();
+
+            assertThatThrownBy(() -> SendRequest.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("재시도 횟수가 0보다 작으면 예외가 발생한다.")
+        void shouldThrowException_whenRetryCountIsLessThanZero() {
+            SendRequestCreateContext context = contextBuilder.retryCnt(-1).build();
+
+            DefaultRetryCountNotConfiguredException expect = DefaultRetryCountNotConfiguredException.of();
+
+            assertThatThrownBy(() -> SendRequest.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("발신자 입력 값이 빈 값이면 예외가 발생한다.")
+        void shouldThrowException_whenSenderKeyIsEmpty() {
+            SendRequestCreateContext context = contextBuilder
+                    .senderKey("")
+                    .build();
+
+            RequiredException expect = RequiredException.fieldOf("sender_key");
+
+            assertThatThrownBy(() -> SendRequest.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("채널 타입이 존재하지 않으면 예외가 발생한다.")
+        void shouldThrowException_whenChannelTypeIsNull(){
+            SendRequestCreateContext context = contextBuilder.channelType(null).build();
+
+            RequiredException expect = RequiredException.fieldOf("channel_type");
+
+            assertThatThrownBy(() -> SendRequest.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("템플릿 키가 빈 값이면 예외가 발생한다.")
+        void shouldThrowException_whenTemplateKeyisEmpty() {
+            SendRequestCreateContext context = contextBuilder.templateKey("").build();
+
+            RequiredException expect = RequiredException.fieldOf("template_key");
+
+            assertThatThrownBy(() -> SendRequest.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
         }
     }
 
@@ -87,9 +225,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("발송 상태가 CREATE일 때 HOLDING으로 변경된다.")
         void shouldChangeStateToHolding_whenStateIsCreate() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .state(new SendRequestCreateState())
                     .build();
@@ -102,9 +240,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("발송 상태가 HOLDING일 때 HOLDING으로 변경된다.")
         void shouldChangeStateToHolding_whenStateIsHolding() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .state(new SendRequestHoldingState())
                     .build();
@@ -117,9 +255,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("발송 상태가 READY 일 때 HOLDING으로 변경된다.")
         void shouldChangeStateIsReady_whenStateIsReady() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .state(new SendRequestReadyState())
                     .build();
@@ -131,9 +269,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("발송 요청 상태가 REQUEST 일 경우 예외가 발생한다.")
         void shouldThrowException_whenStateIsRequest() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder().state(new SendRequestRequestState()).build();
 
             InvalidSendRequestStateException expect =
@@ -147,9 +285,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("발송 요청 상태가 SENDING일 경우 예외가 발생한다.")
         void shouldThrowException_whenStateIsSending() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder().state(new SendRequestSendingState()).build();
 
             InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatusEnum.SENDING, SendRequestEventEnum.SEND_REQUEST_UPDATED);
@@ -162,9 +300,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("발송 요청 상태가 COMPLETED일 경우 예외가 발생한다.")
         void shouldThrowException_whenStateIsCompleted() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder().state(new SendRequestCompleteState()).build();
 
             InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatusEnum.COMPLETED, SendRequestEventEnum.SEND_REQUEST_UPDATED);
@@ -177,9 +315,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("발송 요청 상태가 CANCEL일 때 예외가 발생한다.")
         void shouldThrowException_whenStateIsCancel() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder().state(new SendRequestCancelState()).build();
 
             InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatusEnum.CANCEL, SendRequestEventEnum.SEND_REQUEST_UPDATED);
@@ -192,9 +330,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("발송 요청 상태가 FAIL일 때 HOLDING으로 변경된다.")
         void shouldChangeStateToHolding_whenStateIsError() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .state(new SendRequestFailState())
                     .build();
@@ -207,9 +345,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("발송 상태가 PAUSE 일 때 예외가 발생한다.")
         void shouldThrowException_whenStateIsPause() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder().state(new SendRequestPauseState()).build();
 
             InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatusEnum.PAUSE, SendRequestEventEnum.SEND_REQUEST_UPDATED);
@@ -222,11 +360,11 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("대상자 업로드 리포트 상태가 COMPLETED이면 상태는 READY로 변경된다.")
         void shouldChangeStateToReady() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
             TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
                     .uploadStatus(new TargetUploadCompleteState())
                     .build();
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .build();
 
@@ -246,8 +384,8 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("SendRequestUpdatedEvent가 발행된다.")
         void shouldPublishSendRequestUpdatedEvent() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .build();
 
@@ -259,11 +397,11 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("대상자 업로드 리포트 상태가 COMPLETED이면 상태는 SendRequestReadyEvent가 발행된다.")
         void shouldPublishSendRequestReadyEvent_whenTargetUploadReportIsCompleted() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
             TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
                     .uploadStatus(new TargetUploadCompleteState())
                     .build();
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .build();
 
@@ -275,9 +413,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("새로운 Schedule이 NULL이면 기존 스케쥴이 반환된다.")
         void shouldReturnSchedule_whenScheduleIsNull() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .build();
 
@@ -290,13 +428,13 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("새로운 스케쥴을 입력하면 입력한 스케쥴을 반환한다.")
         void shouldReturnNewSchedule_whenScheduleIsNotNull(){
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .build();
 
-            Schedule givenNewSchedule = ScheduleTestBuilder.builder().build();
+            Schedule givenNewSchedule = ScheduleEntityBuilder.builder().build();
             SendRequest expect = givenRequest.updateSendRequest(givenNewSchedule, null, command);
 
             assertThat(expect.getSchedule()).isNotNull();
@@ -306,9 +444,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("새로운 대상자 업로드 리포트가 NULL이면 기존 대상자 업로드 리포트가 반환된다. ")
         void shouldReturnTargetUploadReport_whenNewTargetUploadIsNull() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .build();
 
@@ -321,9 +459,9 @@ public class SendRequestCreateTest {
         @Test
         @DisplayName("새로운 대상자 업로드 리포트를 입력하면 새로운 대상자 업로드 리포트가 반환된다. ")
         void shouldReturnNewTargetUploadReport_whenNewTargetUploadIsNull() {
-            SendRequestUpdateCommand command = SendRequestTestBuilder.builder().toUpdateCommand();
+            SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
 
-            SendRequest givenRequest = SendRequestTestBuilder
+            SendRequest givenRequest = SendRequestEntityBuilder
                     .builder()
                     .build();
 

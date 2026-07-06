@@ -1,9 +1,9 @@
 package com.ums.schedule.repository;
 
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +21,7 @@ public class SendRequestPersistTest {
 
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
         entityManager.persist(schedule);
         entityManager.flush();
 
@@ -33,7 +33,7 @@ public class SendRequestPersistTest {
     @DisplayName("SEND_REQUEST 등록 테스트")
     void shouldPersistSendRequest_whenCreatingSendRequest() {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
+        SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule).build();
 
         entityManager.persist(sendRequest);
         entityManager.flush();

@@ -1,7 +1,7 @@
 package com.ums.schedule.repository.cascade.message;
 
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class SendMessageCascadePersistTest {
 
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
         entityManager.persist(schedule);
         entityManager.flush();
 

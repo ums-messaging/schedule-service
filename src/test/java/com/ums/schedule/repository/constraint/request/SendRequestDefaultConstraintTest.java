@@ -2,9 +2,9 @@ package com.ums.schedule.repository.constraint.request;
 
 import com.ums.schedule.domain.sendrequest.code.SendRequestStatusEnum;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestField;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ public class SendRequestDefaultConstraintTest {
 
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
         entityManager.persist(schedule);
         entityManager.flush();
 
@@ -37,7 +37,7 @@ public class SendRequestDefaultConstraintTest {
     @DisplayName("status가 NULL이면 status는 CREATE를 반환한다.")
     void shouldReturnStatusCreate_whenStatusIsNull() {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest request = SendRequestTestBuilder.builder().schedule(schedule)
+        SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule)
                 .state(null)
                 .build();
 
@@ -50,7 +50,7 @@ public class SendRequestDefaultConstraintTest {
     @DisplayName("retry_cnt가 NULL이면 retry_cnt는 3을 반환한다.")
     void shouldReturnRetryCntIsThree_whenRetryCntIsNull(){
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).retryCnt(null).build();
+        SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule).retryCnt(null).build();
 
         SendRequestField field = SendRequestField.RETRY_CNT;
 

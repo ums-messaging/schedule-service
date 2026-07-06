@@ -1,21 +1,23 @@
-package com.ums.schedule.domain.schedule.policy;
+package com.ums.schedule.fixture.schedule;
+
+import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 
 import java.time.LocalDate;
 
-public class SchedulePeriodTestBuilder {
+public class SchedulePeriodEntityBuilder {
     private LocalDate scheduleStartAt = LocalDate.now();
     private LocalDate scheduleEndAt = LocalDate.now().plusMonths(2);
 
-    public static SchedulePeriodTestBuilder builder() {
-        return new SchedulePeriodTestBuilder();
+    public static SchedulePeriodEntityBuilder builder() {
+        return new SchedulePeriodEntityBuilder();
     }
 
-    public SchedulePeriodTestBuilder scheduleStartAt(LocalDate scheduleStartAt) {
+    public SchedulePeriodEntityBuilder scheduleStartAt(LocalDate scheduleStartAt) {
         this.scheduleStartAt = scheduleStartAt;
         return this;
     }
 
-    public SchedulePeriodTestBuilder scheduleEndAt(LocalDate scheduleEndAt) {
+    public SchedulePeriodEntityBuilder scheduleEndAt(LocalDate scheduleEndAt) {
         this.scheduleEndAt = scheduleEndAt;
         return this;
     }

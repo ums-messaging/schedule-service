@@ -42,6 +42,8 @@ public class QSendRequest extends EntityPathBase<SendRequest> {
 
     public final StringPath senderKey = createString("senderKey");
 
+    public final com.ums.schedule.domain.sendrequest.message.QSendMessage sendMessage;
+
     public final DateTimePath<java.time.LocalDateTime> sendStartedAt = createDateTime("sendStartedAt", java.time.LocalDateTime.class);
 
     public final SimplePath<com.ums.schedule.domain.sendrequest.state.SendRequestState> state = createSimple("state", com.ums.schedule.domain.sendrequest.state.SendRequestState.class);
@@ -69,6 +71,7 @@ public class QSendRequest extends EntityPathBase<SendRequest> {
         this.currentTargetUpload = inits.isInitialized("currentTargetUpload") ? new com.ums.schedule.domain.sendrequest.target.upload.QTargetUploadReport(forProperty("currentTargetUpload"), inits.get("currentTargetUpload")) : null;
         this.customerRequestKey = inits.isInitialized("customerRequestKey") ? new com.ums.schedule.domain.sendrequest.customer.QCustomerRequestKey(forProperty("customerRequestKey")) : null;
         this.schedule = inits.isInitialized("schedule") ? new com.ums.schedule.domain.schedule.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
+        this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.sendrequest.message.QSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ums.schedule.domain.schedule.converter;
+package com.ums.schedule.domain.sendrequest.exception.converter;
 
 import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
 import com.ums.schedule.common.converter.StatusStateConverter;

@@ -1,10 +1,11 @@
-package com.ums.schedule.domain.sendrequest;
+package com.ums.schedule.fixture.sendrequest;
 
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
-import com.ums.schedule.common.code.mapper.EnumMapperValue;
+import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
+import com.ums.schedule.domain.sendrequest.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
 import com.ums.schedule.domain.sendrequest.state.SendRequestCreateState;
 import com.ums.schedule.domain.sendrequest.state.SendRequestState;
@@ -14,7 +15,7 @@ import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class SendRequestTestBuilder {
+public class SendRequestEntityBuilder {
     private Long id;
     private Integer retryCnt;
     private String senderKey;
@@ -24,6 +25,7 @@ public class SendRequestTestBuilder {
     private CustomerRequestKey customerRequestKey;
     private TargetUploadReport currentTargetUpload;
     private Schedule schedule;
+    private SendMessage sendMessage;
 
     private LocalDateTime createdAt;
     private LocalDateTime requestedAt;
@@ -31,11 +33,11 @@ public class SendRequestTestBuilder {
     private LocalDateTime sendEndedAt;
 
 
-    public static SendRequestTestBuilder builder() {
-        return new SendRequestTestBuilder();
+    public static SendRequestEntityBuilder builder() {
+        return new SendRequestEntityBuilder();
     }
 
-    private SendRequestTestBuilder() {
+    private SendRequestEntityBuilder() {
         CustomerRequestKey customerKey = CustomerRequestKey.of("jang314", "request123");
 
         this.senderKey = "test@test.com";
@@ -46,47 +48,47 @@ public class SendRequestTestBuilder {
         this.retryCnt = 3;
     }
 
-    public SendRequestTestBuilder id(Long id) {
+    public SendRequestEntityBuilder id(Long id) {
         this.id = id;
         return this;
     }
 
-    public SendRequestTestBuilder templateKey(String templateKey) {
+    public SendRequestEntityBuilder templateKey(String templateKey) {
         this.templateKey = templateKey;
         return this;
     }
 
-    public SendRequestTestBuilder channelType(ChannelTypeEnum channelType) {
+    public SendRequestEntityBuilder channelType(ChannelTypeEnum channelType) {
         this.channelType = channelType;
         return this;
     }
 
-    public SendRequestTestBuilder retryCnt(Integer retryCnt) {
+    public SendRequestEntityBuilder retryCnt(Integer retryCnt) {
         this.retryCnt = retryCnt;
         return this;
     }
 
-    public SendRequestTestBuilder customerRequestKey(String customerKey, String requestKey) {
+    public SendRequestEntityBuilder customerRequestKey(String customerKey, String requestKey) {
         this.customerRequestKey = CustomerRequestKey.of(customerKey, requestKey);
         return this;
     }
 
-    public SendRequestTestBuilder senderKey(String senderKey) {
+    public SendRequestEntityBuilder senderKey(String senderKey) {
         this.senderKey = senderKey;
         return this;
     }
 
-    public SendRequestTestBuilder state(SendRequestState state) {
+    public SendRequestEntityBuilder state(SendRequestState state) {
         this.state = state;
         return this;
     }
 
-    public SendRequestTestBuilder currentTargetUpload(TargetUploadReport currentTargetUpload) {
+    public SendRequestEntityBuilder currentTargetUpload(TargetUploadReport currentTargetUpload) {
         this.currentTargetUpload = currentTargetUpload;
         return this;
     }
 
-    public SendRequestTestBuilder schedule(Schedule schedule) {
+    public SendRequestEntityBuilder schedule(Schedule schedule) {
         this.schedule = schedule;
         return this;
     }
@@ -120,6 +122,7 @@ public class SendRequestTestBuilder {
                 customerRequestKey,
                 currentTargetUpload,
                 schedule,
+                sendMessage,
                 createdAt,
                 requestedAt,
                 sendStartedAt,

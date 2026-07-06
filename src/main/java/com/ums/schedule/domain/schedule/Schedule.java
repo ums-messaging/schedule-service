@@ -4,15 +4,12 @@ import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
 import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
 import com.ums.schedule.domain.schedule.code.ScheduleEventEnum;
 import com.ums.schedule.common.exception.validation.RequiredException;
-import com.ums.schedule.domain.schedule.converter.ScheduleStatusConverter;
+import com.ums.schedule.domain.sendrequest.exception.converter.ScheduleStatusConverter;
 import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
 import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
-import com.ums.schedule.domain.schedule.exception.ScheduleNotExecutableException;
+import com.ums.schedule.domain.schedule.exception.*;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
-import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
-import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
-import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleStatus;
@@ -31,7 +28,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Schedule {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -142,7 +139,7 @@ public class Schedule {
             if(!this.scheduleStatus.isInActive()) {
                 changeScheduleStatus(new ScheduleInActiveStatus());
             }
-            throw InvalidSchedulePeriodException.expired();
+            throw ScheduleExpiredException.of(id, schedulePeriod);
        }
     }
 
@@ -157,7 +154,7 @@ public class Schedule {
             throw ScheduleNotExecutableException.inActiveOf();
         }
         if(schedulePeriod.isExpired()) {
-            throw ScheduleNotExecutableException.expiredOf();
+            throw ScheduleExpiredException.of(id, schedulePeriod);
         }
     }
 

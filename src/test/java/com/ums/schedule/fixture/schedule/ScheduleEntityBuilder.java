@@ -1,11 +1,11 @@
-package com.ums.schedule.domain.schedule;
+package com.ums.schedule.fixture.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
 import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
+import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
-import com.ums.schedule.domain.schedule.policy.SchedulePeriodTestBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 
@@ -13,52 +13,52 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class ScheduleTestBuilder {
+public class ScheduleEntityBuilder {
     private String name = "scheduleName";
     private ScheduleCyclePolicy cyclePolicy = ScheduleCyclePolicy.realtimeOf();
     private ScheduleStatus scheduleStatus = new ScheduleRunningStatus();
     private ScheduleStatusEnum status = ScheduleStatusEnum.RUNNING;
-    private SchedulePeriod schedulePeriod = SchedulePeriodTestBuilder.builder().build();
+    private SchedulePeriod schedulePeriod = SchedulePeriodEntityBuilder.builder().build();
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
     private String createdBy = UUID.randomUUID().toString();
 
-    public static ScheduleTestBuilder builder() {
-        return new ScheduleTestBuilder();
+    public static ScheduleEntityBuilder builder() {
+        return new ScheduleEntityBuilder();
     }
 
-    public ScheduleTestBuilder scheduleName(String scheduleName) {
+    public ScheduleEntityBuilder scheduleName(String scheduleName) {
         this.name = scheduleName;
         return this;
     }
 
-    public ScheduleTestBuilder schedulePeriod(SchedulePeriod schedulePeriod) {
+    public ScheduleEntityBuilder schedulePeriod(SchedulePeriod schedulePeriod) {
         this.schedulePeriod = schedulePeriod;
         return this;
     }
 
-    public ScheduleTestBuilder status(ScheduleStatus status) {
+    public ScheduleEntityBuilder status(ScheduleStatus status) {
         this.scheduleStatus = status;
         this.status = (scheduleStatus != null) ? status.getCurrentCode() : null;
         return this;
     }
 
-    public ScheduleTestBuilder cyclePolicy(ScheduleCyclePolicy cyclePolicy) {
+    public ScheduleEntityBuilder cyclePolicy(ScheduleCyclePolicy cyclePolicy) {
         this.cyclePolicy = cyclePolicy;
         return this;
     }
 
-    public ScheduleTestBuilder createdAt(LocalDateTime createdAt) {
+    public ScheduleEntityBuilder createdAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
         return this;
     }
 
-    public ScheduleTestBuilder createdBy(String createdBy) {
+    public ScheduleEntityBuilder createdBy(String createdBy) {
         this.createdBy = createdBy;
         return this;
     }
 
-    public ScheduleTestBuilder lastUpdatedAt(LocalDateTime lastUpdatedAt) {
+    public ScheduleEntityBuilder lastUpdatedAt(LocalDateTime lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
         return this;
     }

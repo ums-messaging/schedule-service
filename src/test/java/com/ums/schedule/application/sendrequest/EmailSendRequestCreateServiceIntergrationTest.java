@@ -4,7 +4,7 @@ import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
 import com.ums.schedule.adapter.api.sendrequest.email.request.SendRequestCreateRequestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleJpaRepository;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ class EmailSendRequestCreateServiceIntergrationTest {
     private Long scheduleId;
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
         scheduleRepository.save(schedule);
         scheduleId = schedule.getId();
     }

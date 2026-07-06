@@ -2,9 +2,10 @@ package com.ums.schedule.repository.mapping.request;
 
 import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.TransientPropertyValueException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -30,9 +31,9 @@ public class SendRequestMappingTest {
         @Test
         @DisplayName("schedule에서 연관관계를 설정하면 FK는 저장되지 않는다.")
         void shouldNotPersistScheduleFK_whenSetByInverseOnlySide() {
-            Schedule schedule = ScheduleTestBuilder.builder().build();
+            Schedule schedule = ScheduleEntityBuilder.builder().build();
 
-            SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).build();
+            SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule).build();
 
             entityManager.persist(schedule);
             entityManager.flush();
@@ -50,8 +51,8 @@ public class SendRequestMappingTest {
         @Test
         @DisplayName("send_request에서 schedule과 연관관계를 설정하면 FK가 저장된다.")
         void shouldPersistFkSchedule_whenSetBySendRequest() {
-            Schedule schedule = ScheduleTestBuilder.builder().build();
-            SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).build();
+            Schedule schedule = ScheduleEntityBuilder.builder().build();
+            SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule).build();
 
             entityManager.persist(schedule);
             entityManager.persist(request);
@@ -71,7 +72,7 @@ public class SendRequestMappingTest {
         @Test
         @DisplayName("FK인 schedule은 NULL을 허용하지 않는다.")
         void shouldThrowException_whenScheduleIsNull() {
-            SendRequest request = SendRequestTestBuilder.builder().build();
+            SendRequest request = SendRequestEntityBuilder.builder().build();
 
             assertThatThrownBy(() -> {
                 entityManager.persist(request);
@@ -87,7 +88,7 @@ public class SendRequestMappingTest {
 
         @BeforeEach
         void setUp() {
-            Schedule schedule = ScheduleTestBuilder.builder().build();
+            Schedule schedule = ScheduleEntityBuilder.builder().build();
 
             entityManager.persist(schedule);
             scheduleId = schedule.getId();
@@ -100,7 +101,7 @@ public class SendRequestMappingTest {
         void shouldPersistFkCurrentTargetUpload_whenSetBySendRequest() {
             Schedule schedule = entityManager.find(Schedule.class, scheduleId);
             TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().build();
-            SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).build();
+            SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule).build();
 //            request.assignTargetUpload(targetUpload);
 
             entityManager.persist(request);
@@ -120,7 +121,7 @@ public class SendRequestMappingTest {
             Schedule schedule = entityManager.find(Schedule.class, scheduleId);
 
             TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().build();
-            SendRequest request = SendRequestTestBuilder.builder().schedule(schedule).build();
+            SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule).build();
             request.assignTargetUpload(targetUpload);
 
             assertThatThrownBy(() -> {

@@ -1,9 +1,9 @@
 package com.ums.schedule.repository.mapping.target;
 
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
 import com.ums.schedule.repository.DbErrorMessage;
@@ -26,8 +26,8 @@ public class TargetUploadMappingTest {
 
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
-        SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
+        SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule).build();
         entityManager.persist(schedule);
         entityManager.persist(sendRequest);
         requestId = sendRequest.getId();

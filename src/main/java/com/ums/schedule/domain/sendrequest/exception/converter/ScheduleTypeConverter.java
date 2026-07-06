@@ -1,4 +1,4 @@
-package com.ums.schedule.domain.schedule.converter;
+package com.ums.schedule.domain.sendrequest.exception.converter;
 
 import com.ums.schedule.common.code.mapper.EnumMapperConverter;
 import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
