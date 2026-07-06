@@ -16,12 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class EmailSendRequestCreateService {
     private final EmailMessageCreateService messageService;
-    private final SendRequestService sendRequestService;
+    private final SendRequestCreateService sendRequestService;
     private final TargetUploadReportService targetUploadService;
 
     @Transactional
     public EmailSendRequestCreateResponse create(String customerId, EmailSendCreateRequest emailCreateRequest) {
-        SendRequest sendRequest = sendRequestService.create(customerId, ChannelTypeEnum.EMAIL, emailCreateRequest.request());
+//        SendRequest sendRequest = sendRequestService.create(customerId, ChannelTypeEnum.EMAIL, emailCreateRequest.request());
+        SendRequest sendRequest = null;
         EmailSendMessage message = messageService.create(sendRequest, emailCreateRequest);
         TargetUploadResult uploadResult = targetUploadService.create(emailCreateRequest.request(), sendRequest, message);
 

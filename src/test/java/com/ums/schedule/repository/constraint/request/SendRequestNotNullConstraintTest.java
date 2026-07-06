@@ -4,7 +4,7 @@ import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.fixture.field.SendRequestField;
+import com.ums.schedule.fixture.sendrequest.SendRequestField;
 import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;

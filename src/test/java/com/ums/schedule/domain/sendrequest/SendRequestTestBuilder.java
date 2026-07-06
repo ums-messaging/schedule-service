@@ -97,15 +97,14 @@ public class SendRequestTestBuilder {
     public SendRequestCreateCommand toCreateCommand(TargetUploadTypeEnum uploadType, boolean exists) {
         return new SendRequestCreateCommand(
                 schedule.getId(),
-                EnumMapperValue.fromEnumMapperType(channelType),
-                    EnumMapperValue.fromEnumMapperType(uploadType),
+                channelType,
+                uploadType,
                     "csv",
                     customerRequestKey.getCustomerId(),
                     customerRequestKey.getCustomerRequestId(),
                     templateKey,
                     senderKey,
-                    retryCnt,
-                    exists
+                    retryCnt
                 );
     }
 

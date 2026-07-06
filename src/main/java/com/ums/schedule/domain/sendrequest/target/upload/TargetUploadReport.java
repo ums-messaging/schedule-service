@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.sendrequest.target.upload;
 
+import com.ums.schedule.application.sendrequest.command.TargetUploadCreateCommand;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.sendrequest.target.command.TargetUploadCreateCommand;
 import com.ums.schedule.application.sendrequest.target.command.TargetFileUploadRequestCommand;
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
@@ -90,23 +90,23 @@ public class TargetUploadReport {
     @JoinColumn(name = "request_id")
     private SendRequest sendRequest;
 
-    public static TargetUploadReport of(SendRequest sendRequest,  TargetUploadCreateCommand command) {
+    public static TargetUploadReport of(SendRequest sendRequest,  TargetUploadCreateCommand command, String filePrefix) {
         TargetUploadReport targetUpload = new TargetUploadReport();
         targetUpload.assignSendRequest(sendRequest);
-        targetUpload.initializeUploadType(command.channelType(), command);
+        targetUpload.initializeUploadType(sendRequest.getChannelType(), command);
         targetUpload.initializeEventAndState();
-        targetUpload.generateDownloadKey(command.channelType(), command.filePrefix());
+        targetUpload.generateDownloadKey(sendRequest.getChannelType(), filePrefix);
         return targetUpload;
     }
 
     private void initializeUploadType(ChannelTypeEnum channelType, TargetUploadCreateCommand command) {
-        assignUploadType(command.uploadType());
-        if(this.uploadType == TargetUploadTypeEnum.JSON) {
-            initializeTotalCount(command.targetList(), command.targetListMaxSize());
-        } else {
-            resolveUploadFormat(command.uploadFormat());
-            generateUploadKey(channelType, command.filePrefix());
-        }
+//        assignUploadType(command.uploadType());
+//        if(this.uploadType == TargetUploadTypeEnum.JSON) {
+//            initializeTotalCount(command.targetList(), command.targetListMaxSize());
+//        } else {
+//            resolveUploadFormat(command.uploadFormat());
+//            generateUploadKey(channelType, command.filePrefix());
+//        }
     }
 
     public void assignSendRequest(SendRequest sendRequest) {

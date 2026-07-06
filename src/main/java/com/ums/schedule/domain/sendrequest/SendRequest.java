@@ -3,7 +3,9 @@ package com.ums.schedule.domain.sendrequest;
 import com.github.f4b6a3.tsid.TsidCreator;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
+import com.ums.schedule.application.sendrequest.context.SendRequestCreateContext;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
+import com.ums.schedule.common.exception.validation.DuplicateViolationException;
 import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.sendrequest.code.SendRequestEventEnum;
@@ -79,21 +81,21 @@ public class SendRequest {
     private LocalDateTime sendStartedAt;
     private LocalDateTime sendCompletedAt;
 
-    public static SendRequest of(Schedule schedule, EnumMapperValue channelType, CustomerRequestKey customerKey, SendRequestCreateCommand command) {
+    public static SendRequest of(SendRequestCreateContext context) {
         SendRequest request = new SendRequest();
-        request.assignChannelType(channelType);
-        request.assignCustomerKey(customerKey, command.exists());
-        request.assignSchedule(schedule);
-        request.assignSenderAndTemplate(command.senderKey(), command.templateKey());
-        request.initializeRetryCount(command.retryCnt());
+        request.assignChannelType(context.channelType());
+        request.assignCustomerKey(context.customerKey());
+        request.assignSchedule(context.schedule());
+        request.assignSenderAndTemplate(context.senderKey(), context.templateKey());
+        request.initializeRetryCount(context.retryCnt());
         request.initializeStatusAndEvent();
         request.initializeCreateAt();
         return request;
     }
 
-    private void assignChannelType(EnumMapperValue channelType) {
+    private void assignChannelType(ChannelTypeEnum channelType) {
         ValidationUtils.isEmpty("channel_type", channelType);
-        this.channelType = ChannelTypeEnum.valueOf(channelType.code());
+        this.channelType = channelType;
     }
 
     private void assignCurrentTargetUploadReport(TargetUploadReport targetUploadReport) {
@@ -146,9 +148,9 @@ public class SendRequest {
         }
     }
 
-    private void assignCustomerKey(CustomerRequestKey customerRequestKey, boolean exists) {
-        customerRequestKey.validateDuplicateKey(exists);
-        this.customerRequestKey = customerRequestKey;
+    private void assignCustomerKey(CustomerRequestKey customerRequestKey) {
+        this.customerRequestKey = Optional.ofNullable(customerRequestKey)
+                .orElseThrow(() -> DuplicateViolationException.fieldOf("customer_key"));
     }
 
     public SendRequest updateSendRequest(Schedule schedule, TargetUploadReport targetUpload, SendRequestUpdateCommand command) {
@@ -242,5 +244,4 @@ public class SendRequest {
     public Long getCurrentUploadId() {
         return this.currentTargetUpload.getUploadId();
     }
-
 }

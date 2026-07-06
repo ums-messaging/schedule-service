@@ -36,14 +36,14 @@ public class TargetUploadReportService {
 
     @Transactional
     public TargetUploadResult create(SendRequestCreateRequest request, SendRequest sendRequest, ChannelMessage message) {
-        TargetUploadCreateCommand command = toCommand(sendRequest.getChannelType(), request.fileUploadRequest(), request.jsonUploadRequest());
-        TargetUploadReport targetUpload = TargetUploadReport.of(sendRequest, command);
-        TargetUploadProcessor processor = processorMap.get(targetUpload.getUploadType());
-        TargetUploadResult uploadResult = processor.requestUpload(targetUpload, request, message.getId().toString());
+        TargetUploadCreateCommand command = toCommand(sendRequest.getChannelType(), null, null);
+//        TargetUploadReport targetUpload = TargetUploadReport.of(sendRequest, command, null);
+//        TargetUploadProcessor processor = processorMap.get(targetUpload.getUploadType());
+//        TargetUploadResult uploadResult = processor.requestUpload(targetUpload, request, message.getId().toString());
 
-        repository.save(targetUpload);
+//        repository.save(targetUpload);
 
-        return uploadResult;
+        return null;
     }
 
     private TargetUploadCreateCommand toCommand(ChannelTypeEnum channelType, FileTargetUploadRequest fileRequest, JsonTargetUploadRequest jsonRequest) {

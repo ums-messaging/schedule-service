@@ -25,7 +25,7 @@ public class JsonTargetUploadProcessor implements TargetUploadProcessor {
     @Override
     public TargetUploadResult requestUpload(TargetUploadReport targetUpload, SendRequestCreateRequest request, String messageId) {
         SendRequestKeyData keyData = SendRequestKeyData.of(messageId, targetUpload);
-        targetUploadService.upload(targetUpload, keyData, request.toSendTargetDtos(), 1000);
+//        targetUploadService.upload(targetUpload, keyData, request.toSendTargetDtos(), 1000);
         return TargetUploadResult.of(targetUpload);
     }
 }

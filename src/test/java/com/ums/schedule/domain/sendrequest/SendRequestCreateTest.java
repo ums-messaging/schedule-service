@@ -41,7 +41,7 @@ public class SendRequestCreateTest {
             SendRequestCreateCommand createCommand = SendRequestTestBuilder.builder().toCreateCommand(TargetUploadTypeEnum.JSON, false);
             CustomerRequestKey customerKey = givenCustomerKey();
 
-            SendRequest givenSendRequest = SendRequest.of(schedule,  EnumMapperValue.fromEnumMapperType(ChannelTypeEnum.EMAIL), customerKey, createCommand );
+            SendRequest givenSendRequest = SendRequest.of(null);
 
             assertThat(givenSendRequest.getState()).isInstanceOf(SendRequestCreateState.class);
         }
@@ -60,7 +60,7 @@ public class SendRequestCreateTest {
             CustomerRequestKey customerKey = givenCustomerKey();
 
 //            ChannelMessage emailRequest = EmailSendMessageBuilder.builder().build();
-            SendRequest request = SendRequest.of(schedule, EnumMapperValue.fromEnumMapperType(ChannelTypeEnum.EMAIL), customerKey, command);
+            SendRequest request =  SendRequest.of(null);
 
             assertThat(request.getEvent()).isEqualTo(SendRequestEventEnum.SEND_REQUEST_CREATED);
         }
@@ -74,7 +74,7 @@ public class SendRequestCreateTest {
             CustomerRequestKey customerKey = CustomerRequestKey.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
 
 //            ChannelMessage emailRequest = EmailSendMessageBuilder.builder().build();
-            SendRequest givenRequest = SendRequest.of(schedule, EnumMapperValue.fromEnumMapperType(ChannelTypeEnum.EMAIL), customerKey, createCommand);
+            SendRequest givenRequest =  SendRequest.of(null);
 
             assertThat(givenRequest.getCreatedAt().toLocalDate())
                     .isEqualTo(LocalDate.now());

@@ -1,35 +1,54 @@
 package com.ums.schedule.application.sendrequest.result;
 
+import com.ums.schedule.application.sendrequest.target.result.FileTargetUploadResult;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public record SendRequestCreateResult(
         Long requestId,
-        Long uploadId,
+        String uploadId,
         String channelType,
+        Integer retryCount,
+        String templateKey,
+        String senderKey,
         String uploadType,
-        Long totalCount,
-        Long successCount,
-        Long failCount,
         String objectKey,
         String presignedUrl,
         LocalDateTime expiredAt
 ) {
 
     public static SendRequestCreateResult of(SendRequest sendRequest, TargetUploadResult result) {
+        return Optional.ofNullable(result.fileUploadResult())
+                .map(fileResult -> SendRequestCreateResult.of(sendRequest, result, fileResult))
+                .orElseGet(() -> new SendRequestCreateResult(
+                        sendRequest.getId(),
+                        result.reportId(),
+                        sendRequest.getChannelType().code(),
+                        sendRequest.getRetryCnt(),
+                        sendRequest.getTemplateKey(),
+                        sendRequest.getSenderKey(),
+                        result.uploadType(),
+                        null,
+                        null,
+                        null
+                ));
+    }
+
+    private static SendRequestCreateResult of(SendRequest sendRequest, TargetUploadResult uploadResult, FileTargetUploadResult fileResult)  {
         return new SendRequestCreateResult(
                 sendRequest.getId(),
-                sendRequest.getCurrentUploadId(),
+                uploadResult.reportId(),
                 sendRequest.getChannelType().code(),
-                sendRequest.getCurrentTargetUpload().getUploadType().code(),
-                result.jsonTargetUploadResult().totalCount(),
-                result.jsonTargetUploadResult().successCount(),
-                result.jsonTargetUploadResult().failCount(),
-                result.fileUploadResult().objectKey(),
-                result.fileUploadResult().uploadUrl(),
-                result.fileUploadResult().expiredAt()
+                sendRequest.getRetryCnt(),
+                sendRequest.getTemplateKey(),
+                sendRequest.getSenderKey(),
+                uploadResult.uploadType(),
+                fileResult.objectKey(),
+                fileResult.uploadUrl(),
+                fileResult.expiredAt()
         );
     }
 }
