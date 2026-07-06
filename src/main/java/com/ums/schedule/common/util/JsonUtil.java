@@ -40,7 +40,7 @@ public abstract class JsonUtil {
     }
 
     public static <T> Map<String, T> toMap(String json, Class<T> clazz) {
-        if(StringUtils.hasText(json)) {
+        if(!StringUtils.hasText(json)) {
             return Collections.emptyMap();
         }
 

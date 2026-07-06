@@ -6,6 +6,7 @@ import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ public class SendTargetTestBuilder {
     private String contact="jang314@naver.com";
     private String resourceJson;
     private String messageVariable;
+    private String resultMessage;
     private SendTargetStatusEnum status = SendTargetStatusEnum.READY;
     private Integer attemptNo = 1;
     private String title = "title";
@@ -48,6 +50,11 @@ public class SendTargetTestBuilder {
         return this;
     }
 
+    public SendTargetTestBuilder messageVariable(String messageVariable) {
+        this.messageVariable = messageVariable;
+        return this;
+    }
+
     public SendTargetTestBuilder state(SendTargetState state) {
         this.state = state;
         this.status = (state == null) ? null : state.currentStatusCode();
@@ -73,7 +80,8 @@ public class SendTargetTestBuilder {
                 targetName,
                 contact,
                 messageVariable,
-                status,
+                state,
+                resultMessage,
                 attemptNo,
                 title,
                 content,
@@ -81,7 +89,8 @@ public class SendTargetTestBuilder {
                 targetUpload,
                 createdAt,
                 lastUploadedAt,
-                state);
+                Map.of()
+                );
     }
 
 

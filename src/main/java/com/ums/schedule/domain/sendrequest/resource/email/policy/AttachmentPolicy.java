@@ -26,6 +26,7 @@ public class AttachmentPolicy {
 
     private void assignDownloadName(String downloadName) {
         ValidationUtils.isEmpty("download_name", downloadName);
+        this.downloadName = downloadName;
     }
 
     private void assignAttachmentName(String attachmentName) {

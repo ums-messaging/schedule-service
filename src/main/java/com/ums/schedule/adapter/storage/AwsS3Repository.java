@@ -11,6 +11,7 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
 
@@ -53,9 +54,16 @@ public class AwsS3Repository {
         }
     }
 
+    public String getFileStringContent(String key) {
+        InputStream is = getFileContent(key);
+        InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
+        return reader.toString();
+    }
+
     public InputStream getFileContent(String key) {
         ResponseInputStream<GetObjectResponse> inputStream = s3Client.getObject(
                 GetObjectRequest.builder()
+                        .key(key)
                         .build()
         );
         return inputStream;

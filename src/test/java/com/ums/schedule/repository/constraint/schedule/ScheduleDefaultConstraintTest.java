@@ -2,7 +2,7 @@ package com.ums.schedule.repository.constraint.schedule;
 
 import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ public class ScheduleDefaultConstraintTest {
     @Test
     @DisplayName("status의 기본값은 ACTIVE이다.")
     void shouldReturnStatusIsActive_whenScheduleStatusIsNull() {
-        Schedule schedule = ScheduleTestBuilder.builder()
+        Schedule schedule = ScheduleEntityBuilder.builder()
                 .status(null)
                 .build();
 
@@ -38,7 +38,7 @@ public class ScheduleDefaultConstraintTest {
     @Test
     @DisplayName("created_at의 기본 값은 현재 시각이다.")
     void shouldReturnCreatedAtIsCurrentTime_whenCreatedAtIsNull() {
-        Schedule schedule = ScheduleTestBuilder.builder().createdAt(null).build();
+        Schedule schedule = ScheduleEntityBuilder.builder().createdAt(null).build();
 
         entityManager.persist(schedule);
         entityManager.flush();

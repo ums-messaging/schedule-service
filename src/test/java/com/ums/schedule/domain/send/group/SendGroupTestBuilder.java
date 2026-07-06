@@ -3,7 +3,7 @@ package com.ums.schedule.domain.send.group;
 import com.ums.schedule.domain.send.code.ResultCodeEnum;
 import com.ums.schedule.domain.sendrequest.code.SendGroupEventTypeEnum;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +11,7 @@ public class SendGroupTestBuilder {
     private SendGroupEventTypeEnum eventType = SendGroupEventTypeEnum.SEND_GROUP_CREATED;
     private ResultCodeEnum resultCode = ResultCodeEnum.SUCCESS;
     private String resultMessage;
-    private SendRequest sendRequest = SendRequestTestBuilder.builder().build();
+    private SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
     private String payload;
     private LocalDateTime issuedAt=LocalDateTime.now();
 

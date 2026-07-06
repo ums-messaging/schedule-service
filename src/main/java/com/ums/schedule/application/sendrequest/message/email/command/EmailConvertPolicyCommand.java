@@ -1,7 +1,7 @@
 package com.ums.schedule.application.sendrequest.message.email.command;
 
-import com.ums.schedule.adapter.api.request.request.EmailSecurityPolicyRequest;
-import com.ums.schedule.adapter.api.request.request.EmailSendCreateRequest;
+import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
+import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.application.sendrequest.message.email.result.EmailContentResult;
 import com.ums.schedule.application.sendrequest.message.email.result.EmailTemplateDetailResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;

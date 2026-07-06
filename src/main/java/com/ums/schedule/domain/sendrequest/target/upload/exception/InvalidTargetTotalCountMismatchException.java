@@ -1,8 +1,9 @@
 package com.ums.schedule.domain.sendrequest.target.upload.exception;
 
 import com.ums.schedule.common.exception.PolicyViolationException;
+import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetPolicyViolationException;
 
-public class InvalidTargetTotalCountMismatchException extends PolicyViolationException {
+public class InvalidTargetTotalCountMismatchException extends SendTargetPolicyViolationException {
     protected InvalidTargetTotalCountMismatchException(String statistics) {
         super("Target count is mismatch. %s ".formatted(statistics));
     }

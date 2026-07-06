@@ -39,6 +39,11 @@ public class EmailSendMessageBuilder {
         return this;
     }
 
+    public EmailSendMessageBuilder id(UUID uuid) {
+        this.id = id;
+        return this;
+    }
+
     public EmailSendMessageBuilder subject(String subject) {
         this.subject = subject;
         return this;

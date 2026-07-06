@@ -2,24 +2,31 @@ package com.ums.schedule.application.sendrequest.target;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.ums.schedule.adapter.api.target.context.TargetUploadContext;
+import com.ums.schedule.application.sendrequest.data.SendRequestKeyData;
 import com.ums.schedule.application.sendrequest.target.assembler.SendTargetAssembler;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.application.sendrequest.target.row.SendTargetRow;
 import com.ums.schedule.domain.sendrequest.target.event.TargetUploadCreatedEvent;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, String>> {
-    private final int BATCH_SIZE = 1000;
-    private final List<SendTargetRow> targetList = new ArrayList<>();
-    private final SendTargetAssembler factory;
-    private final TargetUploadCreatedEvent event;
+    private final List<TargetMessageData> targetList = new ArrayList<>();
 
+    private final int BATCH_SIZE = 1000;
+
+    private final TargetUploadReport targetUpload;
+    private final ApplicationEventPublisher publisher;
     private Map<Integer, String> headMap;
 
-    public SendTargetReaderListener(SendTargetAssembler factory, TargetUploadCreatedEvent event) {
-        this.factory = factory;
-        this.event = event;
+    public SendTargetReaderListener(TargetUploadReport targetUpload, ApplicationEventPublisher publisher) {
+        this.targetUpload = targetUpload;
+        this.publisher = publisher;
     }
 
     @Override
@@ -30,30 +37,22 @@ public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, St
     @Override
     public void invoke(Map<Long, String> targetData, AnalysisContext context) {
         SendTargetRow row = SendTargetRow.of(context.readRowHolder().getRowIndex()+1, headMap, targetData);
-        targetList.add(row);
+        targetList.add(row.toTargetData());
+
         if (targetList.size() >= BATCH_SIZE) {
-            uploadTargets();
+            publishEvent();
         }
     }
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        // 나머지 큐로 빼기
         if(!targetList.isEmpty()) {
-            uploadTargets();
+            publishEvent();
         }
     }
 
-    private void uploadTargets() {
-        List<TargetMessageData> dtos = targetList.stream()
-                .map(SendTargetRow::toTargetData)
-                .toList();
-
-        this.targetList.clear();
-
-    }
-
-    public int getTotalCount() {
-        return 0;
+    private void publishEvent() {
+        TargetUploadContext targetUploadContext = TargetUploadContext.of(targetUpload, targetList);
+        publisher.publishEvent(targetUploadContext);
     }
 }

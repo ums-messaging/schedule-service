@@ -3,7 +3,9 @@ package com.ums.schedule.domain.sendrequest;
 import com.github.f4b6a3.tsid.TsidCreator;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
+import com.ums.schedule.application.sendrequest.context.SendRequestCreateContext;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
+import com.ums.schedule.common.exception.validation.DuplicateViolationException;
 import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.sendrequest.code.SendRequestEventEnum;
@@ -11,6 +13,9 @@ import com.ums.schedule.domain.send.email.job.SendJob;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.converter.ChannelTypeConverter;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
+import com.ums.schedule.domain.sendrequest.exception.DefaultRetryCountNotConfiguredException;
+import com.ums.schedule.domain.sendrequest.exception.SendMessageNotFoundException;
+import com.ums.schedule.domain.sendrequest.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.state.SendRequestCreateState;
 import com.ums.schedule.domain.sendrequest.state.SendRequestState;
 import com.ums.schedule.domain.sendrequest.converter.SendRequestStateConverter;
@@ -35,7 +40,7 @@ import java.util.Optional;
                     columnNames = {"customer_id", "customer_request_id"}
             )})
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class SendRequest {
     @Id
     @Tsid
@@ -69,31 +74,40 @@ public class SendRequest {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private TargetUploadReport currentTargetUpload;
 
-    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
+
+    @OneToOne
+    @JoinColumn(name = "message_id", nullable = false)
+    private SendMessage sendMessage;
 
     private LocalDateTime createdAt;
     private LocalDateTime requestedAt;
     private LocalDateTime sendStartedAt;
     private LocalDateTime sendCompletedAt;
 
-    public static SendRequest of(Schedule schedule, EnumMapperValue channelType, CustomerRequestKey customerKey, SendRequestCreateCommand command) {
+    public static SendRequest of(SendRequestCreateContext context) {
         SendRequest request = new SendRequest();
-        request.assignChannelType(channelType);
-        request.assignCustomerKey(customerKey, command.exists());
-        request.assignSchedule(schedule);
-        request.assignSenderAndTemplate(command.senderKey(), command.templateKey());
-        request.initializeRetryCount(command.retryCnt());
+        request.assignChannelType(context.channelType());
+        request.assignCustomerKey(context.customerKey());
+        request.assignSchedule(context.schedule());
+        request.assignSendMessage(context.sendMessage());
+        request.assignSenderAndTemplate(context.senderKey(), context.templateKey());
+        request.initializeRetryCount(context.retryCnt());
         request.initializeStatusAndEvent();
         request.initializeCreateAt();
         return request;
     }
 
-    private void assignChannelType(EnumMapperValue channelType) {
+    private void assignSendMessage(SendMessage sendMessage) {
+        this.sendMessage = Optional.ofNullable(sendMessage)
+                .orElseThrow(SendMessageNotFoundException::of);
+    }
+
+    private void assignChannelType(ChannelTypeEnum channelType) {
         ValidationUtils.isEmpty("channel_type", channelType);
-        this.channelType = ChannelTypeEnum.valueOf(channelType.code());
+        this.channelType = channelType;
     }
 
     private void assignCurrentTargetUploadReport(TargetUploadReport targetUploadReport) {
@@ -127,7 +141,9 @@ public class SendRequest {
     }
 
     private void initializeRetryCount(Integer retryCount) {
-        this.retryCnt = (retryCount == null) ? 3 : retryCount;
+        this.retryCnt = Optional.ofNullable(retryCount)
+                .filter(count -> count >= 0)
+                .orElseThrow(DefaultRetryCountNotConfiguredException::of);
     }
 
     private void initializeCreateAt() {
@@ -146,9 +162,9 @@ public class SendRequest {
         }
     }
 
-    private void assignCustomerKey(CustomerRequestKey customerRequestKey, boolean exists) {
-        customerRequestKey.validateDuplicateKey(exists);
-        this.customerRequestKey = customerRequestKey;
+    private void assignCustomerKey(CustomerRequestKey customerRequestKey) {
+        this.customerRequestKey = Optional.ofNullable(customerRequestKey)
+                .orElseThrow(() -> DuplicateViolationException.fieldOf("customer_key"));
     }
 
     public SendRequest updateSendRequest(Schedule schedule, TargetUploadReport targetUpload, SendRequestUpdateCommand command) {
@@ -242,5 +258,4 @@ public class SendRequest {
     public Long getCurrentUploadId() {
         return this.currentTargetUpload.getUploadId();
     }
-
 }

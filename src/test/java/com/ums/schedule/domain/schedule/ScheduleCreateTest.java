@@ -7,11 +7,12 @@ import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ReservationPolicyValue;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
-import com.ums.schedule.domain.schedule.policy.SchedulePeriodTestBuilder;
+import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
 
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class ScheduleCreateTest {
         @Test
         @DisplayName("스케쥴 상태는 ACTIVE이어야 한다.")
         void shouldReturnScheduleStatusIsActive_whenScheduleCreate() {
-            ScheduleCreateCommand command = ScheduleTestBuilder.builder().toCommand();
+            ScheduleCreateCommand command = ScheduleEntityBuilder.builder().toCommand();
             ScheduleCyclePolicy policy = ScheduleCyclePolicy.realtimeOf();
 
             Schedule expect = Schedule.of(command, policy);
@@ -40,7 +41,7 @@ class ScheduleCreateTest {
         @Test
         @DisplayName("스케쥴 명이 빈 값일 떄, 익셉션이 발생한다.")
         void shouldThrowException_whenScheduleNameIsEmpty() {
-            ScheduleCreateCommand command = ScheduleTestBuilder.builder().scheduleName("").toCommand();
+            ScheduleCreateCommand command = ScheduleEntityBuilder.builder().scheduleName("").toCommand();
 
             RequiredException expect = RequiredException.fieldOf("schedule name");
 
@@ -56,7 +57,7 @@ class ScheduleCreateTest {
         @Test
         @DisplayName("스케쥴 상태가 ACTIVE일 때 RUNNING으로 변경하면 status는 RUNNING이 반환된다.")
         void shouldChangeToRunning_whenScheduleStatusChangeRunning() {
-            Schedule schedule = ScheduleTestBuilder.builder()
+            Schedule schedule = ScheduleEntityBuilder.builder()
                     .status(new ScheduleActiveStatus())
                     .build();
 
@@ -68,7 +69,7 @@ class ScheduleCreateTest {
         @Test
         @DisplayName("스케쥴 상태가 RUNNING일 떄 ACTIVE로 변경하면 Status는 ACTIVE가 반환된다.")
         void shouldReturnStatusActive_whenCalltoActive() {
-            Schedule schedule = ScheduleTestBuilder.builder()
+            Schedule schedule = ScheduleEntityBuilder.builder()
                     .status(new ScheduleRunningStatus())
                     .build();
 
@@ -81,7 +82,7 @@ class ScheduleCreateTest {
         @Test
         @DisplayName("스케쥴 상태가 ACTIVE일 때, InACTIVE로 변경하면 Status는 INACTIVE가 반환된다.")
         void shouldReturnStatusDeActive_whenCallToInActive(){
-            Schedule schedule = ScheduleTestBuilder.builder().status(new ScheduleActiveStatus()).build();
+            Schedule schedule = ScheduleEntityBuilder.builder().status(new ScheduleActiveStatus()).build();
             schedule.toStatus(ScheduleEventEnum.TO_INACTIVE);
 
             assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleInActiveStatus.class);
@@ -169,7 +170,7 @@ class ScheduleCreateTest {
     @Test
     @DisplayName("현재 날짜가 스케쥴 기간에 포함되고, 상태가 RUNNING이면 TRUE를 반환한다.")
     void shouldReturnTrue_whenCurrentDateContainsInSchedulePeriodAndStatusIsRunning() {
-        ScheduleCreateCommand command = ScheduleTestBuilder.builder().toCommand();
+        ScheduleCreateCommand command = ScheduleEntityBuilder.builder().toCommand();
         ScheduleCyclePolicy policy = ScheduleCyclePolicy.realtimeOf();
 
         Schedule schedule = Schedule.of(command, policy);
@@ -181,11 +182,11 @@ class ScheduleCreateTest {
     }
 
     private ScheduleCreateCommand givenSchedulePeriodToCommand(LocalDateTime startAt, LocalDateTime endAt) {
-        SchedulePeriod period = SchedulePeriodTestBuilder.builder()
+        SchedulePeriod period = SchedulePeriodEntityBuilder.builder()
                 .scheduleStartAt(startAt.toLocalDate())
                 .scheduleEndAt(endAt.toLocalDate())
                 .build();
-        ScheduleCreateCommand command = ScheduleTestBuilder.builder()
+        ScheduleCreateCommand command = ScheduleEntityBuilder.builder()
                 .schedulePeriod(period)
                 .toCommand();
         return command;

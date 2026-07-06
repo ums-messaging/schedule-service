@@ -3,7 +3,15 @@ package com.ums.schedule.domain.sendrequest.target.exeption;
 import com.ums.schedule.common.exception.PolicyViolationException;
 
 public abstract class SendTargetPolicyViolationException extends PolicyViolationException {
-    public SendTargetPolicyViolationException(String message) {
+    protected SendTargetPolicyViolationException(String message) {
         super(message);
+    }
+
+    protected SendTargetPolicyViolationException(String message, Throwable e) {
+        super(message, e);
+    }
+
+    protected SendTargetPolicyViolationException(Throwable e) {
+        super(e);
     }
 }

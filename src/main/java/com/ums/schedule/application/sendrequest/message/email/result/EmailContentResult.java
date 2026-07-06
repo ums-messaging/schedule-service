@@ -2,7 +2,7 @@ package com.ums.schedule.application.sendrequest.message.email.result;
 
 
 import com.ums.schedule.adapter.storage.AwsS3FileMetadataResponse;
-import com.ums.schedule.adapter.api.request.request.EmailAttachmentRequest;
+import com.ums.schedule.adapter.api.request.email.EmailAttachmentRequest;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 import com.ums.schedule.domain.sendrequest.template.email.code.TemplateContentFormatEnum;
 

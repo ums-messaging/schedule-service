@@ -1,36 +1,35 @@
 package com.ums.schedule.adapter.api.target;
 
+import com.alibaba.excel.EasyExcel;
 import com.ums.schedule.adapter.storage.AwsS3Repository;
+import com.ums.schedule.application.sendrequest.target.SendTargetReaderListener;
 import com.ums.schedule.application.sendrequest.target.assembler.SendTargetAssembler;
+import com.ums.schedule.application.sendrequest.template.loader.EmailTemplateLoader;
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReportJpaRepository;
+import com.ums.schedule.domain.sendrequest.template.ChannelTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import java.io.InputStream;
 import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 public class TargetUploadFileReader {
-    private final AwsS3Repository storageRepository;
     private final TargetUploadReportJpaRepository repository;
+    private final AwsS3Repository fileRepository;
     private final ApplicationEventPublisher publisher;
-    private final Map<String, SendTargetAssembler> factoryMap;
 
-//    public void listen(TargetUploadRequestedEvent event) {
-//        TargetUpload targetUpload = repository.findById(event.uploadId()).orElseThrow();
-//        ChannelFactory factory = factoryMap.get(event.channelType());
-//        ChannelTemplate template = factory.getTemplate(event.requestId(), event.templateKey());
-//        TargetUploadCreatedEvent createdEvent = new TargetUploadCreatedEvent(event.uploadId(), event.channelType(), template);
-//        InputStream inputStream = storageRepository.getFileContent(event.objectKey());
-//
-//        SendTargetReaderListener listener =
-//                new SendTargetReaderListener(factoryMap.get(event.channelType()), createdEvent, targetUploadService);
-//
-//        EasyExcel.read(inputStream, listener)
-//                .sheet()
-//                .doRead();
-//
-//        publisher.publishEvent(targetUpload.uploadComplete(listener.getTotalCount()));
-//    }
+    public void listen(Long uploadId) {
+        TargetUploadReport targetUpload = repository.findById(uploadId).orElseThrow();
+
+        SendTargetReaderListener listener = new SendTargetReaderListener(targetUpload, publisher);
+
+        InputStream inputStream = fileRepository.getFileContent(targetUpload.getUploadKey());
+        EasyExcel.read(inputStream, listener)
+                .sheet()
+                .doRead();
+    }
 }

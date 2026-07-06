@@ -1,10 +1,10 @@
 package com.ums.schedule.repository.constraint.request;
 
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
-import com.ums.schedule.fixture.field.SendRequestField;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestField;
 import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -25,7 +25,7 @@ public class SendRequestNotNullConstraintTest {
 
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
         entityManager.persist(schedule);
         entityManager.flush();
         this.scheduleId = schedule.getId();
@@ -37,7 +37,7 @@ public class SendRequestNotNullConstraintTest {
     @DisplayName("template_key는 NULL을 허용하지 않는다.")
     void shouldThrowException_whenTemplateKeyIsNull() {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest request = SendRequestTestBuilder.builder()
+        SendRequest request = SendRequestEntityBuilder.builder()
                 .templateKey(null)
                 .schedule(schedule).build();
 
@@ -55,7 +55,7 @@ public class SendRequestNotNullConstraintTest {
     void shouldThrowException_whenChannelTypeIsNotNull() {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
 
-        SendRequest request = SendRequestTestBuilder.builder()
+        SendRequest request = SendRequestEntityBuilder.builder()
                 .schedule(schedule)
                 .channelType(null)
                 .build();
@@ -75,7 +75,7 @@ public class SendRequestNotNullConstraintTest {
     void shouldThrowException_whenSenderKeyIsNotNull() {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
 
-        SendRequest request = SendRequestTestBuilder.builder()
+        SendRequest request = SendRequestEntityBuilder.builder()
                 .schedule(schedule)
                 .senderKey(null)
                 .build();

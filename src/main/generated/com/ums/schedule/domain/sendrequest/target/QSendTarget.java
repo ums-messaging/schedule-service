@@ -38,7 +38,9 @@ public class QSendTarget extends EntityPathBase<SendTarget> {
 
     public final StringPath resourceJson = createString("resourceJson");
 
-    public final EnumPath<com.ums.schedule.domain.sendrequest.target.code.SendTargetStatusEnum> status = createEnum("status", com.ums.schedule.domain.sendrequest.target.code.SendTargetStatusEnum.class);
+    public final StringPath resultMessage = createString("resultMessage");
+
+    public final SimplePath<com.ums.schedule.domain.sendrequest.target.state.SendTargetState> state = createSimple("state", com.ums.schedule.domain.sendrequest.target.state.SendTargetState.class);
 
     public final StringPath targetKey = createString("targetKey");
 

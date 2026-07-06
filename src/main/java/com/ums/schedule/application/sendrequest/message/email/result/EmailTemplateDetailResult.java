@@ -1,6 +1,6 @@
 package com.ums.schedule.application.sendrequest.message.email.result;
 
-import com.ums.schedule.adapter.api.request.request.EmailSendCreateRequest;
+import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 

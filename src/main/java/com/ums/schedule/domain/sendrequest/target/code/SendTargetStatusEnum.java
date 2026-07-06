@@ -3,10 +3,12 @@ package com.ums.schedule.domain.sendrequest.target.code;
 import com.ums.schedule.common.code.mapper.EnumMapperType;
 
 public enum SendTargetStatusEnum implements EnumMapperType {
+    CREATE("C", "생성"),
     READY("R", "준비"),
     RETRYING("T", "재시도"),
     FAIL("O", "실패"),
     COMPLETED("E", "완료")
+
     ;
 
     String value;

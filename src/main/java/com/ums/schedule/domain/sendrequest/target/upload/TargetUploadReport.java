@@ -1,8 +1,9 @@
 package com.ums.schedule.domain.sendrequest.target.upload;
 
+import com.ums.schedule.application.sendrequest.command.TargetUploadCreateCommand;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.sendrequest.target.command.TargetUploadCreateCommand;
 import com.ums.schedule.application.sendrequest.target.command.TargetFileUploadRequestCommand;
+import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.exception.validation.*;
 import com.ums.schedule.common.util.FileUtil;
@@ -10,6 +11,7 @@ import com.ums.schedule.domain.sendrequest.SendRequest;
 
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.exception.SendRequestNotFoundException;
+import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.sendrequest.target.converter.TargetUploadTypeConverter;
 import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetListExceedViolationException;
 import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetNotFoundException;
@@ -30,7 +32,9 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -86,23 +90,23 @@ public class TargetUploadReport {
     @JoinColumn(name = "request_id")
     private SendRequest sendRequest;
 
-    public static TargetUploadReport of(SendRequest sendRequest,  TargetUploadCreateCommand command) {
+    public static TargetUploadReport of(SendRequest sendRequest,  TargetUploadCreateCommand command, String filePrefix) {
         TargetUploadReport targetUpload = new TargetUploadReport();
         targetUpload.assignSendRequest(sendRequest);
-        targetUpload.initializeUploadType(command.channelType(), command);
+        targetUpload.initializeUploadType(sendRequest.getChannelType(), command);
         targetUpload.initializeEventAndState();
-        targetUpload.generateDownloadKey(command.channelType(), command.filePrefix());
+        targetUpload.generateDownloadKey(sendRequest.getChannelType(), filePrefix);
         return targetUpload;
     }
 
     private void initializeUploadType(ChannelTypeEnum channelType, TargetUploadCreateCommand command) {
-        assignUploadType(command.uploadType());
-        if(this.uploadType == TargetUploadTypeEnum.JSON) {
-            initializeTotalCount(command.targetList(), command.targetListMaxSize());
-        } else {
-            resolveUploadFormat(command.uploadFormat());
-            generateUploadKey(channelType, command.filePrefix());
-        }
+//        assignUploadType(command.uploadType());
+//        if(this.uploadType == TargetUploadTypeEnum.JSON) {
+//            initializeTotalCount(command.targetList(), command.targetListMaxSize());
+//        } else {
+//            resolveUploadFormat(command.uploadFormat());
+//            generateUploadKey(channelType, command.filePrefix());
+//        }
     }
 
     public void assignSendRequest(SendRequest sendRequest) {
@@ -244,14 +248,31 @@ public class TargetUploadReport {
         return FileUtil.generateFilePaths(this.sendRequest.generateRequestUploadDir(channelType), filePrefix);
     }
 
-    public void startTargetUpload() {
+    public Map<Integer, List<SendTarget>> startTargetUploadAndGroupedTarget(List<SendTarget> targetList, int partitionSize) {
+        Map<Integer, List<SendTarget>> groupedTargetList = targetList.stream()
+                .collect(Collectors.groupingBy(i -> (targetList.indexOf(i) / partitionSize)));
+
         onEvent(TargetUploadEventEnum.TARGET_UPLOAD_STARTED);
+
+        return groupedTargetList;
     }
 
-    public void completeTargetUpload(Long successCount, Long failCount) {
-        if(isMismatchTotalCountBySum(successCount, failCount)) {
-            throw InvalidTargetTotalCountMismatchException.of(totalCount, successCount, failCount);
+    public void completeTargetUpload(List<SendTargetSaveResult> results) {
+        long completedCount = results.stream()
+                .mapToLong(target -> target.completedTargetList().size())
+                .sum();
+
+        long failedCount = results.stream()
+                .mapToLong(target -> target.failedTargetList().size())
+                .sum();
+
+        if(isMismatchTotalCountBySum(completedCount, failedCount)) {
+            throw InvalidTargetTotalCountMismatchException.of(totalCount, completedCount, failedCount);
         }
+
+        this.successCount = completedCount;
+        this.failCount = failedCount;
+
         onEvent(TargetUploadEventEnum.TARGET_UPLOAD_COMPLETED);
     }
 
@@ -272,5 +293,10 @@ public class TargetUploadReport {
         TargetUploadState toState = this.state.onEvent(event);
         changeStatus(toState);
         this.event = event;
+    }
+
+    public void onError(String message) {
+        this.resultMessage = message;
+        onEvent(TargetUploadEventEnum.TARGET_UPLOAD_FAIL);
     }
 }

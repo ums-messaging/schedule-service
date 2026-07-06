@@ -18,6 +18,7 @@ public class TargetUploadTestBuilder {
     private TargetUploadState uploadStatus = new TargetUploadCreateState();
     private TargetUploadFormatEnum format = TargetUploadFormatEnum.CSV;
     private String resultMessage ;
+    private Long totalCount;
     private Long fileSize = 100L;
     private String objectKey = UUID.randomUUID().toString();
     private LocalDateTime uploadedAt = LocalDateTime.now();
@@ -55,6 +56,11 @@ public class TargetUploadTestBuilder {
         return this;
     }
 
+    public TargetUploadTestBuilder totalCount(Long totalCount) {
+        this.totalCount = totalCount;
+        return this;
+    }
+
     public TargetUploadTestBuilder createdAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
         return this;
@@ -70,7 +76,7 @@ public class TargetUploadTestBuilder {
                 id,
                 uploadType,
                 format,
-                0L,
+                totalCount,
                 0L,
                 0L,
                 null,

@@ -16,8 +16,8 @@ import java.time.format.DateTimeParseException;
 
 @Embeddable
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SchedulePeriod {
     @Column(name = "schedule_start_at", nullable = false)
     private LocalDate scheduleStartAt;

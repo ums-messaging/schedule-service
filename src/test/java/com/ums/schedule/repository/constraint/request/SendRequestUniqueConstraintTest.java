@@ -1,9 +1,9 @@
 package com.ums.schedule.repository.constraint.request;
 
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -26,8 +26,8 @@ public class SendRequestUniqueConstraintTest {
 
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
-        SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule)
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
+        SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule)
                 .customerRequestKey("test1", "test2").build();
 
         entityManager.persist(schedule);
@@ -42,7 +42,7 @@ public class SendRequestUniqueConstraintTest {
     @DisplayName("customer_id와 customer_request_id가 중복되면 예외가 발생한다.")
     void shouldThrowException_whenCustomerIdAndCustomerRequestIdIsDuplicated() {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule)
+        SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule)
                 .customerRequestKey("test1", "test2")
                 .build();
 
@@ -59,7 +59,7 @@ public class SendRequestUniqueConstraintTest {
     @DisplayName("customer_id와 중복되지 않은 customer_request_id를 입력하면 저장된다.")
     void shouldPersist_whenCustomerRequestIdIsNotDuplicatedAboutCustomerId() {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule)
+        SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule)
                 .customerRequestKey("test1", "test3")
                 .build();
 

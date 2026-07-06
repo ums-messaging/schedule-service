@@ -2,7 +2,7 @@ package com.ums.schedule.domain.schedule.policy.cycle;
 
 import com.ums.schedule.domain.schedule.code.CycleCdEnum;
 import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
-import com.ums.schedule.domain.schedule.converter.ScheduleTypeConverter;
+import com.ums.schedule.domain.sendrequest.exception.converter.ScheduleTypeConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

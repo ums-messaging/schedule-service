@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.sendrequest.target.upload;
 
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadEventEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadStatusEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
@@ -23,8 +23,8 @@ public class TargetUploadReportPrepareTest {
     class WhenUploadTypeIsFile {
         private final TargetUploadTestBuilder domain = TargetUploadTestBuilder.builder()
                 .uploadType(TargetUploadTypeEnum.FILE)
-                .sendRequest(SendRequestTestBuilder.builder().build());
-        private final SendRequest sendRequest = SendRequestTestBuilder.builder().build();
+                .sendRequest(SendRequestEntityBuilder.builder().build());
+        private final SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
 
         @Test
         @DisplayName("state가 CREATE일 때 state는 WAITING으로 변경된다.")
@@ -99,7 +99,7 @@ public class TargetUploadReportPrepareTest {
         @Test
         @DisplayName("TARGET_UPLOAD_READY 이벤트가 발행된다.")
         void shouldPublishTargetUploadReadyEvent() {
-            SendRequest sendRequest = SendRequestTestBuilder.builder().build();
+            SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
             TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
                     .uploadType(TargetUploadTypeEnum.FILE)
                     .sendRequest(sendRequest)
@@ -115,7 +115,7 @@ public class TargetUploadReportPrepareTest {
         @Test
         @DisplayName("SendRequest의 currentTargetUpload가 지정된다.")
         void shouldAssignedCurrentTargetUpload() {
-            SendRequest givenSendRequest = SendRequestTestBuilder.builder()
+            SendRequest givenSendRequest = SendRequestEntityBuilder.builder()
                     .currentTargetUpload(null)
                     .build();
 
@@ -139,10 +139,10 @@ public class TargetUploadReportPrepareTest {
     @DisplayName("upload_type이 JSON일 때")
     class WhenUploadTypeIsJson {
         private final TargetUploadTestBuilder domain = TargetUploadTestBuilder.builder()
-                .sendRequest(SendRequestTestBuilder.builder().build())
+                .sendRequest(SendRequestEntityBuilder.builder().build())
                 .uploadType(TargetUploadTypeEnum.JSON);
 
-        private final SendRequest sendRequest = SendRequestTestBuilder.builder().build();
+        private final SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
 
         @Test
         @DisplayName("state가 WAITING일 때 익셉션이 발생한다.")
@@ -223,7 +223,7 @@ public class TargetUploadReportPrepareTest {
         @Test
         @DisplayName("SendRequest의 currentTargetUpload가 지정된다.")
         void shouldAssignedCurrentTargetUpload() {
-            SendRequest givenSendRequest = SendRequestTestBuilder.builder()
+            SendRequest givenSendRequest = SendRequestEntityBuilder.builder()
                     .currentTargetUpload(null)
                     .build();
 

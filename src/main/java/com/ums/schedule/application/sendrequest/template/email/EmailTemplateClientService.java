@@ -1,6 +1,6 @@
 package com.ums.schedule.application.sendrequest.template.email;
 
-import com.ums.schedule.adapter.api.request.request.EmailSendCreateRequest;
+import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.adapter.api.template.EmailTemplateClient;
 import com.ums.schedule.application.sendrequest.message.email.result.EmailTemplateResult;
 import lombok.RequiredArgsConstructor;

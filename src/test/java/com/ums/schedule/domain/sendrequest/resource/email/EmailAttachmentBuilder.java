@@ -19,12 +19,43 @@ public class EmailAttachmentBuilder {
     public EmailAttachmentBuilder() {
         this.convertType = ConvertTypeEnum.NONE;
         this.securityPolicy = null;
-
     }
 
     public static EmailAttachmentBuilder builder() {
         return new EmailAttachmentBuilder();
     }
+
+    public EmailAttachmentBuilder convertType(ConvertTypeEnum convertType) {
+        this.convertType = convertType;
+        return this;
+    }
+
+    public EmailAttachmentBuilder attachmentPolicy(String attachmentName, String downloadName) {
+        this.attachmentPolicy = AttachmentPolicy.of(attachmentName, downloadName);
+        return this;
+    }
+
+    public EmailAttachmentBuilder fileKeyTemplate(String fileKeyTemplate) {
+        this.fileKeyTemplate = fileKeyTemplate;
+        return this;
+    }
+
+    public EmailAttachmentBuilder securityPolicy(SecurityPolicy securityPolicy) {
+        this.securityPolicy = securityPolicy;
+        return this;
+    }
+
+    public EmailAttachmentBuilder fileKey(String fileKey) {
+        this.fileKey = fileKey;
+        return this;
+    }
+
+    public EmailAttachmentBuilder fileSize(Long fileSize) {
+        this.fileSize = fileSize;
+        return this;
+    }
+
+
 
     public EmailAttachmentBuilder sendRequest(SendRequest sendRequest) {
         return this;

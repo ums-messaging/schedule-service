@@ -3,9 +3,9 @@ package com.ums.schedule.repository.mapping.channel;
 import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachmentBuilder;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestTestBuilder;
+import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.ScheduleTestBuilder;
+import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.id.IdentifierGenerationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ public class EmailSendRequestMappingTest {
 
     @BeforeEach
     void setUp() {
-        Schedule schedule = ScheduleTestBuilder.builder().build();
+        Schedule schedule = ScheduleEntityBuilder.builder().build();
         entityManager.persist(schedule);
         entityManager.flush();
 
@@ -41,7 +41,7 @@ public class EmailSendRequestMappingTest {
         @DisplayName("send_request에서 연관관계를 설정하면 FK는 저장되지 않는다.")
         void shouldNotPersistSendRequestFK_whenSetByInverseOnlySide() {
             Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-            SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
+            SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule).build();
 
             EmailAttachmentBuilder.builder().sendRequest(sendRequest).build();
 
@@ -59,7 +59,7 @@ public class EmailSendRequestMappingTest {
         @DisplayName("email_send_request에서 send_request와 연관관계를 설정하면 FK가 저장된다.")
         void shouldPersistFkSendRequest_whenSetByEmailSendRequest() {
             Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-            SendRequest sendRequest = SendRequestTestBuilder.builder().schedule(schedule).build();
+            SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule).build();
 
             EmailAttachment emailSendRequest = EmailAttachmentBuilder.builder().sendRequest(sendRequest).build();
 
