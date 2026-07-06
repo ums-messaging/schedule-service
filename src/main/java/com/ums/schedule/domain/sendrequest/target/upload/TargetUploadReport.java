@@ -92,41 +92,46 @@ public class TargetUploadReport {
 
     public static TargetUploadReport of(SendRequest sendRequest,  TargetUploadCreateCommand command, String filePrefix) {
         TargetUploadReport targetUpload = new TargetUploadReport();
-        targetUpload.assignSendRequest(sendRequest);
-        targetUpload.initializeUploadType(sendRequest.getChannelType(), command);
+        targetUpload.generateId();
         targetUpload.initializeEventAndState();
+        targetUpload.assignSendRequest(sendRequest);
+        targetUpload.assignUploadType(command.uploadType());
         targetUpload.generateDownloadKey(sendRequest.getChannelType(), filePrefix);
         return targetUpload;
     }
 
-    private void initializeUploadType(ChannelTypeEnum channelType, TargetUploadCreateCommand command) {
-//        assignUploadType(command.uploadType());
-//        if(this.uploadType == TargetUploadTypeEnum.JSON) {
-//            initializeTotalCount(command.targetList(), command.targetListMaxSize());
-//        } else {
-//            resolveUploadFormat(command.uploadFormat());
-//            generateUploadKey(channelType, command.filePrefix());
-//        }
+    private void generateId() {
+        this.uploadId = 1L;
+    }
+
+
+    public String initializeFileUploadAndGenerateUploadKey(EnumMapperValue uploadFormat, String filePrefix) {
+        TargetUploadFormatEnum format = resolveUploadFormat(uploadFormat);
+        String uploadKey = generateUploadKey(filePrefix, format);
+        onEvent(TargetUploadEventEnum.TARGET_UPLOAD_READY);
+        return uploadKey;
     }
 
     public void assignSendRequest(SendRequest sendRequest) {
         if(sendRequest == null) {
             throw SendRequestNotFoundException.of();
         }
+        onEvent(TargetUploadEventEnum.TARGET_UPLOAD_READY);
         sendRequest.assignTargetUpload(this);
         this.sendRequest = sendRequest;
     }
 
-    private void assignUploadType(EnumMapperValue uploadType) {
+    private void assignUploadType(TargetUploadTypeEnum uploadType) {
         if(uploadType == null) {
             throw RequiredException.fieldOf("upload_type");
         }
-        this.uploadType = TargetUploadTypeEnum.valueOf(uploadType.code());
+        this.uploadType = uploadType;
     }
-    private void resolveUploadFormat(EnumMapperValue uploadFormat) {
+    private TargetUploadFormatEnum resolveUploadFormat(EnumMapperValue uploadFormat) {
         this.uploadFormat = Optional.ofNullable(uploadFormat)
                 .map(format -> TargetUploadFormatEnum.valueOf(format.code()))
                 .orElseGet(() -> TargetUploadFormatEnum.CSV);
+        return this.uploadFormat;
     }
 
     private void initializeEventAndState() {
@@ -143,12 +148,12 @@ public class TargetUploadReport {
         return this.state.getCurrentCode() == TargetUploadStatusEnum.WAITING;
     }
 
-    private String generateUploadKey(ChannelTypeEnum channelType, String filePrefix) {
+    private String generateUploadKey(String filePrefix, TargetUploadFormatEnum format) {
         if(isValidUploadKeyPrefix(filePrefix)) {
             throw UploadKeyGeneratedViolationException.of("file prefix is empty.");
         }
-        String filename = String.format("%d.%s", uploadId, this.uploadFormat.value().toLowerCase());
-        String uploadKey = generateObjectKeyPrefix(channelType, filePrefix) + filename;
+        String filename = String.format("%d.%s", uploadId, format.value().toLowerCase());
+        String uploadKey = generateObjectKeyPrefix(sendRequest.getChannelType(), filePrefix) + filename;
         this.uploadKey = uploadKey;
         return uploadKey;
     }

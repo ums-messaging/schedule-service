@@ -208,10 +208,16 @@ public class SendRequest {
     }
 
     public void assignTargetUpload(TargetUploadReport targetUpload) {
-        if (targetUpload == null) {
-            throw TargetUploadReportNotFoundException.of();
+        this.currentTargetUpload = Optional.ofNullable(targetUpload)
+                .orElseThrow(TargetUploadReportNotFoundException::of);
+        changeStateByTargetUploadReport();
+    }
+
+    private void changeStateByTargetUploadReport() {
+        switch (currentTargetUpload.getState().getCurrentCode()) {
+            case WAITING -> onEvent(SendRequestEventEnum.SEND_REQUEST_UPDATED);
+            case COMPLETED -> onEvent(SendRequestEventEnum.SEND_REQUEST_READY);
         }
-        this.currentTargetUpload = targetUpload;
     }
 
     public SendJob createSendJob() {

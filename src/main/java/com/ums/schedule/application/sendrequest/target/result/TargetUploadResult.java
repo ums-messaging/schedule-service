@@ -12,12 +12,11 @@ public record TargetUploadResult(
     public static TargetUploadResult of(TargetUploadReport report) {
         return TargetUploadResult.of(report, null);
     }
-    public static TargetUploadResult of(TargetUploadReport report, PresigendUrlResponse response) {
-        FileTargetUploadResult fileUploadResult = FileTargetUploadResult.of(response);
+    public static TargetUploadResult of(TargetUploadReport report, FileTargetUploadResult result) {
         return new TargetUploadResult(
-                report.getUploadId().toString(),
+                String.valueOf(report.getUploadId()),
                 report.getUploadType().code(),
-                fileUploadResult
+                result
         );
     }
 }

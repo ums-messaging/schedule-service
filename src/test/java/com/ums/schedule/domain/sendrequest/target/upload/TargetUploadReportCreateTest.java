@@ -1,16 +1,37 @@
 package com.ums.schedule.domain.sendrequest.target.upload;
 
+import com.ums.schedule.application.sendrequest.command.TargetUploadCreateCommand;
+import com.ums.schedule.application.sendrequest.target.result.FileTargetUploadResult;
 import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
+import com.ums.schedule.domain.sendrequest.target.upload.state.TargetUploadWaitingState;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.builder.TargetUploadCreateCommandBuilder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 public class TargetUploadReportCreateTest {
     private final TargetUploadCreateCommandBuilder command = TargetUploadCreateCommandBuilder.builder();
     private final SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
+    @Test
+    @Disabled
+    @DisplayName("TargetUploadReport와 SendRequest는 연관관계가 맺어진다.")
+    void shouldCreateRelationShipWithTargetUploadReportAndSendRequest() {
+
+    }
+
+    @Test
+    @DisplayName("대상자 업로드 상태는 WAITING으로 변경된다.")
+    void shouldChangeSendTargetUploadReportStateToWaiting() {
+
+    }
 
 //    @Test
 //    @DisplayName("SendRequest가 NULL이면 익셉션이 발생한다.")

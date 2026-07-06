@@ -9,7 +9,7 @@ public record FileTargetUploadResult(
         String uploadUrl,
         LocalDateTime expiredAt
 ) {
-    protected static FileTargetUploadResult of(PresigendUrlResponse response) {
+    public static FileTargetUploadResult of(PresigendUrlResponse response) {
         return new FileTargetUploadResult(
                 response.objectKey(),
                 response.presignedUrl(),

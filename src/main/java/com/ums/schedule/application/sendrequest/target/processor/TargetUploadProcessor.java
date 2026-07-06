@@ -6,5 +6,5 @@ import com.ums.schedule.common.code.mapper.EnumMapperSelector;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 
 public interface TargetUploadProcessor extends EnumMapperSelector  {
-    TargetUploadResult requestUpload(TargetUploadReport targetUploadReport, SendRequestCreateRequest request, String messageId);
+//    TargetUploadResult requestUpload(TargetUploadReport targetUploadReport, SendRequestCreateRequest request, String messageId);
 }

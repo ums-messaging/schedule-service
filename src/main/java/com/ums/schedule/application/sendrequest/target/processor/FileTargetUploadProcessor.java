@@ -23,9 +23,9 @@ public class FileTargetUploadProcessor implements TargetUploadProcessor {
         return FILE == TargetUploadTypeEnum.valueOf(mapperValue.code());
     }
 
-    @Override
-    public TargetUploadResult requestUpload(TargetUploadReport targetUpload, SendRequestCreateRequest request, String messageId) {
-        PresigendUrlResponse response = repository.generateUploadUrl(targetUpload.getUploadKey());
-        return TargetUploadResult.of(targetUpload, response);
-    }
+//    @Override
+//    public TargetUploadResult requestUpload(TargetUploadReport targetUpload, SendRequestCreateRequest request, String messageId) {
+//        PresigendUrlResponse response = repository.generateUploadUrl(targetUpload.getUploadKey());
+//        return TargetUploadResult.of(targetUpload, response);
+//    }
 }

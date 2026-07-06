@@ -22,10 +22,10 @@ public class JsonTargetUploadProcessor implements TargetUploadProcessor {
         return JSON == TargetUploadTypeEnum.valueOf(mapperValue.code());
     }
 
-    @Override
-    public TargetUploadResult requestUpload(TargetUploadReport targetUpload, SendRequestCreateRequest request, String messageId) {
-        SendRequestKeyData keyData = SendRequestKeyData.of(messageId, targetUpload);
-//        targetUploadService.upload(targetUpload, keyData, request.toSendTargetDtos(), 1000);
-        return TargetUploadResult.of(targetUpload);
-    }
+//    @Override
+//    public TargetUploadResult requestUpload(TargetUploadReport targetUpload, SendRequestCreateRequest request, String messageId) {
+//        SendRequestKeyData keyData = SendRequestKeyData.of(messageId, targetUpload);
+////        targetUploadService.upload(targetUpload, keyData, request.toSendTargetDtos(), 1000);
+//        return TargetUploadResult.of(targetUpload);
+//    }
 }
