@@ -1,6 +1,11 @@
 package com.ums.schedule.common.code;
 
-import com.ums.schedule.common.code.exception.EnumMapperNotFoundException;
+import com.ums.schedule.common.code.mapper.EnumMapper;
+import com.ums.schedule.common.code.mapper.EnumMapperFactory;
+import com.ums.schedule.common.code.mapper.EnumMapperType;
+import com.ums.schedule.common.code.mapper.EnumMapperValue;
+import com.ums.schedule.common.exception.EnumMapperNotEmptyException;
+import com.ums.schedule.common.exception.EnumMapperNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +23,19 @@ class EnumMapperFactoryTest {
 
         EnumMapperValue result = factory.findEnumMapperValue(TestEnumMapper.TEST_ENUM_MAPPER, "PDF");
         assertThat(result.code()).isEqualTo("PDF");
+    }
+
+    @Test
+    @DisplayName("코드 값으로 빈 값을 입력하면 예외가 발생한다.")
+    void shouldThrowExceptioin_whenCodeIsEmpty() {
+        EnumMapperFactory factory = new EnumMapperFactory();
+        factory.register(TestEnumMapper.class);
+
+        EnumMapperNotEmptyException expect = EnumMapperNotEmptyException.of(TestEnumMapper.TEST_ENUM_MAPPER);
+
+        assertThatThrownBy(() -> factory.findEnumMapperValue(TestEnumMapper.TEST_ENUM_MAPPER, ""))
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage());
     }
 
     @Test

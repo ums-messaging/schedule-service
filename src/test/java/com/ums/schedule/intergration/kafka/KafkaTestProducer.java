@@ -14,5 +14,4 @@ public class KafkaTestProducer {
     public void send(String topic, String message) {
         kafkaTemplate.send(topic, message.getBytes(StandardCharsets.UTF_8));
     }
-
 }

@@ -14,7 +14,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 @ToString
 public class TestProperties {
     private final String host;
-    private final int port;
+    private final String port;
     private final String username;
     private final String password;
 }
