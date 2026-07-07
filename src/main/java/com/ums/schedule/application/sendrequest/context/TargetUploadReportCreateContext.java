@@ -12,7 +12,7 @@ public record TargetUploadReportCreateContext(
         SendRequest sendRequest,
         ChannelTypeEnum channelType,
         TargetUploadTypeEnum uploadType,
-        TargetUploadFormatEnum uploadFormat,
+        EnumMapperValue uploadFormat,
         String uploadkeyPrefix,
         String downloadKeyPrefix
 ) {
@@ -22,7 +22,7 @@ public record TargetUploadReportCreateContext(
                 sendRequest,
                 sendRequest.getChannelType(),
                 command.uploadType(),
-                TargetUploadFormatEnum.valueOf(format.code()),
+                format,
                 properties.getUploadKey(),
                 properties.getDownloadKey()
         );

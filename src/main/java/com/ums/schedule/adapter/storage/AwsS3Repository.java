@@ -1,5 +1,6 @@
 package com.ums.schedule.adapter.storage;
 
+import com.ums.schedule.application.exception.FileStorageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -69,7 +70,7 @@ public class AwsS3Repository {
         return inputStream;
     }
 
-    public PresigendUrlResponse generateUploadUrl(String objectKey) {
+    public PresigendUrlResponse generateUploadUrl(String objectKey) throws FileStorageException {
         S3Presigner presigner = S3Presigner.create();
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(BUCKET_NAME)

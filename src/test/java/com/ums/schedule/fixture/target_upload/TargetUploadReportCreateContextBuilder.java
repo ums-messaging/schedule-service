@@ -1,6 +1,7 @@
 package com.ums.schedule.fixture.target_upload;
 
 import com.ums.schedule.application.sendrequest.context.TargetUploadReportCreateContext;
+import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.state.SendRequestCreateState;
@@ -12,7 +13,7 @@ public class TargetUploadReportCreateContextBuilder {
     private SendRequest sendRequest;
     private ChannelTypeEnum channelType;
     private TargetUploadTypeEnum uploadType;
-    private TargetUploadFormatEnum uploadFormat;
+    private EnumMapperValue uploadFormat;
     private String uploadkeyPrefix;
     private String downloadKeyPrefix;
 
@@ -24,7 +25,7 @@ public class TargetUploadReportCreateContextBuilder {
         this.sendRequest = createSendRequest();
         this.channelType = ChannelTypeEnum.EMAIL;
         this.uploadType = TargetUploadTypeEnum.JSON;
-        this.uploadFormat = TargetUploadFormatEnum.EXCEL;
+        this.uploadFormat = EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.EXCEL);
         this.uploadkeyPrefix = "/target/upload/";
         this.downloadKeyPrefix = "/target/upload/download";
     }
@@ -50,7 +51,7 @@ public class TargetUploadReportCreateContextBuilder {
         return this;
     }
 
-    public TargetUploadReportCreateContextBuilder uploadFormat(TargetUploadFormatEnum uploadFormat) {
+    public TargetUploadReportCreateContextBuilder uploadFormat(EnumMapperValue uploadFormat) {
         this.uploadFormat = uploadFormat;
         return this;
     }

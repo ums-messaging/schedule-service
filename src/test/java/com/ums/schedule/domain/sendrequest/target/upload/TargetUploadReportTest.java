@@ -1,6 +1,7 @@
 package com.ums.schedule.domain.sendrequest.target.upload;
 
 import com.ums.schedule.application.sendrequest.context.TargetUploadReportCreateContext;
+import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.code.SendRequestStatusEnum;
@@ -310,7 +311,7 @@ public class TargetUploadReportTest {
 
                 TargetUploadReportCreateContext context = contextBuilder
                         .sendRequest(sendRequest)
-                        .uploadFormat(TargetUploadFormatEnum.EXCEL)
+                        .uploadFormat(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.EXCEL))
                         .channelType(ChannelTypeEnum.EMAIL)
                         .downloadKeyPrefix(uploadKeyPrefix)
                         .build();

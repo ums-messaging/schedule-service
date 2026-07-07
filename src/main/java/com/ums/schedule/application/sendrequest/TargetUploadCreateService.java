@@ -54,5 +54,4 @@ public class TargetUploadCreateService  {
     private EnumMapperValue resolveUploadFormat(String uploadFormat) {
         return factory.findEnumMapperValue(TargetUploadReportEnumMapper.UPLOAD_FORMAT, uploadFormat);
     }
-
 }

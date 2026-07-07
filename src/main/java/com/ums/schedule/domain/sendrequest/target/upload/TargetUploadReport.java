@@ -107,12 +107,12 @@ public class TargetUploadReport {
 
     private void initializeFileUploadTypeInfo(TargetUploadReportCreateContext context, String id) {
         if(context.uploadType() == TargetUploadTypeEnum.FILE) {
-            TargetUploadFormatEnum format = initializeUploadFormat();
+            TargetUploadFormatEnum format = initializeUploadFormat(context.uploadFormat());
             initializeUploadKey(context.sendRequest(), format, context.uploadkeyPrefix(), id);
         }
     }
 
-    private TargetUploadFormatEnum initializeUploadFormat() {
+    private TargetUploadFormatEnum initializeUploadFormat(EnumMapperValue uploadFormat) {
         TargetUploadFormatEnum format = resolveUploadFormat(uploadFormat);
         assignUploadFormat(format);
         return format;
