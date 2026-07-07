@@ -3,17 +3,12 @@ package com.ums.schedule.application.sendrequest.target;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.ums.schedule.adapter.api.target.context.TargetUploadContext;
-import com.ums.schedule.application.sendrequest.data.SendRequestKeyData;
-import com.ums.schedule.application.sendrequest.target.assembler.SendTargetAssembler;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.application.sendrequest.target.row.SendTargetRow;
-import com.ums.schedule.domain.sendrequest.target.event.TargetUploadCreatedEvent;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class SendTargetReaderListener extends AnalysisEventListener<Map<Long, String>> {
     private final List<TargetMessageData> targetList = new ArrayList<>();

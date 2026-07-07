@@ -14,7 +14,7 @@ public record TargetUploadResult(
     }
     public static TargetUploadResult of(TargetUploadReport report, FileTargetUploadResult result) {
         return new TargetUploadResult(
-                String.valueOf(report.getUploadId()),
+                report.getId().toString(),
                 report.getUploadType().code(),
                 result
         );

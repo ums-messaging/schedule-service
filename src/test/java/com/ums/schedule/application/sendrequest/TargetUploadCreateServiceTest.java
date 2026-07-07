@@ -55,7 +55,7 @@ class TargetUploadCreateServiceTest {
 
         targetUploadService.create(sendRequest, command);
 
-        verify(provider).provide(any(), any(), any());
+        verify(provider).provide(any());
     }
 
     @Test
@@ -68,7 +68,7 @@ class TargetUploadCreateServiceTest {
 
         targetUploadService.create(sendRequest, command);
 
-        verify(provider, never()).provide(any(), any(), any());
+        verify(provider, never()).provide(any());
     }
 
     @Test
@@ -91,7 +91,7 @@ class TargetUploadCreateServiceTest {
 
         doReturn("/target/upload/download").when(properties).getDownloadKey();
 
-        doThrow(mock(ApplicationException.class)).when(provider).provide(any(), any(), any());
+        doThrow(mock(ApplicationException.class)).when(provider).provide(any());
 
         assertThatThrownBy(() -> targetUploadService.create(sendRequest, command));
         verify(repository, never()).save(any(TargetUploadReport.class));
@@ -127,7 +127,7 @@ class TargetUploadCreateServiceTest {
 
         doReturn("/target/upload/download").when(properties).getDownloadKey();
         doReturn("/target/upload").when(properties).getUploadKey();
-        doReturn(mock(FileTargetUploadResult.class)).when(provider).provide(any(), any(), any());
+        doReturn(mock(FileTargetUploadResult.class)).when(provider).provide(any());
 
         targetUploadService.create(sendRequest, command);
 
@@ -142,7 +142,7 @@ class TargetUploadCreateServiceTest {
 
         doReturn("/target/upload/download").when(properties).getDownloadKey();
         doReturn("/target/upload").when(properties).getUploadKey();
-        doReturn(mock(FileTargetUploadResult.class)).when(provider).provide(any(), any(), any());
+        doReturn(mock(FileTargetUploadResult.class)).when(provider).provide(any());
 
         targetUploadService.create(sendRequest, command);
 

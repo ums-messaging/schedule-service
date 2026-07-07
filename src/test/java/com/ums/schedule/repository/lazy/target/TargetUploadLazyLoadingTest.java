@@ -5,7 +5,7 @@ import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
@@ -16,19 +16,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 public class TargetUploadLazyLoadingTest {
     @Autowired private EntityManager entityManager;
-    private Long uploadId;
+    private UUID uploadId;
 
     @BeforeEach
     void setUp() {
         Schedule schedule = ScheduleEntityBuilder.builder().build();
         SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule).build();
-        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
+        TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().sendRequest(request).build();
 
         entityManager.persist(schedule);
         entityManager.persist(request);
@@ -36,7 +38,7 @@ public class TargetUploadLazyLoadingTest {
 
         entityManager.flush();
 
-        this.uploadId = targetUpload.getUploadId();
+        this.uploadId = targetUpload.getId();
         entityManager.clear();
     }
 

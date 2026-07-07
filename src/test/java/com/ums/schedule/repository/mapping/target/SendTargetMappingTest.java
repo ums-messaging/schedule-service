@@ -7,7 +7,7 @@ import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.sendrequest.target.SendTargetTestBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -18,25 +18,27 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 public class SendTargetMappingTest {
     @Autowired private EntityManager entityManager;
-    private Long uploadId;
+    private UUID uploadId;
 
     @BeforeEach
     public void setUp() {
         Schedule schedule = ScheduleEntityBuilder.builder().build();
         SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule).build();
-        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(sendRequest).build();
+        TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().sendRequest(sendRequest).build();
         entityManager.persist(schedule);
         entityManager.persist(sendRequest);
         entityManager.persist(targetUpload);
         entityManager.flush();
 
-        uploadId = targetUpload.getUploadId();
+        uploadId = targetUpload.getId();
         entityManager.clear();
     }
 

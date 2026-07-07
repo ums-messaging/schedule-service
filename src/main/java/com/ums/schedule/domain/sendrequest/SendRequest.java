@@ -11,6 +11,7 @@ import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.sendrequest.code.SendRequestEventEnum;
 import com.ums.schedule.domain.send.email.job.SendJob;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
+import com.ums.schedule.domain.sendrequest.code.SendRequestStatusEnum;
 import com.ums.schedule.domain.sendrequest.converter.ChannelTypeConverter;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
 import com.ums.schedule.domain.sendrequest.exception.DefaultRetryCountNotConfiguredException;
@@ -32,6 +33,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Entity
 @Table(name = "send_request", uniqueConstraints = {
@@ -120,7 +122,6 @@ public class SendRequest {
     protected SendRequest() {
         this.id = TsidCreator.getTsid().toLong();
     }
-
 
     private void initializeStatusAndEvent() {
         this.event = SendRequestEventEnum.SEND_REQUEST_CREATED;
@@ -214,19 +215,16 @@ public class SendRequest {
     }
 
     private void changeStateByTargetUploadReport() {
+        this.state.validate();
         switch (currentTargetUpload.getState().getCurrentCode()) {
             case WAITING -> onEvent(SendRequestEventEnum.SEND_REQUEST_UPDATED);
             case COMPLETED -> onEvent(SendRequestEventEnum.SEND_REQUEST_READY);
         }
     }
 
-    public SendJob createSendJob() {
-        return SendJob.of(this, schedule, currentTargetUpload);
-    }
-
-    public String generateRequestUploadDir(ChannelTypeEnum channelType) {
+    public String generateRequestUploadDir() {
         String customerId = customerRequestKey.getCustomerId();
-        return FileUtil.generateFilePaths(customerId, channelType.code().toLowerCase());
+        return FileUtil.generateFilePaths(customerId, String.valueOf(this.id), channelType.code().toLowerCase());
     }
 
     public void prepareForUpload(TargetUploadReport targetUploadReport) {
@@ -253,7 +251,7 @@ public class SendRequest {
 
     private void validateCurrentTargetUploadReport(TargetUploadReport targetUploadReport) {
         if(!isEqualToCurrentTargetUpload(targetUploadReport)) {
-            throw InvalidTargetUploadReportMismatchException.of(this.currentTargetUpload.getUploadId(), targetUploadReport.getUploadId());
+            throw InvalidTargetUploadReportMismatchException.of(this.currentTargetUpload.getId(), targetUploadReport.getId());
         }
     }
 
@@ -261,7 +259,7 @@ public class SendRequest {
         return this.currentTargetUpload == targetUploadReport;
     }
 
-    public Long getCurrentUploadId() {
-        return this.currentTargetUpload.getUploadId();
+    public UUID getCurrentUploadId() {
+        return this.currentTargetUpload.getId();
     }
 }

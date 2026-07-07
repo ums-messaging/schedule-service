@@ -5,7 +5,7 @@ import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,14 +34,14 @@ public class TargetUploadPersistTest {
     @DisplayName("target_upload 생성 시 저장된다.")
     void shouldPersist_whenTargetUploadCreate() {
         Schedule schedule = entityManager.getReference(Schedule.class, scheduleId);
-        TargetUploadReport targetUploadReport = TargetUploadTestBuilder.builder().id(null).build();
+        TargetUploadReport targetUploadReport = TargetUploadReportEntityBuilder.builder().id(null).build();
         SendRequest sendRequest = SendRequestEntityBuilder.builder()
                 .id(null)
                 .schedule(schedule)
                 .currentTargetUpload(targetUploadReport)
                 .build();
 
-        targetUploadReport.assignSendRequest(sendRequest);
+//        targetUploadReport.assignSendRequest(sendRequest);
 
         entityManager.persist(sendRequest);
         entityManager.flush();

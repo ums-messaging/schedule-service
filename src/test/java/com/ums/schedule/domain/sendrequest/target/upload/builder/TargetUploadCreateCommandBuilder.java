@@ -1,14 +1,12 @@
 package com.ums.schedule.domain.sendrequest.target.upload.builder;
 
 import com.ums.schedule.application.sendrequest.command.TargetUploadCreateCommand;
-import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadFormatEnum;
+import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
 
-import java.util.List;
 
 public class TargetUploadCreateCommandBuilder {
+    private ChannelTypeEnum channelType;
     private TargetUploadTypeEnum uploadType;
     private String uploadFormat;
 
@@ -18,6 +16,11 @@ public class TargetUploadCreateCommandBuilder {
 
     private TargetUploadCreateCommandBuilder() {
         this.uploadType = TargetUploadTypeEnum.JSON;
+    }
+
+    public TargetUploadCreateCommandBuilder channelType(ChannelTypeEnum channelType) {
+        this.channelType = channelType;
+        return this;
     }
 
     public TargetUploadCreateCommandBuilder uploadType(TargetUploadTypeEnum uploadType) {
@@ -31,6 +34,6 @@ public class TargetUploadCreateCommandBuilder {
     }
 
     public TargetUploadCreateCommand build() {
-        return new TargetUploadCreateCommand(uploadType, uploadFormat);
+        return new TargetUploadCreateCommand(channelType, uploadType, uploadFormat);
     }
 }

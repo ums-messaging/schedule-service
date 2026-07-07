@@ -5,7 +5,7 @@ import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.repository.DbErrorMessage;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,7 +44,7 @@ public class TargetUploadMappingTest {
         @DisplayName("send_request에서 연관관계를 설정하면 FK는 저장되지 않는다.")
         void shouldNotPersistSendRequestFK_whenSetByInverseOnlySide() {
             SendRequest request = entityManager.getReference(SendRequest.class, requestId);
-            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
+            TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().sendRequest(request).build();
 
             entityManager.persist(request);
             entityManager.flush();
@@ -56,11 +58,11 @@ public class TargetUploadMappingTest {
         @DisplayName("target_upload에서 send_request와 연관관계를 설정하면 FK가 저장된다.")
         void shouldPersistFkSendRequest_whenSetByTargetUpload() {
             SendRequest request = entityManager.find(SendRequest.class, requestId);
-            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
+            TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().sendRequest(request).build();
 
             entityManager.persist(targetUpload);
             entityManager.flush();
-            Long id = targetUpload.getUploadId();
+            UUID id = targetUpload.getId();
             entityManager.clear();
 
             TargetUploadReport expect = entityManager.find(TargetUploadReport.class, id);
@@ -71,7 +73,7 @@ public class TargetUploadMappingTest {
         @DisplayName("FK인 send_request은 NULL을 허용하지 않는다.")
         void shouldThrowException_whenSendRequestIsNull() {
             SendRequest request = entityManager.find(SendRequest.class, requestId);
-            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(null).build();
+            TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().sendRequest(null).build();
 
 
             assertThatThrownBy(() -> {

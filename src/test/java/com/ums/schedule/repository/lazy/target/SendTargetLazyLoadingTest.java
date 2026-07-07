@@ -7,7 +7,7 @@ import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.sendrequest.target.SendTargetTestBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
@@ -32,7 +32,7 @@ public class SendTargetLazyLoadingTest {
     void setUp() {
         Schedule schedule = ScheduleEntityBuilder.builder().build();
         SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule).build();
-        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(request).build();
+        TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().sendRequest(request).build();
         SendTarget target = SendTargetTestBuilder.builder().targetUpload(targetUpload).build();
 
         entityManager.persist(schedule);

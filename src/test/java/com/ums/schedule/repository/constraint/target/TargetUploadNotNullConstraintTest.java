@@ -5,7 +5,7 @@ import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.fixture.field.TargetUploadField;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -40,7 +40,7 @@ public class TargetUploadNotNullConstraintTest {
     @DisplayName("upload_type은 NULL을 허용하지 않는다.")
     void shouldThrowException_whenUploadTypeIsNull() {
         SendRequest sendRequest = entityManager.getReference(SendRequest.class, requestId);
-        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(sendRequest)
+        TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().sendRequest(sendRequest)
                 .uploadType(null).build();
 
         TargetUploadField field = TargetUploadField.UPLOAD_TYPE;

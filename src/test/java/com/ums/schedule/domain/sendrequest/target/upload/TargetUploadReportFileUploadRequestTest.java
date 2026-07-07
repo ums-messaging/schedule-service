@@ -10,8 +10,9 @@ import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadStatus
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.exception.InvalidTargetUploadReportStateException;
 import com.ums.schedule.domain.sendrequest.target.upload.exception.TargetUploadFileFormatMismatchException;
-import com.ums.schedule.domain.sendrequest.target.upload.exception.UnsupportedTargetUploadTypeException;
+import com.ums.schedule.domain.sendrequest.target.upload.exception.UnSupportedTargetUploadTypeException;
 import com.ums.schedule.domain.sendrequest.target.upload.state.*;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,14 +25,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 class TargetUploadReportFileUploadRequestTest {
-    private TargetUploadTestBuilder domain = TargetUploadTestBuilder.builder()
+    private TargetUploadReportEntityBuilder domain = TargetUploadReportEntityBuilder.builder()
             .uploadStatus(new TargetUploadWaitingState())
             .uploadType(TargetUploadTypeEnum.FILE);
 
     @Nested
     @DisplayName("upload_type이 JSON일 때")
     class WhenUploadTypeIsJson {
-        private TargetUploadTestBuilder domain = TargetUploadTestBuilder.builder()
+        private TargetUploadReportEntityBuilder domain = TargetUploadReportEntityBuilder.builder()
                 .uploadType(TargetUploadTypeEnum.JSON)
                 .uploadStatus(new TargetUploadWaitingState());
 
@@ -40,7 +41,7 @@ class TargetUploadReportFileUploadRequestTest {
         void shouldThrowException() {
             TargetUploadReport report = domain.build();
 
-            UnsupportedTargetUploadTypeException expect = UnsupportedTargetUploadTypeException.of();
+            UnSupportedTargetUploadTypeException expect = UnSupportedTargetUploadTypeException.of();
             TargetFileUploadRequestCommand command = mock(TargetFileUploadRequestCommand.class);
 
             assertThatThrownBy(() -> report.requestFileUpload(command))

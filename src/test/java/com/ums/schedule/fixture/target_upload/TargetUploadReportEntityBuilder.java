@@ -1,5 +1,6 @@
-package com.ums.schedule.domain.sendrequest.target.upload;
+package com.ums.schedule.fixture.target_upload;
 
+import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadFormatEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
 import com.ums.schedule.domain.sendrequest.SendRequest;
@@ -12,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class TargetUploadTestBuilder {
-    private Long id;
+public class TargetUploadReportEntityBuilder {
+    private UUID id;
     private TargetUploadTypeEnum uploadType = TargetUploadTypeEnum.FILE;
     private TargetUploadState uploadStatus = new TargetUploadCreateState();
     private TargetUploadFormatEnum format = TargetUploadFormatEnum.CSV;
@@ -27,46 +28,46 @@ public class TargetUploadTestBuilder {
     private SendRequest sendRequest;
     private List<SendTarget> targetList = new ArrayList<>();
 
-    public static TargetUploadTestBuilder builder() {
-        return new TargetUploadTestBuilder();
+    public static TargetUploadReportEntityBuilder builder() {
+        return new TargetUploadReportEntityBuilder();
     }
 
-    public TargetUploadTestBuilder id(Long id) {
+    public TargetUploadReportEntityBuilder id(UUID id) {
         this.id = id;
         return this;
     }
 
-    public TargetUploadTestBuilder uploadType(TargetUploadTypeEnum uploadType) {
+    public TargetUploadReportEntityBuilder uploadType(TargetUploadTypeEnum uploadType) {
         this.uploadType = uploadType;
         return this;
     }
 
-    public TargetUploadTestBuilder uploadFormat(TargetUploadFormatEnum uploadFormat) {
+    public TargetUploadReportEntityBuilder uploadFormat(TargetUploadFormatEnum uploadFormat) {
         this.format = uploadFormat;
         return this;
     }
 
-    public TargetUploadTestBuilder uploadStatus(TargetUploadState state) {
+    public TargetUploadReportEntityBuilder uploadStatus(TargetUploadState state) {
         this.uploadStatus = state;
         return this;
     }
 
-    public TargetUploadTestBuilder objectKey(String objectKey) {
+    public TargetUploadReportEntityBuilder objectKey(String objectKey) {
         this.objectKey = objectKey;
         return this;
     }
 
-    public TargetUploadTestBuilder totalCount(Long totalCount) {
+    public TargetUploadReportEntityBuilder totalCount(Long totalCount) {
         this.totalCount = totalCount;
         return this;
     }
 
-    public TargetUploadTestBuilder createdAt(LocalDateTime createdAt) {
+    public TargetUploadReportEntityBuilder createdAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
         return this;
     }
 
-    public TargetUploadTestBuilder sendRequest(SendRequest request) {
+    public TargetUploadReportEntityBuilder sendRequest(SendRequest request) {
         this.sendRequest = request;
         return this;
     }

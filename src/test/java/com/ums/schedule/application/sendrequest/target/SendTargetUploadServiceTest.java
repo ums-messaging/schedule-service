@@ -13,7 +13,7 @@ import com.ums.schedule.domain.sendrequest.target.SendTargetTestBuilder;
 import com.ums.schedule.domain.sendrequest.target.state.SendTargetFailState;
 import com.ums.schedule.domain.sendrequest.target.state.SendTargetReadyState;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadStatusEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.exception.InvalidTargetTotalCountMismatchException;
 import com.ums.schedule.domain.sendrequest.target.upload.state.TargetUploadRequestState;
@@ -77,7 +77,7 @@ class SendTargetUploadServiceTest {
     @Test
     @DisplayName("조립 실패 대상자는 실패 건수에 포함된다.")
     void shouldIncludeAssemblerFailedTargetsInFailedCount() {
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L).build();
         SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
@@ -107,7 +107,7 @@ class SendTargetUploadServiceTest {
         SendTargetSaveResult dbFailTargetResult = SendTargetSaveResult.of(dbFailTargetList);
         doReturn(dbFailTargetResult).when(targetService).saveTarget(any());
 
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L).build();
 
@@ -119,7 +119,7 @@ class SendTargetUploadServiceTest {
     @Test
     @DisplayName("실패 대상자가 존재하지 않으면 이벤트를 발행하지 않는다.")
     void shouldNotPublishFailedTargetEvent_whenNoFailedTargetExists() {
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
@@ -140,7 +140,7 @@ class SendTargetUploadServiceTest {
     @Test
     @DisplayName("실패 대상자가 존재하면 이벤트를 발행한다.")
     void shouldPublishEvent_whenFailureSendTargetListExist() {
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
@@ -159,7 +159,7 @@ class SendTargetUploadServiceTest {
     @Test
     @DisplayName("대상자 업로드가 완료되면 상태는 COMPLETED가 된다.")
     void shouldChangeStateToCompleted_whenUploadCompletes() {
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
@@ -177,7 +177,7 @@ class SendTargetUploadServiceTest {
     @Test
     @DisplayName("대상자는 partitionSize 단위로 분할 처리된다.")
     void shouldPartitionTargetsByPartitionSize() {
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
@@ -209,7 +209,7 @@ class SendTargetUploadServiceTest {
     @Test
     @DisplayName("분할 처리된 대상자의 성공 및 실패 건수를 집계한다.")
     void shouldAggregateCompletedAndFailedCountsAcrossPartitions() {
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
@@ -235,7 +235,7 @@ class SendTargetUploadServiceTest {
     @Test
     @DisplayName("대상자 조립 중 예외가 발생하면 상태는 ERROR가 된다.")
     void shouldChangeStateToError_whenAssemblerThrowsException() {
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
@@ -260,7 +260,7 @@ class SendTargetUploadServiceTest {
     @Test
     @DisplayName("전체 건수와 성공·실패 건수 합계가 다르면 상태는 ERROR로 변경된다.")
     void shouldChangeStateToError_whenTotalCountDoesNotMatchCompletedAndFailedCounts() {
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
@@ -288,7 +288,7 @@ class SendTargetUploadServiceTest {
     @Test
     @DisplayName("일괄 저장에 실패하면 개별 저장으로 재시도한다.")
     void shouldFallbackToSingleSave_whenBulkSaveFails() {
-        TargetUploadReport report = TargetUploadTestBuilder.builder()
+        TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();

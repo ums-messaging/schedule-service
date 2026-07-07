@@ -22,7 +22,7 @@ public class SendTargetUploadListener {
     @Async
     @EventListener
     public void listen(TargetUploadContext event) {
-        TargetUploadReport findReport = repository.findById(event.targetUpload().getUploadId()).orElseThrow();
+        TargetUploadReport findReport = repository.findById(event.targetUpload().getId()).orElseThrow();
         SendRequest sendRequest = findReport.getSendRequest();
         SendMessage sendMessage = messageRepository.findBySendRequest(sendRequest).orElseThrow();
         SendRequestKeyData keyData = SendRequestKeyData.of(sendMessage.getId().toString(), findReport);

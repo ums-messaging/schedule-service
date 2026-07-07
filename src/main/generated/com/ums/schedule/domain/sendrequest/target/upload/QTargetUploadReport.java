@@ -30,6 +30,8 @@ public class QTargetUploadReport extends EntityPathBase<TargetUploadReport> {
 
     public final NumberPath<Long> fileSize = createNumber("fileSize", Long.class);
 
+    public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
+
     public final DateTimePath<java.time.LocalDateTime> requestedAt = createDateTime("requestedAt", java.time.LocalDateTime.class);
 
     public final StringPath resultMessage = createString("resultMessage");
@@ -45,8 +47,6 @@ public class QTargetUploadReport extends EntityPathBase<TargetUploadReport> {
     public final DateTimePath<java.time.LocalDateTime> uploadedAt = createDateTime("uploadedAt", java.time.LocalDateTime.class);
 
     public final EnumPath<com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadFormatEnum> uploadFormat = createEnum("uploadFormat", com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadFormatEnum.class);
-
-    public final NumberPath<Long> uploadId = createNumber("uploadId", Long.class);
 
     public final StringPath uploadKey = createString("uploadKey");
 

@@ -36,7 +36,7 @@ public class SendRequestCreateService {
         SendRequestCreateContext context = command.toContext(schedule, customerRequestKey, message, retryCount);
         SendRequest sendRequest = SendRequest.of(context);
 
-        TargetUploadCreateCommand uploadCommand = TargetUploadCreateCommand.of(command.uploadType(), command.uploadFormat());
+        TargetUploadCreateCommand uploadCommand = TargetUploadCreateCommand.of(sendRequest, command);
         TargetUploadResult result = targetUploadService.create(sendRequest, uploadCommand);
 
         sendRequestRepository.save(sendRequest);

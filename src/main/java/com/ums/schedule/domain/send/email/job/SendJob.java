@@ -15,7 +15,7 @@ public record SendJob(
         ScheduleTypeEnum scheduleType,
         Long requestId,
         Long reportId,
-        Long targetUploadId,
+        String targetUploadId,
         String templateKey,
         Integer retryCount,
         LocalDateTime createdAt
@@ -31,7 +31,7 @@ public record SendJob(
                 cyclePolicy.getScheduleType(),
                 sendRequest.getId(),
                 null,
-                targetUpload.getUploadId(),
+                targetUpload.getId().toString(),
                 sendRequest.getTemplateKey(),
                 sendRequest.getRetryCnt(),
                 LocalDateTime.now()

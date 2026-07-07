@@ -23,7 +23,7 @@ import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.sendrequest.target.upload.state.TargetUploadCompleteState;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestCreateContextBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestField;
@@ -361,7 +361,7 @@ public class SendRequestDomainTest {
         @DisplayName("대상자 업로드 리포트 상태가 COMPLETED이면 상태는 READY로 변경된다.")
         void shouldChangeStateToReady() {
             SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
-            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
+            TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder()
                     .uploadStatus(new TargetUploadCompleteState())
                     .build();
             SendRequest givenRequest = SendRequestEntityBuilder
@@ -398,7 +398,7 @@ public class SendRequestDomainTest {
         @DisplayName("대상자 업로드 리포트 상태가 COMPLETED이면 상태는 SendRequestReadyEvent가 발행된다.")
         void shouldPublishSendRequestReadyEvent_whenTargetUploadReportIsCompleted() {
             SendRequestUpdateCommand command = SendRequestEntityBuilder.builder().toUpdateCommand();
-            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
+            TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder()
                     .uploadStatus(new TargetUploadCompleteState())
                     .build();
             SendRequest givenRequest = SendRequestEntityBuilder
@@ -465,7 +465,7 @@ public class SendRequestDomainTest {
                     .builder()
                     .build();
 
-            TargetUploadReport newTargetUpload = TargetUploadTestBuilder.builder().build();
+            TargetUploadReport newTargetUpload = TargetUploadReportEntityBuilder.builder().build();
             SendRequest expect = givenRequest.updateSendRequest(null, newTargetUpload, command);
 
             assertThat(expect.getCurrentTargetUpload()).isNotNull();

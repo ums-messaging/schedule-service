@@ -4,7 +4,7 @@ import com.ums.schedule.domain.sendrequest.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.TransientPropertyValueException;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -100,18 +101,18 @@ public class SendRequestMappingTest {
         @DisplayName("send_request에서 target_upload와 연관관계를 설정하면 FK가 저장된다.")
         void shouldPersistFkCurrentTargetUpload_whenSetBySendRequest() {
             Schedule schedule = entityManager.find(Schedule.class, scheduleId);
-            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().build();
+            TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().build();
             SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule).build();
 //            request.assignTargetUpload(targetUpload);
 
             entityManager.persist(request);
             entityManager.flush();
 
-            Long id = targetUpload.getUploadId();
+            UUID id = targetUpload.getId();
             entityManager.clear();
 
             TargetUploadReport expect = entityManager.find(TargetUploadReport.class, id);
-            assertThat(expect.getUploadId()).isNotNull();
+            assertThat(expect.getId()).isNotNull();
 
         }
 
@@ -120,7 +121,7 @@ public class SendRequestMappingTest {
         void shouldNotPersistCurrentTargetUploadFK_whenSetByInverseOnlySide() {
             Schedule schedule = entityManager.find(Schedule.class, scheduleId);
 
-            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().build();
+            TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().build();
             SendRequest request = SendRequestEntityBuilder.builder().schedule(schedule).build();
             request.assignTargetUpload(targetUpload);
 

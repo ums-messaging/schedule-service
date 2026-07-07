@@ -6,7 +6,7 @@ import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +40,7 @@ public class TargetUploadDefaultConstraintTest {
     @DisplayName("status의 기본 값은 CREATE이다.")
     void shouldReturnStatusIsCreate_whenStatusIsNull() {
         SendRequest sendRequest = entityManager.getReference(SendRequest.class, requestId);
-        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
+        TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder()
                 .sendRequest(sendRequest)
                 .uploadStatus(null).build();
 
@@ -54,7 +54,7 @@ public class TargetUploadDefaultConstraintTest {
     @DisplayName("created_at의 기본 값은 현재 시각이다.")
     void shouldReturnCurrentTime_whenCreatedAtIsNull() {
         SendRequest sendRequest = entityManager.getReference(SendRequest.class, requestId);
-        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
+        TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder()
                 .sendRequest(sendRequest)
                 .createdAt(null)
                 .build();

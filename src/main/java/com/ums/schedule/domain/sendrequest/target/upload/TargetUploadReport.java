@@ -1,6 +1,7 @@
 package com.ums.schedule.domain.sendrequest.target.upload;
 
-import com.ums.schedule.application.sendrequest.command.TargetUploadCreateCommand;
+import com.github.f4b6a3.uuid.UuidCreator;
+import com.ums.schedule.application.sendrequest.context.TargetUploadReportCreateContext;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.application.sendrequest.target.command.TargetFileUploadRequestCommand;
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
@@ -10,16 +11,14 @@ import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
+import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
 import com.ums.schedule.domain.sendrequest.exception.SendRequestNotFoundException;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.sendrequest.target.converter.TargetUploadTypeConverter;
 import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetListExceedViolationException;
 import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetNotFoundException;
 import com.ums.schedule.domain.sendrequest.target.upload.code.*;
-import com.ums.schedule.domain.sendrequest.target.upload.exception.InvalidTargetTotalCountMismatchException;
-import com.ums.schedule.domain.sendrequest.target.upload.exception.TargetUploadFileFormatMismatchException;
-import com.ums.schedule.domain.sendrequest.target.upload.exception.UnsupportedTargetUploadTypeException;
-import com.ums.schedule.domain.sendrequest.target.upload.exception.UploadKeyGeneratedViolationException;
+import com.ums.schedule.domain.sendrequest.target.upload.exception.*;
 import com.ums.schedule.domain.sendrequest.target.upload.state.TargetUploadCreateState;
 import com.ums.schedule.domain.sendrequest.target.upload.state.TargetUploadState;
 import com.ums.schedule.domain.sendrequest.target.upload.converter.TargetUploadReportStateConverter;
@@ -34,17 +33,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
 @Getter
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TargetUploadReport {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uploadId;
+    @Column(name = "report_id")
+    @Convert(converter = UuidBinaryConverter.class)
+    private UUID id;
 
     @Column(name = "upload_type", nullable = false)
     @Convert(converter = TargetUploadTypeConverter.class)
@@ -90,43 +91,70 @@ public class TargetUploadReport {
     @JoinColumn(name = "request_id")
     private SendRequest sendRequest;
 
-    public static TargetUploadReport of(SendRequest sendRequest,  TargetUploadCreateCommand command, String filePrefix) {
+    public static TargetUploadReport of(TargetUploadReportCreateContext context) {
         TargetUploadReport targetUpload = new TargetUploadReport();
-        targetUpload.generateId();
-        targetUpload.initializeEventAndState();
-        targetUpload.assignSendRequest(sendRequest);
-        targetUpload.assignUploadType(command.uploadType());
-        targetUpload.generateDownloadKey(sendRequest.getChannelType(), filePrefix);
+        TargetUploadState state = targetUpload.initializeEventAndState();
+        String id = targetUpload.generateId();
+
+        targetUpload.assignUploadType(context.uploadType());
+        targetUpload.initializeSendRequestAndChangeState(state, context.sendRequest());
+        targetUpload.initializeDownloadKey(context.sendRequest(), context.downloadKeyPrefix(), id);
+        targetUpload.initializeFileUploadTypeInfo(context, id);
+        targetUpload.initializeCreatedAt();
+
         return targetUpload;
     }
 
-    private void generateId() {
-        this.uploadId = 1L;
-    }
-
-
-    public String initializeFileUploadAndGenerateUploadKey(EnumMapperValue uploadFormat, String filePrefix) {
-        TargetUploadFormatEnum format = resolveUploadFormat(uploadFormat);
-        String uploadKey = generateUploadKey(filePrefix, format);
-        onEvent(TargetUploadEventEnum.TARGET_UPLOAD_READY);
-        return uploadKey;
-    }
-
-    public void assignSendRequest(SendRequest sendRequest) {
-        if(sendRequest == null) {
-            throw SendRequestNotFoundException.of();
+    private void initializeFileUploadTypeInfo(TargetUploadReportCreateContext context, String id) {
+        if(context.uploadType() == TargetUploadTypeEnum.FILE) {
+            TargetUploadFormatEnum format = initializeUploadFormat();
+            initializeUploadKey(context.sendRequest(), format, context.uploadkeyPrefix(), id);
         }
-        onEvent(TargetUploadEventEnum.TARGET_UPLOAD_READY);
-        sendRequest.assignTargetUpload(this);
-        this.sendRequest = sendRequest;
+    }
+
+    private TargetUploadFormatEnum initializeUploadFormat() {
+        TargetUploadFormatEnum format = resolveUploadFormat(uploadFormat);
+        assignUploadFormat(format);
+        return format;
+    }
+
+    private void initializeUploadKey(SendRequest sendRequest, TargetUploadFormatEnum format, String keyPrefix, String id) {
+        String fileName = "%s.%s".formatted(id, format.code().toLowerCase());
+        this.uploadKey = generateUploadKey(sendRequest, keyPrefix, fileName);
+    }
+    private String generateUploadKey(SendRequest sendRequest, String filePrefix, String fileName) {
+        String baseDir = sendRequest.generateRequestUploadDir();
+        return Optional.ofNullable(filePrefix)
+                .filter(StringUtils::hasText)
+                .map(prefix -> FileUtil.generateFilePaths(filePrefix, baseDir, fileName))
+                .orElseThrow(TargetUploadKeyGenerationFailedException::of);
+    }
+    private void assignUploadFormat(TargetUploadFormatEnum uploadFormat) {
+        this.uploadFormat = uploadFormat;
+    }
+
+    private TargetUploadFormatEnum resolveUploadFormat(TargetUploadFormatEnum uploadFormat) {
+        return Optional.ofNullable(uploadFormat)
+                .orElse(TargetUploadFormatEnum.CSV);
+    }
+
+    private String generateId() {
+        this.id = UuidCreator.getTimeOrdered();
+        return this.id.toString();
+    }
+
+    public void initializeSendRequestAndChangeState(TargetUploadState state, SendRequest sendRequest) {
+        this.state = state.onEvent(TargetUploadEventEnum.TARGET_UPLOAD_READY);
+        this.sendRequest = Optional.ofNullable(sendRequest)
+                        .map(this::assignSendRequest)
+                .orElseThrow(SendRequestNotFoundException::of);
     }
 
     private void assignUploadType(TargetUploadTypeEnum uploadType) {
-        if(uploadType == null) {
-            throw RequiredException.fieldOf("upload_type");
-        }
-        this.uploadType = uploadType;
+        this.uploadType = Optional.ofNullable(uploadType)
+                .orElseThrow(TargetUploadTypeNotFoundException::of);
     }
+
     private TargetUploadFormatEnum resolveUploadFormat(EnumMapperValue uploadFormat) {
         this.uploadFormat = Optional.ofNullable(uploadFormat)
                 .map(format -> TargetUploadFormatEnum.valueOf(format.code()))
@@ -134,10 +162,9 @@ public class TargetUploadReport {
         return this.uploadFormat;
     }
 
-    private void initializeEventAndState() {
+    private TargetUploadState initializeEventAndState() {
         this.event = TargetUploadEventEnum.TARGET_UPLOAD_CREATED;
-        changeStatus(new TargetUploadCreateState());
-        initializeCreatedAt();
+        return changeStatus(new TargetUploadCreateState());
     }
 
     private void initializeCreatedAt() {
@@ -148,15 +175,7 @@ public class TargetUploadReport {
         return this.state.getCurrentCode() == TargetUploadStatusEnum.WAITING;
     }
 
-    private String generateUploadKey(String filePrefix, TargetUploadFormatEnum format) {
-        if(isValidUploadKeyPrefix(filePrefix)) {
-            throw UploadKeyGeneratedViolationException.of("file prefix is empty.");
-        }
-        String filename = String.format("%d.%s", uploadId, format.value().toLowerCase());
-        String uploadKey = generateObjectKeyPrefix(sendRequest.getChannelType(), filePrefix) + filename;
-        this.uploadKey = uploadKey;
-        return uploadKey;
-    }
+
 
     private boolean isValidUploadKeyPrefix(String filePrefix) {
         return uploadType == TargetUploadTypeEnum.FILE && !StringUtils.hasText(filePrefix);
@@ -165,6 +184,7 @@ public class TargetUploadReport {
         Long totalCount = countingTargetList(targetList, maxSize);
         this.totalCount = totalCount;
     }
+
     private void validateTotalCount(Integer totalCount, Integer maxSize) {
         if(totalCount == 0) {
             throw SendTargetNotFoundException.listOf(this.sendRequest.getId());
@@ -182,7 +202,6 @@ public class TargetUploadReport {
             requestTargetUpload();
         }
         sendRequest.updateStateByTargetUploadReport(this);
-        assignSendRequest(sendRequest);
     }
 
     private void requestTargetUpload() {
@@ -201,7 +220,7 @@ public class TargetUploadReport {
 
     public void requestFileUpload(TargetFileUploadRequestCommand command) {
         if(uploadType == TargetUploadTypeEnum.JSON) {
-            throw UnsupportedTargetUploadTypeException.of();
+            throw UnSupportedTargetUploadTypeException.of();
         }
         initializeFileMetaData(command);
         requestTargetUpload();
@@ -243,14 +262,16 @@ public class TargetUploadReport {
         }
     }
 
-    public String generateDownloadKey(ChannelTypeEnum channelType, String fileKeyPrefix) {
-        String downloadKey = generateObjectKeyPrefix(channelType, fileKeyPrefix) + "download.xlsx";
-        this.downloadKey = downloadKey;
-        return downloadKey;
+    public void initializeDownloadKey(SendRequest sendRequest, String fileKeyPrefix, String id) {
+        this.downloadKey = Optional.ofNullable(fileKeyPrefix)
+                .filter(StringUtils::hasText)
+                .map(str -> generateDownloadKey(sendRequest, fileKeyPrefix, id))
+                .orElseThrow(TargetDownloadKeyGenerationFailedException::of);
     }
 
-    private String generateObjectKeyPrefix(ChannelTypeEnum channelType, String filePrefix) {
-        return FileUtil.generateFilePaths(this.sendRequest.generateRequestUploadDir(channelType), filePrefix);
+    private String generateDownloadKey(SendRequest sendRequest, String fileKeyPrefix, String id) {
+        String baseDir = sendRequest.generateRequestUploadDir();
+        return FileUtil.generateFilePaths(fileKeyPrefix, baseDir, "%s.xlsx".formatted(id));
     }
 
     public Map<Integer, List<SendTarget>> startTargetUploadAndGroupedTarget(List<SendTarget> targetList, int partitionSize) {
@@ -286,8 +307,9 @@ public class TargetUploadReport {
         return totalCount != sumCount;
     }
 
-    private void changeStatus(TargetUploadState state) {
+    private TargetUploadState changeStatus(TargetUploadState state) {
         this.state = state;
+        return state;
     }
 
     public boolean isCompleted() {
@@ -303,5 +325,10 @@ public class TargetUploadReport {
     public void onError(String message) {
         this.resultMessage = message;
         onEvent(TargetUploadEventEnum.TARGET_UPLOAD_FAIL);
+    }
+
+    private SendRequest assignSendRequest(SendRequest request) {
+        request.assignTargetUpload(this);
+        return request;
     }
 }

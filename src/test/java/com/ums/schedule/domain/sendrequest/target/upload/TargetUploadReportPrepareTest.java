@@ -7,6 +7,7 @@ import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadStatus
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.exception.InvalidTargetUploadReportStateException;
 import com.ums.schedule.domain.sendrequest.target.upload.state.*;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ public class TargetUploadReportPrepareTest {
     @Nested
     @DisplayName("upload_type이 FILE일 때")
     class WhenUploadTypeIsFile {
-        private final TargetUploadTestBuilder domain = TargetUploadTestBuilder.builder()
+        private final TargetUploadReportEntityBuilder domain = TargetUploadReportEntityBuilder.builder()
                 .uploadType(TargetUploadTypeEnum.FILE)
                 .sendRequest(SendRequestEntityBuilder.builder().build());
         private final SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
@@ -100,7 +101,7 @@ public class TargetUploadReportPrepareTest {
         @DisplayName("TARGET_UPLOAD_READY 이벤트가 발행된다.")
         void shouldPublishTargetUploadReadyEvent() {
             SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
-            TargetUploadReport targetUpload = TargetUploadTestBuilder.builder()
+            TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder()
                     .uploadType(TargetUploadTypeEnum.FILE)
                     .sendRequest(sendRequest)
                     .uploadStatus(new TargetUploadCreateState())
@@ -138,7 +139,7 @@ public class TargetUploadReportPrepareTest {
     @Nested
     @DisplayName("upload_type이 JSON일 때")
     class WhenUploadTypeIsJson {
-        private final TargetUploadTestBuilder domain = TargetUploadTestBuilder.builder()
+        private final TargetUploadReportEntityBuilder domain = TargetUploadReportEntityBuilder.builder()
                 .sendRequest(SendRequestEntityBuilder.builder().build())
                 .uploadType(TargetUploadTypeEnum.JSON);
 

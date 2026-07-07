@@ -7,7 +7,7 @@ import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.sendrequest.target.SendTargetTestBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.fixture.field.SendTargetField;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,26 +18,27 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 public class SendTargetDefaultConstraintTest {
     @Autowired private EntityManager entityManager;
-    private Long uploadId;
+    private UUID uploadId;
 
     @BeforeEach
     void setUp() {
         Schedule schedule = ScheduleEntityBuilder.builder().build();
         SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule).build();
-        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().sendRequest(sendRequest).build();
+        TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().sendRequest(sendRequest).build();
 
         entityManager.persist(schedule);
         entityManager.persist(sendRequest);
         entityManager.persist(targetUpload);
         entityManager.flush();
 
-        uploadId = targetUpload.getUploadId();
+        uploadId = targetUpload.getId();
         entityManager.clear();
     }
 

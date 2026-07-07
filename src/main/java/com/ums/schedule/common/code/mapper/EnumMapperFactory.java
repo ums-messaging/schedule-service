@@ -29,7 +29,7 @@ public class EnumMapperFactory {
 
     public EnumMapperValue findEnumMapperValue(EnumMapper key, String value) {
         if(!StringUtils.hasText(value)) {
-            throw EnumMapperNotEmptyException.of(key);
+            return null;
         }
         return findEnumMapperList(key)
                 .stream()

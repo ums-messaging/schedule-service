@@ -5,7 +5,7 @@ import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadTestBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ public class SendRequestCascadePersistTest {
     @DisplayName("send_request 저장 시 target_upload도 함께 저장된다.")
     void shouldPersistTargetUpload_whenSendTargetCreate() {
         Schedule schedule = entityManager.find(Schedule.class, scheduleId);
-        TargetUploadReport targetUpload = TargetUploadTestBuilder.builder().build();
+        TargetUploadReport targetUpload = TargetUploadReportEntityBuilder.builder().build();
         SendRequest sendRequest = SendRequestEntityBuilder.builder().schedule(schedule).currentTargetUpload(targetUpload).build();
 //        targetUpload.assignSendRequest(sendRequest);
 
@@ -46,7 +46,7 @@ public class SendRequestCascadePersistTest {
         SendRequest find = entityManager.find(SendRequest.class, id);
         TargetUploadReport expect = find.getCurrentTargetUpload();
 
-        assertThat(expect.getUploadId()).isNotNull();
+        assertThat(expect.getId()).isNotNull();
 //        assertThat(find.getTargetUploadList()).hasSize(1);
 
     }
