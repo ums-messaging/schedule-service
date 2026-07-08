@@ -4,7 +4,7 @@ import com.ums.schedule.application.sendrequest.message.email.command.EmailAttac
 import com.ums.schedule.application.sendrequest.message.email.command.EmailConvertPolicyCommand;
 import com.ums.schedule.application.sendrequest.message.email.command.SecurityPolicyCommand;
 import com.ums.schedule.application.sendrequest.message.email.result.EmailMessagePolicyResult;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailContentResult;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.util.FileUtil;
@@ -32,7 +32,7 @@ public class EmailMessageConvertTypePolicy {
         List<EmailAttachmentCreateCommand> attachmentList;
         Map<EmailTemplateSectionEnum, String> templateMap;
         EmailAttachmentCreateCommand fromBody = null;
-        EmailContentResult body;
+        EmailTemplateContentResult body;
 
         if (ConvertTypeEnum.valueOf(convertType.code()) == ConvertTypeEnum.NONE) {
             body = command.body();
@@ -52,7 +52,7 @@ public class EmailMessageConvertTypePolicy {
         return "%s.%s".formatted(FileUtil.generateFilePaths("${targetId}"), extension);
     }
 
-    private List<EmailAttachmentCreateCommand> createAttachmentList(EmailAttachmentCreateCommand fromBody, List<EmailContentResult> attachments) {
+    private List<EmailAttachmentCreateCommand> createAttachmentList(EmailAttachmentCreateCommand fromBody, List<EmailTemplateContentResult> attachments) {
         return Stream.concat(
                 Stream.of(fromBody)
                         .filter(Objects::nonNull),
@@ -75,7 +75,7 @@ public class EmailMessageConvertTypePolicy {
                 .ifPresent(v -> securityEnumMap.put(enumKey, v));
     }
 
-    private Map<EmailTemplateSectionEnum, String> toTemplateKeyMap(EmailContentResult header, EmailContentResult body, EmailContentResult footer) {
+    private Map<EmailTemplateSectionEnum, String> toTemplateKeyMap(EmailTemplateContentResult header, EmailTemplateContentResult body, EmailTemplateContentResult footer) {
         return Map.of(
                 EmailTemplateSectionEnum.HEADER, getFileKey(header),
                 EmailTemplateSectionEnum.BODY, getFileKey(body),
@@ -86,8 +86,8 @@ public class EmailMessageConvertTypePolicy {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private String getFileKey(EmailContentResult content) {
-        return Optional.ofNullable(content).map(EmailContentResult::fileKey).orElse("");
+    private String getFileKey(EmailTemplateContentResult content) {
+        return Optional.ofNullable(content).map(EmailTemplateContentResult::fileKey).orElse("");
     }
 
     private EnumMapperValue resolveConvertType(String convertType, SecurityPolicyCommand securityPolicy) {

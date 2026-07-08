@@ -1,7 +1,7 @@
 package com.ums.schedule.application.message.email.command;
 
 import com.ums.schedule.application.sendrequest.message.email.command.EmailSendMessageCreateCommand;
-import com.ums.schedule.application.sendrequest.template.email.command.EmailTemplateContentCommand;
+import com.ums.schedule.application.template.email.command.EmailTemplateContentCommand;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 
 import java.util.HashMap;

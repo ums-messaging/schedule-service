@@ -1,7 +1,5 @@
 package com.ums.schedule.domain.sendrequest.resource.email;
 
-import com.ums.schedule.application.sendrequest.message.email.EmailResourceCommand;
-import com.ums.schedule.application.sendrequest.message.email.command.AttachmentPipelineCommand;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.exception.validation.InvalidFileExtensionException;
 import com.ums.schedule.common.exception.validation.InvalidFilenameValueException;
@@ -22,7 +20,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

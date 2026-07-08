@@ -1,7 +1,7 @@
-package com.ums.schedule.application.sendrequest.message.email.result;
+package com.ums.schedule.application.template.email.query.model;
 
 
-import com.ums.schedule.application.sendrequest.template.result.TemplateResult;
+import com.ums.schedule.application.template.result.TemplateResult;
 
 public record EmailTemplateResult(
         TemplateResult template,

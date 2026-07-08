@@ -1,0 +1,23 @@
+package com.ums.schedule.application.template.email.query.model;
+
+import com.ums.schedule.adapter.api.request.email.EmailAttachmentRequest;
+
+public record EmailAttachmentDetailQuery(
+        String fileKey,
+        String fileKeyTemplate,
+        String attachmentName,
+        String downloadName
+) {
+    public static EmailAttachmentDetailQuery of(EmailAttachmentRequest request) {
+        return new EmailAttachmentDetailQuery(
+                request.fileKeySuffix(),
+                request.fileKeySuffixTemplate(),
+                request.attachmentName(),
+                request.downloadName()
+        );
+    }
+
+    public EmailTemplateContext toContext(String fileKey, String fileKeyTemplate) {
+        return EmailTemplateContext.of(this, fileKey, fileKeyTemplate);
+    }
+}

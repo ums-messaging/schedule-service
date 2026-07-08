@@ -4,8 +4,8 @@ import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.resource.email.policy.AttachmentPolicy;
 
 public record EmailAttachmentRequest(
-        String fileKey,
-        String fileKeyTemplate,
+        String fileKeySuffix,
+        String fileKeySuffixTemplate,
         String attachmentName,
         String downloadName
 ) {

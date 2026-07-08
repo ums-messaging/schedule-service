@@ -1,6 +1,6 @@
 package com.ums.schedule.application.sendrequest.message;
 
-import com.ums.schedule.application.sendrequest.template.result.TemplateResult;
+import com.ums.schedule.application.template.result.TemplateResult;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.message.SendMessage;

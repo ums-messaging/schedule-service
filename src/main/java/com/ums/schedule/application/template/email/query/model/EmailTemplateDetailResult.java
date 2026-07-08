@@ -1,31 +1,31 @@
-package com.ums.schedule.application.sendrequest.message.email.result;
+package com.ums.schedule.application.template.email.query.model;
 
-import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
+import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplatePathTypeEnum;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public record EmailTemplateDetailResult(
         String emailContentId,
         String msgTitle,
         String imageDir,
-        List<EmailContentResult> contents
+        List<EmailTemplateContentResult> contents
 ) {
 
-    public static EmailTemplateDetailResult of(String templateKey, EmailSendCreateRequest request, List<EmailContentResult> contents) {
-        List<EmailContentResult> toContents = Stream.concat(contents.stream(),
-                request.attachmentList().stream()
-                        .map(form -> EmailContentResult.of(form))
-        ).toList();
-        return new EmailTemplateDetailResult(templateKey, request.title(), templateKey+"/images", toContents);
+    public static EmailTemplateDetailResult of(Map<EmailTemplatePathTypeEnum, String> propertiesMap, EmailTemplateDetailQuery command, List<EmailTemplateContentResult> templateList) {
+        return new EmailTemplateDetailResult(
+                command.templateKey(),
+                command.title(),
+                propertiesMap.get(EmailTemplatePathTypeEnum.IMAGE_SUFFIX),
+                templateList
+        );
     }
 
-    public Map<EmailTemplateSectionEnum, EmailContentResult> getHeaderFooter() {
+    public Map<EmailTemplateSectionEnum, EmailTemplateContentResult> getHeaderFooter() {
         if(this.contents == null) {
             return Map.of();
         }
@@ -37,7 +37,7 @@ public record EmailTemplateDetailResult(
                 ));
     }
 
-    public EmailContentResult getBody() {
+    public EmailTemplateContentResult getBody() {
         if(this.contents == null) {
             return null;
         }
@@ -48,7 +48,7 @@ public record EmailTemplateDetailResult(
                 .orElse(null);
     }
 
-    public List<EmailContentResult> getAttachmentList() {
+    public List<EmailTemplateContentResult> getAttachmentList() {
         return this.contents
                 .stream()
                 .filter(content->content.section().equals(EmailTemplateSectionEnum.ATTACHMENT.value()))

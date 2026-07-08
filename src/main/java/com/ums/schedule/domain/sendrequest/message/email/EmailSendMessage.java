@@ -2,7 +2,7 @@ package com.ums.schedule.domain.sendrequest.message.email;
 
 import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
 import com.ums.schedule.application.sendrequest.message.email.command.EmailSendMessageCreateCommand;
-import com.ums.schedule.application.sendrequest.template.email.command.EmailTemplateContentCommand;
+import com.ums.schedule.application.template.email.command.EmailTemplateContentCommand;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
 import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;

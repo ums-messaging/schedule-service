@@ -1,6 +1,6 @@
 package com.ums.schedule.application.sendrequest.message.email.command;
 
-import com.ums.schedule.application.sendrequest.message.email.result.EmailContentResult;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
 import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentEnumMapper;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
@@ -18,7 +18,7 @@ public record EmailAttachmentCreateCommand(
         String passwordHash,
         String passwordFormat
 ) {
-    public static EmailAttachmentCreateCommand bodyOf(EnumMapperValue convertType, EmailContentResult body, String fileKeyTemplate, SecurityPolicyCommand securityPolicy) {
+    public static EmailAttachmentCreateCommand bodyOf(EnumMapperValue convertType, EmailTemplateContentResult body, String fileKeyTemplate, SecurityPolicyCommand securityPolicy) {
         if(securityPolicy == null) {
             return EmailAttachmentCreateCommand.of(convertType, body, fileKeyTemplate);
         }
@@ -35,7 +35,7 @@ public record EmailAttachmentCreateCommand(
         );
     }
 
-    private static EmailAttachmentCreateCommand of(EnumMapperValue convertType, EmailContentResult body, String fileKeyTemplate) {
+    private static EmailAttachmentCreateCommand of(EnumMapperValue convertType, EmailTemplateContentResult body, String fileKeyTemplate) {
         return new EmailAttachmentCreateCommand(
                 convertType,
                 body.attachmentName(),
@@ -47,7 +47,7 @@ public record EmailAttachmentCreateCommand(
         );
     }
 
-    public static EmailAttachmentCreateCommand of(EmailContentResult content) {
+    public static EmailAttachmentCreateCommand of(EmailTemplateContentResult content) {
         return new EmailAttachmentCreateCommand(
             EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE),
             content.attachmentName(),

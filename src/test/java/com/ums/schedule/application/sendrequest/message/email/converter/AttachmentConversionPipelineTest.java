@@ -4,7 +4,7 @@ import com.ums.schedule.application.sendrequest.message.email.command.Attachment
 import com.ums.schedule.application.exception.EmailMessageConvertException;
 import com.ums.schedule.application.exception.OwnerPasswordNotConfiguredException;
 import com.ums.schedule.application.sendrequest.message.email.result.TemplateConversionResult;
-import com.ums.schedule.application.sendrequest.template.loader.EmailTemplateLoader;
+import com.ums.schedule.application.template.email.EmailTemplateLoader;
 import com.ums.schedule.config.properties.SecurityPolicyProperties;
 import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;

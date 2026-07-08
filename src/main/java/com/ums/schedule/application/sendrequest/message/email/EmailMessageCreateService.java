@@ -3,14 +3,14 @@ package com.ums.schedule.application.sendrequest.message.email;
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.application.sendrequest.message.email.command.EmailConvertPolicyCommand;
 import com.ums.schedule.application.sendrequest.message.email.command.EmailSendMessageCreateCommand;
-import com.ums.schedule.application.sendrequest.template.email.command.EmailTemplateContentCommand;
-import com.ums.schedule.application.sendrequest.message.email.policy.EmailMessageConvertTypePolicy;
 import com.ums.schedule.application.sendrequest.message.email.result.EmailMessagePolicyResult;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailTemplateDetailResult;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailTemplateResult;
-import com.ums.schedule.application.sendrequest.template.email.EmailTemplateService;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateDetailResult;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateResult;
+import com.ums.schedule.application.template.email.command.EmailTemplateContentCommand;
+import com.ums.schedule.application.sendrequest.message.email.policy.EmailMessageConvertTypePolicy;
+import com.ums.schedule.application.template.email.query.EmailTemplateQueryService;
 import com.ums.schedule.application.sendrequest.message.SendMessageFactory;
-import com.ums.schedule.application.sendrequest.template.loader.EmailTemplateLoader;
+import com.ums.schedule.application.template.email.EmailTemplateLoader;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessageJpaRepository;
 import com.ums.schedule.domain.sendrequest.message.SendMessage;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class EmailMessageCreateService {
-    private final EmailTemplateService templateService;
+    private final EmailTemplateQueryService templateService;
     private final EmailMessageConvertTypePolicy convertPolicy;
     private final EmailSendMessageJpaRepository messageRepository;
 
@@ -33,7 +33,7 @@ public class EmailMessageCreateService {
     private final EmailTemplateLoader templateLoader;
 
     public EmailSendMessage create(SendRequest sendRequest, EmailSendCreateRequest request) {
-        EmailTemplateResult template = templateService.findTemplate(sendRequest.getTemplateKey(), request);
+        EmailTemplateResult template = templateService.findTemplate(null);
         EmailTemplateDetailResult emailTemplate = template.emailTemplate();
 
         EmailConvertPolicyCommand convertPolicyCommand = EmailConvertPolicyCommand.of(request, emailTemplate);

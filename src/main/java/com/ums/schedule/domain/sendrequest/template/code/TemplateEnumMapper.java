@@ -2,6 +2,7 @@ package com.ums.schedule.domain.sendrequest.template.code;
 
 
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplatePathTypeEnum;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 import com.ums.schedule.domain.sendrequest.template.email.code.TemplateContentFormatEnum;
 import com.ums.schedule.common.code.mapper.EnumMapper;
@@ -11,6 +12,7 @@ public enum TemplateEnumMapper implements EnumMapper {
     TEMPLATE_FORMAT(TemplateContentFormatEnum.class),
     TEMPLATE_TYPE(TemplateTypeEnum.class),
     EMAIL_TEMPLATE_SECTION(EmailTemplateSectionEnum.class),
+    EMAIL_TEMPLATE_PATH(EmailTemplatePathTypeEnum.class),
     CONVERT_TYPE(ConvertTypeEnum.class)
     ;
 

@@ -1,8 +1,8 @@
 package com.ums.schedule.application.resource.email.command;
 
 import com.ums.schedule.application.sendrequest.message.email.command.EmailConvertPolicyCommand;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailContentResult;
-import com.ums.schedule.application.template.email.result.EmailContentResultBuilder;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
+import com.ums.schedule.fixture.template.EmailContentResultBuilder;
 
 import java.util.List;
 
@@ -14,11 +14,11 @@ public class EmailConvertPolicyCommandBuilder {
     private String passwordFormat;
     private String passwordPolicy;
     private String permissionMask;
-    private EmailContentResult header;
-    private EmailContentResult body;
-    private EmailContentResult cover;
-    private EmailContentResult footer;
-    private List<EmailContentResult> attachmentList;
+    private EmailTemplateContentResult header;
+    private EmailTemplateContentResult body;
+    private EmailTemplateContentResult cover;
+    private EmailTemplateContentResult footer;
+    private List<EmailTemplateContentResult> attachmentList;
 
     public static EmailConvertPolicyCommandBuilder builder() {
         return new EmailConvertPolicyCommandBuilder();
@@ -65,27 +65,27 @@ public class EmailConvertPolicyCommandBuilder {
         return this;
     }
 
-    public EmailConvertPolicyCommandBuilder header(EmailContentResult header) {
+    public EmailConvertPolicyCommandBuilder header(EmailTemplateContentResult header) {
         this.header = header;
         return this;
     }
 
-    public EmailConvertPolicyCommandBuilder body(EmailContentResult body) {
+    public EmailConvertPolicyCommandBuilder body(EmailTemplateContentResult body) {
         this.body = body;
         return this;
     }
 
-    public EmailConvertPolicyCommandBuilder cover(EmailContentResult cover) {
+    public EmailConvertPolicyCommandBuilder cover(EmailTemplateContentResult cover) {
         this.cover = cover;
         return this;
     }
 
-    public EmailConvertPolicyCommandBuilder footer(EmailContentResult footer) {
+    public EmailConvertPolicyCommandBuilder footer(EmailTemplateContentResult footer) {
         this.footer = footer;
         return this;
     }
 
-    public EmailConvertPolicyCommandBuilder attachmentList(List<EmailContentResult> attachmentList) {
+    public EmailConvertPolicyCommandBuilder attachmentList(List<EmailTemplateContentResult> attachmentList) {
         this.attachmentList = attachmentList;
         return this;
     }

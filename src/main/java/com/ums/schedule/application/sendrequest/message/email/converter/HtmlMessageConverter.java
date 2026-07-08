@@ -1,12 +1,11 @@
 package com.ums.schedule.application.sendrequest.message.email.converter;
 
 import com.ums.schedule.application.sendrequest.message.email.command.AttachmentPipelineCommand;
-import com.ums.schedule.application.exception.EmailMessageConvertException;
 import com.ums.schedule.application.sendrequest.message.email.result.TemplateConversionResult;
-import com.ums.schedule.application.sendrequest.template.loader.EmailTemplateLoader;
+import com.ums.schedule.application.exception.EmailMessageConvertException;
+import com.ums.schedule.application.template.email.EmailTemplateLoader;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
 import com.ums.schedule.domain.sendrequest.template.exception.TemplateNotFoundException;
-import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

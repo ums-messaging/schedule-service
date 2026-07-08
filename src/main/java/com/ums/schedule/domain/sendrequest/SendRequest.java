@@ -1,17 +1,13 @@
 package com.ums.schedule.domain.sendrequest;
 
 import com.github.f4b6a3.tsid.TsidCreator;
-import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
 import com.ums.schedule.application.sendrequest.context.SendRequestCreateContext;
-import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.exception.validation.DuplicateViolationException;
 import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.sendrequest.code.SendRequestEventEnum;
-import com.ums.schedule.domain.send.email.job.SendJob;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.code.SendRequestStatusEnum;
 import com.ums.schedule.domain.sendrequest.converter.ChannelTypeConverter;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
 import com.ums.schedule.domain.sendrequest.exception.DefaultRetryCountNotConfiguredException;
@@ -27,7 +23,6 @@ import com.ums.schedule.domain.sendrequest.target.upload.exception.InvalidTarget
 import com.ums.schedule.domain.sendrequest.target.upload.exception.TargetUploadReportNotFoundException;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

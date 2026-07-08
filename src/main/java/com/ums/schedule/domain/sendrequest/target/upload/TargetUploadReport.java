@@ -10,7 +10,6 @@ import com.ums.schedule.common.exception.validation.*;
 import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
 import com.ums.schedule.domain.sendrequest.exception.SendRequestNotFoundException;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;

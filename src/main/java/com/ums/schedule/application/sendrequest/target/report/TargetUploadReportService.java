@@ -14,7 +14,6 @@ import com.ums.schedule.domain.sendrequest.message.ChannelMessage;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.code.SendRequestEnumMapper;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReportJpaRepository;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadReportEnumMapper;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;

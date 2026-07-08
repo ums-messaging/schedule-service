@@ -2,8 +2,8 @@ package com.ums.schedule.application.sendrequest.message.email.command;
 
 import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailContentResult;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailTemplateDetailResult;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateDetailResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentEnumMapper;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
@@ -19,15 +19,15 @@ public record EmailConvertPolicyCommand(
         String passwordFormat,
         String passwordPolicy,
         String permissionMask,
-        EmailContentResult header,
-        EmailContentResult body,
-        EmailContentResult cover,
-        EmailContentResult footer,
-        List<EmailContentResult> attachmentList
+        EmailTemplateContentResult header,
+        EmailTemplateContentResult body,
+        EmailTemplateContentResult cover,
+        EmailTemplateContentResult footer,
+        List<EmailTemplateContentResult> attachmentList
 ) {
 
     public static EmailConvertPolicyCommand of(EmailSendCreateRequest request, EmailTemplateDetailResult template) {
-        Map<EmailTemplateSectionEnum, EmailContentResult> templateMap = template.getHeaderFooter();
+        Map<EmailTemplateSectionEnum, EmailTemplateContentResult> templateMap = template.getHeaderFooter();
         EmailSecurityPolicyRequest securityPolicy = request.securityPolicy();
         if(securityPolicy != null) {
             return EmailConvertPolicyCommand.of(request, securityPolicy, templateMap, template);
@@ -48,7 +48,7 @@ public record EmailConvertPolicyCommand(
         );
     }
 
-    private static EmailConvertPolicyCommand of(EmailSendCreateRequest request, EmailSecurityPolicyRequest securityPolicy, Map<EmailTemplateSectionEnum, EmailContentResult> templateMap, EmailTemplateDetailResult template) {
+    private static EmailConvertPolicyCommand of(EmailSendCreateRequest request, EmailSecurityPolicyRequest securityPolicy, Map<EmailTemplateSectionEnum, EmailTemplateContentResult> templateMap, EmailTemplateDetailResult template) {
         return new EmailConvertPolicyCommand(
                 request.convertType(),
                 true,

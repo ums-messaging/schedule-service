@@ -7,7 +7,6 @@ import com.ums.schedule.application.sendrequest.target.report.TargetUploadReport
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

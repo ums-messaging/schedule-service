@@ -1,6 +1,6 @@
-package com.ums.schedule.application.template.email.result;
+package com.ums.schedule.fixture.template;
 
-import com.ums.schedule.application.sendrequest.message.email.result.EmailContentResult;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
 
 public class EmailContentResultBuilder {
     private String format;
@@ -72,14 +72,13 @@ public class EmailContentResultBuilder {
         return this;
     }
 
-    public EmailContentResult build() {
-        return new EmailContentResult(
+    public EmailTemplateContentResult build() {
+        return new EmailTemplateContentResult(
                 this.format,
                 this.section,
                 this.contentType,
                 this.attachmentName,
                 this.downloadName,
-                this.baseDir,
                 this.fileKeyTemplate,
                 this.fileKey,
                 this.fileSize

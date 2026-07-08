@@ -4,7 +4,6 @@ import com.github.f4b6a3.uuid.UuidCreator;
 import com.ums.schedule.application.sendrequest.message.email.EmailResourceCommand;
 import com.ums.schedule.common.util.JsonUtil;
 import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
-import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetContentParsingException;
 import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetTitleParsingException;
 import com.ums.schedule.domain.sendrequest.target.state.SendTargetCreateState;

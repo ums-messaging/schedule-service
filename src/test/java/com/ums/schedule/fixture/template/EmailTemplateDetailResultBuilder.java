@@ -1,7 +1,7 @@
-package com.ums.schedule.application.template.email.result;
+package com.ums.schedule.fixture.template;
 
-import com.ums.schedule.application.sendrequest.message.email.result.EmailContentResult;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailTemplateDetailResult;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateDetailResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,7 @@ public class EmailTemplateDetailResultBuilder {
     private String emailContentId;
     private String msgTitle;
     private String imageDir;
-    private List<EmailContentResult> contents;
+    private List<EmailTemplateContentResult> contents;
 
     public static EmailTemplateDetailResultBuilder builder() {
         return new EmailTemplateDetailResultBuilder();
@@ -28,7 +28,7 @@ public class EmailTemplateDetailResultBuilder {
         return this;
     }
 
-    public EmailTemplateDetailResultBuilder contents(EmailContentResult... contents) {
+    public EmailTemplateDetailResultBuilder contents(EmailTemplateContentResult... contents) {
         this.contents = Arrays.stream(contents)
                 .toList();
         return this;

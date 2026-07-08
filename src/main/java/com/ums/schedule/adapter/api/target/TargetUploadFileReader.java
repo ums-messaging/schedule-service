@@ -3,17 +3,13 @@ package com.ums.schedule.adapter.api.target;
 import com.alibaba.excel.EasyExcel;
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.application.sendrequest.target.SendTargetReaderListener;
-import com.ums.schedule.application.sendrequest.target.assembler.SendTargetAssembler;
-import com.ums.schedule.application.sendrequest.template.loader.EmailTemplateLoader;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReportJpaRepository;
-import com.ums.schedule.domain.sendrequest.template.ChannelTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
-import java.util.Map;
 import java.util.UUID;
 
 @Component

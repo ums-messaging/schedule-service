@@ -1,4 +1,4 @@
-package com.ums.schedule.application.sendrequest.template.loader;
+package com.ums.schedule.application.template.email;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.application.exception.EmailMessageNotFoundException;

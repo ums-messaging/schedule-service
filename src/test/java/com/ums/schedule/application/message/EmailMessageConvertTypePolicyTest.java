@@ -5,8 +5,8 @@ import com.ums.schedule.application.sendrequest.message.email.command.EmailAttac
 import com.ums.schedule.application.sendrequest.message.email.command.EmailConvertPolicyCommand;
 import com.ums.schedule.application.sendrequest.message.email.policy.EmailMessageConvertTypePolicy;
 import com.ums.schedule.application.sendrequest.message.email.result.EmailMessagePolicyResult;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailContentResult;
-import com.ums.schedule.application.template.email.result.EmailContentResultBuilder;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
+import com.ums.schedule.fixture.template.EmailContentResultBuilder;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
@@ -66,9 +66,9 @@ class EmailMessageConvertTypePolicyTest {
         void shouldKeepAttachmentCount_whenConvertTypeIsNone() {
             builder = EmailConvertPolicyCommandBuilder.builder().convertType(null);
 
-            EmailContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
 
             EmailConvertPolicyCommand givenCommand = builder.attachmentList(List.of(attachmentA, attachmentB, attachmentC)).build();
 
@@ -122,9 +122,9 @@ class EmailMessageConvertTypePolicyTest {
         @Test
         @DisplayName("attachment가 1개 추가된다")
         void shouldAddOneAttachment_whenConvertTypeIsHtml() {
-            EmailContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
 
             EmailConvertPolicyCommand givenCommand =
                     builder.cover(
@@ -143,9 +143,9 @@ class EmailMessageConvertTypePolicyTest {
         @Test
         @DisplayName("HTML attachment를 생성한다")
         void shouldCreateHtmlAttachment_whenConvertTypeIsHtml() {
-            EmailContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
 
             EmailConvertPolicyCommand givenCommand =
                     builder.cover(
@@ -168,9 +168,9 @@ class EmailMessageConvertTypePolicyTest {
         @Test
         @DisplayName("생성된 HTML attachment의 file_key는 body file_key이다")
         void shouldUseBodyFileKeyForHtmlAttachment() {
-            EmailContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
 
             EmailConvertPolicyCommand givenCommand =
                     builder.cover(
@@ -238,9 +238,9 @@ class EmailMessageConvertTypePolicyTest {
         @Test
         @DisplayName("attachment가 1개 추가된다")
         void shouldAddOneAttachment_whenConvertTypeIsPdf() {
-            EmailContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
 
             EmailConvertPolicyCommand givenCommand =
                     builder.cover(
@@ -259,9 +259,9 @@ class EmailMessageConvertTypePolicyTest {
         @Test
         @DisplayName("PDF attachment를 생성한다")
         void shouldCreatePdfAttachment_whenConvertTypeIsPdf() {
-            EmailContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
-            EmailContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentA = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentB = EmailContentResultBuilder.builder().attachment().build();
+            EmailTemplateContentResult attachmentC = EmailContentResultBuilder.builder().attachment().build();
 
             EmailConvertPolicyCommand givenCommand =
                     builder.cover(

@@ -1,4 +1,4 @@
-package com.ums.schedule.application.sendrequest.template.result;
+package com.ums.schedule.application.template.result;
 
 public record TemplateResult(
         String templateId,

@@ -5,7 +5,6 @@ import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.config.properties.TargetUploadProperties;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadFormatEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
 
 

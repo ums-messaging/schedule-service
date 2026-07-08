@@ -2,7 +2,7 @@ package com.ums.schedule.application.sendrequest.target.assembler;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.application.sendrequest.target.email.EmailSendTargetGenerator;
-import com.ums.schedule.application.sendrequest.template.loader.EmailTemplateLoader;
+import com.ums.schedule.application.template.email.EmailTemplateLoader;
 import com.ums.schedule.domain.sendrequest.template.email.EmailTemplate;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
