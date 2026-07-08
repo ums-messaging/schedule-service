@@ -1,4 +1,4 @@
-package com.ums.schedule.application.sendrequest.message.email.command;
+package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;

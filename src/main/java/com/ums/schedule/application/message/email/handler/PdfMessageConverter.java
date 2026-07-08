@@ -1,8 +1,8 @@
-package com.ums.schedule.application.sendrequest.message.email.converter;
+package com.ums.schedule.application.message.email.handler;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
-import com.ums.schedule.application.sendrequest.message.email.command.AttachmentPipelineCommand;
-import com.ums.schedule.application.sendrequest.message.email.result.TemplateConversionResult;
+import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
+import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.exception.EmailMessageConvertException;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
 import lombok.RequiredArgsConstructor;

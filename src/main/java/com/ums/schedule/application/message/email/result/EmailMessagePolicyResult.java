@@ -1,6 +1,6 @@
-package com.ums.schedule.application.sendrequest.message.email.result;
+package com.ums.schedule.application.message.email.result;
 
-import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.EmailAttachmentCreateCommand;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 

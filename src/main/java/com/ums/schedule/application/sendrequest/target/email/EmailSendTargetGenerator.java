@@ -2,11 +2,11 @@ package com.ums.schedule.application.sendrequest.target.email;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.application.exception.ApplicationException;
-import com.ums.schedule.application.sendrequest.message.email.EmailResourceCommand;
-import com.ums.schedule.application.sendrequest.message.email.command.AttachmentPipelineCommand;
+import com.ums.schedule.application.message.email.EmailResourceCommand;
+import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
 import com.ums.schedule.application.exception.EmailMessageConvertException;
-import com.ums.schedule.application.sendrequest.message.email.converter.AttachmentConverter;
-import com.ums.schedule.application.sendrequest.message.email.result.TemplateConversionResult;
+import com.ums.schedule.application.message.email.handler.AttachmentConverter;
+import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.domain.sendrequest.template.email.EmailTemplate;
 import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;

@@ -1,4 +1,4 @@
-package com.ums.schedule.application.sendrequest.message.command;
+package com.ums.schedule.application.message.command;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 

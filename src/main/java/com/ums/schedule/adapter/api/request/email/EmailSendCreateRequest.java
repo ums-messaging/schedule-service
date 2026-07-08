@@ -1,6 +1,7 @@
 package com.ums.schedule.adapter.api.request.email;
 
 import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
+import com.ums.schedule.application.template.email.query.model.EmailTemplateDetailQuery;
 
 import java.util.List;
 
@@ -14,4 +15,8 @@ public record EmailSendCreateRequest(
         EmailSecurityPolicyRequest securityPolicy,
         List<EmailAttachmentRequest> attachmentList
         ) {
+
+        public EmailTemplateDetailQuery toQuery(String customerId) {
+                return EmailTemplateDetailQuery.of(customerId, this);
+        }
 }

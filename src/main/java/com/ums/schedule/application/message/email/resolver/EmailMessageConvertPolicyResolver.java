@@ -1,9 +1,9 @@
-package com.ums.schedule.application.sendrequest.message.email.policy;
+package com.ums.schedule.application.message.email.resolver;
 
-import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
-import com.ums.schedule.application.sendrequest.message.email.command.EmailConvertPolicyCommand;
-import com.ums.schedule.application.sendrequest.message.email.command.SecurityPolicyCommand;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailMessagePolicyResult;
+import com.ums.schedule.application.message.email.model.EmailAttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.EmailConvertPolicyCommand;
+import com.ums.schedule.application.message.email.model.SecurityPolicyCommand;
+import com.ums.schedule.application.message.email.result.EmailMessagePolicyResult;
 import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
-public class EmailMessageConvertTypePolicy {
+public class EmailMessageConvertPolicyResolver {
     private final EnumMapperFactory mapperFactory;
     private final String uploadPrefix;
 

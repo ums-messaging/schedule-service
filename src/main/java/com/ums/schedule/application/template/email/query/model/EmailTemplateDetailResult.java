@@ -1,6 +1,6 @@
 package com.ums.schedule.application.template.email.query.model;
 
-import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.EmailAttachmentCreateCommand;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplatePathTypeEnum;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 

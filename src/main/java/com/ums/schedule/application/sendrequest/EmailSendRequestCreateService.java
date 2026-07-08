@@ -2,7 +2,7 @@ package com.ums.schedule.application.sendrequest;
 
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.adapter.api.request.response.EmailSendRequestCreateResponse;
-import com.ums.schedule.application.sendrequest.message.email.EmailMessageCreateService;
+import com.ums.schedule.application.message.email.EmailMessageCreateService;
 import com.ums.schedule.application.sendrequest.target.report.TargetUploadReportService;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;

@@ -1,15 +1,15 @@
-package com.ums.schedule.application.sendrequest.message.email;
+package com.ums.schedule.application.message.email;
 
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
-import com.ums.schedule.application.sendrequest.message.email.command.EmailConvertPolicyCommand;
-import com.ums.schedule.application.sendrequest.message.email.command.EmailSendMessageCreateCommand;
-import com.ums.schedule.application.sendrequest.message.email.result.EmailMessagePolicyResult;
+import com.ums.schedule.application.message.email.model.EmailConvertPolicyCommand;
+import com.ums.schedule.application.message.email.model.EmailSendMessageCreateCommand;
+import com.ums.schedule.application.message.email.result.EmailMessagePolicyResult;
 import com.ums.schedule.application.template.email.query.model.EmailTemplateDetailResult;
 import com.ums.schedule.application.template.email.query.model.EmailTemplateResult;
 import com.ums.schedule.application.template.email.command.EmailTemplateContentCommand;
-import com.ums.schedule.application.sendrequest.message.email.policy.EmailMessageConvertTypePolicy;
+import com.ums.schedule.application.message.email.resolver.EmailMessageConvertPolicyResolver;
 import com.ums.schedule.application.template.email.query.EmailTemplateQueryService;
-import com.ums.schedule.application.sendrequest.message.SendMessageFactory;
+import com.ums.schedule.application.message.SendMessageFactory;
 import com.ums.schedule.application.template.email.EmailTemplateLoader;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessageJpaRepository;
@@ -26,25 +26,35 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmailMessageCreateService {
     private final EmailTemplateQueryService templateService;
-    private final EmailMessageConvertTypePolicy convertPolicy;
+    private final EmailMessageConvertPolicyResolver convertPolicy;
     private final EmailSendMessageJpaRepository messageRepository;
 
     private final SendMessageFactory messageFactory;
     private final EmailTemplateLoader templateLoader;
 
     public EmailSendMessage create(SendRequest sendRequest, EmailSendCreateRequest request) {
-        EmailTemplateResult template = templateService.findTemplate(null);
-        EmailTemplateDetailResult emailTemplate = template.emailTemplate();
+        EmailTemplateResult template = getEmailTemplateResult(sendRequest, request);
 
-        EmailConvertPolicyCommand convertPolicyCommand = EmailConvertPolicyCommand.of(request, emailTemplate);
-        EmailMessagePolicyResult policy = convertPolicy.generateConvertPolicy(convertPolicyCommand);
+        EmailMessagePolicyResult policy = resolveEmailConvertPolicy(request, template.emailTemplate());
         SendMessage sendMessage = messageFactory.createSendMessage(sendRequest, template.template());
 
         Map<EmailTemplateSectionEnum, EmailTemplateContentCommand> contentMap = loadTemplate(policy.fileKeyMap());
-        EmailSendMessageCreateCommand command = EmailSendMessageCreateCommand.of(emailTemplate, contentMap);
+        EmailSendMessageCreateCommand command = EmailSendMessageCreateCommand.of(template.emailTemplate(), contentMap);
         EmailSendMessage message = EmailSendMessage.of(sendMessage, command, policy.attachmentList());
 
         return messageRepository.save(message);
+    }
+
+    private EmailMessagePolicyResult resolveEmailConvertPolicy(EmailSendCreateRequest request, EmailTemplateDetailResult template) {
+        EmailConvertPolicyCommand convertPolicyCommand = EmailConvertPolicyCommand.of(request, template);
+        EmailMessagePolicyResult policy = convertPolicy.generateConvertPolicy(convertPolicyCommand);
+        return policy;
+    }
+
+    private EmailTemplateResult getEmailTemplateResult(SendRequest sendRequest, EmailSendCreateRequest request) {
+        String customerId = sendRequest.getCustomerRequestKey().getCustomerId();
+        EmailTemplateResult template = templateService.findTemplate(request.toQuery(customerId));
+        return template;
     }
 
     private Map<EmailTemplateSectionEnum, EmailTemplateContentCommand> loadTemplate(Map<EmailTemplateSectionEnum, String> templateMap) {

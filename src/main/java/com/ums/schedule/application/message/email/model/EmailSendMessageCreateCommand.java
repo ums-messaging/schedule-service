@@ -1,4 +1,4 @@
-package com.ums.schedule.application.sendrequest.message.email.command;
+package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.application.template.email.query.model.EmailTemplateDetailResult;
 import com.ums.schedule.application.template.email.command.EmailTemplateContentCommand;

@@ -1,6 +1,6 @@
-package com.ums.schedule.application.sendrequest.message.email;
+package com.ums.schedule.application.message.email;
 
-import com.ums.schedule.application.sendrequest.message.email.command.AttachmentPipelineCommand;
+import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
 
 public record EmailResourceCommand(
         String attachmentName,

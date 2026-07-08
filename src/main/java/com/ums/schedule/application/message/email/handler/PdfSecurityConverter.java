@@ -1,7 +1,7 @@
-package com.ums.schedule.application.sendrequest.message.email.converter;
+package com.ums.schedule.application.message.email.handler;
 
-import com.ums.schedule.application.sendrequest.message.email.command.AttachmentPipelineCommand;
-import com.ums.schedule.application.sendrequest.message.email.result.TemplateConversionResult;
+import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
+import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.exception.EmailMessageConvertException;
 import com.ums.schedule.application.exception.OwnerPasswordNotConfiguredException;
 import com.ums.schedule.config.properties.SecurityPolicyProperties;

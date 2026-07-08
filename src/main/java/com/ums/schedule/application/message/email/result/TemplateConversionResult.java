@@ -1,4 +1,4 @@
-package com.ums.schedule.application.sendrequest.message.email.result;
+package com.ums.schedule.application.message.email.result;
 
 import java.io.File;
 

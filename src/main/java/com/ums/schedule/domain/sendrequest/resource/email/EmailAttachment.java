@@ -8,7 +8,7 @@ import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
 import com.ums.schedule.domain.sendrequest.resource.email.policy.AttachmentPolicy;
 import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentEnumMapper;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
-import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.EmailAttachmentCreateCommand;
 import com.ums.schedule.domain.sendrequest.resource.email.policy.SecurityPolicy;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import io.hypersistence.utils.hibernate.id.Tsid;
