@@ -6,9 +6,7 @@ import com.ums.schedule.common.code.StorageTypeEnum;
 
 public enum AttachmentEnumMapper implements EnumMapper {
     CONVERT_TYPE(ConvertTypeEnum.class),
-    ENCRYPTION_TYPE(EncryptionTypeEnum.class),
-    PASSWORD_HASH(PasswordHashEnum.class),
-    PERMISSION_MASK(PermissionMaskEnum.class),
+
     STORAGE_TYPE(StorageTypeEnum.class)
     ;
     Class<? extends EnumMapperType> code;

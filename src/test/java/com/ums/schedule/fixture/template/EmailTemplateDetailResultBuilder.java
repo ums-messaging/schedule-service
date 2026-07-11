@@ -1,7 +1,7 @@
 package com.ums.schedule.fixture.template;
 
-import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
-import com.ums.schedule.application.template.email.query.model.EmailTemplateDetailResult;
+import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
+import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailResult;
 
 import java.util.Arrays;
 import java.util.List;

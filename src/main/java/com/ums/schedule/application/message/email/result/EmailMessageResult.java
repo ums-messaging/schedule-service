@@ -2,7 +2,7 @@ package com.ums.schedule.application.message.email.result;
 
 import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
 import com.ums.schedule.adapter.api.request.email.EmailAttachmentRequest;
-import com.ums.schedule.application.message.email.model.EmailAttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
 import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
@@ -22,7 +22,7 @@ public record EmailMessageResult(
         EmailSecurityPolicyRequest securityPolicy,
         List<EmailAttachmentRequest> attachments
 ) {
-    public static EmailMessageResult of(EmailSendMessage sendMessage, EmailAttachmentCreateCommand body, List<EmailAttachment> messages) {
+    public static EmailMessageResult of(EmailSendMessage sendMessage, AttachmentCreateCommand body, List<EmailAttachment> messages) {
         SendRequest sendRequest = sendMessage.getSendMessage().getSendRequest();
         TargetUploadReport targetUpload = sendRequest.getCurrentTargetUpload();
         return new EmailMessageResult(

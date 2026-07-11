@@ -5,10 +5,11 @@ import com.ums.schedule.common.exception.validation.InvalidFileExtensionExceptio
 import com.ums.schedule.common.exception.validation.InvalidFilenameValueException;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
+import com.ums.schedule.domain.sendrequest.resource.email.code.SecurityMailEnumMapper;
 import com.ums.schedule.domain.sendrequest.resource.email.policy.AttachmentPolicy;
 import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentEnumMapper;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
-import com.ums.schedule.application.message.email.model.EmailAttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
 import com.ums.schedule.domain.sendrequest.resource.email.policy.SecurityPolicy;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -48,7 +49,7 @@ public class EmailAttachment {
     @ManyToOne(fetch = FetchType.LAZY)
     private EmailSendMessage sendMessage;
 
-    public static EmailAttachment of(EmailSendMessage sendMessage, EmailAttachmentCreateCommand command) {
+    public static EmailAttachment of(EmailSendMessage sendMessage, AttachmentCreateCommand command) {
         EmailAttachment message = new EmailAttachment();
         message.assignSendMessage(sendMessage);
         message.createSecurityPolicyAndResolveConvertType(command);
@@ -125,15 +126,15 @@ public class EmailAttachment {
     }
 
 
-    private void createSecurityPolicyAndResolveConvertType(EmailAttachmentCreateCommand body) {
+    private void createSecurityPolicyAndResolveConvertType(AttachmentCreateCommand body) {
         this.convertType = resolveConvertType(body.convertType());
-        Map<AttachmentEnumMapper, EnumMapperValue> securityMap = body.securityPolicyMap();
+        Map<SecurityMailEnumMapper, EnumMapperValue> securityMap = body.securityPolicyMap();
         if(hasSecurityPolicy(securityMap)) {
             this.securityPolicy = SecurityPolicy.of(body.passwordFormat(), body.passwordHash(), securityMap);
         }
     }
 
-    private boolean hasSecurityPolicy(Map<AttachmentEnumMapper, EnumMapperValue> securityMap) {
+    private boolean hasSecurityPolicy(Map<SecurityMailEnumMapper, EnumMapperValue> securityMap) {
         return !securityMap.isEmpty() && securityMap != null && this.convertType != ConvertTypeEnum.NONE;
     }
 

@@ -5,7 +5,7 @@ import com.ums.schedule.application.exception.ApplicationException;
 import com.ums.schedule.application.message.email.EmailResourceCommand;
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
 import com.ums.schedule.application.exception.EmailMessageConvertException;
-import com.ums.schedule.application.message.email.handler.AttachmentConverter;
+import com.ums.schedule.application.ums.email.convert.handler.AttachmentConverter;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.domain.sendrequest.template.email.EmailTemplate;

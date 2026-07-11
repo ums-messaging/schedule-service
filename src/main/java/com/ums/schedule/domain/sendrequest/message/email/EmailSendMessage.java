@@ -1,8 +1,8 @@
 package com.ums.schedule.domain.sendrequest.message.email;
 
-import com.ums.schedule.application.message.email.model.EmailAttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
 import com.ums.schedule.application.message.email.model.EmailSendMessageCreateCommand;
-import com.ums.schedule.application.template.email.command.EmailTemplateContentCommand;
+import com.ums.schedule.application.ums.email.template.command.EmailTemplateContentCommand;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
 import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
@@ -57,7 +57,7 @@ public class EmailSendMessage implements ChannelMessage {
     @OneToMany(mappedBy = "sendMessage", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<EmailAttachment> attachmentList = new ArrayList<>();
 
-    public static EmailSendMessage of(SendMessage message, EmailSendMessageCreateCommand command, List<EmailAttachmentCreateCommand> attachments) {
+    public static EmailSendMessage of(SendMessage message, EmailSendMessageCreateCommand command, List<AttachmentCreateCommand> attachments) {
         EmailSendMessage sendMessage = new EmailSendMessage();
         sendMessage.assignSubject(message, command.title());
         sendMessage.assignTemplateInfo(command.templateMap());
@@ -66,7 +66,7 @@ public class EmailSendMessage implements ChannelMessage {
         return sendMessage;
     }
 
-    private void createAttachmentList(List<EmailAttachmentCreateCommand> attachments) {
+    private void createAttachmentList(List<AttachmentCreateCommand> attachments) {
        this.attachmentList = attachments.stream()
                .map(attachment -> EmailAttachment.of(this, attachment))
                .toList();

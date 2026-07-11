@@ -1,6 +1,6 @@
 package com.ums.schedule.adapter.api.template;
 
-import com.ums.schedule.application.template.email.query.model.EmailTemplateResult;
+import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

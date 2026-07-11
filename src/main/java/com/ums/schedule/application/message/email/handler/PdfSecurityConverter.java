@@ -4,6 +4,8 @@ import com.ums.schedule.application.message.email.model.AttachmentPipelineComman
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.exception.EmailMessageConvertException;
 import com.ums.schedule.application.exception.OwnerPasswordNotConfiguredException;
+import com.ums.schedule.application.ums.email.convert.handler.AttachmentConverter;
+import com.ums.schedule.application.ums.email.convert.handler.PdfMessageConverter;
 import com.ums.schedule.config.properties.SecurityPolicyProperties;
 import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
 import lombok.RequiredArgsConstructor;

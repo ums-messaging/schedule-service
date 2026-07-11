@@ -1,8 +1,8 @@
 package com.ums.schedule.domain.sendrequest.resource.email;
 
 import com.ums.schedule.application.resource.email.command.EmailAttachmentCreateCommandBuilder;
-import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
-import com.ums.schedule.application.message.email.command.EmailMessageCreateCommandBuilder;
+import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.EmailMessageCreateCommandBuilder;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.exception.validation.InvalidFileExtensionException;
 import com.ums.schedule.common.exception.validation.RequiredException;
@@ -40,7 +40,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("convert_type은 NONE이 반환된다.")
         void shouldReturnNone() {
-            EmailAttachmentCreateCommand givenCommand = this.builder.build();
+            AttachmentCreateCommand givenCommand = this.builder.build();
 
             EmailAttachment attachment = EmailAttachment.of(sendMessage, givenCommand);
 
@@ -50,7 +50,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_key와 file_key_template 모두 존재하면, file_key만 저장된다.")
         void shouldReturnFileKey_whenFileKeyAndFileKeyTemplateAreNotNull() {
-            EmailAttachmentCreateCommand givenCommand = builder
+            AttachmentCreateCommand givenCommand = builder
                     .fileKey("template.html")
                     .fileKeyTemplate("/template/${customer_id}/${target_id}.html")
                     .build();
@@ -64,7 +64,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_key가 존재할 때, file_size가 NULL이면 익셉션이 발생한다.")
         void shouldThrowException_whenFileKeyFormatIsNull() {
-            EmailAttachmentCreateCommand givenCommand = builder
+            AttachmentCreateCommand givenCommand = builder
                     .fileKey("template.html")
                     .fileSize(null)
                     .build();
@@ -80,7 +80,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_key_template이 존재할 때 fileSize는 NULL이다.")
         void shouldReturnFileSizeNull_whenFileKeyTemplateExists() {
-            EmailAttachmentCreateCommand givenCommand = builder
+            AttachmentCreateCommand givenCommand = builder
                     .fileKey(null)
                     .fileKeyTemplate("${variable}.html")
                     .fileSize(9999L)
@@ -110,7 +110,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("convert_type은 PDF가 반환된다.")
         void shouldReturnPdf() {
-            EmailAttachmentCreateCommand givenCommand = builder.build();
+            AttachmentCreateCommand givenCommand = builder.build();
 
             EmailAttachment message = EmailAttachment.of(sendMessage, givenCommand);
 
@@ -120,7 +120,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_key가 존재하지 않으면 익셉션이 발생한다.")
         void shouldThrowException_whenFileKeyIsNull() {
-            EmailAttachmentCreateCommand givenCommand = builder.fileKey(null)
+            AttachmentCreateCommand givenCommand = builder.fileKey(null)
                     .build();
 
             RequiredException expect = RequiredException.fieldOf("file_key");
@@ -133,7 +133,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_size가 NULL이면 익셉션이 발생한다.")
         void shouldThrowException_whenFileSizeIsNull() {
-            EmailAttachmentCreateCommand givenCommand = builder.fileSize(null).build();
+            AttachmentCreateCommand givenCommand = builder.fileSize(null).build();
 
             RequiredException expect = RequiredException.fieldOf("file_size");
 
@@ -145,7 +145,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_key_template이 존재하지 않으면 익셉션이 발생한다.")
         void shouldThrowException_whenFileKeyTemplateDoesNotExist() {
-            EmailAttachmentCreateCommand givenCommand = builder
+            AttachmentCreateCommand givenCommand = builder
                     .fileKeyTemplate(null)
                     .build();
 
@@ -160,7 +160,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_key_template의 확장자가 pdf가 아니면 익셉션이 발생한다.")
         void shouldThrowException_whenFileKeyTemplateExtensionIsNotPdf() {
-            EmailAttachmentCreateCommand givenCommand = builder.fileKeyTemplate("template.xlsx")
+            AttachmentCreateCommand givenCommand = builder.fileKeyTemplate("template.xlsx")
                     .build();
 
             InvalidFileExtensionException expect = InvalidFileExtensionException.of("pdf");
@@ -182,7 +182,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("convert_type은 HTML이 반환된다.")
         void shouldReturnHtml() {
-            EmailAttachmentCreateCommand givenCommand = command.build();
+            AttachmentCreateCommand givenCommand = command.build();
 
             EmailSendMessage sendMessage = mock(EmailSendMessage.class);
             EmailAttachment message = EmailAttachment.of(sendMessage, givenCommand);
@@ -193,7 +193,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_key가 존재하지 않으면 익셉션이 발생한다.")
         void shouldThrowException_whenFileKeyIsNull() {
-            EmailAttachmentCreateCommand givenCommand = command.fileKey(null)
+            AttachmentCreateCommand givenCommand = command.fileKey(null)
                     .build();
 
             RequiredException expect = RequiredException.fieldOf("file_key");
@@ -207,7 +207,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_template_key에는 확장자가 html인 업로드 경로가 생성된다.")
         void shouldReturnUploadKey() {
-            EmailAttachmentCreateCommand command = this.command.build();
+            AttachmentCreateCommand command = this.command.build();
 
             EmailSendMessage sendMessage = mock(EmailSendMessage.class);
             EmailAttachment message = EmailAttachment.of(sendMessage, command);
@@ -219,7 +219,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_size가 NULL이면 익셉션이 발생한다.")
         void shouldThrowException_whenFileSizeIsNull() {
-            EmailAttachmentCreateCommand command = this.command.fileSize(null).build();
+            AttachmentCreateCommand command = this.command.fileSize(null).build();
 
             RequiredException expect = RequiredException.fieldOf("file_size");
 
@@ -232,7 +232,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_key_template의 확장자가 html이 아니면 익셉션이 발생한다.")
         void shouldThrowException_whenFileKeyTemplateExtensionIsNotHtml() {
-            EmailAttachmentCreateCommand command = this.command
+            AttachmentCreateCommand command = this.command
                     .fileKeyTemplate("template.xlsx").build();
 
             InvalidFileExtensionException expect = InvalidFileExtensionException.of("html");
@@ -263,7 +263,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("convert_type이 NONE이면 security_policy는 존재하지 않는다.")
         void shouldNotExistSecurityPolicy_whenConvertTypeIsNone() {
-            EmailAttachmentCreateCommand givenCommand = builder.convertType(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE))
+            AttachmentCreateCommand givenCommand = builder.convertType(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE))
                     .build();
 
             EmailAttachment attachment = EmailAttachment.of(sendMessage, givenCommand);
@@ -274,7 +274,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("encrytion_type이 NULL이면 ASE-256이 반환된다.")
         void shouldReturnEncryptionTypeIsAse256_whenEncryptionTypeIsNull() {
-            EmailAttachmentCreateCommand givenCommand = builder
+            AttachmentCreateCommand givenCommand = builder
                     .encryptionType(null).build();
 
             EmailSendMessage sendMessage = mock(EmailSendMessage.class);
@@ -287,7 +287,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("password_hash가 NULL이면 SHA-256이 반환된다.")
         void shouldReturnPasswordHashIsSha256_whenPasswordHashIsNull() {
-            EmailAttachmentCreateCommand givenCommand = builder
+            AttachmentCreateCommand givenCommand = builder
                     .passwordHash(null).build();
 
             EmailSendMessage sendMessage = mock(EmailSendMessage.class);
@@ -301,7 +301,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("permission_mask가 NULL이면 NONE이 반환된다.")
         void shouldReturnPermissionMaskIsNone_whenPermisionMaskIsNull(){
-            EmailAttachmentCreateCommand givenCommand = builder.permissionMask(null).build();
+            AttachmentCreateCommand givenCommand = builder.permissionMask(null).build();
 
             EmailSendMessage sendMessage = mock(EmailSendMessage.class);
             EmailAttachment message = EmailAttachment.of(sendMessage, givenCommand);
@@ -325,7 +325,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("attachment_name이 NULL이면 익셉션이 발생한다.")
         void shouldThrowException_whenAttachmentNameIsEmpty() {
-            EmailAttachmentCreateCommand givenCommand = builder.attachmentName(null).build();
+            AttachmentCreateCommand givenCommand = builder.attachmentName(null).build();
 
             EmailSendMessage sendMessage = mock(EmailSendMessage.class);
 
@@ -338,7 +338,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("download_name이 NULL이면 익셉션이 발생한다.")
         void shouldThrowException_whenDownloadNameIsNull() {
-            EmailAttachmentCreateCommand givenCommand = builder.downloadName(null).build();
+            AttachmentCreateCommand givenCommand = builder.downloadName(null).build();
             EmailSendMessage sendMessage = mock(EmailSendMessage.class);
 
             RequiredException expect = RequiredException.fieldOf("download_name");
@@ -351,7 +351,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("file_key와 file_key_template 모두 NULL이면 익셉션이 발생한다.")
         void shouldThrowException_fileKeyAndFileKeyTemplateAreNull() {
-            EmailAttachmentCreateCommand givenCommand = builder.fileKey(null).fileKeyTemplate(null).build();
+            AttachmentCreateCommand givenCommand = builder.fileKey(null).fileKeyTemplate(null).build();
             EmailSendMessage sendMessage = mock(EmailSendMessage.class);
 
             RequiredException expect = RequiredException.fieldOf("file_key_template");

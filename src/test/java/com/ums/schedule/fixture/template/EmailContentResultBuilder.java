@@ -1,6 +1,6 @@
 package com.ums.schedule.fixture.template;
 
-import com.ums.schedule.application.template.email.query.model.EmailTemplateContentResult;
+import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
 
 public class EmailContentResultBuilder {
     private String format;

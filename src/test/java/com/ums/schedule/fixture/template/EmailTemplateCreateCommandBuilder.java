@@ -1,7 +1,7 @@
 package com.ums.schedule.fixture.template;
 
-import com.ums.schedule.application.template.email.query.model.EmailAttachmentDetailQuery;
-import com.ums.schedule.application.template.email.query.model.EmailTemplateDetailQuery;
+import com.ums.schedule.application.ums.email.template.query.model.EmailAttachmentDetailQuery;
+import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package com.ums.schedule.domain.sendrequest.message.email;
 
 import com.ums.schedule.application.resource.email.command.EmailAttachmentCreateCommandBuilder;
-import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
-import com.ums.schedule.application.sendrequest.message.email.command.EmailSendMessageCreateCommand;
-import com.ums.schedule.application.template.email.command.EmailTemplateContentCommand;
-import com.ums.schedule.application.message.email.command.EmailSendMessageCreateCommandBuilder;
+import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.EmailSendMessageCreateCommand;
+import com.ums.schedule.application.ums.email.template.command.EmailTemplateContentCommand;
+import com.ums.schedule.application.message.email.model.EmailSendMessageCreateCommandBuilder;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.exception.validation.RequiredException;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
@@ -263,9 +263,9 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("attachment command 개수만큼 attachment가 생성된다")
         void shouldCreateAttachmentsFromCommands() {
-            EmailAttachmentCreateCommand givenCommandA = EmailAttachmentCreateCommandBuilder.builder().build();
-            EmailAttachmentCreateCommand givenCommandB = EmailAttachmentCreateCommandBuilder.builder().build();
-            EmailAttachmentCreateCommand givenCommandC = EmailAttachmentCreateCommandBuilder.builder().build();
+            AttachmentCreateCommand givenCommandA = EmailAttachmentCreateCommandBuilder.builder().build();
+            AttachmentCreateCommand givenCommandB = EmailAttachmentCreateCommandBuilder.builder().build();
+            AttachmentCreateCommand givenCommandC = EmailAttachmentCreateCommandBuilder.builder().build();
 
             EmailSendMessage message = EmailSendMessage.of(sendMessage, command, List.of(givenCommandA, givenCommandB, givenCommandC));
 
@@ -276,7 +276,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("생성된 attachment는 EmailSendMessage를 참조한다")
         void shouldSetParentReferenceToAttachments() {
-            EmailAttachmentCreateCommand givenCommand = EmailAttachmentCreateCommandBuilder.builder().build();
+            AttachmentCreateCommand givenCommand = EmailAttachmentCreateCommandBuilder.builder().build();
 
             EmailSendMessage message = EmailSendMessage.of(sendMessage, command, List.of(givenCommand));
 

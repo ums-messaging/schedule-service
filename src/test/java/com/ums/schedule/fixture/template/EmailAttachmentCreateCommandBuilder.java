@@ -1,6 +1,6 @@
 package com.ums.schedule.fixture.template;
 
-import com.ums.schedule.application.template.email.query.model.EmailAttachmentDetailQuery;
+import com.ums.schedule.application.ums.email.template.query.model.EmailAttachmentDetailQuery;
 
 public class EmailAttachmentCreateCommandBuilder {
     private String fileKey;

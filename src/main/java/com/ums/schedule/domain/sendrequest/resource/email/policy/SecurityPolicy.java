@@ -1,10 +1,6 @@
 package com.ums.schedule.domain.sendrequest.resource.email.policy;
 
-import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentEnumMapper;
-import com.ums.schedule.domain.sendrequest.resource.email.code.EncryptionTypeEnum;
-import com.ums.schedule.domain.sendrequest.resource.email.code.PasswordHashEnum;
-import com.ums.schedule.domain.sendrequest.resource.email.code.PermissionMaskEnum;
-import com.ums.schedule.domain.sendrequest.resource.email.code.PasswordPolicyRequiredException;
+import com.ums.schedule.domain.sendrequest.resource.email.code.*;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import jakarta.persistence.Embeddable;
@@ -34,7 +30,7 @@ public class SecurityPolicy {
     private String passwordFormat;
 
     public static SecurityPolicy of(String passwordPolicy, String passwordFormat,
-                                        Map<AttachmentEnumMapper, EnumMapperValue> enumMapperMap) {
+                                        Map<SecurityMailEnumMapper, EnumMapperValue> enumMapperMap) {
         SecurityPolicy securityPolicy = new SecurityPolicy();
         securityPolicy.resolveSecurityPolicyEnum(enumMapperMap);
         securityPolicy.definePasswordPolicy(passwordPolicy, passwordFormat);
@@ -46,10 +42,10 @@ public class SecurityPolicy {
         this.passwordFormat = passwordFormat;
     }
 
-    private void resolveSecurityPolicyEnum(Map<AttachmentEnumMapper, EnumMapperValue> enumMapperMap) {
-        resolveEncryptionType(enumMapperMap.get(AttachmentEnumMapper.ENCRYPTION_TYPE));
-        resolvePasswordHash(enumMapperMap.get(AttachmentEnumMapper.PASSWORD_HASH));
-        resolvePermissionMask(enumMapperMap.get(AttachmentEnumMapper.PERMISSION_MASK));
+    private void resolveSecurityPolicyEnum(Map<SecurityMailEnumMapper, EnumMapperValue> enumMapperMap) {
+        resolveEncryptionType(enumMapperMap.get(SecurityMailEnumMapper.ENCRYPTION_TYPE));
+        resolvePasswordHash(enumMapperMap.get(SecurityMailEnumMapper.PASSWORD_HASH));
+        resolvePermissionMask(enumMapperMap.get(SecurityMailEnumMapper.PERMISSION_MASK));
     }
 
     private void resolvePermissionMask(EnumMapperValue permissionMask) {

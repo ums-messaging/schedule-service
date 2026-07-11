@@ -1,6 +1,6 @@
 package com.ums.schedule.application.resource.email.command;
 
-import com.ums.schedule.application.sendrequest.message.email.command.EmailAttachmentCreateCommand;
+import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.resource.email.code.*;
 
@@ -88,19 +88,19 @@ public class EmailAttachmentCreateCommandBuilder {
         return this;
     }
 
-    public EmailAttachmentCreateCommand build() {
-        Map<AttachmentEnumMapper, EnumMapperValue> securityMap = new HashMap<>();
+    public AttachmentCreateCommand build() {
+        Map<SecurityMailEnumMapper, EnumMapperValue> securityMap = new HashMap<>();
         if(encryptionType != null) {
-            securityMap.put(AttachmentEnumMapper.ENCRYPTION_TYPE, EnumMapperValue.fromEnumMapperType(encryptionType));
+            securityMap.put(SecurityMailEnumMapper.ENCRYPTION_TYPE, EnumMapperValue.fromEnumMapperType(encryptionType));
         }
         if(passwordHash != null) {
-            securityMap.put(AttachmentEnumMapper.PASSWORD_HASH, EnumMapperValue.fromEnumMapperType(passwordHash));
+            securityMap.put(SecurityMailEnumMapper.PASSWORD_HASH, EnumMapperValue.fromEnumMapperType(passwordHash));
         }
         if(permissionMask != null) {
-            securityMap.put(AttachmentEnumMapper.PERMISSION_MASK, EnumMapperValue.fromEnumMapperType(permissionMask));
+            securityMap.put(SecurityMailEnumMapper.PERMISSION_MASK, EnumMapperValue.fromEnumMapperType(permissionMask));
         }
 
-        return new EmailAttachmentCreateCommand(
+        return new AttachmentCreateCommand(
                 this.convertType,
                 this.attachmentName,
                 this.downloadName,
