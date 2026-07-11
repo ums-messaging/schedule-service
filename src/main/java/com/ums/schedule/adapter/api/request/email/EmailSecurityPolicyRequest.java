@@ -1,9 +1,9 @@
 package com.ums.schedule.adapter.api.request.email;
 
 import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand;
-import com.ums.schedule.domain.sendrequest.resource.email.code.PasswordTypeEnum;
-import com.ums.schedule.domain.sendrequest.resource.email.code.SecurityMailEnumMapper;
-import com.ums.schedule.domain.sendrequest.resource.email.policy.SecurityPolicy;
+import com.ums.schedule.domain.message.email.code.PasswordTypeEnum;
+import com.ums.schedule.domain.message.email.code.SecurityMailEnumMapper;
+import com.ums.schedule.domain.message.email.SecurityMailPolicy;
 import org.springframework.util.StringUtils;
 
 import java.util.Collections;
@@ -18,7 +18,7 @@ public record EmailSecurityPolicyRequest(
         String passwordFormat,
         String permissionMask
 ) {
-    public static EmailSecurityPolicyRequest of(SecurityPolicy securityPolicy) {
+    public static EmailSecurityPolicyRequest of(SecurityMailPolicy securityPolicy) {
         return new EmailSecurityPolicyRequest(
                 securityPolicy.getEncryptionType().value(),
                 securityPolicy.getPasswordPolicy(),

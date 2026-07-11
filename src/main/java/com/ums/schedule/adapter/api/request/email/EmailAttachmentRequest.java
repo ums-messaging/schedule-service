@@ -1,7 +1,6 @@
 package com.ums.schedule.adapter.api.request.email;
 
-import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
-import com.ums.schedule.domain.sendrequest.resource.email.policy.AttachmentPolicy;
+import com.ums.schedule.domain.message.email.EmailAttachment;
 
 public record EmailAttachmentRequest(
         String fileKeySuffix,
@@ -10,12 +9,11 @@ public record EmailAttachmentRequest(
         String downloadName
 ) {
     public static EmailAttachmentRequest of(EmailAttachment message) {
-        AttachmentPolicy policy = message.getAttachmentPolicy();
         return new EmailAttachmentRequest(
                 message.getFileKeyTemplate(),
                 message.getFileKey(),
-                policy.getAttachmentName(),
-                policy.getDownloadName()
+                message.getAttachmentName(),
+                message.getDownloadName()
         );
     }
 }

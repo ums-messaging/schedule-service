@@ -1,7 +1,7 @@
 package com.ums.schedule.application.message.email.model;
 
-import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
-import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 
 import java.util.Map;

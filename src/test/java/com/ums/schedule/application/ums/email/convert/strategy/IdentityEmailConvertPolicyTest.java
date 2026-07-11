@@ -4,7 +4,7 @@ import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertPolicyContext;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
 import com.ums.schedule.fixture.email.convert.ConvertedAttachmentBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertPolicyContextBuilder;
 import org.junit.jupiter.api.BeforeEach;

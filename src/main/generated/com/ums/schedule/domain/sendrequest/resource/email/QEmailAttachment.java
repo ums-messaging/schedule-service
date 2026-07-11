@@ -8,6 +8,7 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
+import com.ums.schedule.domain.message.email.EmailAttachment;
 
 
 /**
@@ -22,9 +23,11 @@ public class QEmailAttachment extends EntityPathBase<EmailAttachment> {
 
     public static final QEmailAttachment emailAttachment = new QEmailAttachment("emailAttachment");
 
-    public final com.ums.schedule.domain.sendrequest.resource.email.policy.QAttachmentPolicy attachmentPolicy;
+    public final StringPath attachmentName = createString("attachmentName");
 
-    public final EnumPath<com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum> convertType = createEnum("convertType", com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum.class);
+    public final EnumPath<com.ums.schedule.domain.message.email.code.ConvertTypeEnum> convertType = createEnum("convertType", com.ums.schedule.domain.message.email.code.ConvertTypeEnum.class);
+
+    public final StringPath downloadName = createString("downloadName");
 
     public final StringPath fileKey = createString("fileKey");
 
@@ -34,7 +37,7 @@ public class QEmailAttachment extends EntityPathBase<EmailAttachment> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final com.ums.schedule.domain.sendrequest.resource.email.policy.QSecurityPolicy securityPolicy;
+    public final com.ums.schedule.domain.sendrequest.resource.email.policy.QSecurityMailPolicy securityPolicy;
 
     public final com.ums.schedule.domain.sendrequest.message.email.QEmailSendMessage sendMessage;
 
@@ -56,8 +59,7 @@ public class QEmailAttachment extends EntityPathBase<EmailAttachment> {
 
     public QEmailAttachment(Class<? extends EmailAttachment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.attachmentPolicy = inits.isInitialized("attachmentPolicy") ? new com.ums.schedule.domain.sendrequest.resource.email.policy.QAttachmentPolicy(forProperty("attachmentPolicy")) : null;
-        this.securityPolicy = inits.isInitialized("securityPolicy") ? new com.ums.schedule.domain.sendrequest.resource.email.policy.QSecurityPolicy(forProperty("securityPolicy")) : null;
+        this.securityPolicy = inits.isInitialized("securityPolicy") ? new com.ums.schedule.domain.sendrequest.resource.email.policy.QSecurityMailPolicy(forProperty("securityPolicy")) : null;
         this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.sendrequest.message.email.QEmailSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
     }
 

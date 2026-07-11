@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.sendrequest.template.code;
 
 
-import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplatePathTypeEnum;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 import com.ums.schedule.domain.sendrequest.template.email.code.TemplateContentFormatEnum;

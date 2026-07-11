@@ -2,7 +2,6 @@ package com.ums.schedule.application.ums.email.message;
 
 import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
-import com.ums.schedule.application.message.email.model.EmailMessageCreateCommand;
 import com.ums.schedule.application.ums.email.attachment.EmailAttachmentCreateService;
 import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
@@ -12,8 +11,8 @@ import com.ums.schedule.application.ums.email.template.query.EmailTemplateQueryS
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
 import com.ums.schedule.application.ums.email.convert.resolver.EmailConvertResolver;
 import com.ums.schedule.application.ums.common.message.SendMessageFactory;
-import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
-import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessageJpaRepository;
+import com.ums.schedule.domain.message.exception.EmailSendMessage;
+import com.ums.schedule.domain.message.exception.EmailSendMessageJpaRepository;
 import com.ums.schedule.domain.sendrequest.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import lombok.RequiredArgsConstructor;

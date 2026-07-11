@@ -1,8 +1,8 @@
 package com.ums.schedule.fixture.email.convert;
 
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
-import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentType;
-import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.AttachmentType;
 
 public class ConvertedAttachmentBuilder {
     private ConvertTypeEnum convertType;

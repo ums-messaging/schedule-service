@@ -7,7 +7,7 @@ import com.ums.schedule.application.exception.OwnerPasswordNotConfiguredExceptio
 import com.ums.schedule.application.ums.email.convert.handler.AttachmentConverter;
 import com.ums.schedule.application.ums.email.convert.handler.PdfMessageConverter;
 import com.ums.schedule.config.properties.SecurityPolicyProperties;
-import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;

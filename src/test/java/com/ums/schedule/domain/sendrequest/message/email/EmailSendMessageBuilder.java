@@ -1,6 +1,7 @@
 package com.ums.schedule.domain.sendrequest.message.email;
 
-import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
+import com.ums.schedule.domain.message.exception.EmailSendMessage;
+import com.ums.schedule.domain.message.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.message.SendMessage;
 
 import java.util.List;

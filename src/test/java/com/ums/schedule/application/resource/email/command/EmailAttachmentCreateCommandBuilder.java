@@ -2,7 +2,7 @@ package com.ums.schedule.application.resource.email.command;
 
 import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.resource.email.code.*;
+import com.ums.schedule.domain.message.email.code.*;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -9,7 +9,7 @@ import com.ums.schedule.application.ums.email.convert.handler.AttachmentConverte
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.domain.sendrequest.template.email.EmailTemplate;
-import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
+import com.ums.schedule.domain.message.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 import lombok.RequiredArgsConstructor;

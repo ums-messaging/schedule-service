@@ -9,7 +9,8 @@ import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConver
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.exception.ConvertTypeNotSupportedException;
-import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentType;
+import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.AttachmentType;
 import com.ums.schedule.fixture.email.convert.AttachmentResolveCommandBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertResultBuilder;
 import com.ums.schedule.fixture.message.EmailConvertPolicyCommandBuilder;
@@ -18,7 +19,6 @@ import com.ums.schedule.application.ums.email.convert.resolver.EmailConvertResol
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -5,7 +5,7 @@ import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertPolicyContext;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentType;
+import com.ums.schedule.domain.message.email.code.AttachmentType;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 import org.springframework.util.StringUtils;
 

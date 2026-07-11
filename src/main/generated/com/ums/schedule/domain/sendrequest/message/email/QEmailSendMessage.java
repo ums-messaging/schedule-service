@@ -8,6 +8,8 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
+import com.ums.schedule.domain.message.email.EmailAttachment;
+import com.ums.schedule.domain.message.exception.EmailSendMessage;
 
 
 /**
@@ -22,7 +24,7 @@ public class QEmailSendMessage extends EntityPathBase<EmailSendMessage> {
 
     public static final QEmailSendMessage emailSendMessage = new QEmailSendMessage("emailSendMessage");
 
-    public final ListPath<com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment, com.ums.schedule.domain.sendrequest.resource.email.QEmailAttachment> attachmentList = this.<com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment, com.ums.schedule.domain.sendrequest.resource.email.QEmailAttachment>createList("attachmentList", com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment.class, com.ums.schedule.domain.sendrequest.resource.email.QEmailAttachment.class, PathInits.DIRECT2);
+    public final ListPath<EmailAttachment, com.ums.schedule.domain.sendrequest.resource.email.QEmailAttachment> attachmentList = this.<EmailAttachment, com.ums.schedule.domain.sendrequest.resource.email.QEmailAttachment>createList("attachmentList", EmailAttachment.class, com.ums.schedule.domain.sendrequest.resource.email.QEmailAttachment.class, PathInits.DIRECT2);
 
     public final StringPath bodyTemplate = createString("bodyTemplate");
 

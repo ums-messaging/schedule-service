@@ -1,8 +1,8 @@
 package com.ums.schedule.application.ums.email.convert;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentType;
-import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.AttachmentType;
 
 public record ConvertedAttachment(
         ConvertTypeEnum convertType,

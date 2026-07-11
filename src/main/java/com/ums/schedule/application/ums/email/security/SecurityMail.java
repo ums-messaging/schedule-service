@@ -1,8 +1,8 @@
 package com.ums.schedule.application.ums.email.security;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.resource.email.code.PasswordTypeEnum;
-import com.ums.schedule.domain.sendrequest.resource.email.code.SecurityMailEnumMapper;
+import com.ums.schedule.domain.message.email.code.PasswordTypeEnum;
+import com.ums.schedule.domain.message.email.code.SecurityMailEnumMapper;
 
 import java.util.Map;
 import java.util.Optional;

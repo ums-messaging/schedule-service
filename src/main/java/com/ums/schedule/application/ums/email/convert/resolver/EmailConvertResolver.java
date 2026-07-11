@@ -8,7 +8,7 @@ import com.ums.schedule.application.ums.email.convert.strategy.EmailMessageConve
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.exception.ConvertTypeNotSupportedException;
-import com.ums.schedule.domain.sendrequest.resource.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
 import com.ums.schedule.domain.sendrequest.template.code.TemplateEnumMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,14 +24,14 @@ public class EmailConvertResolver {
     public EmailConvertPolicy resolve(EmailConvertResolveCommand command, SecurityMail securityMail) {
         EnumMapperValue convertType = resolveConvertType(command.convertType(), securityMail);
 
-        EmailConvertResult convertContext = policyStrategies
+        EmailConvertResult result = policyStrategies
                 .stream()
                 .filter(policy -> policy.supports(convertType))
                 .map(policy -> policy.convert(command.toPolicyCommand(convertType)))
                 .findFirst()
                 .orElseThrow(ConvertTypeNotSupportedException::of);
 
-        return EmailConvertPolicy.of(convertType, command, convertContext);
+        return EmailConvertPolicy.of(convertType, command, result);
     }
 
     private EnumMapperValue resolveConvertType(String convertType, SecurityMail securityMail) {

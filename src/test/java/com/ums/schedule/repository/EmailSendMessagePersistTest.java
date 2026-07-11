@@ -1,6 +1,6 @@
 package com.ums.schedule.repository;
 
-import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
+import com.ums.schedule.domain.message.exception.EmailSendMessage;
 import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessageBuilder;
 import com.ums.schedule.domain.sendrequest.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.message.SendMessageBuilder;

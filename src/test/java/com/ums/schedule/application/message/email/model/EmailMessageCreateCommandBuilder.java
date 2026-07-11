@@ -1,10 +1,10 @@
 package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.resource.email.code.*;
+import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.code.SecurityMailEnumMapper;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class EmailMessageCreateCommandBuilder {
     private EnumMapperValue convertType;
@@ -33,7 +33,8 @@ public class EmailMessageCreateCommandBuilder {
         return new EmailMessageCreateCommandBuilder();
     }
 
-    public EmailMessageCreateCommandBuilder convertType(ConvertTypeEnum convertType) {
+    public EmailMessageCreateCommandBuilder convertType(
+            ConvertTypeEnum convertType) {
         this.convertType = EnumMapperValue.fromEnumMapperType(convertType);
         return this;
     }

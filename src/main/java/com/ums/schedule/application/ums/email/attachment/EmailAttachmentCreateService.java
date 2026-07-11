@@ -1,8 +1,8 @@
 package com.ums.schedule.application.ums.email.attachment;
 
 
-import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessage;
-import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachmentJpaRepository;
+import com.ums.schedule.domain.message.exception.EmailSendMessage;
+import com.ums.schedule.domain.message.email.EmailAttachmentJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

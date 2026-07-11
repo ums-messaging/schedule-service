@@ -2,13 +2,13 @@ package com.ums.schedule.domain.send.email;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachment;
+import com.ums.schedule.domain.message.email.EmailAttachment;
 import com.ums.schedule.domain.send.email.job.DomainGroup;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
-import com.ums.schedule.domain.sendrequest.resource.email.EmailAttachmentBuilder;
+import com.ums.schedule.fixture.email.attachment.EmailAttachmentBuilder;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import com.ums.schedule.domain.sendrequest.target.SendTargetTestBuilder;
 import com.ums.schedule.intergration.kafka.KafkaTestProducer;
