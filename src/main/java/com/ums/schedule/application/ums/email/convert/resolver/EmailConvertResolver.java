@@ -27,11 +27,11 @@ public class EmailConvertResolver {
         EmailConvertResult result = policyStrategies
                 .stream()
                 .filter(policy -> policy.supports(convertType))
-                .map(policy -> policy.convert(command.toPolicyCommand(convertType)))
+                .map(policy -> policy.convert(command.toPolicyCommand(convertType, securityMail)))
                 .findFirst()
                 .orElseThrow(ConvertTypeNotSupportedException::of);
 
-        return EmailConvertPolicy.of(convertType, command, result);
+        return EmailConvertPolicy.of(convertType, result);
     }
 
     private EnumMapperValue resolveConvertType(String convertType, SecurityMail securityMail) {

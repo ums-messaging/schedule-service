@@ -15,6 +15,6 @@ public class IdentityEmailConvertPolicy implements EmailMessageConvertStrategy {
 
     @Override
     public EmailConvertResult convert(EmailConvertPolicyContext command) {
-        return EmailConvertResult.of(command.bodyKey(), command.attachments());
+        return EmailConvertResult.of(command.body().key());
     }
 }

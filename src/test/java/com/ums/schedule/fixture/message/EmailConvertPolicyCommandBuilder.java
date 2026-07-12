@@ -1,17 +1,15 @@
 package com.ums.schedule.fixture.message;
 
-import com.ums.schedule.application.ums.email.convert.resolver.model.AttachmentResolveCommand;
 import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
+import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 
 import java.util.List;
 
 public class EmailConvertPolicyCommandBuilder {
     private String convertType;
-    private String header;
-    private String body;
-    private String cover;
-    private String footer;
-    private List<AttachmentResolveCommand> attachmentList;
+    private AttachmentContext body;
+    private AttachmentContext cover;
+    private List<AttachmentContext> attachmentList;
 
     public static EmailConvertPolicyCommandBuilder builder() {
         return new EmailConvertPolicyCommandBuilder();
@@ -26,27 +24,17 @@ public class EmailConvertPolicyCommandBuilder {
         return this;
     }
 
-    public EmailConvertPolicyCommandBuilder header(String header) {
-        this.header = header;
-        return this;
-    }
-
-    public EmailConvertPolicyCommandBuilder body(String body) {
+    public EmailConvertPolicyCommandBuilder body(AttachmentContext body) {
         this.body = body;
         return this;
     }
 
-    public EmailConvertPolicyCommandBuilder cover(String cover) {
+    public EmailConvertPolicyCommandBuilder cover(AttachmentContext cover) {
         this.cover = cover;
         return this;
     }
 
-    public EmailConvertPolicyCommandBuilder footer(String footer) {
-        this.footer = footer;
-        return this;
-    }
-
-    public EmailConvertPolicyCommandBuilder attachmentList(List<AttachmentResolveCommand> attachmentList) {
+    public EmailConvertPolicyCommandBuilder attachmentList(List<AttachmentContext> attachmentList) {
         this.attachmentList = attachmentList;
         return this;
     }
@@ -54,10 +42,8 @@ public class EmailConvertPolicyCommandBuilder {
     public EmailConvertResolveCommand build() {
         return new EmailConvertResolveCommand(
                 convertType,
-                header,
                 body,
                 cover,
-                footer,
                 attachmentList
         );
     }

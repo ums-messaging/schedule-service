@@ -6,17 +6,23 @@ import com.ums.schedule.domain.message.email.code.AttachmentType;
 
 public class ConvertedAttachmentBuilder {
     private ConvertTypeEnum convertType;
-    private AttachmentType type;
-    private String key;
+    private String fileKey;
+    private String fileKeyTemplate;
+    private Long fileSize;
+    private String attachmentName;
+    private String downloadName;
 
     public static ConvertedAttachmentBuilder builder() {
         return new ConvertedAttachmentBuilder();
     }
 
     private ConvertedAttachmentBuilder() {
-        this.convertType = ConvertTypeEnum.NONE;
-        this.type = AttachmentType.DIRECT;
-        this.key = "attachment.html";
+        this.convertType = ConvertTypeEnum.PDF;
+        this.fileKey = "body.html";
+        this.fileKeyTemplate = "${template}.pdf";
+        this.fileSize = 10L;
+        this.attachmentName = "첨부파일명.pdf";
+        this.downloadName = "첨부파일명.pdf";
     }
 
     public ConvertedAttachmentBuilder convertType(ConvertTypeEnum convertType) {
@@ -24,21 +30,34 @@ public class ConvertedAttachmentBuilder {
         return this;
     }
 
-    public ConvertedAttachmentBuilder attachmentType(AttachmentType attachmentType) {
-        this.type = attachmentType;
+    public ConvertedAttachmentBuilder fileKey(String fileKey) {
+        this.fileKey = fileKey;
         return this;
     }
 
-    public ConvertedAttachmentBuilder key(String key) {
-        this.key = key;
+    public ConvertedAttachmentBuilder fileKeyTemplate(String fileKeyTemplate) {
+        this.fileKeyTemplate = fileKeyTemplate;
+        return this;
+    }
+
+    public ConvertedAttachmentBuilder attachmentName(String attachmentName) {
+        this.attachmentName = attachmentName;
+        return this;
+    }
+
+    public ConvertedAttachmentBuilder downloadName(String downloadName) {
+        this.downloadName = downloadName;
         return this;
     }
 
     public ConvertedAttachment build() {
         return new ConvertedAttachment(
                 this.convertType,
-                this.type,
-                this.key
+                this.fileKey,
+                this.fileKeyTemplate,
+                this.fileSize,
+                this.attachmentName,
+                this.downloadName
         );
     }
 

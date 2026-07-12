@@ -1,6 +1,5 @@
 package com.ums.schedule.application.ums.email.template.query.model;
 
-import com.ums.schedule.application.ums.email.convert.resolver.model.AttachmentResolveCommand;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplatePathTypeEnum;
 import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 
@@ -53,11 +52,5 @@ public record EmailTemplateDetailResult(
                 .stream()
                 .filter(content->content.section().equals(EmailTemplateSectionEnum.ATTACHMENT.value()))
                 .collect(Collectors.toList());
-    }
-
-    public List<AttachmentResolveCommand> toAttachmentCommandList() {
-        return getAttachmentList().stream()
-                .map(AttachmentResolveCommand::of)
-                .toList();
     }
 }

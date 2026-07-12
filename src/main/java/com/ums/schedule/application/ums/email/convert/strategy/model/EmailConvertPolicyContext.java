@@ -1,26 +1,27 @@
 package com.ums.schedule.application.ums.email.convert.strategy.model;
 
-import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
+import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
+import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 
 import java.util.List;
 
 public record EmailConvertPolicyContext(
         EnumMapperValue convertType,
-        String bodyKey,
+        SecurityMail securityMail,
+        AttachmentContext body,
         String coverKey,
-        List<ConvertedAttachment> attachments
-) {
+        List<AttachmentContext> attachments
+        ) {
 
-    public static EmailConvertPolicyContext of(EnumMapperValue convertType, EmailConvertResolveCommand command) {
+    public static EmailConvertPolicyContext of(EnumMapperValue convertType, EmailConvertResolveCommand command, SecurityMail securityMail) {
         return new EmailConvertPolicyContext(
                 convertType,
-                command.bodyKey(),
+                securityMail,
+                command.body(),
                 command.coverKey(),
-                command.determineAttachments()
+                command.attachmentList()
         );
     }
-
-
 }

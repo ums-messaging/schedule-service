@@ -1,27 +1,22 @@
 package com.ums.schedule.application.message.email.model;
 
-import com.ums.schedule.application.ums.email.template.command.EmailTemplateContentCommand;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
+import com.ums.schedule.domain.sendrequest.message.SendMessage;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class EmailSendMessageCreateCommandBuilder {
-    private String uploadPrefix;
+    private SendMessage sendMessage;
     private String title;
-
-    private EmailTemplateContentCommand header;
-    private EmailTemplateContentCommand body;
-    private EmailTemplateContentCommand footer;
+    private String headerKey;
+    private String bodyKey;
+    private String footerKey;
 
     public static EmailSendMessageCreateCommandBuilder builder() {
         return new EmailSendMessageCreateCommandBuilder();
     }
     private EmailSendMessageCreateCommandBuilder() {
-        this.uploadPrefix = "/template/upload";
-        this.title = "email message subject";
-        this.body = givenDefaultEmailBody();
+        this.headerKey = "header.html";
+        this.bodyKey = "body.html";
+        this.footerKey = "footer.html";
     }
 
     public EmailSendMessageCreateCommandBuilder title(String title) {
@@ -29,44 +24,34 @@ public class EmailSendMessageCreateCommandBuilder {
         return this;
     }
 
-    public EmailSendMessageCreateCommandBuilder header(String key, String template) {
-        this.header = (key == null && template == null) ?
-                null : EmailTemplateContentCommand.of(key, template);
+    public EmailSendMessageCreateCommandBuilder headerKey(String headerKey) {
+        this.headerKey = headerKey;
         return this;
     }
 
-    public EmailSendMessageCreateCommandBuilder body(String key, String template) {
-        this.body = (key == null && template == null) ?
-                null : EmailTemplateContentCommand.of(key, template);
+    public EmailSendMessageCreateCommandBuilder bodyKey(String bodyKey) {
+        this.bodyKey = bodyKey;
         return this;
     }
 
-    public EmailSendMessageCreateCommandBuilder footer(String key, String template) {
-        this.footer = (key == null && template == null) ?
-                null : EmailTemplateContentCommand.of(key, template);
+    public EmailSendMessageCreateCommandBuilder footerKey(String footerKey) {
+        this.footerKey = footerKey;
         return this;
     }
 
-    private EmailTemplateContentCommand givenDefaultEmailBody() {
-        String fileKey = "%s/%s.html".formatted(generateFileKey(UUID.randomUUID().toString()), "body");
-        String template = "<div>body</div>";
-        return EmailTemplateContentCommand.of(fileKey, template);
-    }
-
-    private String generateFileKey(String templateKey) {
-        return "/template/%s".formatted(templateKey);
+    public EmailSendMessageCreateCommandBuilder sendMessage(SendMessage sendMessage) {
+        this.sendMessage = sendMessage;
+        return this;
     }
 
     public EmailSendMessageCreateCommand build() {
-        Map<EmailTemplateSectionEnum, EmailTemplateContentCommand> templateMap = new HashMap<>();
-
-        if (header != null) templateMap.put(EmailTemplateSectionEnum.HEADER, header);
-        if (body != null) templateMap.put(EmailTemplateSectionEnum.BODY, body);
-        if (footer != null) templateMap.put(EmailTemplateSectionEnum.FOOTER, footer);
 
         return new EmailSendMessageCreateCommand(
+                this.sendMessage,
                 this.title,
-                templateMap
+                this.headerKey,
+                this.bodyKey,
+                this.footerKey
         );
     }
 }

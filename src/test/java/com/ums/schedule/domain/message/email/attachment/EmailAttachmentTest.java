@@ -1,7 +1,8 @@
 package com.ums.schedule.domain.message.email.attachment;
 
-import com.ums.schedule.application.ums.email.attachment.model.EmailAttachmentCreateContext;
+import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
+import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.exception.validation.InvalidFileExtensionException;
 import com.ums.schedule.common.exception.validation.RequiredException;
 import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
@@ -17,6 +18,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,22 +38,22 @@ class EmailAttachmentTest {
     @Nested
     @DisplayName("변환 타입이 NONE일 때")
     class WhenConvertTypeIsNone {
-        private ConvertedAttachmentBuilder convertedBuilder;
 
         @BeforeEach
         void setUp() {
-            convertedBuilder = ConvertedAttachmentBuilder.builder()
+            contextBuilder
                     .convertType(ConvertTypeEnum.NONE)
-                    .attachmentType(AttachmentType.DIRECT)
-                    .key("attachment.html")
+                    .fileKeyMap(Map.of(
+                            AttachmentType.DIRECT,
+                            "attachment.html"
+                    )).fileSize(10L)
             ;
         }
 
         @Test
         @DisplayName("변환 타입은 NONE이 반환된다.")
         void shouldReturnNone() {
-            ConvertedAttachment attachment = convertedBuilder.build();
-            EmailAttachmentCreateContext context = contextBuilder.convertedAttachment(attachment).build();
+            AttachmentCreateCommand context = contextBuilder.build();
 
             EmailAttachment result = EmailAttachment.of(context);
 
@@ -62,33 +65,33 @@ class EmailAttachmentTest {
         class WhenAttachmentTypeIsDirect {
             @BeforeEach
             void setUp() {
-                convertedBuilder = convertedBuilder
-                        .attachmentType(AttachmentType.DIRECT)
-                        .key("body.html");
-                contextBuilder.fileSize(10L);
+                contextBuilder
+                        .fileKeyMap(
+                                Map.of(
+                                        AttachmentType.DIRECT,
+                                        "attachment.html"
+                                )
+                        )
+                        .fileSize(10L);
             }
             @Test
             @DisplayName("첨부파일 타입이 DIRECT이면, 변환된 첨부파일의 키가 file_key로 저장된다.")
             void shouldReturnConvertedAttachmentFileKey() {
-                ConvertedAttachment attachment = convertedBuilder.build();
-
-                EmailAttachmentCreateContext context = contextBuilder
-                        .convertedAttachment(attachment)
+                AttachmentCreateCommand context = contextBuilder
                         .build();
 
                 EmailAttachment result = EmailAttachment.of(context);
 
-                assertThat(result.getFileKey()).isEqualTo("body.html");
+                assertThat(result.getFileKey()).isEqualTo("attachment.html");
             }
 
             @Test
             @DisplayName("변환된 첨부파일의 키가 존재하지 않으면 예외가 발생한다.")
             void shouldThrowException_whenFileKeyDoesNotExist() {
-                ConvertedAttachment attachment = convertedBuilder
-                        .key("")
-                        .build();
-                EmailAttachmentCreateContext context = contextBuilder
-                        .convertedAttachment(attachment)
+                AttachmentCreateCommand context = contextBuilder
+                        .fileKeyMap(Map.of(
+                                AttachmentType.DIRECT, ""
+                        ))
                         .build();
 
                 EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key");
@@ -100,9 +103,7 @@ class EmailAttachmentTest {
             @Test
             @DisplayName("파일 크기가 존재하지 않으면 예외가 발생한다.")
             void shouldThrowException_whenFileSizeIsNull() {
-                ConvertedAttachment attachment = convertedBuilder.build();
-                EmailAttachmentCreateContext context = contextBuilder
-                        .convertedAttachment(attachment)
+                AttachmentCreateCommand context = contextBuilder
                         .fileSize(null)
                         .build();
 
@@ -120,33 +121,33 @@ class EmailAttachmentTest {
         class WhenAttachmentTypeIsTemplate {
             @BeforeEach
             void setUp() {
-                convertedBuilder = convertedBuilder
-                        .attachmentType(AttachmentType.TEMPLATE)
-                        .key("body.html");
+                contextBuilder
+                        .fileKeyMap(
+                                Map.of(
+                                        AttachmentType.TEMPLATE,
+                                        "${attachment}.html"
+                                )
+                        );
             }
 
             @Test
             @DisplayName("변환된 첨부파일의 키가 file_key_template으로 저장된다.")
             void shouldThrowException_whenFileKeyFormatIsNull() {
-                ConvertedAttachment attachment = convertedBuilder
-                        .build();
-                EmailAttachmentCreateContext context = contextBuilder
-                        .convertedAttachment(attachment)
+                AttachmentCreateCommand context = contextBuilder
                         .build();
 
                 EmailAttachment result = EmailAttachment.of(context);
 
-                assertThat(result.getFileKeyTemplate()).isEqualTo("body.html");
+                assertThat(result.getFileKeyTemplate()).isEqualTo("${attachment}.html");
             }
 
             @Test
             @DisplayName("변환된 첨부파일의 키가 존재하지 않으면 예외가 발생한다.")
             void shouldThrowException_whenConvertedAttachmentKeyDoesNotExist() {
-                ConvertedAttachment attachment = convertedBuilder
-                        .key("")
-                        .build();
-                EmailAttachmentCreateContext context = contextBuilder
-                        .convertedAttachment(attachment)
+                AttachmentCreateCommand context = contextBuilder
+                        .fileKeyMap(
+                                Map.of(AttachmentType.TEMPLATE, "")
+                        )
                         .build();
 
                 EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key_template");
@@ -159,12 +160,7 @@ class EmailAttachmentTest {
             @Test
             @DisplayName("파일 크기가 존재하지 않으면 NULL을 반환한다.")
             void shouldReturnFileSizeNull_whenFileSizeDoesNotExist() {
-                ConvertedAttachment attachment = convertedBuilder
-                        .attachmentType(AttachmentType.TEMPLATE)
-                        .key("body.html")
-                        .build();
-                EmailAttachmentCreateContext context = contextBuilder
-                        .convertedAttachment(attachment)
+                AttachmentCreateCommand context = contextBuilder
                         .fileSize(null)
                         .build();
 
@@ -177,17 +173,31 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("보안 정책은 존재하지 않는다.")
         void shouldReturnNullSecurityMailPolicy() {
-            ConvertedAttachment attachment = convertedBuilder
-                    .key("body.html")
-                    .build();
-            EmailAttachmentCreateContext context = contextBuilder
-                    .convertedAttachment(attachment)
-                    .securityMailPolicy(mock(SecurityMailPolicy.class))
+            AttachmentCreateCommand context = contextBuilder
+                    .convertType(ConvertTypeEnum.NONE)
+                    .fileKeyMap(Map.of(
+                            AttachmentType.DIRECT,
+                            "attachment.html"
+                    ))
+                    .securityMail(mock(SecurityMailPolicy.class))
                     .build();
 
             EmailAttachment result = EmailAttachment.of(context);
 
             assertThat(result.getSecurityPolicy()).isNull();
+        }
+
+        @Test
+        @DisplayName("파일 키 정보가 존재하지 않으면, 예외가 발생한다.")
+        void shouldThrowException_whenFileKeyMapDoesNotExist() {
+            AttachmentCreateCommand context = contextBuilder
+                    .fileKeyMap(null).build();
+
+            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key or file_key_template");
+
+            assertThatThrownBy(() -> EmailAttachment.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
         }
     }
 
@@ -195,17 +205,18 @@ class EmailAttachmentTest {
     @Nested
     @DisplayName("CONVERT_TYPE이 HTML일 때")
     class WhenConvertTypeIsHtml {
-        private ConvertedAttachmentBuilder convertedBuilder;
 
         @BeforeEach
         void setUp() {
-            convertedBuilder = ConvertedAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.HTML)
-                    .attachmentType(AttachmentType.TEMPLATE)
-                    .key("body.html");
+            Map<AttachmentType, String> bodyKeyMap = Map.of(
+                    AttachmentType.DIRECT, "body.html",
+                    AttachmentType.TEMPLATE, "${template}.html"
+            );
             contextBuilder = EmailAttachmentCreateContextBuilder.builder()
                     .sendMessage(mock(EmailSendMessage.class))
-                    .convertedAttachment(convertedBuilder.build());
+                    .convertType(ConvertTypeEnum.HTML)
+                    .fileKeyMap(bodyKeyMap)
+                    ;
         }
 
         @Test
@@ -219,7 +230,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("파일 키는 파일 정보로 반환된다.")
         void shouldReturnFileKey() {
-            EmailAttachmentCreateContext context = contextBuilder.fileKey("body.html").build();
+            AttachmentCreateCommand context = contextBuilder.build();
 
             EmailAttachment result = EmailAttachment.of(context);
 
@@ -229,26 +240,22 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("파일 키 템플릿은 변환된 첨부파일 키로 반환된다.")
         void shouldReturnConvertedAttachmentKey() {
-            ConvertedAttachment attachment = ConvertedAttachmentBuilder.builder().key("template.html").build();
-            EmailAttachmentCreateContext context = contextBuilder.fileKey("body.html")
+            AttachmentCreateCommand context = contextBuilder
                     .sendMessage(mock(EmailSendMessage.class))
-                    .convertedAttachment(attachment)
                     .build();
 
             EmailAttachment result = EmailAttachment.of(context);
 
-            assertThat(result.getFileKey()).isEqualTo("template.html");
+            assertThat(result.getFileKeyTemplate()).isEqualTo("${template}.html");
         }
 
         @Test
         @DisplayName("파일 키가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenFileKeyIsEmpty() {
-            convertedBuilder = convertedBuilder
-                    .convertType(ConvertTypeEnum.HTML)
-                    .key("body.html");
             contextBuilder = contextBuilder
-                    .fileKey("")
-                    .convertedAttachment(convertedBuilder.build());
+                    .fileKeyMap(
+                            Map.of(AttachmentType.TEMPLATE, "${template}.html")
+                    );
 
             EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key");
 
@@ -260,11 +267,10 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("변환된 첨부파일 키가 존재하지 않으면 예외가 발생한다.")
         void shouldReturnUploadKey() {
-            convertedBuilder = convertedBuilder
-                    .key("");
             contextBuilder = contextBuilder
-                    .fileKey("body.html")
-                    .convertedAttachment(convertedBuilder.build());
+                    .fileKeyMap(Map.of(
+                            AttachmentType.DIRECT, "body.html"
+                    ));
 
             EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key_template");
 
@@ -277,9 +283,7 @@ class EmailAttachmentTest {
         @DisplayName("파일 크기가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenFileSizeIsNull() {
             contextBuilder = contextBuilder
-                    .fileKey("body.html")
-                    .fileSize(null)
-                    .convertedAttachment(convertedBuilder.build());
+                    .fileSize(null);
 
             EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_size");
 
@@ -292,8 +296,12 @@ class EmailAttachmentTest {
         @DisplayName("파일 키의 확장자가 HTML이 아니면 예외가 발생한다.")
         void shouldThrowException_whenFileKeyExtensionIsNotHtml() {
             contextBuilder = contextBuilder
-                    .fileKey("body.pdf")
-                    .convertedAttachment(convertedBuilder.build());
+                    .fileKeyMap(
+                            Map.of(
+                                    AttachmentType.DIRECT, "body.pdf",
+                                    AttachmentType.TEMPLATE, "${template}.html"
+                            )
+                    );
 
             InvalidFileExtensionException expect = InvalidFileExtensionException.of("html");
 
@@ -305,9 +313,13 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("변환된 첨부파일 키의 확장자가 HTML이 아니면 익셉션이 발생한다.")
         void shouldThrowException_whenFileKeyTemplateExtensionIsNotHtml() {
-            ConvertedAttachment attachment = convertedBuilder.key("template.pdf").build();
             contextBuilder = contextBuilder
-                    .convertedAttachment(attachment);
+                    .fileKeyMap(
+                            Map.of(
+                                    AttachmentType.DIRECT, "body.html",
+                                    AttachmentType.TEMPLATE, "${template}.pdf"
+                            )
+                    );
 
             InvalidFileExtensionException expect = InvalidFileExtensionException.of("html");
 
@@ -320,12 +332,24 @@ class EmailAttachmentTest {
         @DisplayName("보안 정책이 존재하면, 보안 정책 정보가 저장된다.")
         void shouldReturnNotNull_whenSecurityMailPolicyExists() {
             contextBuilder = contextBuilder
-                    .convertedAttachment(convertedBuilder.build())
-                    .securityMailPolicy(mock(SecurityMailPolicy.class));
+                    .securityMail(mock(SecurityMailPolicy.class));
 
             EmailAttachment attachment = EmailAttachment.of(contextBuilder.build());
 
             assertThat(attachment.getSecurityPolicy()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("파일 키 정보가 존재하지 않으면, 예외가 발생한다.")
+        void shouldThrowException_whenFileKeyMapDoesNotExist() {
+            AttachmentCreateCommand context = contextBuilder
+                    .fileKeyMap(null).build();
+
+            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key and file_key_template");
+
+            assertThatThrownBy(() -> EmailAttachment.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
         }
     }
 
@@ -336,14 +360,15 @@ class EmailAttachmentTest {
 
         @BeforeEach
         void setUp() {
-            convertedBuilder = ConvertedAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.PDF)
-                    .attachmentType(AttachmentType.TEMPLATE)
-                    .key("body.pdf");
             contextBuilder = EmailAttachmentCreateContextBuilder.builder()
                     .sendMessage(mock(EmailSendMessage.class))
-                    .fileKey("template.html")
-                    .convertedAttachment(convertedBuilder.build());
+                    .convertType(ConvertTypeEnum.PDF)
+                    .fileKeyMap(
+                        Map.of(
+                                AttachmentType.DIRECT, "body.html",
+                                AttachmentType.TEMPLATE, "${template}.pdf"
+                        )
+                    );
         }
 
         @Test
@@ -357,7 +382,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("파일 키는 파일 정보로 반환된다.")
         void shouldReturnFileKey() {
-            EmailAttachmentCreateContext context = contextBuilder.fileKey("body.html").build();
+            AttachmentCreateCommand context = contextBuilder.build();
 
             EmailAttachment result = EmailAttachment.of(context);
 
@@ -367,26 +392,24 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("파일 키 템플릿은 변환된 첨부파일 키로 반환된다.")
         void shouldReturnConvertedAttachmentKey() {
-            ConvertedAttachment attachment = ConvertedAttachmentBuilder.builder().key("template.html").build();
-            EmailAttachmentCreateContext context = contextBuilder.fileKey("body.html")
+            AttachmentCreateCommand context = contextBuilder
                     .sendMessage(mock(EmailSendMessage.class))
-                    .convertedAttachment(attachment)
                     .build();
 
             EmailAttachment result = EmailAttachment.of(context);
 
-            assertThat(result.getFileKey()).isEqualTo("template.html");
+            assertThat(result.getFileKeyTemplate()).isEqualTo("${template}.pdf");
         }
 
         @Test
         @DisplayName("파일 키가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenFileKeyIsEmpty() {
-            convertedBuilder = convertedBuilder
-                    .convertType(ConvertTypeEnum.HTML)
-                    .key("body.html");
             contextBuilder = contextBuilder
-                    .fileKey("")
-                    .convertedAttachment(convertedBuilder.build());
+                    .fileKeyMap(
+                            Map.of(
+                                    AttachmentType.TEMPLATE, "${template}.pdf"
+                            )
+                    );
 
             EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key");
 
@@ -398,11 +421,12 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("변환된 첨부파일 키가 존재하지 않으면 예외가 발생한다.")
         void shouldReturnUploadKey() {
-            convertedBuilder = convertedBuilder
-                    .key("");
             contextBuilder = contextBuilder
-                    .fileKey("body.html")
-                    .convertedAttachment(convertedBuilder.build());
+                    .fileKeyMap(
+                            Map.of(
+                                    AttachmentType.DIRECT, "body.html"
+                            )
+                    );
 
             EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key_template");
 
@@ -415,9 +439,7 @@ class EmailAttachmentTest {
         @DisplayName("파일 크기가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenFileSizeIsNull() {
             contextBuilder = contextBuilder
-                    .fileKey("body.html")
-                    .fileSize(null)
-                    .convertedAttachment(convertedBuilder.build());
+                    .fileSize(null);
 
             EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_size");
 
@@ -430,8 +452,12 @@ class EmailAttachmentTest {
         @DisplayName("파일 키의 확장자가 HTML이 아니면 예외가 발생한다.")
         void shouldThrowException_whenFileKeyExtensionIsNotHtml() {
             contextBuilder = contextBuilder
-                    .fileKey("body.pdf")
-                    .convertedAttachment(convertedBuilder.build());
+                    .fileKeyMap(
+                            Map.of(
+                                AttachmentType.DIRECT, "body.pdf",
+                                AttachmentType.TEMPLATE, "${template}.pdf"
+                            )
+                    );
 
             InvalidFileExtensionException expect = InvalidFileExtensionException.of("html");
 
@@ -443,9 +469,13 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("변환된 첨부파일 키의 확장자가 PDF가 아니면 익셉션이 발생한다.")
         void shouldThrowException_whenFileKeyTemplateExtensionIsNotHtml() {
-            ConvertedAttachment attachment = convertedBuilder.key("template.html").build();
             contextBuilder = contextBuilder
-                    .convertedAttachment(attachment);
+                    .fileKeyMap(
+                            Map.of(
+                                    AttachmentType.DIRECT, "body.html",
+                                    AttachmentType.TEMPLATE, "${template}.xlsx"
+                            )
+                    );
 
             InvalidFileExtensionException expect = InvalidFileExtensionException.of("pdf");
 
@@ -458,12 +488,25 @@ class EmailAttachmentTest {
         @DisplayName("보안 정책이 존재하면, 보안 정책 정보가 저장된다.")
         void shouldReturnNotNull_whenSecurityMailPolicyExists() {
             contextBuilder = contextBuilder
-                    .convertedAttachment(convertedBuilder.build())
-                    .securityMailPolicy(mock(SecurityMailPolicy.class));
+                    .securityMail(mock(SecurityMailPolicy.class));
 
             EmailAttachment attachment = EmailAttachment.of(contextBuilder.build());
 
             assertThat(attachment.getSecurityPolicy()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("파일 키 정보가 존재하지 않으면, 예외가 발생한다.")
+        void shouldThrowException_whenFileKeyMapDoesNotExist() {
+            AttachmentCreateCommand context = contextBuilder
+                    .fileKeyMap(null)
+                    .build();
+
+            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key and file_key_template");
+
+            assertThatThrownBy(() -> EmailAttachment.of(context))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
         }
     }
 
@@ -480,7 +523,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("이메일 메시지가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenEmailSendMessageIsNull() {
-            EmailAttachmentCreateContext context = contextBuilder.sendMessage(null)
+            AttachmentCreateCommand context = contextBuilder.sendMessage(null)
                     .build();
 
             EmailSendMessageNotFoundException expect = EmailSendMessageNotFoundException.of();
@@ -493,7 +536,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("첨부파일 명이 빈 값이면, 익셉션이 발생한다.")
         void shouldThrowException_whenAttachmentNameIsEmpty() {
-            EmailAttachmentCreateContext context = contextBuilder.attachmentName("")
+            AttachmentCreateCommand context = contextBuilder.attachmentName("")
                     .sendMessage(sendMessage)
                     .build();
 
@@ -507,7 +550,7 @@ class EmailAttachmentTest {
         @Test
         @DisplayName("다운로드 명이 빈 값이면, 익셉션이 발생한다.")
         void shouldThrowException_whenDownloadNameIsNull() {
-            EmailAttachmentCreateContext context = contextBuilder.downloadName("")
+            AttachmentCreateCommand context = contextBuilder.downloadName("")
                     .sendMessage(sendMessage)
                     .build();
 

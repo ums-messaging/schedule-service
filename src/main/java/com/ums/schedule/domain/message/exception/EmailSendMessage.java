@@ -24,7 +24,7 @@ import java.util.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class EmailSendMessage implements ChannelMessage {
 
     @MapsId
@@ -55,35 +55,27 @@ public class EmailSendMessage implements ChannelMessage {
     @OneToMany(mappedBy = "sendMessage", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<EmailAttachment> attachmentList = new ArrayList<>();
 
-    public static EmailSendMessage of(SendMessage message, EmailSendMessageCreateCommand command, List<AttachmentCreateCommand> attachments) {
+    public static EmailSendMessage of(EmailSendMessageCreateCommand command) {
         EmailSendMessage sendMessage = new EmailSendMessage();
-        sendMessage.assignSubject(message, command.title());
-        sendMessage.assignTemplateInfo(command.templateMap());
+        sendMessage.assignSubject(command.sendMessage(), command.title());
+        sendMessage.assignTemplateInfo(command.headerKey(), command.bodyKey(), command.footerKey());
         sendMessage.generateImageDir();
         return sendMessage;
     }
 
 
-    private void assignTemplateInfo(Map<EmailTemplateSectionEnum, EmailTemplateContentCommand> contentMap) {
-        assignHeaderFooterTemplateKey(contentMap);
-        assignBodyTemplateKey(contentMap.get(EmailTemplateSectionEnum.BODY));
+    private void assignTemplateInfo(String headerKey, String bodyKey, String footerKey) {
+        assignHeaderFooterTemplateKey(headerKey, footerKey);
+        assignBodyTemplateKey(bodyKey);
     }
 
-    private void assignHeaderFooterTemplateKey(Map<EmailTemplateSectionEnum, EmailTemplateContentCommand> headerFooter) {
-        assignHeaderTemplate(headerFooter.get(EmailTemplateSectionEnum.HEADER));
-        assignFooterTemplate(headerFooter.get(EmailTemplateSectionEnum.FOOTER));
+    private void assignHeaderFooterTemplateKey(String headerKey, String footerKey) {
+        assignHeaderTemplate(headerKey);
+        assignFooterTemplate(footerKey);
     }
 
-    private void assignBodyTemplateKey(EmailTemplateContentCommand template) {
-        if(template != null) {
-            if(!StringUtils.hasText(template.fileKey())) {
-                throw EmailMessageFileKeyMissingException.bodyOf();
-            }
-            this.bodyTemplateKey = template.fileKey();
-            assignBodyTemplate(template.template());
-            return;
-        }
-        throw EmailMessageMissingException.bodyOf();
+    private void assignBodyTemplateKey(String body) {
+
     }
 
     private void assignBodyTemplate(String template) {
@@ -93,32 +85,12 @@ public class EmailSendMessage implements ChannelMessage {
         this.bodyTemplate = template;
     }
 
-    private void assignFooterTemplate(EmailTemplateContentCommand template) {
-        if(template != null) {
-            if(StringUtils.hasText(template.fileKey())) {
-                if(!StringUtils.hasText(template.template())) {
-                    throw EmailMessageMissingException.footerOf();
-                }
-                this.footerTemplateKey = template.fileKey();
-                this.footerTemplate = template.template();
-                return;
-            }
-        }
-        this.footerTemplate = null;
+    private void assignFooterTemplate(String template) {
+
     }
 
-    private void assignHeaderTemplate(EmailTemplateContentCommand template) {
-        if(template != null) {
-            if(StringUtils.hasText(template.fileKey())) {
-                if(!StringUtils.hasText(template.template())) {
-                    throw EmailMessageMissingException.headerOf();
-                }
-                this.headerTemplateKey = template.fileKey();
-                this.headerTemplate = template.template();
-                return;
-            }
-        }
-        this.headerTemplate = null;
+    private void assignHeaderTemplate(String headerKey) {
+
     }
 
     private void generateImageDir() {

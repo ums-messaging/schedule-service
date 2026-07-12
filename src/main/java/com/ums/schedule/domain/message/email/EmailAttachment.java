@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.message.email;
 
-import com.ums.schedule.application.ums.email.attachment.model.EmailAttachmentCreateContext;
+import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.common.exception.validation.InvalidFileExtensionException;
 import com.ums.schedule.common.exception.validation.InvalidFilenameValueException;
@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Getter
@@ -48,7 +49,7 @@ public class EmailAttachment {
     @ManyToOne(fetch = FetchType.LAZY)
     private EmailSendMessage sendMessage;
 
-    public static EmailAttachment of(EmailAttachmentCreateContext context) {
+    public static EmailAttachment of(AttachmentCreateCommand context) {
         EmailAttachment message = new EmailAttachment();
         message.assignSendMessage(context.sendMessage());
         message.createAttachmentPolicy(context.attachmentName(), context.downloadName());
@@ -56,13 +57,13 @@ public class EmailAttachment {
         return message;
     }
 
-    private void resolveConvertedAttachment(EmailAttachmentCreateContext context) {
-        assignConvertType(context.convertedAttachment().convertType());
+    private void resolveConvertedAttachment(AttachmentCreateCommand context) {
+        assignConvertType(context.convertType());
         initializeByConvertType(context);
     }
 
-    private void initializeByConvertType(EmailAttachmentCreateContext context) {
-        ConvertTypeEnum convertType = context.convertedAttachment().convertType();
+    private void initializeByConvertType(AttachmentCreateCommand context) {
+        ConvertTypeEnum convertType = context.convertType();
         if(convertType == ConvertTypeEnum.NONE) {
             initializeAttachment(context);
             return;
@@ -70,21 +71,26 @@ public class EmailAttachment {
         initializeConvertInfo(context);
     }
 
-    private void initializeAttachment(EmailAttachmentCreateContext context) {
-        ConvertedAttachment attachment = context.convertedAttachment();
-        if(attachment.type() == AttachmentType.DIRECT) {
-            initializeMetadata(attachment.key(), context.fileSize());
+    private void initializeAttachment(AttachmentCreateCommand context) {
+        Map<AttachmentType, String> typeMap = Optional.ofNullable(context.keyMap())
+                .filter(map -> !map.isEmpty())
+                .orElseThrow(() -> EmailAttachmentMissingException.of("file_key or file_key_template"));
+        if(typeMap.containsKey(AttachmentType.DIRECT)) {
+            initializeMetadata(typeMap.get(AttachmentType.DIRECT), context.fileSize());
             return;
         }
-        assignFileKeyTemplate(attachment.key());
+        assignFileKeyTemplate(typeMap.get(AttachmentType.TEMPLATE));
     }
 
-    private void initializeConvertInfo(EmailAttachmentCreateContext context) {
-        initializeMetadata(context.fileKey(), context.fileSize());
+    private void initializeConvertInfo(AttachmentCreateCommand context) {
+        Map<AttachmentType, String> typeMap = Optional.ofNullable(context.keyMap())
+                .filter(map -> !map.isEmpty())
+                .orElseThrow(() -> EmailAttachmentMissingException.of("file_key and file_key_template"));
+        initializeMetadata(typeMap.get(AttachmentType.DIRECT), context.fileSize());
         assignSecurityPolicy(context.securityMail());
-        assignFileKeyTemplate(context.convertedAttachment().key());
-        validateFileTemplateExtension(context.fileKey(), "html");
-        validateFileTemplateExtension(context.convertedAttachment().key(), context.convertedAttachment().convertType().description());
+        assignFileKeyTemplate(typeMap.get(AttachmentType.TEMPLATE));
+        validateFileTemplateExtension(typeMap.get(AttachmentType.DIRECT), "html");
+        validateFileTemplateExtension(typeMap.get(AttachmentType.TEMPLATE), context.convertType().description());
     }
 
     private void initializeMetadata(String fileKey, Long fileSize) {

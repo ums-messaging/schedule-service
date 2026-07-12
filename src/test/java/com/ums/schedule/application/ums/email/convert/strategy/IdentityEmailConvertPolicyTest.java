@@ -1,21 +1,16 @@
 package com.ums.schedule.application.ums.email.convert.strategy;
 
-import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
+import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertPolicyContext;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.fixture.email.convert.ConvertedAttachmentBuilder;
+import com.ums.schedule.fixture.email.attachment.AttachmentContextBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertPolicyContextBuilder;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,7 +54,7 @@ class IdentityEmailConvertPolicyTest {
     @DisplayName("본문 파일 키는 BODY 의 파일 키가 반환된다.")
     void shouldReturnBodyFileKey() {
         EmailConvertPolicyContext context = contextBuilder
-                .bodyKey("body.html")
+                .body(giveContext("body.html"))
                 .coverKey("cover.html").build();
 
         EmailConvertResult result = convertPolicy.convert(context);
@@ -67,16 +62,11 @@ class IdentityEmailConvertPolicyTest {
         assertThat(result.bodyKey()).isEqualTo("body.html");
     }
 
-    @Test
-    @DisplayName("첨부파일 목록이 존재하면 첨부파일 목록은 입력된 개수만큼 생성된다.")
-    void shouldCreateAttachmentsForEachInputAttachment() {
-        ConvertedAttachment attachment = ConvertedAttachmentBuilder.builder().build();
-        EmailConvertPolicyContext context = contextBuilder
-                .attachments(List.of(attachment, attachment, attachment))
+    private AttachmentContext giveContext(String fileKey) {
+        return AttachmentContextBuilder.builder()
+                .key(fileKey)
                 .build();
-
-        EmailConvertResult result = convertPolicy.convert(context);
-
-        assertThat(result.convertedAttachments()).hasSize(3);
     }
+
+
 }

@@ -1,7 +1,8 @@
 package com.ums.schedule.fixture.email.convert;
 
-import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
+import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertPolicyContext;
+import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
 
@@ -9,9 +10,10 @@ import java.util.List;
 
 public class EmailConvertPolicyContextBuilder {
     private EnumMapperValue convertType;
-    private String bodyKey;
+    private SecurityMail securityMail;
+    private AttachmentContext body;
     private String coverKey;
-    private List<ConvertedAttachment> attachments;
+    private List<AttachmentContext> attachments;
 
     public static EmailConvertPolicyContextBuilder builder() {
         return new EmailConvertPolicyContextBuilder();
@@ -19,7 +21,6 @@ public class EmailConvertPolicyContextBuilder {
 
     private EmailConvertPolicyContextBuilder() {
         this.convertType = EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE);
-        this.bodyKey = "body.html";
         this.coverKey = "cover.html";
         this.attachments = List.of();
     }
@@ -29,8 +30,13 @@ public class EmailConvertPolicyContextBuilder {
         return this;
     }
 
-    public EmailConvertPolicyContextBuilder bodyKey(String bodyKey) {
-        this.bodyKey = bodyKey;
+    public EmailConvertPolicyContextBuilder securityMail(SecurityMail securityMail) {
+        this.securityMail = securityMail;
+        return this;
+    }
+
+    public EmailConvertPolicyContextBuilder body(AttachmentContext body) {
+        this.body = body;
         return this;
     }
 
@@ -39,7 +45,7 @@ public class EmailConvertPolicyContextBuilder {
         return this;
     }
 
-    public EmailConvertPolicyContextBuilder attachments(List<ConvertedAttachment> attachments) {
+    public EmailConvertPolicyContextBuilder attachments(List<AttachmentContext> attachments) {
         this.attachments = attachments;
         return this;
     }
@@ -47,7 +53,8 @@ public class EmailConvertPolicyContextBuilder {
     public EmailConvertPolicyContext build() {
         return new EmailConvertPolicyContext(
                 convertType,
-                bodyKey,
+                securityMail,
+                body,
                 coverKey,
                 attachments
         );
