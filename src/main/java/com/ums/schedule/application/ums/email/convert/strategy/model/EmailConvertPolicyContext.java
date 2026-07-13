@@ -5,14 +5,12 @@ import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConver
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 
-import java.util.List;
 
 public record EmailConvertPolicyContext(
         EnumMapperValue convertType,
         SecurityMail securityMail,
         AttachmentContext body,
-        String coverKey,
-        List<AttachmentContext> attachments
+        String coverKey
         ) {
 
     public static EmailConvertPolicyContext of(EnumMapperValue convertType, EmailConvertResolveCommand command, SecurityMail securityMail) {
@@ -20,8 +18,7 @@ public record EmailConvertPolicyContext(
                 convertType,
                 securityMail,
                 command.body(),
-                command.coverKey(),
-                command.attachmentList()
+                command.coverKey()
         );
     }
 }

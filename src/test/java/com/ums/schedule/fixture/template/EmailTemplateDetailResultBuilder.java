@@ -3,9 +3,7 @@ package com.ums.schedule.fixture.template;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailResult;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class EmailTemplateDetailResultBuilder {
     private String emailContentId;
@@ -21,6 +19,7 @@ public class EmailTemplateDetailResultBuilder {
         this.emailContentId = UUID.randomUUID().toString();
         this.msgTitle = "Email Message Subject";
         this.imageDir = "/images";
+        this.contents = new ArrayList<>();
     }
 
     public EmailTemplateDetailResultBuilder title(String title) {
@@ -29,8 +28,16 @@ public class EmailTemplateDetailResultBuilder {
     }
 
     public EmailTemplateDetailResultBuilder contents(EmailTemplateContentResult... contents) {
-        this.contents = Arrays.stream(contents)
+        this.contents = Arrays.stream(
+                            Optional.ofNullable(contents)
+                                .orElse(List.of().toArray(EmailTemplateContentResult[]::new)))
+                .filter(Objects::nonNull)
                 .toList();
+        return this;
+    }
+
+    public EmailTemplateDetailResultBuilder imageDir(String imageDir) {
+        this.imageDir = imageDir;
         return this;
     }
 

@@ -9,16 +9,32 @@ public class SendRequestCreateRequestBuilder {
     private String customerRequestId = UUID.randomUUID().toString();
     private String uploadFormat;
     private Integer retryCount = 3;
-    private String messageType = null;
-    private String senderKey = "test@test.com";
-    private String templateKey = UUID.randomUUID().toString();
+    private String messageType;
+    private String senderKey;
+    private String templateKey;
 
     public static SendRequestCreateRequestBuilder builder() {
         return new SendRequestCreateRequestBuilder();
     }
 
+    private SendRequestCreateRequestBuilder() {
+        this.scheduleId = 1L;
+        this.senderKey = "test@test.com";
+        this.templateKey = "my_template";
+    }
+
     public SendRequestCreateRequestBuilder scheduleId(Long scheduleId) {
         this.scheduleId = scheduleId;
+        return this;
+    }
+
+    public SendRequestCreateRequestBuilder templateKey(String templateKey) {
+        this.templateKey = templateKey;
+        return this;
+    }
+
+    public SendRequestCreateRequestBuilder senderKey(String senderKey) {
+        this.senderKey = senderKey;
         return this;
     }
 

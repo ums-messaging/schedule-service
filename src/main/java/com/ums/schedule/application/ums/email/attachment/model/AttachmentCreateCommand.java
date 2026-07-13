@@ -30,12 +30,12 @@ public record AttachmentCreateCommand(
                 convertedAttachment.fileSize()
         );
     }
-    public static AttachmentCreateCommand of(EmailSendMessage sendMessage, AttachmentContext attachment) {
+    public static AttachmentCreateCommand of(EmailSendMessage sendMessage, ConvertedAttachment attachment) {
         return new AttachmentCreateCommand(
                 sendMessage,
                 ConvertTypeEnum.NONE,
                 null,
-                Map.of(attachment.type(), attachment.key()),
+                attachment.toKeyMap(),
                 attachment.attachmentName(),
                 attachment.downloadName(),
                 attachment.fileSize()

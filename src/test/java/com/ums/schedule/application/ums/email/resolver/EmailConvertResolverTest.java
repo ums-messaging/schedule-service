@@ -53,13 +53,13 @@ class EmailConvertResolverTest {
     }
 
     @Nested
-    @DisplayName("변환 타입이 NULL일 때")
+    @DisplayName("변환 타입이 입력되지 않았을 때")
     class WhenConvertTypeIsNull {
         @BeforeEach
         void setUp() {
             builder = EmailConvertPolicyCommandBuilder.builder().convertType(null);
             doReturn(true).when(identityPolicy).supports(any());
-            doReturn(mock(EmailConvertResult.class)).when(identityPolicy).convert(any());
+            doReturn(mock(EmailConvertResult.class)).when(identityPolicy).convert(any(), any());
         }
 
         @Test
@@ -90,7 +90,7 @@ class EmailConvertResolverTest {
         void setUp() {
             builder = EmailConvertPolicyCommandBuilder.builder().convertType("HTML");
             doReturn(true).when(identityPolicy).supports(any());
-            doReturn(mock(EmailConvertResult.class)).when(identityPolicy).convert(any());
+            doReturn(mock(EmailConvertResult.class)).when(identityPolicy).convert(any(), any());
             doReturn(mock(EnumMapperValue.class)).when(mapperFactory).findEnumMapperValue(any(), any());
         }
 
@@ -126,7 +126,7 @@ class EmailConvertResolverTest {
         void setUp() {
             builder = EmailConvertPolicyCommandBuilder.builder().convertType("PDF");
             doReturn(true).when(identityPolicy).supports(any());
-            doReturn(mock(EmailConvertResult.class)).when(identityPolicy).convert(any());
+            doReturn(mock(EmailConvertResult.class)).when(identityPolicy).convert(any(), any());
             doReturn(mock(EnumMapperValue.class)).when(mapperFactory).findEnumMapperValue(any(), any());
         }
 
@@ -163,7 +163,7 @@ class EmailConvertResolverTest {
                 .build();
         EmailConvertResult givenResult = EmailConvertResultBuilder.builder().bodyKey("cover.html").build();
         doReturn(true).when(identityPolicy).supports(any());
-        doReturn(givenResult).when(identityPolicy).convert(any());
+        doReturn(givenResult).when(identityPolicy).convert(any(), any());
 
         EmailConvertPolicy result = resolver.resolve(command, mock(SecurityMail.class));
 
@@ -192,68 +192,4 @@ class EmailConvertResolverTest {
                 .isInstanceOf(expect.getClass())
                 .hasMessage(expect.getMessage());
     }
-
-//    @Nested
-//    @DisplayName("첨부파일 변환")
-//    class WhenConvertedAttachments {
-//        @Test
-//        @DisplayName("입력된 첨부파일의 file_key가 존재하면, 첨부파일 타입은 DIRECT를 반환한다.")
-//        void shouldReturnDirect_whenAttachmentFileKeyExists() {
-//            ArgumentCaptor<EmailConvertPolicyContext> captor = ArgumentCaptor.forClass(EmailConvertPolicyContext.class);
-//            EmailConvertResolveCommand command = EmailConvertPolicyCommandBuilder.builder()
-//                    .attachmentList(List.of(createAttachmentWithFileKey()))
-//                    .build();
-//
-//            doReturn(true).when(identityPolicy).supports(any());
-//            doReturn(mock(EmailConvertResult.class)).when(identityPolicy).convert(any());
-//
-//            resolver.resolve(command, null);
-//
-//            verify(identityPolicy).convert(captor.capture());
-//
-//            assertThat(captor.getValue().attachments())
-//                    .extracting(EmailConvertPolicyContext::convertType, EmailConvertPolicyContext::type, EmailConvertPolicyContext::key)
-//                    .contains(
-//                            Tuple.tuple(ConvertTypeEnum.NONE, AttachmentType.DIRECT, "attachment.html")
-//                    );
-//
-//        }
-//
-//        private AttachmentContext createAttachmentWithFileKey() {
-//            return AttachmentContextBuilder
-//                    .builder()
-//                    .type(AttachmentType.DIRECT)
-//                    .key("attachment.html")
-//                    .build();
-//        }
-
-//        @Test
-//        @DisplayName("입력된 첨부파일의 file_key_template가 존재하면, 첨부파일 타입은 TEMPLATE을 반환한다.")
-//        void shouldReturnTemplate_whenAttachmentFileKeyTemplateExists() {
-//            ArgumentCaptor<EmailConvertPolicyContext> captor = ArgumentCaptor.forClass(EmailConvertPolicyContext.class);
-//            EmailConvertResolveCommand command = EmailConvertPolicyCommandBuilder.builder()
-//                    .attachmentList(List.of(createAttachmentWithFileKeyTemplate()))
-//                    .build();
-//
-//            doReturn(true).when(identityPolicy).supports(any());
-//            doReturn(mock(EmailConvertResult.class)).when(identityPolicy).convert(any());
-//
-//            resolver.resolve(command, null);
-//
-//            verify(identityPolicy).convert(captor.capture());
-//
-//            assertThat(captor.getValue().attachments())
-//                    .extracting(ConvertedAttachment::convertType, ConvertedAttachment::type, ConvertedAttachment::key)
-//                    .contains(
-//                            Tuple.tuple(ConvertTypeEnum.NONE, AttachmentType.TEMPLATE, "${template}.html")
-//                    );
-//        }
-//
-//        private AttachmentContext createAttachmentWithFileKeyTemplate() {
-//            return AttachmentContextBuilder.builder()
-//                    .type(AttachmentType.TEMPLATE)
-//                    .key("${template}.html")
-//                    .build();
-//        }
-//    }
 }

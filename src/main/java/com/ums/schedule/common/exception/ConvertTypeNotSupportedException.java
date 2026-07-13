@@ -8,6 +8,6 @@ public class ConvertTypeNotSupportedException extends ApplicationException {
     }
 
     public static ConvertTypeNotSupportedException of() {
-        return new ConvertTypeNotSupportedException("지원하지 않는 반환 타입입니다.");
+        return new ConvertTypeNotSupportedException("지원하지 않는 변환 타입입니다.");
     }
 }

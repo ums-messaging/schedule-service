@@ -33,7 +33,6 @@ public class EmailConvertResultBuilder {
     public EmailConvertResult build() {
         return new EmailConvertResult(
                 this.bodyKey,
-                this.securityMail,
                 this.convertedAttachment
         );
     }

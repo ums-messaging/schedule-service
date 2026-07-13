@@ -1,8 +1,11 @@
 package com.ums.schedule.application.ums.email.attachment.model;
 
+import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
 import com.ums.schedule.domain.message.email.code.AttachmentType;
 import org.springframework.util.StringUtils;
+
+import java.util.Optional;
 
 public record AttachmentContext(
         AttachmentType type,
@@ -12,12 +15,14 @@ public record AttachmentContext(
         Long fileSize
 ) {
     public static AttachmentContext of(EmailTemplateContentResult content) {
-        if(StringUtils.hasText(content.fileKey())) {
-            return AttachmentContext.of(AttachmentType.DIRECT, content);
-        }
-        return AttachmentContext.of(AttachmentType.TEMPLATE, content);
+        return Optional.ofNullable(content)
+                .map(c -> {
+                    if(StringUtils.hasText(c.fileKey())) {
+                        return AttachmentContext.of(AttachmentType.DIRECT, content);
+                    }
+                    return AttachmentContext.of(AttachmentType.TEMPLATE, content);
+                }).orElse(null);
     }
-
 
     public static AttachmentContext of(AttachmentType type,  EmailTemplateContentResult content) {
         if(content == null) {

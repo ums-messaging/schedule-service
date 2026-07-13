@@ -22,9 +22,10 @@ public class EmailSendRequestCreateService {
     public EmailSendRequestCreateResponse create(String customerId, EmailSendCreateRequest emailCreateRequest) {
 //        SendRequest sendRequest = sendRequestService.create(customerId, ChannelTypeEnum.EMAIL, emailCreateRequest.request());
         SendRequest sendRequest = null;
-        EmailSendMessage message = messageService.create(sendRequest, emailCreateRequest);
-        TargetUploadResult uploadResult = targetUploadService.create(emailCreateRequest.request(), sendRequest, message);
+//        EmailSendMessage message = messageService.create(sendRequest, emailCreateRequest);
+//        TargetUploadResult uploadResult = targetUploadService.create(emailCreateRequest.request(), sendRequest, message);
 
-        return EmailSendRequestCreateResponse.of(sendRequest, message, uploadResult);
+//        return EmailSendRequestCreateResponse.of(sendRequest, message, uploadResult);
+        return null;
     }
 }

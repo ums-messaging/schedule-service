@@ -55,8 +55,7 @@ public class EmailConvertPolicyContextBuilder {
                 convertType,
                 securityMail,
                 body,
-                coverKey,
-                attachments
+                coverKey
         );
     }
 }

@@ -1,12 +1,9 @@
 package com.ums.schedule.domain.message.exception;
 
-import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
-import com.ums.schedule.application.message.email.model.EmailSendMessageCreateCommand;
-import com.ums.schedule.application.ums.email.template.command.EmailTemplateContentCommand;
+import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
 import com.ums.schedule.domain.message.email.EmailAttachment;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 import com.ums.schedule.domain.sendrequest.message.ChannelMessage;
 import com.ums.schedule.domain.sendrequest.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
@@ -55,12 +52,17 @@ public class EmailSendMessage implements ChannelMessage {
     @OneToMany(mappedBy = "sendMessage", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<EmailAttachment> attachmentList = new ArrayList<>();
 
-    public static EmailSendMessage of(EmailSendMessageCreateCommand command) {
+    public static EmailSendMessage of(SendMessage message, EmailMessageContext command) {
         EmailSendMessage sendMessage = new EmailSendMessage();
-        sendMessage.assignSubject(command.sendMessage(), command.title());
+        sendMessage.assignSubject(message, command.title());
         sendMessage.assignTemplateInfo(command.headerKey(), command.bodyKey(), command.footerKey());
-        sendMessage.generateImageDir();
+        sendMessage.assignSendMessage(message);
+//        sendMessage.generateImageDir();
         return sendMessage;
+    }
+
+    private void assignSendMessage(SendMessage sendMessage) {
+        this.sendMessage = sendMessage;
     }
 
 

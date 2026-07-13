@@ -9,7 +9,6 @@ import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
 public class EmailConvertPolicyBuilder {
     private EnumMapperValue convertType;
     private String bodyKey;
-    private SecurityMailPolicy securityMailPolicy;
     private ConvertedAttachment convertedAttachment;
 
     public static EmailConvertPolicyBuilder builder() {
@@ -22,6 +21,11 @@ public class EmailConvertPolicyBuilder {
         this.convertedAttachment = ConvertedAttachmentBuilder.builder().build();
     }
 
+    public EmailConvertPolicyBuilder bodyKey(String bodyKey) {
+        this.bodyKey = bodyKey;
+        return this;
+    }
+
     public EmailConvertPolicyBuilder convertedAttachment(ConvertedAttachment convertedAttachment) {
         this.convertedAttachment = convertedAttachment;
         return this;
@@ -31,7 +35,6 @@ public class EmailConvertPolicyBuilder {
         return new EmailConvertPolicy(
                 convertType,
                 bodyKey,
-                securityMailPolicy,
                 convertedAttachment
         );
     }

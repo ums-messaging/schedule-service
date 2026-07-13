@@ -43,8 +43,7 @@ public class EmailConvertPolicyCommandBuilder {
         return new EmailConvertResolveCommand(
                 convertType,
                 body,
-                cover,
-                attachmentList
+                cover
         );
     }
 }

@@ -27,7 +27,7 @@ public class EmailConvertResolver {
         EmailConvertResult result = policyStrategies
                 .stream()
                 .filter(policy -> policy.supports(convertType))
-                .map(policy -> policy.convert(command.toPolicyCommand(convertType, securityMail)))
+                .map(policy -> policy.convert(convertType, command))
                 .findFirst()
                 .orElseThrow(ConvertTypeNotSupportedException::of);
 

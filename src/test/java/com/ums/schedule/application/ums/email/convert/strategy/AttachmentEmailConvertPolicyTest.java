@@ -1,16 +1,17 @@
 package com.ums.schedule.application.ums.email.convert.strategy;
 
 import com.ums.schedule.application.exception.ConvertMessageNotConfiguredException;
+import com.ums.schedule.application.exception.TemplateNotFoundException;
 import com.ums.schedule.application.ums.email.config.EmailMessageProperties;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
-import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertPolicyContext;
+import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
-import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
+import com.ums.schedule.common.exception.ConvertTypeNotSupportedException;
 import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 import com.ums.schedule.fixture.email.attachment.AttachmentContextBuilder;
-import com.ums.schedule.fixture.email.attachment.SecurityMailBuilder;
-import com.ums.schedule.fixture.email.convert.EmailConvertPolicyContextBuilder;
+import com.ums.schedule.fixture.email.convert.EmailConvertResolveCommandBuilder;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,11 +28,21 @@ class AttachmentEmailConvertPolicyTest {
     @Mock private EmailMessageProperties properties;
     @InjectMocks private AttachmentEmailConvertPolicy convertPolicy;
 
-    private EmailConvertPolicyContextBuilder contextBuilder;
+    private EnumMapperValue convertTypeValue;
+    private EmailConvertResolveCommandBuilder builder;
 
     @BeforeEach
     void setUp() {
-        contextBuilder = EmailConvertPolicyContextBuilder.builder();
+        convertTypeValue = EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF);
+        builder = EmailConvertResolveCommandBuilder.builder()
+                .body("body.html")
+                .cover("cover.html");
+    }
+
+    private AttachmentContext givenContext(String fileKey) {
+        return AttachmentContextBuilder.builder()
+                .key(fileKey)
+                .build();
     }
 
     @Nested
@@ -64,32 +75,34 @@ class AttachmentEmailConvertPolicyTest {
     class WhenConvert {
         @BeforeEach
         void setUp() {
-            contextBuilder = contextBuilder
-                    .convertType(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF))
-                    .body(givenContext("body.html"))
-                    .coverKey("cover.html");
+            doReturn("${template}").when(properties).getConvertFileKeyTemplate();
         }
+
         @Test
         @DisplayName("설정 파일에서 파일 템플릿 키가 조회된다.")
         void shouldGetConfiguredFileTemplateKey() {
-            doReturn("${template}").when(properties).getConvertFileKeyTemplate();
-            EmailConvertPolicyContext context = contextBuilder.build();
-
-            convertPolicy.convert(context);
+            convertPolicy.convert(convertTypeValue, builder.build());
 
             verify(properties).getConvertFileKeyTemplate();
         }
 
         @Test
+        @DisplayName("커버 정보가 존재하지 않으면 예외가 발생한다.")
+        void shouldThrowException_whenConvertTemplateDoesNotExist() {
+            EmailConvertResolveCommand command = builder.cover(null).build();
+
+            TemplateNotFoundException expect =
+                    TemplateNotFoundException.of(EmailTemplateSectionEnum.COVER);
+
+            assertThatThrownBy(() -> convertPolicy.convert(convertTypeValue, command))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
         @DisplayName("본문 파일 키는 COVER의 키가 반환된다.")
         void shouldReturnBodyFileKey() {
-            doReturn("${template}").when(properties).getConvertFileKeyTemplate();
-            EmailConvertPolicyContext context = contextBuilder
-                    .body(givenContext("body.html"))
-                    .coverKey("cover.html")
-                    .build();
-
-            EmailConvertResult result = convertPolicy.convert(context);
+            EmailConvertResult result = convertPolicy.convert(convertTypeValue, builder.build());
 
             assertThat(result.bodyKey()).isEqualTo("cover.html");
         }
@@ -97,12 +110,7 @@ class AttachmentEmailConvertPolicyTest {
         @Test
         @DisplayName("변환된 첨부파일의 키는 BODY 키 정보로 반환된다.")
         void shouldConvertBodyFileKeyToAttachment() {
-            doReturn("${template}").when(properties).getConvertFileKeyTemplate();
-            EmailConvertPolicyContext context = contextBuilder
-                    .convertType(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF))
-                    .build();
-
-            EmailConvertResult result = convertPolicy.convert(context);
+            EmailConvertResult result = convertPolicy.convert(convertTypeValue, builder.build());
 
             assertThat(result.convertedAttachment().fileKey())
                     .isEqualTo("body.html");
@@ -111,54 +119,40 @@ class AttachmentEmailConvertPolicyTest {
         @Test
         @DisplayName("파일 템플릿 키는 설정 파일에서 조회한 값과 변환 타입으로 조립되어 반환된다.")
         void shouldReturnStartWithConfiguredValue() {
-            doReturn("${template}").when(properties).getConvertFileKeyTemplate();
-
-            EmailConvertPolicyContext context = contextBuilder.convertType(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF))
-                    .build();
-
-            EmailConvertResult result = convertPolicy.convert(context);
+            EmailConvertResult result = convertPolicy.convert(convertTypeValue, builder.build());
 
             assertThat(result.convertedAttachment().fileKeyTemplate()).isEqualTo("${template}.pdf");
         }
 
 
+    }
+
+    @Nested
+    @DisplayName("설정 파일이 조회한 값이 존재하지 않을 때")
+    class WhenConfiguredValueIsEmpty {
         @Test
         @DisplayName("설정 파일에서 조회한 값이 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenConfiguredValueIsEmpty() {
             doReturn("").when(properties).getConvertFileKeyTemplate();
-            EmailConvertPolicyContext context = contextBuilder.convertType(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF))
-                    .build();
 
             ConvertMessageNotConfiguredException expect = ConvertMessageNotConfiguredException.of("convert.file_key_template");
 
-            assertThatThrownBy(() -> convertPolicy.convert(context))
+            assertThatThrownBy(() -> convertPolicy.convert(convertTypeValue, builder.build()))
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
 
         @Test
-        @DisplayName("보안 정책이 존재하면, 변환된 첨부파일에 적용되어 반환된다.")
-        void shouldReturnSecurityMailPolicy_whenSecurityMailExists() {
-            doReturn("${template}").when(properties).getConvertFileKeyTemplate();
-            EmailConvertPolicyContext context = contextBuilder
-                    .securityMail(givenSecurityMail())
-                    .build();
+        @DisplayName("변환 타입이 NONE이면 예외가 발생한다.")
+        void shouldThrowException_whenConvertTypeIsNone() {
+            ConvertTypeNotSupportedException expect = ConvertTypeNotSupportedException.of();
 
-            EmailConvertResult result = convertPolicy.convert(context);
-
-            assertThat(result.securityMail()).isNotNull();
-        }
-
-        private SecurityMail givenSecurityMail() {
-            return SecurityMailBuilder.builder().build();
-        }
-
-        private AttachmentContext givenContext(String fileKey) {
-            return AttachmentContextBuilder.builder()
-                    .key(fileKey)
-                    .build();
+            assertThatThrownBy(() ->
+                        convertPolicy.convert(
+                                EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE),
+                                builder.build())
+                ).isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
         }
     }
-
-
 }
