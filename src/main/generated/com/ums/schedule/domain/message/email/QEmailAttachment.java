@@ -38,7 +38,7 @@ public class QEmailAttachment extends EntityPathBase<EmailAttachment> {
 
     public final QSecurityMailPolicy securityPolicy;
 
-    public final com.ums.schedule.domain.message.exception.QEmailSendMessage sendMessage;
+    public final QEmailSendMessage sendMessage;
 
     public QEmailAttachment(String variable) {
         this(EmailAttachment.class, forVariable(variable), INITS);
@@ -59,7 +59,7 @@ public class QEmailAttachment extends EntityPathBase<EmailAttachment> {
     public QEmailAttachment(Class<? extends EmailAttachment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.securityPolicy = inits.isInitialized("securityPolicy") ? new QSecurityMailPolicy(forProperty("securityPolicy")) : null;
-        this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.message.exception.QEmailSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
+        this.sendMessage = inits.isInitialized("sendMessage") ? new QEmailSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
     }
 
 }

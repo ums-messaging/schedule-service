@@ -4,7 +4,7 @@ import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
 import com.ums.schedule.domain.message.email.code.AttachmentType;
 import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.message.exception.EmailSendMessage;
+import com.ums.schedule.domain.message.email.EmailSendMessage;
 
 import java.util.Map;
 

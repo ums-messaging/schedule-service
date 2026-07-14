@@ -1,9 +1,10 @@
 package com.ums.schedule.domain.sendrequest.message.email;
 
-import com.ums.schedule.domain.message.exception.EmailSendMessage;
+import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.EmailAttachment;
 import com.ums.schedule.domain.sendrequest.message.SendMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class EmailSendMessageBuilder {
     private String footerTemplate;
 
     private String imageDir;
-    private List<EmailAttachment> attachmentList;
+    private List<EmailAttachment> attachmentList = new ArrayList<>();
 
     public static EmailSendMessageBuilder builder() {
         return new EmailSendMessageBuilder();

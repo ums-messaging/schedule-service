@@ -1,23 +1,20 @@
 package com.ums.schedule.application.ums.email.message;
 
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
-import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateResult;
 import com.ums.schedule.application.ums.email.attachment.EmailAttachmentCreateService;
-import com.ums.schedule.application.ums.email.message.model.EmailMessageCreateResult;
 import com.ums.schedule.application.ums.email.message.provider.EmailMessagePolicyProvider;
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
 import com.ums.schedule.application.ums.common.message.SendMessageFactory;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 import com.ums.schedule.domain.message.email.EmailAttachment;
-import com.ums.schedule.domain.message.exception.EmailSendMessage;
-import com.ums.schedule.domain.message.exception.EmailSendMessageJpaRepository;
+import com.ums.schedule.domain.message.email.EmailSendMessage;
+import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
 import com.ums.schedule.domain.sendrequest.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component

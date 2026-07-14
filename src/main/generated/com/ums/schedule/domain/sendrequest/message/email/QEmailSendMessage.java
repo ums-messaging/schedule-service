@@ -9,7 +9,7 @@ import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
 import com.ums.schedule.domain.message.email.EmailAttachment;
-import com.ums.schedule.domain.message.exception.EmailSendMessage;
+import com.ums.schedule.domain.message.email.EmailSendMessage;
 
 
 /**

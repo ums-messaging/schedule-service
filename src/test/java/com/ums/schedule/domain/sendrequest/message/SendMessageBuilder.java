@@ -17,6 +17,16 @@ public class SendMessageBuilder {
         this.messagePrefix = "(광고)";
     }
 
+    public SendMessageBuilder messageType(TemplateTypeEnum templateType) {
+        this.templateType = templateType;
+        return this;
+    }
+
+    public SendMessageBuilder messagePrefix(String messagePrefix) {
+        this.messagePrefix = messagePrefix;
+        return this;
+    }
+
     public SendMessageBuilder sendRequest(SendRequest sendRequest) {
         this.sendRequest = sendRequest;
         return this;

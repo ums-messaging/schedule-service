@@ -1,19 +1,17 @@
 package com.ums.schedule.domain.message.email.attachment;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
-import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
-import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.exception.validation.InvalidFileExtensionException;
 import com.ums.schedule.common.exception.validation.RequiredException;
 import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.message.exception.EmailSendMessage;
+import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.exception.EmailAttachmentMissingException;
 import com.ums.schedule.domain.message.exception.EmailSendMessageNotFoundException;
 import com.ums.schedule.domain.message.email.EmailAttachment;
 import com.ums.schedule.domain.message.email.code.AttachmentType;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
+import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessageBuilder;
 import com.ums.schedule.fixture.email.attachment.EmailAttachmentCreateContextBuilder;
-import com.ums.schedule.fixture.email.convert.ConvertedAttachmentBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -356,7 +354,6 @@ class EmailAttachmentTest {
     @Nested
     @DisplayName("CONVERT_TYPE이 PDF일 때")
     class WhenConvertTypeIsPdf {
-        private ConvertedAttachmentBuilder convertedBuilder;
 
         @BeforeEach
         void setUp() {
@@ -560,6 +557,22 @@ class EmailAttachmentTest {
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
+    }
 
+    @Test
+    @DisplayName("이메일 메시지가 존재하면, 양방향 관계가 설정된다.")
+    void shouldRelateWithEmailSendMessage() {
+        EmailSendMessage sendMessage = EmailSendMessageBuilder.builder().build();
+        AttachmentCreateCommand context = contextBuilder.sendMessage(sendMessage)
+                .convertType(ConvertTypeEnum.NONE)
+                .fileKeyMap(Map.of(
+                        AttachmentType.TEMPLATE, "template.html"
+                ))
+                .build();
+
+        EmailAttachment attachment = EmailAttachment.of(context);
+
+        assertThat(sendMessage.getAttachmentList())
+                .anySatisfy(it -> assertThat(it).isSameAs(attachment));
     }
 }

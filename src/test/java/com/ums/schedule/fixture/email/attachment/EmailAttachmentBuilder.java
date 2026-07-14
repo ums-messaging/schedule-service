@@ -3,7 +3,7 @@ package com.ums.schedule.fixture.email.attachment;
 import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
 import com.ums.schedule.domain.message.email.EmailAttachment;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
-import com.ums.schedule.domain.message.exception.EmailSendMessage;
+import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 
 public class EmailAttachmentBuilder {

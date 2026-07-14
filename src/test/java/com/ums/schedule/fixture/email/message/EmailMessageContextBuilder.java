@@ -54,6 +54,11 @@ public class EmailMessageContextBuilder {
         return this;
     }
 
+    public EmailMessageContextBuilder imageDir(String imageDir) {
+        this.imageDir = imageDir;
+        return this;
+    }
+
     public EmailMessageContextBuilder attachmentList(ConvertedAttachment... attachments) {
         if(attachments == null) {
             this.attachments = List.of();

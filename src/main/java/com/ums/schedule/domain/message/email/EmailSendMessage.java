@@ -1,12 +1,15 @@
-package com.ums.schedule.domain.message.exception;
+package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
 import com.ums.schedule.common.util.ValidationUtils;
+import com.ums.schedule.domain.message.exception.EmailMessageMissingException;
+import com.ums.schedule.domain.message.exception.EmailMessageTemplateFileKeyMissingException;
 import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
-import com.ums.schedule.domain.message.email.EmailAttachment;
+import com.ums.schedule.domain.sendrequest.exception.SendMessageNotFoundException;
 import com.ums.schedule.domain.sendrequest.message.ChannelMessage;
 import com.ums.schedule.domain.sendrequest.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
+import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -52,32 +55,46 @@ public class EmailSendMessage implements ChannelMessage {
     @OneToMany(mappedBy = "sendMessage", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<EmailAttachment> attachmentList = new ArrayList<>();
 
-    public static EmailSendMessage of(SendMessage message, EmailMessageContext command) {
+    public static EmailSendMessage of(SendMessage message, EmailMessageContext context) {
         EmailSendMessage sendMessage = new EmailSendMessage();
-        sendMessage.assignSubject(message, command.title());
-        sendMessage.assignTemplateInfo(command.headerKey(), command.bodyKey(), command.footerKey());
-        sendMessage.assignSendMessage(message);
-//        sendMessage.generateImageDir();
+        sendMessage.assignTemplateKeyInfo(context.headerKey(), context.bodyKey(), context.footerKey());
+        sendMessage.assignSendMessageAndResolveTitle(message, context.title());
+        sendMessage.assignImageDir(context.imageDir());
         return sendMessage;
     }
 
-    private void assignSendMessage(SendMessage sendMessage) {
-        this.sendMessage = sendMessage;
+    private void assignImageDir(String imageDir) {
+        this.imageDir = imageDir;
     }
 
+    private void assignSendMessageAndResolveTitle(SendMessage sendMessage, String title) {
+        this.sendMessage = Optional.ofNullable(sendMessage)
+                .orElseThrow(SendMessageNotFoundException::of);
+        assignSubject(sendMessage, title);
+    }
 
-    private void assignTemplateInfo(String headerKey, String bodyKey, String footerKey) {
+    private void assignTemplateKeyInfo(String headerKey, String bodyKey, String footerKey) {
         assignHeaderFooterTemplateKey(headerKey, footerKey);
         assignBodyTemplateKey(bodyKey);
     }
 
     private void assignHeaderFooterTemplateKey(String headerKey, String footerKey) {
-        assignHeaderTemplate(headerKey);
-        assignFooterTemplate(footerKey);
+        assignHeaderTemplateKey(headerKey);
+        assignFooterTemplateKey(footerKey);
     }
 
-    private void assignBodyTemplateKey(String body) {
+    private void assignFooterTemplateKey(String footerKey) {
+        this.footerTemplateKey = footerKey;
+    }
 
+    private void assignHeaderTemplateKey(String headerKey) {
+        this.headerTemplateKey = headerKey;
+    }
+
+    private void assignBodyTemplateKey(String bodyKey) {
+        this.bodyTemplateKey = Optional.ofNullable(bodyKey)
+                .filter(StringUtils::hasText)
+                .orElseThrow(() -> EmailMessageTemplateFileKeyMissingException.of(EmailTemplateSectionEnum.BODY));
     }
 
     private void assignBodyTemplate(String template) {
@@ -95,20 +112,18 @@ public class EmailSendMessage implements ChannelMessage {
 
     }
 
-    private void generateImageDir() {
-        String[] fileSeparators = bodyTemplateKey.split("\\/");
-        String extractDir = bodyTemplateKey.substring(0, fileSeparators.length - 1);
-        this.imageDir = extractDir + File.separator + "images";
-    }
-
 
     private void assignSubject(SendMessage message, String title) {
-        ValidationUtils.isEmpty("title", title);
+        ValidationUtils.isEmpty("subject", title);
         this.subject = message.generatePhraseByMessageType(title);
     }
 
     @Override
     public ChannelTypeEnum channelType() {
         return ChannelTypeEnum.EMAIL;
+    }
+
+    public void addAttachments(EmailAttachment attachment) {
+        this.attachmentList.add(attachment);
     }
 }

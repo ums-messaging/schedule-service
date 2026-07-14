@@ -1,5 +1,6 @@
-package com.ums.schedule.domain.message.exception;
+package com.ums.schedule.domain.message.email;
 
+import com.ums.schedule.domain.message.email.EmailSendMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

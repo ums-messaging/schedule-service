@@ -1,12 +1,10 @@
 package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
-import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.common.exception.validation.InvalidFileExtensionException;
 import com.ums.schedule.common.exception.validation.InvalidFilenameValueException;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.message.exception.EmailSendMessage;
 import com.ums.schedule.domain.message.exception.EmailAttachmentMissingException;
 import com.ums.schedule.domain.message.exception.EmailSendMessageNotFoundException;
 import com.ums.schedule.domain.message.email.code.AttachmentType;
@@ -111,6 +109,7 @@ public class EmailAttachment {
     private void assignSendMessage(EmailSendMessage sendMessage) {
         this.sendMessage = Optional.ofNullable(sendMessage)
                 .orElseThrow(EmailSendMessageNotFoundException::of);
+        sendMessage.addAttachments(this);
     }
 
     private void validateFileTemplateExtension(String fileKey, String toExtension) {
