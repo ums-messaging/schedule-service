@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.schedule.state;
 
-import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
+import com.ums.schedule.common.code.schedule.ScheduleStatusEnum;
 import com.ums.schedule.common.converter.StatusState;
 import com.ums.schedule.common.converter.StatusStateEvent;
 

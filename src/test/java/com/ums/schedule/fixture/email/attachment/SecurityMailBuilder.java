@@ -2,9 +2,9 @@ package com.ums.schedule.fixture.email.attachment;
 
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.message.email.code.EncryptionTypeEnum;
-import com.ums.schedule.domain.message.email.code.PasswordHashEnum;
-import com.ums.schedule.domain.message.email.code.PermissionMaskEnum;
+import com.ums.schedule.common.code.email.EncryptionTypeEnum;
+import com.ums.schedule.common.code.email.PasswordHashEnum;
+import com.ums.schedule.common.code.email.PermissionMaskEnum;
 
 public class SecurityMailBuilder {
     private EnumMapperValue encryptionType;

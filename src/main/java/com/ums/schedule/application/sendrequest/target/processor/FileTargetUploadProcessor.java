@@ -2,11 +2,11 @@ package com.ums.schedule.application.sendrequest.target.processor;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum.FILE;
+import static com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum.FILE;
 
 
 @Service

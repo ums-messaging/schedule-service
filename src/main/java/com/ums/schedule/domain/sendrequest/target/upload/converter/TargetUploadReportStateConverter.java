@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.sendrequest.target.upload.converter;
 
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadStatusEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadStatusEnum;
 import com.ums.schedule.common.converter.StatusStateConverter;
 import jakarta.persistence.Converter;
 

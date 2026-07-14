@@ -8,6 +8,7 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
+import com.ums.schedule.common.code.common.ChannelTypeEnum;
 
 
 /**
@@ -22,7 +23,7 @@ public class QSendRequest extends EntityPathBase<SendRequest> {
 
     public static final QSendRequest sendRequest = new QSendRequest("sendRequest");
 
-    public final EnumPath<com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum> channelType = createEnum("channelType", com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum.class);
+    public final EnumPath<ChannelTypeEnum> channelType = createEnum("channelType", ChannelTypeEnum.class);
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
@@ -42,7 +43,7 @@ public class QSendRequest extends EntityPathBase<SendRequest> {
 
     public final StringPath senderKey = createString("senderKey");
 
-    public final com.ums.schedule.domain.sendrequest.message.QSendMessage sendMessage;
+    public final com.ums.schedule.domain.message.QSendMessage sendMessage;
 
     public final DateTimePath<java.time.LocalDateTime> sendStartedAt = createDateTime("sendStartedAt", java.time.LocalDateTime.class);
 
@@ -71,7 +72,7 @@ public class QSendRequest extends EntityPathBase<SendRequest> {
         this.currentTargetUpload = inits.isInitialized("currentTargetUpload") ? new com.ums.schedule.domain.sendrequest.target.upload.QTargetUploadReport(forProperty("currentTargetUpload"), inits.get("currentTargetUpload")) : null;
         this.customerRequestKey = inits.isInitialized("customerRequestKey") ? new com.ums.schedule.domain.sendrequest.customer.QCustomerRequestKey(forProperty("customerRequestKey")) : null;
         this.schedule = inits.isInitialized("schedule") ? new com.ums.schedule.domain.schedule.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
-        this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.sendrequest.message.QSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
+        this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.message.QSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
     }
 
 }

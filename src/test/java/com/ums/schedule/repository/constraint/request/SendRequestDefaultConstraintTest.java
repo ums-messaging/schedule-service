@@ -1,6 +1,6 @@
 package com.ums.schedule.repository.constraint.request;
 
-import com.ums.schedule.domain.sendrequest.code.SendRequestStatusEnum;
+import com.ums.schedule.common.code.request.SendRequestStatusEnum;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;

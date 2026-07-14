@@ -1,12 +1,12 @@
 package com.ums.schedule.application.ums.email.security;
 
-import com.ums.schedule.application.exception.SecurityMailNotConfiguredException;
+import com.ums.schedule.application.exception.email.security.SecurityMailNotConfiguredException;
 import com.ums.schedule.application.ums.email.config.SecurityMailProperties;
 import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.message.email.code.PasswordTypeEnum;
-import com.ums.schedule.domain.message.email.code.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.PasswordTypeEnum;
+import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

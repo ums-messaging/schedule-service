@@ -1,11 +1,10 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.schedule.code.CycleCdEnum;
-import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.CycleCdEnum;
+import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
 import com.ums.schedule.application.schedule.factory.schedule_policy.RealtimeScheduleFactory;
 import com.ums.schedule.application.schedule.factory.schedule_policy.SchedulePolicyFactory;
-import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

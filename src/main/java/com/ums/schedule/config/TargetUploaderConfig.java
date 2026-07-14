@@ -3,7 +3,7 @@ package com.ums.schedule.config;
 import com.ums.schedule.application.sendrequest.target.processor.FileTargetUploadProcessor;
 import com.ums.schedule.application.sendrequest.target.processor.JsonTargetUploadProcessor;
 import com.ums.schedule.application.sendrequest.target.processor.TargetUploadProcessor;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

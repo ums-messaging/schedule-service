@@ -3,12 +3,12 @@ package com.ums.schedule.application.message.email.result;
 import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
 import com.ums.schedule.adapter.api.request.email.EmailAttachmentRequest;
 import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.message.email.EmailAttachment;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 
 import java.util.List;
 

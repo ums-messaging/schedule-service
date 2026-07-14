@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.sendrequest;
 
-import com.ums.schedule.domain.sendrequest.code.SendRequestEventEnum;
-import com.ums.schedule.domain.sendrequest.code.SendRequestStatusEnum;
+import com.ums.schedule.common.code.request.SendRequestEventEnum;
+import com.ums.schedule.common.code.request.SendRequestStatusEnum;
 import com.ums.schedule.domain.sendrequest.state.SendRequestCreateState;
 import com.ums.schedule.domain.sendrequest.state.SendRequestState;
 import org.junit.jupiter.api.DisplayName;

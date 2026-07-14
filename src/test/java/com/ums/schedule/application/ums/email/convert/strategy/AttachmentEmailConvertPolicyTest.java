@@ -1,15 +1,15 @@
 package com.ums.schedule.application.ums.email.convert.strategy;
 
-import com.ums.schedule.application.exception.ConvertMessageNotConfiguredException;
-import com.ums.schedule.application.exception.TemplateNotFoundException;
+import com.ums.schedule.application.exception.email.ConvertMessageNotConfiguredException;
+import com.ums.schedule.application.exception.template.TemplateNotFoundException;
 import com.ums.schedule.application.ums.email.config.EmailMessageProperties;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.exception.ConvertTypeNotSupportedException;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
+import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
 import com.ums.schedule.fixture.email.attachment.AttachmentContextBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertResolveCommandBuilder;
 import org.junit.jupiter.api.*;

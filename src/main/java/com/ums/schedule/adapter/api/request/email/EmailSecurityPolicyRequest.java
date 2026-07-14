@@ -1,8 +1,8 @@
 package com.ums.schedule.adapter.api.request.email;
 
 import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand;
-import com.ums.schedule.domain.message.email.code.PasswordTypeEnum;
-import com.ums.schedule.domain.message.email.code.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.PasswordTypeEnum;
+import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
 import org.springframework.util.StringUtils;
 

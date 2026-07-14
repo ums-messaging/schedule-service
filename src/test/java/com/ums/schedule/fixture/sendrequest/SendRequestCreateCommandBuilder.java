@@ -1,8 +1,8 @@
 package com.ums.schedule.fixture.sendrequest;
 
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
+import com.ums.schedule.common.code.common.ChannelTypeEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 
 public class SendRequestCreateCommandBuilder {
     private Long scheduleId;

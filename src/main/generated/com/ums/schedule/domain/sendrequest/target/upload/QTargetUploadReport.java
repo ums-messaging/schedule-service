@@ -8,6 +8,8 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
+import com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 
 
 /**
@@ -46,11 +48,11 @@ public class QTargetUploadReport extends EntityPathBase<TargetUploadReport> {
 
     public final DateTimePath<java.time.LocalDateTime> uploadedAt = createDateTime("uploadedAt", java.time.LocalDateTime.class);
 
-    public final EnumPath<com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadFormatEnum> uploadFormat = createEnum("uploadFormat", com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadFormatEnum.class);
+    public final EnumPath<TargetUploadFormatEnum> uploadFormat = createEnum("uploadFormat", TargetUploadFormatEnum.class);
 
     public final StringPath uploadKey = createString("uploadKey");
 
-    public final EnumPath<com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum> uploadType = createEnum("uploadType", com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum.class);
+    public final EnumPath<TargetUploadTypeEnum> uploadType = createEnum("uploadType", TargetUploadTypeEnum.class);
 
     public QTargetUploadReport(String variable) {
         this(TargetUploadReport.class, forVariable(variable), INITS);

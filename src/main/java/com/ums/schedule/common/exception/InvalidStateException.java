@@ -1,5 +1,7 @@
 package com.ums.schedule.common.exception;
 
+import com.ums.schedule.domain.exception.DomainException;
+
 public abstract class InvalidStateException extends DomainException {
     public InvalidStateException(String message) {
         super(message);

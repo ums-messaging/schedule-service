@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.schedule.status;
 
-import com.ums.schedule.domain.schedule.code.ScheduleEventEnum;
-import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
+import com.ums.schedule.common.code.schedule.ScheduleEventEnum;
+import com.ums.schedule.domain.exception.schedule.InvalidScheduleStatusException;
 import com.ums.schedule.common.converter.StatusState;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
@@ -9,8 +9,8 @@ import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.ums.schedule.domain.schedule.code.ScheduleStatusEnum.ACTIVE;
-import static com.ums.schedule.domain.schedule.code.ScheduleStatusEnum.RUNNING;
+import static com.ums.schedule.common.code.schedule.ScheduleStatusEnum.ACTIVE;
+import static com.ums.schedule.common.code.schedule.ScheduleStatusEnum.RUNNING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

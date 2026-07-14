@@ -2,7 +2,7 @@ package com.ums.schedule.application.ums.email.message;
 
 import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
 import com.ums.schedule.adapter.api.sendrequest.email.request.SendRequestCreateRequestBuilder;
-import com.ums.schedule.application.exception.SecurityMailProcessException;
+import com.ums.schedule.application.exception.email.security.SecurityMailProcessException;
 import com.ums.schedule.application.sendrequest.email.command.EmailSendCreateRequestBuilder;
 import com.ums.schedule.application.ums.common.message.SendMessageFactory;
 import com.ums.schedule.application.ums.common.template.TemplateResult;
@@ -14,7 +14,7 @@ import com.ums.schedule.common.exception.validation.RequiredException;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.message.SendMessage;
+import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.fixture.email.message.EmailMessageContextBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

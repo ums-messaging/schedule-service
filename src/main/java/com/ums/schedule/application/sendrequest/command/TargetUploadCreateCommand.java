@@ -4,8 +4,8 @@ import com.ums.schedule.application.sendrequest.context.TargetUploadReportCreate
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.config.properties.TargetUploadProperties;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
+import com.ums.schedule.common.code.common.ChannelTypeEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 
 
 public record TargetUploadCreateCommand(

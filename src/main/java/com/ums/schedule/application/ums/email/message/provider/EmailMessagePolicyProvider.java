@@ -1,10 +1,8 @@
 package com.ums.schedule.application.ums.email.message.provider;
 
-import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
-import com.ums.schedule.application.exception.SecurityMailProcessException;
-import com.ums.schedule.application.exception.TemplateNotFound;
-import com.ums.schedule.application.exception.TemplateNotFoundException;
+import com.ums.schedule.application.exception.email.security.SecurityMailProcessException;
+import com.ums.schedule.application.exception.template.TemplateNotFoundException;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
 import com.ums.schedule.application.ums.email.convert.resolver.EmailConvertResolver;
@@ -15,8 +13,7 @@ import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand
 import com.ums.schedule.application.ums.email.template.query.EmailTemplateQueryService;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

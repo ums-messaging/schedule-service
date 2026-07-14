@@ -1,6 +1,6 @@
 package com.ums.schedule.repository.lazy.channel;
 
-import com.ums.schedule.domain.message.email.EmailAttachment;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.fixture.email.attachment.EmailAttachmentBuilder;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;

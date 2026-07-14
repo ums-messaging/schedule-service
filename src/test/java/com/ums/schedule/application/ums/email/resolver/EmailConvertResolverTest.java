@@ -6,11 +6,11 @@ import com.ums.schedule.application.ums.email.convert.strategy.IdentityEmailConv
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
-import com.ums.schedule.common.exception.ConvertTypeNotSupportedException;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
 import com.ums.schedule.fixture.email.attachment.AttachmentContextBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertResultBuilder;
-import com.ums.schedule.fixture.message.EmailConvertPolicyCommandBuilder;
+import com.ums.schedule.fixture.email.convert.EmailConvertPolicyCommandBuilder;
 import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
 import com.ums.schedule.application.ums.email.convert.resolver.EmailConvertResolver;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;

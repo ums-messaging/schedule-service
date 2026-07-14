@@ -1,7 +1,7 @@
 package com.ums.schedule.application.sendrequest.data;
 
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
+import com.ums.schedule.common.code.common.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 
 public record SendRequestKeyData(Long requestId, String messageId, ChannelTypeEnum channelType) {

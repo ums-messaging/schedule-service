@@ -2,8 +2,8 @@ package com.ums.schedule.domain.send.group;
 
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.send.code.ResultCodeEnum;
-import com.ums.schedule.domain.sendrequest.code.SendGroupEventTypeEnum;
-import com.ums.schedule.domain.sendrequest.exception.SendRequestException;
+import com.ums.schedule.common.code.request.SendGroupEventTypeEnum;
+import com.ums.schedule.domain.exception.request.SendRequestException;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

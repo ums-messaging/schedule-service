@@ -3,8 +3,8 @@ package com.ums.schedule.application.ums.email.convert.handler;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
-import com.ums.schedule.application.exception.EmailMessageConvertException;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.application.exception.email.EmailMessageConvertException;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

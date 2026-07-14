@@ -1,17 +1,17 @@
 package com.ums.schedule.application.sendrequest.message.email.converter;
 
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
-import com.ums.schedule.application.exception.EmailMessageConvertException;
-import com.ums.schedule.application.exception.OwnerPasswordNotConfiguredException;
+import com.ums.schedule.application.exception.email.EmailMessageConvertException;
+import com.ums.schedule.application.exception.email.security.OwnerPasswordNotConfiguredException;
 import com.ums.schedule.application.ums.email.convert.handler.HtmlMessageConverter;
 import com.ums.schedule.application.ums.email.convert.handler.PdfMessageConverter;
 import com.ums.schedule.application.message.email.handler.PdfSecurityConverter;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.ums.email.template.EmailTemplateLoader;
 import com.ums.schedule.config.properties.SecurityPolicyProperties;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.message.email.EmailAttachment;
-import com.ums.schedule.domain.sendrequest.template.exception.TemplateNotFoundException;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
+import com.ums.schedule.domain.exception.template.TemplateNotFoundException;
 import freemarker.template.TemplateException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;

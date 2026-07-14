@@ -1,5 +1,7 @@
 package com.ums.schedule.common.exception;
 
+import com.ums.schedule.domain.exception.DomainException;
+
 public abstract class PolicyViolationException extends DomainException {
     protected PolicyViolationException(String message) {
         super(message);

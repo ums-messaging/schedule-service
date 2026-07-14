@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.schedule.policy;
 
-import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
+import com.ums.schedule.domain.exception.schedule.InvalidSchedulePeriodException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

@@ -1,8 +1,8 @@
 package com.ums.schedule.domain.sendrequest.message.email;
 
 import com.ums.schedule.domain.message.email.EmailSendMessage;
-import com.ums.schedule.domain.message.email.EmailAttachment;
-import com.ums.schedule.domain.sendrequest.message.SendMessage;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
+import com.ums.schedule.domain.message.SendMessage;
 
 import java.util.ArrayList;
 import java.util.List;

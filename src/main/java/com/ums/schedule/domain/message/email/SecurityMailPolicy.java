@@ -1,8 +1,8 @@
 package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.security.SecurityMail;
-import com.ums.schedule.domain.message.email.code.*;
-import com.ums.schedule.domain.message.exception.SecurityMailPolicyNotFoundException;
+import com.ums.schedule.common.code.email.*;
+import com.ums.schedule.common.code.email.SecurityMailPolicyNotFoundException;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
 import jakarta.persistence.Embeddable;

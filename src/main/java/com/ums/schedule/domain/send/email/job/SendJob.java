@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.send.email.job;
 
 import com.github.f4b6a3.tsid.TsidCreator;
-import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;

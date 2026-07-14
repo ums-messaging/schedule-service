@@ -2,14 +2,15 @@ package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
 import com.ums.schedule.common.util.ValidationUtils;
-import com.ums.schedule.domain.message.exception.EmailMessageMissingException;
-import com.ums.schedule.domain.message.exception.EmailMessageTemplateFileKeyMissingException;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
+import com.ums.schedule.domain.exception.email.EmailMessageMissingException;
+import com.ums.schedule.domain.exception.email.EmailMessageTemplateFileKeyMissingException;
 import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
-import com.ums.schedule.domain.sendrequest.exception.SendMessageNotFoundException;
-import com.ums.schedule.domain.sendrequest.message.ChannelMessage;
-import com.ums.schedule.domain.sendrequest.message.SendMessage;
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
+import com.ums.schedule.domain.exception.request.SendMessageNotFoundException;
+import com.ums.schedule.domain.message.ChannelMessage;
+import com.ums.schedule.domain.message.SendMessage;
+import com.ums.schedule.common.code.common.ChannelTypeEnum;
+import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
 import java.util.*;
 
 @Entity

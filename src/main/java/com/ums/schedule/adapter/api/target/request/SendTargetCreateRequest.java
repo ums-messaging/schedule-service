@@ -1,7 +1,7 @@
 package com.ums.schedule.adapter.api.target.request;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.domain.sendrequest.target.code.TargetColumnEnum;
+import com.ums.schedule.common.code.target.TargetColumnEnum;
 
 import java.util.Map;
 

@@ -1,6 +1,6 @@
 package com.ums.schedule.fixture.sendrequest;
 
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
+import com.ums.schedule.common.code.common.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
 import com.ums.schedule.domain.sendrequest.state.SendRequestCreateState;
 

@@ -1,12 +1,11 @@
 package com.ums.schedule.domain.sendrequest.target;
 
-import com.ums.schedule.domain.sendrequest.target.code.SendTargetStatusEnum;
+import com.ums.schedule.common.code.target.SendTargetStatusEnum;
 import com.ums.schedule.domain.sendrequest.target.state.SendTargetState;
 import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 

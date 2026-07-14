@@ -6,7 +6,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 @Getter
 @RefreshScope
-@ConfigurationProperties(prefix = "email.message")
+@ConfigurationProperties(prefix = "send.message.email")
 public class EmailMessageProperties {
     private String convertFileKeyTemplate;
 }

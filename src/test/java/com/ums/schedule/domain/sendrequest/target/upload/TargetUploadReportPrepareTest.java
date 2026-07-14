@@ -2,10 +2,10 @@ package com.ums.schedule.domain.sendrequest.target.upload;
 
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadEventEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadStatusEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.exception.InvalidTargetUploadReportStateException;
+import com.ums.schedule.common.code.target_upload.TargetUploadEventEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadStatusEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
+import com.ums.schedule.domain.exception.target_upload.InvalidTargetUploadReportStateException;
 import com.ums.schedule.domain.sendrequest.target.upload.state.*;
 import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import org.junit.jupiter.api.DisplayName;

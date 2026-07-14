@@ -1,12 +1,10 @@
 package com.ums.schedule.application.ums.email.template.query.model;
 
-import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplatePathTypeEnum;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailTemplatePathTypeEnum;
+import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 

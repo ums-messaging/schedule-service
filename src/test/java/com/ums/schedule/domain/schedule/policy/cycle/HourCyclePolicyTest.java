@@ -1,9 +1,9 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.domain.schedule.code.CycleCdEnum;
+import com.ums.schedule.common.code.schedule.CycleCdEnum;
 import com.ums.schedule.application.schedule.factory.cycle_policy.CyclePolicy;
 import com.ums.schedule.application.schedule.factory.cycle_policy.HourCyclePolicyFactory;
-import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
+import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
 import com.ums.schedule.common.exception.validation.InvalidNumberFormatException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

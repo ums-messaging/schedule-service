@@ -1,7 +1,7 @@
 package com.ums.schedule.fixture.email.attachment;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
-import com.ums.schedule.domain.message.email.code.AttachmentType;
+import com.ums.schedule.common.code.email.AttachmentType;
 
 public class AttachmentContextBuilder {
     private AttachmentType type;

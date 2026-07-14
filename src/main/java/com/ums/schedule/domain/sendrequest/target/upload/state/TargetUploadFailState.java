@@ -1,9 +1,9 @@
 package com.ums.schedule.domain.sendrequest.target.upload.state;
 
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadEventEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadStatusEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadEventEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadStatusEnum;
 import com.ums.schedule.common.converter.StatusStateEvent;
-import com.ums.schedule.domain.sendrequest.target.upload.exception.InvalidTargetUploadReportStateException;
+import com.ums.schedule.domain.exception.target_upload.InvalidTargetUploadReportStateException;
 
 public class TargetUploadFailState implements TargetUploadState {
 

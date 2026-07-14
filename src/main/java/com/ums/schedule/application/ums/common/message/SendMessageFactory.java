@@ -1,22 +1,47 @@
 package com.ums.schedule.application.ums.common.message;
 
+import com.ums.schedule.application.ums.common.config.SendMessageProperties;
+import com.ums.schedule.application.ums.common.message.model.SendMessageCreateCommand;
 import com.ums.schedule.application.ums.common.template.TemplateResult;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.sendrequest.message.SendMessage;
+import com.ums.schedule.domain.message.SendMessage;
+import com.ums.schedule.common.code.message.MessageType;
+import com.ums.schedule.common.code.message.SendMessageEnumMapper;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.template.code.TemplateEnumMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class SendMessageFactory {
     private final EnumMapperFactory factory;
-    private final String messagePrefix = "(광고)";
+    private final SendMessageProperties properties;
 
     public SendMessage createSendMessage(SendRequest sendRequest, TemplateResult template) {
-        EnumMapperValue templateType = factory.findEnumMapperValue(TemplateEnumMapper.TEMPLATE_TYPE, template.templateType());
-        return SendMessage.of(sendRequest, templateType, messagePrefix);
+        MessageType messageType = getMessageType(template.templateType());
+        String advertisePrefix = getAdvertisingPrefix(messageType);
+
+        SendMessageCreateCommand command =
+                SendMessageCreateCommand.of(sendRequest, messageType, advertisePrefix);
+
+        return SendMessage.of(command);
+    }
+
+    private MessageType getMessageType(String templateType) {
+        EnumMapperValue messageTypeValue = factory.findEnumMapperValue(SendMessageEnumMapper.MESSAGE_TYPE, templateType);
+
+        return Optional.ofNullable(messageTypeValue)
+                .map(v -> MessageType.valueOf(v.code()))
+                .orElseGet(() -> MessageType.NONE);
+    }
+
+    private String getAdvertisingPrefix(MessageType messageType) {
+        if(messageType == MessageType.ADVERTISE) {
+            return properties.getAdvertisingPrefix();
+        }
+        return null;
     }
 }

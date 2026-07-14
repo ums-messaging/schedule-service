@@ -2,7 +2,7 @@ package com.ums.schedule.domain.send.email;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ums.schedule.domain.message.email.EmailAttachment;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.send.email.job.DomainGroup;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;

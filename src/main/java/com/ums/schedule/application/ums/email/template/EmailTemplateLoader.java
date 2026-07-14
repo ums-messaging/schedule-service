@@ -1,14 +1,13 @@
 package com.ums.schedule.application.ums.email.template;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
-import com.ums.schedule.application.exception.EmailMessageNotFoundException;
+import com.ums.schedule.application.exception.email.EmailMessageNotFoundException;
 import com.ums.schedule.common.util.UuidUtil;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
-import com.ums.schedule.domain.sendrequest.message.email.exception.MessageParseException;
-import com.ums.schedule.domain.sendrequest.target.code.TargetColumnEnum;
-import com.ums.schedule.domain.sendrequest.template.email.EmailTemplate;
-import com.ums.schedule.application.exception.TemplateLoadFailedException;
+import com.ums.schedule.domain.exception.email.MessageParseException;
+import com.ums.schedule.common.code.target.TargetColumnEnum;
+import com.ums.schedule.application.exception.template.TemplateLoadFailedException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.ums.schedule.domain.schedule.code.ScheduleEnumMapper.CYCLE_CD;
-import static com.ums.schedule.domain.schedule.code.ScheduleTypeEnum.CYCLE;
+import static com.ums.schedule.common.code.schedule.ScheduleEnumMapper.CYCLE_CD;
+import static com.ums.schedule.common.code.schedule.ScheduleTypeEnum.CYCLE;
 
 
 @Component

@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.sendrequest.target.converter;
 
 import com.ums.schedule.common.code.mapper.EnumMapperConverter;
-import com.ums.schedule.domain.sendrequest.target.code.SendTargetStatusEnum;
+import com.ums.schedule.common.code.target.SendTargetStatusEnum;
 import jakarta.persistence.Converter;
 
 @Converter

@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.sendrequest.converter;
 
-import com.ums.schedule.domain.sendrequest.code.SendRequestStatusEnum;
+import com.ums.schedule.common.code.request.SendRequestStatusEnum;
 import com.ums.schedule.common.converter.StatusStateConverter;
 import jakarta.persistence.Converter;
 

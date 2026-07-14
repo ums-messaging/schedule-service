@@ -1,7 +1,7 @@
 package com.ums.schedule.application.sendrequest.target.result;
 
 import com.ums.schedule.domain.sendrequest.target.SendTarget;
-import com.ums.schedule.domain.sendrequest.target.code.SendTargetStatusEnum;
+import com.ums.schedule.common.code.target.SendTargetStatusEnum;
 
 import java.util.List;
 import java.util.Map;

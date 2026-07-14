@@ -22,7 +22,7 @@ public class QEmailSendMessage extends EntityPathBase<EmailSendMessage> {
 
     public static final QEmailSendMessage emailSendMessage = new QEmailSendMessage("emailSendMessage");
 
-    public final ListPath<EmailAttachment, QEmailAttachment> attachmentList = this.<EmailAttachment, QEmailAttachment>createList("attachmentList", EmailAttachment.class, QEmailAttachment.class, PathInits.DIRECT2);
+    public final ListPath<com.ums.schedule.domain.message.email.attachment.EmailAttachment, com.ums.schedule.domain.message.email.attachment.QEmailAttachment> attachmentList = this.<com.ums.schedule.domain.message.email.attachment.EmailAttachment, com.ums.schedule.domain.message.email.attachment.QEmailAttachment>createList("attachmentList", com.ums.schedule.domain.message.email.attachment.EmailAttachment.class, com.ums.schedule.domain.message.email.attachment.QEmailAttachment.class, PathInits.DIRECT2);
 
     public final StringPath bodyTemplate = createString("bodyTemplate");
 
@@ -40,7 +40,7 @@ public class QEmailSendMessage extends EntityPathBase<EmailSendMessage> {
 
     public final StringPath imageDir = createString("imageDir");
 
-    public final com.ums.schedule.domain.sendrequest.message.QSendMessage sendMessage;
+    public final com.ums.schedule.domain.message.QSendMessage sendMessage;
 
     public final StringPath subject = createString("subject");
 
@@ -62,7 +62,7 @@ public class QEmailSendMessage extends EntityPathBase<EmailSendMessage> {
 
     public QEmailSendMessage(Class<? extends EmailSendMessage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.sendrequest.message.QSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
+        this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.message.QSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
     }
 
 }

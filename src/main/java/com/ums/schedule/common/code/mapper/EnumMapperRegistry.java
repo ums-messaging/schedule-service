@@ -1,12 +1,12 @@
 package com.ums.schedule.common.code.mapper;
 
-import com.ums.schedule.domain.message.email.code.AttachmentEnumMapper;
+import com.ums.schedule.common.code.email.AttachmentEnumMapper;
 import com.ums.schedule.domain.send.email.code.EmailEnumMapper;
-import com.ums.schedule.domain.message.email.code.SecurityMailEnumMapper;
-import com.ums.schedule.domain.sendrequest.template.code.TemplateEnumMapper;
-import com.ums.schedule.domain.sendrequest.code.SendRequestEnumMapper;
-import com.ums.schedule.domain.schedule.code.ScheduleEnumMapper;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadReportEnumMapper;
+import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.template.TemplateEnumMapper;
+import com.ums.schedule.common.code.request.SendRequestEnumMapper;
+import com.ums.schedule.common.code.schedule.ScheduleEnumMapper;
+import com.ums.schedule.common.code.target_upload.TargetUploadReportEnumMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

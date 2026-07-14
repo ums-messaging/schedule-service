@@ -2,8 +2,8 @@ package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.message.email.code.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
 
 import java.util.Map;
 

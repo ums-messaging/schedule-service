@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.sendrequest.target.converter;
 
 import com.ums.schedule.common.code.mapper.EnumMapperConverter;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 import jakarta.persistence.Converter;
 
 @Converter

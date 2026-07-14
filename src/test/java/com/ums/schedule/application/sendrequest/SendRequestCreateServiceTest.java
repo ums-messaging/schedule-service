@@ -1,6 +1,6 @@
 package com.ums.schedule.application.sendrequest;
 
-import com.ums.schedule.application.exception.ScheduleNotFoundException;
+import com.ums.schedule.application.exception.schedule.ScheduleNotFoundException;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.result.SendRequestCreateResult;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
@@ -12,7 +12,7 @@ import com.ums.schedule.domain.sendrequest.SendRequestRepository;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleJpaRepository;
 
-import com.ums.schedule.domain.sendrequest.message.SendMessage;
+import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.fixture.sendrequest.SendRequestCreateCommandBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

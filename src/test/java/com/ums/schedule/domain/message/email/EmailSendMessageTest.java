@@ -3,14 +3,14 @@ package com.ums.schedule.domain.message.email;
 import com.ums.schedule.application.ums.email.message.model.EmailMessageCreateContext;
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
 import com.ums.schedule.common.exception.validation.RequiredException;
-import com.ums.schedule.domain.message.exception.EmailMessageTemplateFileKeyMissingException;
-import com.ums.schedule.domain.sendrequest.exception.SendMessageNotFoundException;
-import com.ums.schedule.domain.sendrequest.message.SendMessage;
+import com.ums.schedule.domain.exception.email.EmailMessageTemplateFileKeyMissingException;
+import com.ums.schedule.domain.exception.request.SendMessageNotFoundException;
+import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.sendrequest.message.SendMessageBuilder;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.message.MessageType;
+import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
 import com.ums.schedule.fixture.email.message.EmailMessageContextBuilder;
 import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.template.code.TemplateTypeEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -34,7 +34,7 @@ public class EmailSendMessageTest {
         SendRequest sendRequest = mock(SendRequest.class);
         builder = SendMessageBuilder.builder()
                 .sendRequest(sendRequest)
-                .messageType(TemplateTypeEnum.NONE)
+                .messageType(MessageType.NONE)
                 .messagePrefix("(광고)");
     }
 
@@ -157,7 +157,7 @@ public class EmailSendMessageTest {
         @DisplayName("SendMessage의 메시지 타입이 ADVERTISE이면, 제목 앞에 '(광고)' 표시가 붙는다.")
         void shouldPrependAdvertisePrefix_whenMessageTypeIsAdvertise() {
             EmailMessageContext context = contextBuilder.title("hello world!").build();
-            SendMessage sendMessage = builder.messageType(TemplateTypeEnum.ADVERTISE).build();
+            SendMessage sendMessage = builder.messageType(MessageType.ADVERTISE).build();
             EmailSendMessage message = EmailSendMessage.of(sendMessage, context);
 
             assertThat(message.getSubject()).isEqualTo("(광고) hello world!");
@@ -167,7 +167,7 @@ public class EmailSendMessageTest {
         @DisplayName("SendMessage의 메시지 타입이 NONE이면, 제목 그대로 저장된다.")
         void shouldSaveSubject_whenMessageTypeIsNone() {
             EmailMessageContext context = contextBuilder.title("hello world!").build();
-            SendMessage sendMessage = builder.messageType(TemplateTypeEnum.NONE).build();
+            SendMessage sendMessage = builder.messageType(MessageType.NONE).build();
             EmailSendMessage message = EmailSendMessage.of(sendMessage, context);
 
             assertThat(message.getSubject()).isEqualTo("hello world!");
@@ -177,7 +177,7 @@ public class EmailSendMessageTest {
         @DisplayName("제목이 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenTitleDoesNotExist() {
             EmailMessageContext context = contextBuilder.title("").build();
-            SendMessage sendMessage = builder.messageType(TemplateTypeEnum.NONE).build();
+            SendMessage sendMessage = builder.messageType(MessageType.NONE).build();
 
             RequiredException expect = RequiredException.fieldOf("subject");
 

@@ -1,7 +1,7 @@
 package com.ums.schedule.application.ums.email.template.query.model;
 
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,15 +1,15 @@
 package com.ums.schedule.application.ums.email.template.query;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
-import com.ums.schedule.application.exception.EmailAttachmentFileNotFoundException;
-import com.ums.schedule.application.exception.TemplateKeyTemplateNotExistException;
-import com.ums.schedule.application.exception.TemplateNotConfiguredException;
+import com.ums.schedule.application.exception.email.attachment.EmailAttachmentFileNotFoundException;
+import com.ums.schedule.application.exception.template.TemplateKeyTemplateNotExistException;
+import com.ums.schedule.application.exception.template.TemplateNotConfiguredException;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContext;
 import com.ums.schedule.application.ums.email.template.query.model.*;
 import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.config.properties.EmailTemplateProperties;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplatePathTypeEnum;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailTemplatePathTypeEnum;
+import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

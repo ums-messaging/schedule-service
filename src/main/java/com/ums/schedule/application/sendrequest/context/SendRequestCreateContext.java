@@ -2,9 +2,9 @@ package com.ums.schedule.application.sendrequest.context;
 
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
+import com.ums.schedule.common.code.common.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
-import com.ums.schedule.domain.sendrequest.message.SendMessage;
+import com.ums.schedule.domain.message.SendMessage;
 
 public record SendRequestCreateContext(
         ChannelTypeEnum channelType,

@@ -3,7 +3,7 @@ package com.ums.schedule.fixture.schedule;
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
 import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
+import com.ums.schedule.common.code.schedule.ScheduleStatusEnum;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;

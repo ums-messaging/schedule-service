@@ -2,9 +2,9 @@ package com.ums.schedule.application.ums.email.attachment;
 
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
-import com.ums.schedule.domain.message.email.EmailAttachment;
-import com.ums.schedule.domain.message.email.EmailAttachmentJpaRepository;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachmentJpaRepository;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.fixture.email.attachment.SecurityMailBuilder;
 import com.ums.schedule.fixture.email.convert.ConvertedAttachmentBuilder;

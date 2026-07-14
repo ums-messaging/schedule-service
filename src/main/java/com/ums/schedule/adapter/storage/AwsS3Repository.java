@@ -1,6 +1,6 @@
 package com.ums.schedule.adapter.storage;
 
-import com.ums.schedule.application.exception.FileStorageException;
+import com.ums.schedule.application.exception.common.FileStorageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.ResponseInputStream;

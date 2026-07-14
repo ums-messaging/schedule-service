@@ -1,12 +1,10 @@
 package com.ums.schedule.application.sendrequest.target.data;
 
-import com.ums.schedule.domain.sendrequest.target.code.TargetColumnEnum;
+import com.ums.schedule.common.code.target.TargetColumnEnum;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public record TargetMessageData(
         Map<TargetColumnEnum, String> targetData,

@@ -1,6 +1,6 @@
 package com.ums.schedule.repository.constraint.schedule;
 
-import com.ums.schedule.domain.schedule.code.ScheduleStatusEnum;
+import com.ums.schedule.common.code.schedule.ScheduleStatusEnum;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import jakarta.persistence.EntityManager;

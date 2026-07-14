@@ -2,10 +2,10 @@ package com.ums.schedule.application.ums.email.convert.handler;
 
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
-import com.ums.schedule.application.exception.EmailMessageConvertException;
+import com.ums.schedule.application.exception.email.EmailMessageConvertException;
 import com.ums.schedule.application.ums.email.template.EmailTemplateLoader;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.sendrequest.template.exception.TemplateNotFoundException;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.domain.exception.template.TemplateNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

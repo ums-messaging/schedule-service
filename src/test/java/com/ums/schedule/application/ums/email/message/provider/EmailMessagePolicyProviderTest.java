@@ -1,8 +1,8 @@
 package com.ums.schedule.application.ums.email.message.provider;
 
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
-import com.ums.schedule.application.exception.SecurityMailProcessException;
-import com.ums.schedule.application.exception.TemplateNotFoundException;
+import com.ums.schedule.application.exception.email.security.SecurityMailProcessException;
+import com.ums.schedule.application.exception.template.TemplateNotFoundException;
 import com.ums.schedule.application.sendrequest.email.command.EmailSendCreateRequestBuilder;
 import com.ums.schedule.application.ums.common.template.TemplateResult;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
@@ -15,8 +15,8 @@ import com.ums.schedule.application.ums.email.template.query.EmailTemplateQueryS
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
 import com.ums.schedule.fixture.email.convert.ConvertedAttachmentBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertPolicyBuilder;
 import com.ums.schedule.fixture.email.security.EmailSecurityPolicyRequestBuilder;

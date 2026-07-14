@@ -3,10 +3,10 @@ package com.ums.schedule.application.sendrequest.command;
 import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
 import com.ums.schedule.application.sendrequest.context.SendRequestCreateContext;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
+import com.ums.schedule.common.code.common.ChannelTypeEnum;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
-import com.ums.schedule.domain.sendrequest.message.SendMessage;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadTypeEnum;
+import com.ums.schedule.domain.message.SendMessage;
+import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 
 public record SendRequestCreateCommand(
         Long scheduleId,

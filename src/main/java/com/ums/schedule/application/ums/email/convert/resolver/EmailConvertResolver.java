@@ -7,9 +7,9 @@ import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
 import com.ums.schedule.application.ums.email.convert.strategy.EmailMessageConvertStrategy;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.exception.ConvertTypeNotSupportedException;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
-import com.ums.schedule.domain.sendrequest.template.code.TemplateEnumMapper;
+import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.template.TemplateEnumMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

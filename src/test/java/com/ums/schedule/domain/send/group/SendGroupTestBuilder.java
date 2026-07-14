@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.send.group;
 
 import com.ums.schedule.domain.send.code.ResultCodeEnum;
-import com.ums.schedule.domain.sendrequest.code.SendGroupEventTypeEnum;
+import com.ums.schedule.common.code.request.SendGroupEventTypeEnum;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 

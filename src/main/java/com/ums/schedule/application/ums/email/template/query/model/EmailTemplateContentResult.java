@@ -2,11 +2,9 @@ package com.ums.schedule.application.ums.email.template.query.model;
 
 
 import com.ums.schedule.adapter.storage.AwsS3FileMetadataResponse;
-import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
-import com.ums.schedule.domain.message.email.code.AttachmentType;
 import com.ums.schedule.domain.send.email.code.ContentTypeEnum;
-import com.ums.schedule.domain.sendrequest.template.email.code.EmailTemplateSectionEnum;
-import com.ums.schedule.domain.sendrequest.template.email.code.TemplateContentFormatEnum;
+import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.TemplateContentFormatEnum;
 
 public record EmailTemplateContentResult(
         String format,

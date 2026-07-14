@@ -3,8 +3,7 @@ package com.ums.schedule.fixture.email.convert;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.message.email.SecurityMailPolicy;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
 
 public class EmailConvertPolicyBuilder {
     private EnumMapperValue convertType;

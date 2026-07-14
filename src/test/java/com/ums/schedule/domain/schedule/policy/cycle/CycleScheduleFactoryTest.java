@@ -1,9 +1,8 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
-import com.ums.schedule.domain.schedule.code.CycleCdEnum;
-import com.ums.schedule.domain.schedule.code.ScheduleEnumMapper;
-import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.ScheduleEnumMapper;
+import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
 import com.ums.schedule.application.schedule.factory.cycle_policy.DayCyclePolicyFactory;
 import com.ums.schedule.application.schedule.factory.cycle_policy.HourCyclePolicyFactory;
 import com.ums.schedule.application.schedule.factory.cycle_policy.MinuteCyclePolicyFactory;
@@ -20,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static com.ums.schedule.common.code.mapper.EnumMapperValue.fromEnumMapperType;
-import static com.ums.schedule.domain.schedule.code.CycleCdEnum.*;
+import static com.ums.schedule.common.code.schedule.CycleCdEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;

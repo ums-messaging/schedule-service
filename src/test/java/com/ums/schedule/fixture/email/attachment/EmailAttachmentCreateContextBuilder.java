@@ -1,8 +1,8 @@
 package com.ums.schedule.fixture.email.attachment;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
-import com.ums.schedule.domain.message.email.code.AttachmentType;
-import com.ums.schedule.domain.message.email.code.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.AttachmentType;
+import com.ums.schedule.common.code.email.ConvertTypeEnum;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
 

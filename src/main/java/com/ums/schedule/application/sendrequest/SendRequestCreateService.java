@@ -5,14 +5,14 @@ import com.ums.schedule.application.sendrequest.command.TargetUploadCreateComman
 import com.ums.schedule.application.sendrequest.context.SendRequestCreateContext;
 import com.ums.schedule.application.sendrequest.result.SendRequestCreateResult;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
-import com.ums.schedule.application.exception.ScheduleNotFoundException;
+import com.ums.schedule.application.exception.schedule.ScheduleNotFoundException;
 import com.ums.schedule.common.config.SendRequestProperties;
 import com.ums.schedule.domain.sendrequest.SendRequest;
 import com.ums.schedule.domain.sendrequest.SendRequestRepository;
 import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleJpaRepository;
-import com.ums.schedule.domain.sendrequest.message.SendMessage;
+import com.ums.schedule.domain.message.SendMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,6 @@
 package com.ums.schedule.adapter.api.request.email;
 
-import com.ums.schedule.domain.message.email.EmailAttachment;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 
 public record EmailAttachmentRequest(
         String fileKeySuffix,

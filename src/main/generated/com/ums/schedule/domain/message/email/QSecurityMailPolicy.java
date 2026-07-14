@@ -7,6 +7,9 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.ums.schedule.common.code.email.EncryptionTypeEnum;
+import com.ums.schedule.common.code.email.PasswordHashEnum;
+import com.ums.schedule.common.code.email.PermissionMaskEnum;
 
 
 /**
@@ -19,15 +22,15 @@ public class QSecurityMailPolicy extends BeanPath<SecurityMailPolicy> {
 
     public static final QSecurityMailPolicy securityMailPolicy = new QSecurityMailPolicy("securityMailPolicy");
 
-    public final EnumPath<com.ums.schedule.domain.message.email.code.EncryptionTypeEnum> encryptionType = createEnum("encryptionType", com.ums.schedule.domain.message.email.code.EncryptionTypeEnum.class);
+    public final EnumPath<EncryptionTypeEnum> encryptionType = createEnum("encryptionType", EncryptionTypeEnum.class);
 
     public final StringPath passwordFormat = createString("passwordFormat");
 
-    public final EnumPath<com.ums.schedule.domain.message.email.code.PasswordHashEnum> passwordHash = createEnum("passwordHash", com.ums.schedule.domain.message.email.code.PasswordHashEnum.class);
+    public final EnumPath<PasswordHashEnum> passwordHash = createEnum("passwordHash", PasswordHashEnum.class);
 
     public final StringPath passwordPolicy = createString("passwordPolicy");
 
-    public final EnumPath<com.ums.schedule.domain.message.email.code.PermissionMaskEnum> permissionMask = createEnum("permissionMask", com.ums.schedule.domain.message.email.code.PermissionMaskEnum.class);
+    public final EnumPath<PermissionMaskEnum> permissionMask = createEnum("permissionMask", PermissionMaskEnum.class);
 
     public QSecurityMailPolicy(String variable) {
         super(SecurityMailPolicy.class, forVariable(variable));

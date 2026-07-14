@@ -2,7 +2,7 @@ package com.ums.schedule.domain.sendrequest.target.upload.builder;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.application.sendrequest.target.command.TargetFileUploadRequestCommand;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadFormatEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum;
 
 import java.util.Arrays;
 import java.util.List;

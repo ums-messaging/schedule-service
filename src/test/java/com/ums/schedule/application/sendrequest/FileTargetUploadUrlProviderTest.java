@@ -2,7 +2,7 @@ package com.ums.schedule.application.sendrequest;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.adapter.storage.PresigendUrlResponse;
-import com.ums.schedule.application.exception.FileStorageException;
+import com.ums.schedule.application.exception.common.FileStorageException;
 import com.ums.schedule.application.sendrequest.target.result.FileTargetUploadResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,12 +1,12 @@
 package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
-import com.ums.schedule.domain.schedule.code.ScheduleEventEnum;
+import com.ums.schedule.common.code.schedule.ScheduleEventEnum;
 import com.ums.schedule.common.exception.validation.RequiredException;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ReservationPolicyValue;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
-import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
+import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
 import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
