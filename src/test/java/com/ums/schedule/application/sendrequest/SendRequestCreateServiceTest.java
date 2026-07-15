@@ -2,7 +2,8 @@ package com.ums.schedule.application.sendrequest;
 
 import com.ums.schedule.application.exception.schedule.ScheduleNotFoundException;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
-import com.ums.schedule.application.sendrequest.result.SendRequestCreateResult;
+import com.ums.schedule.application.ums.common.request.SendRequestCreateService;
+import com.ums.schedule.application.ums.common.request.model.SendRequestCreateResult;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
 import com.ums.schedule.common.config.SendRequestProperties;
 import com.ums.schedule.domain.exception.validation.DuplicateViolationException;
@@ -133,8 +134,9 @@ class SendRequestCreateServiceTest {
             doReturn(4).when(properties).retryCount();
 
             SendRequestCreateResult result = sendRequestService.create(command, sendMessage);
+            SendRequest sendRequest = result.sendRequest();
 
-            assertThat(result.retryCount()).isEqualTo(4);
+            assertThat(sendRequest.getRetryCnt()).isEqualTo(4);
             verify(properties).retryCount();
         }
 
@@ -148,8 +150,9 @@ class SendRequestCreateServiceTest {
             doReturn(uploadResult).when(targetUploadService).create(any(), any());
 
             SendRequestCreateResult result = sendRequestService.create(command, sendMessage);
+            SendRequest sendRequest = result.sendRequest();
 
-            assertThat(result.retryCount()).isEqualTo(3);
+            assertThat(sendRequest.getRetryCnt()).isEqualTo(3);
             verify(properties, never()).retryCount();
         }
     }

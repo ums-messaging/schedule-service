@@ -7,8 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.ums.schedule.common.code.schedule.CycleCd;
-import com.ums.schedule.common.code.schedule.ScheduleType;
 
 
 /**
@@ -21,11 +19,11 @@ public class QScheduleCyclePolicy extends BeanPath<ScheduleCyclePolicy> {
 
     public static final QScheduleCyclePolicy scheduleCyclePolicy = new QScheduleCyclePolicy("scheduleCyclePolicy");
 
-    public final EnumPath<CycleCd> cycleCd = createEnum("cycleCd", CycleCd.class);
+    public final EnumPath<com.ums.schedule.common.code.schedule.CycleCd> cycleCd = createEnum("cycleCd", com.ums.schedule.common.code.schedule.CycleCd.class);
 
     public final StringPath cycleValue = createString("cycleValue");
 
-    public final EnumPath<ScheduleType> scheduleType = createEnum("scheduleType", ScheduleType.class);
+    public final EnumPath<com.ums.schedule.common.code.schedule.ScheduleType> scheduleType = createEnum("scheduleType", com.ums.schedule.common.code.schedule.ScheduleType.class);
 
     public QScheduleCyclePolicy(String variable) {
         super(ScheduleCyclePolicy.class, forVariable(variable));

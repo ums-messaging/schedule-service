@@ -42,7 +42,6 @@ public class SendMessage {
 
     public static SendMessage of(SendMessageCreateCommand command) {
         SendMessage message = new SendMessage();
-        message.assignSendRequest(command.sendRequest());
         message.assignMessageTypeAndAdvertisingPrefix(command.messageType(), command.advertisingPrefix());
         return message;
     }
@@ -63,7 +62,7 @@ public class SendMessage {
     }
 
 
-    private void assignSendRequest(SendRequest sendRequest) {
+    public void assignSendRequest(SendRequest sendRequest) {
         if(sendRequest == null) {
             throw SendRequestNotFoundException.of();
         }

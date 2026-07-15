@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QSendTarget extends EntityPathBase<SendTarget> {
 
-    private static final long serialVersionUID = 96205308L;
+    private static final long serialVersionUID = -559943932L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

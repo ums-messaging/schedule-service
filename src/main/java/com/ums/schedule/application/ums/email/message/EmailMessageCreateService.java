@@ -25,11 +25,11 @@ public class EmailMessageCreateService {
     private final EmailAttachmentCreateService attachmentService;
     private final EmailSendMessageJpaRepository messageRepository;
 
-    public EmailSendMessage create(String customerId, SendRequest sendRequest, EmailSendCreateRequest request) {
+    public EmailSendMessage create(String customerId, EmailSendCreateRequest request) {
         EmailTemplateDetailQuery query = request.toQuery(customerId);
         EmailMessageContext result = provider.provide(query, request);
 
-        SendMessage sendMessage = messageFactory.createSendMessage(sendRequest, result.template());
+        SendMessage sendMessage = messageFactory.createSendMessage(result.template());
         EmailSendMessage message = EmailSendMessage.of(sendMessage, result);
         messageRepository.save(message);
 

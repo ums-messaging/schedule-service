@@ -11,23 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class EmailSendRequestCreateServiceIntergrationTest {
-    @Autowired private ScheduleJpaRepository scheduleRepository;
 
-    private Long scheduleId;
-    @BeforeEach
-    void setUp() {
-        Schedule schedule = ScheduleEntityBuilder.builder().build();
-        scheduleRepository.save(schedule);
-        scheduleId = schedule.getId();
-    }
-
-    @Test
-    @DisplayName("이메일 발송 요청을 생성한다.")
-    void shouldCreateEmailSendRequest() {
-        SendRequestCreateRequest sendRequestRequest = SendRequestCreateRequestBuilder.builder()
-                .scheduleId(scheduleId)
-                .build();
-    }
 }

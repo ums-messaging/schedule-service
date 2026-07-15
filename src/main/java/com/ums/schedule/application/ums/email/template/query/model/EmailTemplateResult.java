@@ -1,7 +1,7 @@
 package com.ums.schedule.application.ums.email.template.query.model;
 
 
-import com.ums.schedule.application.ums.common.template.TemplateResult;
+import com.ums.schedule.application.ums.common.template.model.TemplateResult;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.common.code.email.EmailMessageSection;

@@ -1,12 +1,11 @@
 package com.ums.schedule.application.ums.common.message;
 
 import com.ums.schedule.application.ums.common.config.SendMessageProperties;
-import com.ums.schedule.application.ums.common.template.TemplateResult;
+import com.ums.schedule.application.ums.common.template.model.TemplateResult;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.common.code.message.MessageType;
-import com.ums.schedule.domain.request.SendRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,12 +27,10 @@ class SendMessageFactoryTest {
     @InjectMocks
     private SendMessageFactory factory;
 
-    private SendRequest sendRequest;
     private TemplateResult template;
 
     @BeforeEach
     void setUp() {
-        sendRequest = mock(SendRequest.class);
         template = mock(TemplateResult.class);
     }
 
@@ -42,7 +39,7 @@ class SendMessageFactoryTest {
     void shouldReturnNone_whenTemplateTypeDoesNotExist() {
         doReturn(null).when(mapperFactory).findEnumMapperValue(any(), any());
 
-        SendMessage sendMessage = factory.createSendMessage(sendRequest, template);
+        SendMessage sendMessage = factory.createSendMessage(template);
 
         assertThat(sendMessage.getMessageType()).isEqualTo(MessageType.NONE);
     }
@@ -53,7 +50,7 @@ class SendMessageFactoryTest {
         doReturn(EnumMapperValue.fromEnumMapperType(MessageType.ADVERTISE)).when(mapperFactory).findEnumMapperValue(any(), any());
         doReturn("(광고)").when(properties).getAdvertisingPrefix();
 
-        factory.createSendMessage(sendRequest, template);
+        factory.createSendMessage(template);
 
         verify(properties).getAdvertisingPrefix();
     }
@@ -63,7 +60,7 @@ class SendMessageFactoryTest {
     void shouldNotGetAdvertisingPrefix_whenTemplateTypeIsNotAdvertise() {
         doReturn(EnumMapperValue.fromEnumMapperType(MessageType.NONE)).when(mapperFactory).findEnumMapperValue(any(), any());
 
-        SendMessage message = factory.createSendMessage(sendRequest, template);
+        SendMessage message = factory.createSendMessage(template);
 
         verify(properties, never()).getAdvertisingPrefix();
     }
@@ -74,7 +71,7 @@ class SendMessageFactoryTest {
         doReturn(EnumMapperValue.fromEnumMapperType(MessageType.ADVERTISE)).when(mapperFactory).findEnumMapperValue(any(), any());
         doReturn("(광고)").when(properties).getAdvertisingPrefix();
 
-        SendMessage message = factory.createSendMessage(sendRequest, template);
+        SendMessage message = factory.createSendMessage(template);
 
         assertThat(message.getMessagePrefix()).isEqualTo("(광고)");
     }
@@ -84,7 +81,7 @@ class SendMessageFactoryTest {
     void shouldNotSaveMessagePrefix_whenMessageTypeIsNotAdvertise() {
         doReturn(EnumMapperValue.fromEnumMapperType(MessageType.NONE)).when(mapperFactory).findEnumMapperValue(any(), any());
 
-        SendMessage message = factory.createSendMessage(sendRequest, template);
+        SendMessage message = factory.createSendMessage(template);
 
         assertThat(message.getMessagePrefix()).isNull();
     }

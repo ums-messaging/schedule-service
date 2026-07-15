@@ -5,7 +5,7 @@ import com.ums.schedule.adapter.api.sendrequest.email.request.SendRequestCreateR
 import com.ums.schedule.application.exception.email.security.SecurityMailProcessException;
 import com.ums.schedule.application.sendrequest.email.command.EmailSendCreateRequestBuilder;
 import com.ums.schedule.application.ums.common.message.SendMessageFactory;
-import com.ums.schedule.application.ums.common.template.TemplateResult;
+import com.ums.schedule.application.ums.common.template.model.TemplateResult;
 import com.ums.schedule.application.ums.email.attachment.EmailAttachmentCreateService;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
@@ -13,7 +13,6 @@ import com.ums.schedule.application.ums.email.message.provider.EmailMessagePolic
 import com.ums.schedule.domain.exception.validation.RequiredException;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
-import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.fixture.email.message.EmailMessageContextBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +40,6 @@ class EmailMessageCreateServiceTest {
     @Mock private EmailAttachmentCreateService attachmentService;
     @InjectMocks private EmailMessageCreateService messageService;
 
-    private SendRequest sendRequest;
     private EmailSendCreateRequestBuilder builder;
     private EmailMessageContextBuilder contextBuilder;
 
@@ -53,7 +51,6 @@ class EmailMessageCreateServiceTest {
     }
 
     private void givenDefaultValueObjects() {
-        sendRequest = mock(SendRequest.class);
         contextBuilder = EmailMessageContextBuilder.builder()
                 .template(mock(TemplateResult.class));
     }
@@ -72,7 +69,7 @@ class EmailMessageCreateServiceTest {
         void shouldNotSaveEmailSendMessage_whenEmailMessageProviderFails() {
             doThrow(mock(SecurityMailProcessException.class)).when(provider).provide(any(), any());
 
-            assertThatThrownBy(() -> messageService.create("hyejin_company", sendRequest, builder.build()));
+            assertThatThrownBy(() -> messageService.create("hyejin_company", builder.build()));
 
             verify(repository, never()).save(any(EmailSendMessage.class));
         }
@@ -81,9 +78,9 @@ class EmailMessageCreateServiceTest {
         @DisplayName("SendMessage 생성 중 오류 발생 시 이메일 메시지는 저장되지 않는다.")
         void shouldNotSaveEmailSendMessage_whenSendMessageCreateFails() {
             doReturn(contextBuilder.build()).when(provider).provide(any(), any());
-            doThrow(mock(RequiredException.class)).when(factory).createSendMessage(any(), any());
+            doThrow(mock(RequiredException.class)).when(factory).createSendMessage(any());
 
-            assertThatThrownBy(() -> messageService.create("hyejin_company", sendRequest, builder.build()));
+            assertThatThrownBy(() -> messageService.create("hyejin_company", builder.build()));
             verify(repository, never()).save(any(EmailSendMessage.class));
         }
     }
@@ -94,7 +91,7 @@ class EmailMessageCreateServiceTest {
 
         @BeforeEach
         void setUp() {
-            doReturn(mock(SendMessage.class)).when(factory).createSendMessage(any(), any());
+            doReturn(mock(SendMessage.class)).when(factory).createSendMessage(any());
             doReturn(mock(EmailSendMessage.class)).when(repository).save(any());
             doReturn(contextBuilder.build()).when(provider).provide(any(), any());
         }
@@ -102,14 +99,14 @@ class EmailMessageCreateServiceTest {
         @Test
         @DisplayName("EmailMessageProvider가 실행된다.")
         void shouldExecuteEmailMessageProvider() {
-            messageService.create("hyejin_company", sendRequest, builder.build());
+            messageService.create("hyejin_company", builder.build());
 
             verify(provider).provide(any(), any());
         }
         @Test
         @DisplayName("SendMessage가 생성된다.")
         void shouldCreateSendMessage() {
-            EmailSendMessage message = messageService.create("hyejin_company", sendRequest, builder.build());
+            EmailSendMessage message = messageService.create("hyejin_company", builder.build());
 
             assertThat(message.getSendMessage()).isNotNull();
         }
@@ -118,7 +115,7 @@ class EmailMessageCreateServiceTest {
         @Test
         @DisplayName("이메일 메시지가 저장된다.")
         void shouldSaveEmailSendMessage() {
-            messageService.create("hyejin_company", sendRequest, builder.build());
+            messageService.create("hyejin_company", builder.build());
 
             verify(repository).save(any(EmailSendMessage.class));
         }
@@ -131,7 +128,7 @@ class EmailMessageCreateServiceTest {
         @BeforeEach
         void setUp() {
             attachment = mock(ConvertedAttachment.class);
-            doReturn(mock(SendMessage.class)).when(factory).createSendMessage(any(), any());
+            doReturn(mock(SendMessage.class)).when(factory).createSendMessage(any());
             doReturn(mock(EmailSendMessage.class)).when(repository).save(any());
         }
 
@@ -142,7 +139,7 @@ class EmailMessageCreateServiceTest {
             EmailMessageContext context = contextBuilder.attachmentList(attachment, attachment, attachment).build();
             doReturn(context).when(provider).provide(any(), any());
 
-            messageService.create("hyejin_company", sendRequest, builder.build());
+            messageService.create("hyejin_company", builder.build());
 
             verify(attachmentService).create(any(), any(), captor.capture());
             List<ConvertedAttachment> captorList = captor.getValue();
@@ -156,7 +153,7 @@ class EmailMessageCreateServiceTest {
             EmailMessageContext context = contextBuilder.attachmentList().build();
             doReturn(context).when(provider).provide(any(), any());
 
-            messageService.create("hyejin_company", sendRequest, builder.build());
+            messageService.create("hyejin_company", builder.build());
 
             verify(attachmentService, never()).create(any(), any(), any());
         }

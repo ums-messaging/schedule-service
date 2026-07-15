@@ -8,7 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import com.ums.schedule.common.code.common.ChannelType;
 
 
 /**
@@ -17,13 +16,13 @@ import com.ums.schedule.common.code.common.ChannelType;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QSendRequest extends EntityPathBase<SendRequest> {
 
-    private static final long serialVersionUID = 1232104557L;
+    private static final long serialVersionUID = -980236427L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QSendRequest sendRequest = new QSendRequest("sendRequest");
 
-    public final EnumPath<ChannelType> channelType = createEnum("channelType", ChannelType.class);
+    public final EnumPath<com.ums.schedule.common.code.common.ChannelType> channelType = createEnum("channelType", com.ums.schedule.common.code.common.ChannelType.class);
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 

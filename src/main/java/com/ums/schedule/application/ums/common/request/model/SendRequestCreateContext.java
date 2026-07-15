@@ -1,4 +1,4 @@
-package com.ums.schedule.application.sendrequest.context;
+package com.ums.schedule.application.ums.common.request.model;
 
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.common.code.common.ChannelType;

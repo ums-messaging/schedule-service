@@ -7,7 +7,6 @@ import com.ums.schedule.domain.exception.email.SendMessageMissingException;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.exception.request.SendRequestNotFoundException;
 import com.ums.schedule.fixture.message.SendMessageCreateCommandBuilder;
-import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,8 +23,7 @@ class SendMessageTest {
     void setUp() {
         this.builder = SendMessageCreateCommandBuilder
                 .builder()
-                .sendRequest(mock(SendRequest.class))
-        ;
+                .sendRequest(mock(SendRequest.class));
     }
     @Nested
     @DisplayName("메시지 생성")
@@ -97,13 +95,6 @@ class SendMessageTest {
             SendMessage message = SendMessage.of(command);
 
             assertThat(message.getMessagePrefix()).isNull();
-        }
-
-        @Test
-        @DisplayName("SendRequest와 연관관계가 설정된다.")
-        void shouldRelateWithSendRequest() {
-            SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
-            SendMessageCreateCommand command = builder.sendRequest(sendRequest).build();
         }
     }
 }

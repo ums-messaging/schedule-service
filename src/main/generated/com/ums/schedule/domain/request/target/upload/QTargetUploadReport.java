@@ -8,8 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum;
-import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 
 
 /**
@@ -18,7 +16,7 @@ import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QTargetUploadReport extends EntityPathBase<TargetUploadReport> {
 
-    private static final long serialVersionUID = 95757040L;
+    private static final long serialVersionUID = -1873314584L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -48,11 +46,11 @@ public class QTargetUploadReport extends EntityPathBase<TargetUploadReport> {
 
     public final DateTimePath<java.time.LocalDateTime> uploadedAt = createDateTime("uploadedAt", java.time.LocalDateTime.class);
 
-    public final EnumPath<TargetUploadFormatEnum> uploadFormat = createEnum("uploadFormat", TargetUploadFormatEnum.class);
+    public final EnumPath<com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum> uploadFormat = createEnum("uploadFormat", com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum.class);
 
     public final StringPath uploadKey = createString("uploadKey");
 
-    public final EnumPath<TargetUploadTypeEnum> uploadType = createEnum("uploadType", TargetUploadTypeEnum.class);
+    public final EnumPath<com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum> uploadType = createEnum("uploadType", com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum.class);
 
     public QTargetUploadReport(String variable) {
         this(TargetUploadReport.class, forVariable(variable), INITS);

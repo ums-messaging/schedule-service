@@ -55,9 +55,9 @@ public class TargetUploadReportService {
 
     private Map<TargetUploadReportEnumMapper, EnumMapperValue> toMapperMap(String uploadType, String uploadFormat) {
         EnumMapperValue uploadTypeValue =
-                mapperFactory.findEnumMapperValue(SendRequestEnumMapper.TARGET_UPLOAD_TYPE, uploadType);
+                mapperFactory.findEnumMapperValue(TargetUploadReportEnumMapper.UPLOAD_TYPE, uploadType);
         EnumMapperValue uploadFormatValue =
-                mapperFactory.findEnumMapperValue(SendRequestEnumMapper.TARGET_UPLOAD_FORMAT, uploadFormat);
+                mapperFactory.findEnumMapperValue(TargetUploadReportEnumMapper.UPLOAD_FORMAT, uploadFormat);
         return Map.of(TargetUploadReportEnumMapper.UPLOAD_TYPE, uploadTypeValue,
                 TargetUploadReportEnumMapper.UPLOAD_FORMAT, uploadFormatValue);
     }

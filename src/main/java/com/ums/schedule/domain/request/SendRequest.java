@@ -2,7 +2,7 @@ package com.ums.schedule.domain.request;
 
 import com.github.f4b6a3.tsid.TsidCreator;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
-import com.ums.schedule.application.sendrequest.context.SendRequestCreateContext;
+import com.ums.schedule.application.ums.common.request.model.SendRequestCreateContext;
 import com.ums.schedule.domain.exception.validation.DuplicateViolationException;
 import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.common.util.ValidationUtils;
@@ -100,6 +100,7 @@ public class SendRequest {
     private void assignSendMessage(SendMessage sendMessage) {
         this.sendMessage = Optional.ofNullable(sendMessage)
                 .orElseThrow(SendMessageNotFoundException::of);
+        sendMessage.assignSendRequest(this);
     }
 
     private void assignChannelType(ChannelType channelType) {

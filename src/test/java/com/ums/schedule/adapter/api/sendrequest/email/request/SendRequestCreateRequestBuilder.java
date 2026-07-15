@@ -21,6 +21,10 @@ public class SendRequestCreateRequestBuilder {
         this.scheduleId = 1L;
         this.senderKey = "test@test.com";
         this.templateKey = "my_template";
+        this.customerRequestId = "my_send_request";
+        this.uploadFormat = "csv";
+        this.messageType = "AD";
+        this.retryCount = 3;
     }
 
     public SendRequestCreateRequestBuilder scheduleId(Long scheduleId) {
@@ -30,6 +34,26 @@ public class SendRequestCreateRequestBuilder {
 
     public SendRequestCreateRequestBuilder templateKey(String templateKey) {
         this.templateKey = templateKey;
+        return this;
+    }
+
+    public SendRequestCreateRequestBuilder customerRequestId(String customerRequestId) {
+        this.customerRequestId = customerRequestId;
+        return this;
+    }
+
+    public SendRequestCreateRequestBuilder uploadFormat(String uploadFormat) {
+        this.uploadFormat = uploadFormat;
+        return this;
+    }
+
+    public SendRequestCreateRequestBuilder messageType(String messageType) {
+        this.messageType = messageType;
+        return this;
+    }
+
+    public SendRequestCreateRequestBuilder retryCount(Integer retryCount) {
+        this.retryCount = retryCount;
         return this;
     }
 

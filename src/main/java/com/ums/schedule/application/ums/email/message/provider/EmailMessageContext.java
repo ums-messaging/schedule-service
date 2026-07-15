@@ -1,6 +1,6 @@
 package com.ums.schedule.application.ums.email.message.provider;
 
-import com.ums.schedule.application.ums.common.template.TemplateResult;
+import com.ums.schedule.application.ums.common.template.model.TemplateResult;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
 import com.ums.schedule.application.ums.email.security.SecurityMail;

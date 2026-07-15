@@ -1,4 +1,4 @@
-package com.ums.schedule.application.ums.common.template;
+package com.ums.schedule.application.ums.common.template.model;
 
 public record TemplateResult(
         String templateId,

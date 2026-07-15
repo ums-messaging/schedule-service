@@ -4,7 +4,7 @@ import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.application.exception.email.security.SecurityMailProcessException;
 import com.ums.schedule.application.exception.template.TemplateNotFoundException;
 import com.ums.schedule.application.sendrequest.email.command.EmailSendCreateRequestBuilder;
-import com.ums.schedule.application.ums.common.template.TemplateResult;
+import com.ums.schedule.application.ums.common.template.model.TemplateResult;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
 import com.ums.schedule.application.ums.email.convert.resolver.EmailConvertResolver;

@@ -2,13 +2,12 @@ package com.ums.schedule.application.ums.common.message;
 
 import com.ums.schedule.application.ums.common.config.SendMessageProperties;
 import com.ums.schedule.application.ums.common.message.model.SendMessageCreateCommand;
-import com.ums.schedule.application.ums.common.template.TemplateResult;
+import com.ums.schedule.application.ums.common.template.model.TemplateResult;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.common.code.message.MessageType;
 import com.ums.schedule.common.code.message.MessageEnumMapper;
-import com.ums.schedule.domain.request.SendRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +19,12 @@ public class SendMessageFactory {
     private final EnumMapperFactory factory;
     private final SendMessageProperties properties;
 
-    public SendMessage createSendMessage(SendRequest sendRequest, TemplateResult template) {
+    public SendMessage createSendMessage(TemplateResult template) {
         MessageType messageType = getMessageType(template.templateType());
         String advertisePrefix = getAdvertisingPrefix(messageType);
 
         SendMessageCreateCommand command =
-                SendMessageCreateCommand.of(sendRequest, messageType, advertisePrefix);
+                SendMessageCreateCommand.of(messageType, advertisePrefix);
 
         return SendMessage.of(command);
     }

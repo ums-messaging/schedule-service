@@ -8,7 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import com.ums.schedule.common.code.message.MessageType;
 
 
 /**
@@ -27,7 +26,7 @@ public class QSendMessage extends EntityPathBase<SendMessage> {
 
     public final StringPath messagePrefix = createString("messagePrefix");
 
-    public final EnumPath<MessageType> messageType = createEnum("messageType", MessageType.class);
+    public final EnumPath<com.ums.schedule.common.code.message.MessageType> messageType = createEnum("messageType", com.ums.schedule.common.code.message.MessageType.class);
 
     public final com.ums.schedule.domain.request.QSendRequest sendRequest;
 

@@ -35,7 +35,6 @@ public class SendMessageCreateCommandBuilder {
 
     public SendMessageCreateCommand build() {
         return new SendMessageCreateCommand(
-                sendRequest,
                 messageType,
                 messagePrefix
         );

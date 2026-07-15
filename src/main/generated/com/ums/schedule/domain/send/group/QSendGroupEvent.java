@@ -8,8 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import com.ums.schedule.common.code.email.EmailResultCode;
-import com.ums.schedule.common.code.request.SendGroupEventTypeEnum;
 
 
 /**
@@ -26,13 +24,13 @@ public class QSendGroupEvent extends EntityPathBase<SendGroupEvent> {
 
     public final NumberPath<Long> eventId = createNumber("eventId", Long.class);
 
-    public final EnumPath<SendGroupEventTypeEnum> eventType = createEnum("eventType", SendGroupEventTypeEnum.class);
+    public final EnumPath<com.ums.schedule.common.code.request.SendGroupEventTypeEnum> eventType = createEnum("eventType", com.ums.schedule.common.code.request.SendGroupEventTypeEnum.class);
 
     public final DateTimePath<java.time.LocalDateTime> issuedAt = createDateTime("issuedAt", java.time.LocalDateTime.class);
 
     public final StringPath payload = createString("payload");
 
-    public final EnumPath<EmailResultCode> resultCode = createEnum("resultCode", EmailResultCode.class);
+    public final EnumPath<com.ums.schedule.common.code.email.EmailResultCode> resultCode = createEnum("resultCode", com.ums.schedule.common.code.email.EmailResultCode.class);
 
     public final StringPath resultMessage = createString("resultMessage");
 

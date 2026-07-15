@@ -1,7 +1,7 @@
 package com.ums.schedule.application.sendrequest.command;
 
 import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
-import com.ums.schedule.application.sendrequest.context.SendRequestCreateContext;
+import com.ums.schedule.application.ums.common.request.model.SendRequestCreateContext;
 import com.ums.schedule.common.code.common.ChannelType;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.request.customer.CustomerRequestKey;
