@@ -3,18 +3,18 @@ package com.ums.schedule.application.message.email.result;
 import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
 import com.ums.schedule.adapter.api.request.email.EmailAttachmentRequest;
 import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 
 import java.util.List;
 
 public record EmailMessageResult(
         String messageId,
-        ConvertTypeEnum convertType,
+        ConvertType convertType,
         TargetUploadTypeEnum uploadType,
         String templateKey,
         String title,
@@ -27,7 +27,7 @@ public record EmailMessageResult(
         TargetUploadReport targetUpload = sendRequest.getCurrentTargetUpload();
         return new EmailMessageResult(
                 sendMessage.getId().toString(),
-                ConvertTypeEnum.valueOf(body.convertType().code()),
+                ConvertType.valueOf(body.convertType().code()),
                 targetUpload.getUploadType(),
                 sendRequest.getTemplateKey(),
                 sendMessage.getSubject(),

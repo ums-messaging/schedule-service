@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.send.report;
 
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -4,7 +4,7 @@ import com.ums.schedule.application.message.email.model.AttachmentPipelineComman
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.exception.email.EmailMessageConvertException;
 import com.ums.schedule.application.ums.email.template.EmailTemplateLoader;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.domain.exception.template.TemplateNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -36,9 +36,9 @@ public class HtmlMessageConverter implements AttachmentConverter {
         return TemplateConversionResult.of(file, command.objectKey(), templateContent);
     }
 
-    private File validateContentAndWriteFileByConvertType(Path path, ConvertTypeEnum convertType, String templateContent) throws IOException {
+    private File validateContentAndWriteFileByConvertType(Path path, ConvertType convertType, String templateContent) throws IOException {
         validateTemplateContent(templateContent);
-        if(convertType == ConvertTypeEnum.HTML) {
+        if(convertType == ConvertType.HTML) {
             path = Files.writeString(path, templateContent, StandardCharsets.UTF_8);
         }
         return Optional.ofNullable(path)
@@ -53,7 +53,7 @@ public class HtmlMessageConverter implements AttachmentConverter {
     }
 
     @Override
-    public boolean supports(ConvertTypeEnum convertType, boolean isSecurity) {
-        return convertType == ConvertTypeEnum.HTML && isSecurity == false;
+    public boolean supports(ConvertType convertType, boolean isSecurity) {
+        return convertType == ConvertType.HTML && isSecurity == false;
     }
 }

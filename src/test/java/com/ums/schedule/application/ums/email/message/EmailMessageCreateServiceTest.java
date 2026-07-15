@@ -10,10 +10,10 @@ import com.ums.schedule.application.ums.email.attachment.EmailAttachmentCreateSe
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
 import com.ums.schedule.application.ums.email.message.provider.EmailMessagePolicyProvider;
-import com.ums.schedule.common.exception.validation.RequiredException;
+import com.ums.schedule.domain.exception.validation.RequiredException;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.fixture.email.message.EmailMessageContextBuilder;
 import org.junit.jupiter.api.BeforeEach;

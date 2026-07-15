@@ -1,10 +1,10 @@
 package com.ums.schedule.fixture.email.convert;
 
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 
 public class ConvertedAttachmentBuilder {
-    private ConvertTypeEnum convertType;
+    private ConvertType convertType;
     private String fileKey;
     private String fileKeyTemplate;
     private Long fileSize;
@@ -16,7 +16,7 @@ public class ConvertedAttachmentBuilder {
     }
 
     private ConvertedAttachmentBuilder() {
-        this.convertType = ConvertTypeEnum.PDF;
+        this.convertType = ConvertType.PDF;
         this.fileKey = "body.html";
         this.fileKeyTemplate = "${template}.pdf";
         this.fileSize = 10L;
@@ -24,7 +24,7 @@ public class ConvertedAttachmentBuilder {
         this.downloadName = "첨부파일명.pdf";
     }
 
-    public ConvertedAttachmentBuilder convertType(ConvertTypeEnum convertType) {
+    public ConvertedAttachmentBuilder convertType(ConvertType convertType) {
         this.convertType = convertType;
         return this;
     }

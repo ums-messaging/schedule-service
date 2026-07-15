@@ -1,9 +1,9 @@
 package com.ums.schedule.repository.mapping.request;
 
-import com.ums.schedule.domain.sendrequest.*;
+import com.ums.schedule.domain.request.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import jakarta.persistence.EntityManager;

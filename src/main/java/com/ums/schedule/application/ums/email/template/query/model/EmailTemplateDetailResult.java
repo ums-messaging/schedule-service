@@ -1,7 +1,7 @@
 package com.ums.schedule.application.ums.email.template.query.model;
 
-import com.ums.schedule.common.code.email.EmailTemplatePathTypeEnum;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailUploadPrefixType;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 
 import java.util.List;
 import java.util.Map;
@@ -15,23 +15,23 @@ public record EmailTemplateDetailResult(
         List<EmailTemplateContentResult> contents
 ) {
 
-    public static EmailTemplateDetailResult of(Map<EmailTemplatePathTypeEnum, String> propertiesMap, EmailTemplateDetailQuery command, List<EmailTemplateContentResult> templateList) {
+    public static EmailTemplateDetailResult of(Map<EmailUploadPrefixType, String> propertiesMap, EmailTemplateDetailQuery command, List<EmailTemplateContentResult> templateList) {
         return new EmailTemplateDetailResult(
                 command.templateKey(),
                 command.title(),
-                propertiesMap.get(EmailTemplatePathTypeEnum.IMAGE_SUFFIX),
+                propertiesMap.get(EmailUploadPrefixType.IMAGE_SUFFIX),
                 templateList
         );
     }
 
-    public Map<EmailTemplateSectionEnum, EmailTemplateContentResult> getHeaderFooter() {
+    public Map<EmailMessageSection, EmailTemplateContentResult> getHeaderFooter() {
         if(this.contents == null) {
             return Map.of();
         }
         return this.contents.stream()
-                .filter(content -> !content.section().equals(EmailTemplateSectionEnum.BODY.code().toLowerCase()))
+                .filter(content -> !content.section().equals(EmailMessageSection.BODY.code().toLowerCase()))
                 .collect(Collectors.toMap(
-                        k -> EmailTemplateSectionEnum.valueOf(k.section().toUpperCase()), Function.identity(),
+                        k -> EmailMessageSection.valueOf(k.section().toUpperCase()), Function.identity(),
                         (o, n) -> n
                 ));
     }
@@ -42,7 +42,7 @@ public record EmailTemplateDetailResult(
         }
         return this.contents
                 .stream()
-                .filter(content-> content.section().toUpperCase().equals(EmailTemplateSectionEnum.BODY.code()))
+                .filter(content-> content.section().toUpperCase().equals(EmailMessageSection.BODY.code()))
                 .findFirst()
                 .orElse(null);
     }
@@ -50,7 +50,7 @@ public record EmailTemplateDetailResult(
     public List<EmailTemplateContentResult> getAttachmentList() {
         return this.contents
                 .stream()
-                .filter(content->content.section().equals(EmailTemplateSectionEnum.ATTACHMENT.value()))
+                .filter(content->content.section().equals(EmailMessageSection.ATTACHMENT.value()))
                 .collect(Collectors.toList());
     }
 }

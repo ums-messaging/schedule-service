@@ -4,8 +4,8 @@ import com.ums.schedule.common.code.mapper.EnumMapper;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperType;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.exception.EnumMapperNotEmptyException;
-import com.ums.schedule.common.exception.EnumMapperNotFoundException;
+import com.ums.schedule.application.exception.mapper.EnumMapperNotEmptyException;
+import com.ums.schedule.application.exception.mapper.EnumMapperNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

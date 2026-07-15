@@ -4,7 +4,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.exception.email.EmailMessageConvertException;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,8 @@ public class PdfMessageConverter implements AttachmentConverter {
     private final HtmlMessageConverter handler;
 
     @Override
-    public boolean supports(ConvertTypeEnum convertType, boolean isSecurity) {
-        return convertType == ConvertTypeEnum.PDF && isSecurity == false;
+    public boolean supports(ConvertType convertType, boolean isSecurity) {
+        return convertType == ConvertType.PDF && isSecurity == false;
     }
 
     @Override

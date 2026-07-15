@@ -2,8 +2,8 @@ package com.ums.schedule.application.sendrequest.target;
 
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
 import com.ums.schedule.common.code.target.SendTargetStatusEnum;
-import com.ums.schedule.domain.sendrequest.target.SendTargetRepository;
-import com.ums.schedule.domain.sendrequest.target.SendTarget;
+import com.ums.schedule.domain.request.target.SendTargetRepository;
+import com.ums.schedule.domain.request.target.SendTarget;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

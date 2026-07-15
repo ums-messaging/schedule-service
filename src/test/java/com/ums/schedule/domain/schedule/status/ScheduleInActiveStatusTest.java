@@ -1,11 +1,10 @@
 package com.ums.schedule.domain.schedule.status;
 
-import com.ums.schedule.common.code.schedule.ScheduleEventEnum;
-import com.ums.schedule.common.code.schedule.ScheduleStatusEnum;
+import com.ums.schedule.common.code.schedule.ScheduleEvent;
+import com.ums.schedule.common.code.schedule.ScheduleStatus;
 import com.ums.schedule.domain.exception.schedule.InvalidScheduleStatusException;
 import com.ums.schedule.common.converter.StatusState;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
-import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,25 +15,25 @@ class ScheduleInActiveStatusTest {
     @Test
     @DisplayName("InActive 상태에서 Active 상태로 변경 가능하다.")
     void shouldReturnInactiveToActive() {
-        ScheduleStatus status = new ScheduleInActiveStatus();
-        StatusState toStatus = status.onEvent(ScheduleEventEnum.TO_ACTIVE);
+        com.ums.schedule.domain.schedule.state.ScheduleStatus status = new ScheduleInActiveStatus();
+        StatusState toStatus = status.onEvent(ScheduleEvent.TO_ACTIVE);
         assertThat(toStatus.getCurrentCode())
-                .isEqualTo(ScheduleStatusEnum.ACTIVE);
+                .isEqualTo(ScheduleStatus.ACTIVE);
     }
 
     @Test
     @DisplayName("InActive 상태에서 Running 상태로 변경 불가능하다.")
     void shouldRejectInActiveChangeToRunning() {
-        ScheduleStatus status = new ScheduleInActiveStatus();
-        assertThatThrownBy(() -> status.onEvent(ScheduleEventEnum.TO_RUNNING))
+        com.ums.schedule.domain.schedule.state.ScheduleStatus status = new ScheduleInActiveStatus();
+        assertThatThrownBy(() -> status.onEvent(ScheduleEvent.TO_RUNNING))
                 .isInstanceOf(InvalidScheduleStatusException.class);
     }
 
     @Test
     @DisplayName("InActive 상태에서 InActive 상태로 변경 불가능하다.")
     void shouldRejectInActiveChangeToInActive() {
-        ScheduleStatus status = new ScheduleInActiveStatus();
-        assertThatThrownBy(() -> status.onEvent(ScheduleEventEnum.TO_INACTIVE))
+        com.ums.schedule.domain.schedule.state.ScheduleStatus status = new ScheduleInActiveStatus();
+        assertThatThrownBy(() -> status.onEvent(ScheduleEvent.TO_INACTIVE))
                 .isInstanceOf(InvalidScheduleStatusException.class);
     }
 }

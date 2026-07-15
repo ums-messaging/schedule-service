@@ -1,11 +1,11 @@
 package com.ums.schedule.application.sendrequest.data;
 
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.common.code.common.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.common.code.common.ChannelType;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 
-public record SendRequestKeyData(Long requestId, String messageId, ChannelTypeEnum channelType) {
-    public static SendRequestKeyData of(Long requestId, String messageId, ChannelTypeEnum channelType) {
+public record SendRequestKeyData(Long requestId, String messageId, ChannelType channelType) {
+    public static SendRequestKeyData of(Long requestId, String messageId, ChannelType channelType) {
         return new SendRequestKeyData(requestId, messageId, channelType);
     }
 

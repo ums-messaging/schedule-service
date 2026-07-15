@@ -6,10 +6,10 @@ import com.ums.schedule.application.ums.email.config.EmailMessageProperties;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 import com.ums.schedule.fixture.email.attachment.AttachmentContextBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertResolveCommandBuilder;
 import org.junit.jupiter.api.*;
@@ -33,7 +33,7 @@ class AttachmentEmailConvertPolicyTest {
 
     @BeforeEach
     void setUp() {
-        convertTypeValue = EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF);
+        convertTypeValue = EnumMapperValue.fromEnumMapperType(ConvertType.PDF);
         builder = EmailConvertResolveCommandBuilder.builder()
                 .body("body.html")
                 .cover("cover.html");
@@ -51,21 +51,21 @@ class AttachmentEmailConvertPolicyTest {
         @Test
         @DisplayName("변환 타입이 NONE이면 FALSE를 반환한다.")
         void shouldReturnFalse() {
-            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE));
+            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertType.NONE));
             assertThat(result).isFalse();
         }
 
         @Test
         @DisplayName("변환 타입이 PDF이면 TRUE를 반환한다.")
         void shouldReturnTrue_whenConvertTypeIsPdf() {
-            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF));
+            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertType.PDF));
             assertThat(result).isTrue();
         }
 
         @Test
         @DisplayName("변환 타입이 HTML이면 TRUE를 반환한다.")
         void shouldReturnFalse_whenConvertTypeIsHtml() {
-            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.HTML));
+            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertType.HTML));
             assertThat(result).isTrue();
         }
     }
@@ -92,7 +92,7 @@ class AttachmentEmailConvertPolicyTest {
             EmailConvertResolveCommand command = builder.cover(null).build();
 
             TemplateNotFoundException expect =
-                    TemplateNotFoundException.of(EmailTemplateSectionEnum.COVER);
+                    TemplateNotFoundException.of(EmailMessageSection.COVER);
 
             assertThatThrownBy(() -> convertPolicy.convert(convertTypeValue, command))
                     .isInstanceOf(expect.getClass())
@@ -149,7 +149,7 @@ class AttachmentEmailConvertPolicyTest {
 
             assertThatThrownBy(() ->
                         convertPolicy.convert(
-                                EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE),
+                                EnumMapperValue.fromEnumMapperType(ConvertType.NONE),
                                 builder.build())
                 ).isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());

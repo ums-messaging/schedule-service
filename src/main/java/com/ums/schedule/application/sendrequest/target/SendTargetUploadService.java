@@ -7,9 +7,9 @@ import com.ums.schedule.application.sendrequest.data.SendRequestKeyData;
 import com.ums.schedule.application.sendrequest.target.event.SendTargetFailedEvent;
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
 import com.ums.schedule.domain.exception.DomainException;
-import com.ums.schedule.common.code.common.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.target.SendTarget;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.common.code.common.ChannelType;
+import com.ums.schedule.domain.request.target.SendTarget;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,7 +25,7 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class SendTargetUploadService {
-    private final Map<ChannelTypeEnum, SendTargetAssembler> targetAssemblerMap;
+    private final Map<ChannelType, SendTargetAssembler> targetAssemblerMap;
     private final ApplicationEventPublisher failTargetUploadPublisher;
     private final SendTargetService targetService;
 

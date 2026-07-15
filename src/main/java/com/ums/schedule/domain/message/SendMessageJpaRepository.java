@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.message;
 
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -2,9 +2,9 @@ package com.ums.schedule.application.ums.email.attachment;
 
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachmentJpaRepository;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.fixture.email.attachment.SecurityMailBuilder;
 import com.ums.schedule.fixture.email.convert.ConvertedAttachmentBuilder;
@@ -62,7 +62,7 @@ class EmailAttachmentCreateServiceTest {
         @BeforeEach
         void setUp() {
             attachment = ConvertedAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.HTML)
+                    .convertType(ConvertType.HTML)
                     .fileKey("attachment.html")
                     .fileKeyTemplate("attachment.html")
                     .build();
@@ -123,7 +123,7 @@ class EmailAttachmentCreateServiceTest {
 
             assertThat(attachmentList)
                     .extracting(EmailAttachment::getConvertType)
-                    .contains(ConvertTypeEnum.HTML);
+                    .contains(ConvertType.HTML);
         }
     }
 
@@ -135,7 +135,7 @@ class EmailAttachmentCreateServiceTest {
         @BeforeEach
         void setUp() {
             attachment = ConvertedAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.NONE)
+                    .convertType(ConvertType.NONE)
                     .fileKey("attachment.html")
                     .fileKeyTemplate("attachment.html")
                     .build();
@@ -171,7 +171,7 @@ class EmailAttachmentCreateServiceTest {
             @BeforeEach
             void setUp() {
                 attachment = ConvertedAttachmentBuilder.builder()
-                        .convertType(ConvertTypeEnum.NONE)
+                        .convertType(ConvertType.NONE)
                         .fileKey("attachment.html")
                         .build();
             }
@@ -206,7 +206,7 @@ class EmailAttachmentCreateServiceTest {
             @BeforeEach
             void setUp() {
                 attachment = ConvertedAttachmentBuilder.builder()
-                        .convertType(ConvertTypeEnum.NONE)
+                        .convertType(ConvertType.NONE)
                         .fileKey(null)
                         .fileKeyTemplate("attachment.html")
                         .build();
@@ -251,10 +251,10 @@ class EmailAttachmentCreateServiceTest {
     }
 
     private boolean filterOnConvertTypeIsNone(EmailAttachment attachment) {
-        return attachment.getConvertType() == ConvertTypeEnum.NONE;
+        return attachment.getConvertType() == ConvertType.NONE;
     }
 
     private boolean filterOnConvertTypeIsNotNone(EmailAttachment attachment) {
-        return attachment.getConvertType() != ConvertTypeEnum.NONE;
+        return attachment.getConvertType() != ConvertType.NONE;
     }
 }

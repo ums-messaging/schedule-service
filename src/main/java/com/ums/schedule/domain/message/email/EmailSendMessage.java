@@ -1,16 +1,16 @@
 package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
+import com.ums.schedule.common.code.common.ChannelType;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.exception.email.EmailMessageMissingException;
 import com.ums.schedule.domain.exception.email.EmailMessageTemplateFileKeyMissingException;
-import com.ums.schedule.domain.sendrequest.converter.UuidBinaryConverter;
+import com.ums.schedule.domain.request.converter.UuidBinaryConverter;
 import com.ums.schedule.domain.exception.request.SendMessageNotFoundException;
 import com.ums.schedule.domain.message.ChannelMessage;
 import com.ums.schedule.domain.message.SendMessage;
-import com.ums.schedule.common.code.common.ChannelTypeEnum;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -94,7 +94,7 @@ public class EmailSendMessage implements ChannelMessage {
     private void assignBodyTemplateKey(String bodyKey) {
         this.bodyTemplateKey = Optional.ofNullable(bodyKey)
                 .filter(StringUtils::hasText)
-                .orElseThrow(() -> EmailMessageTemplateFileKeyMissingException.of(EmailTemplateSectionEnum.BODY));
+                .orElseThrow(() -> EmailMessageTemplateFileKeyMissingException.of(EmailMessageSection.BODY));
     }
 
     private void assignBodyTemplate(String template) {
@@ -119,8 +119,8 @@ public class EmailSendMessage implements ChannelMessage {
     }
 
     @Override
-    public ChannelTypeEnum channelType() {
-        return ChannelTypeEnum.EMAIL;
+    public ChannelType channelType() {
+        return ChannelType.EMAIL;
     }
 
     public void addAttachments(EmailAttachment attachment) {

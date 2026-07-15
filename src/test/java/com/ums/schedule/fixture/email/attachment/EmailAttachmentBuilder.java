@@ -1,14 +1,14 @@
 package com.ums.schedule.fixture.email.attachment;
 
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 
 public class EmailAttachmentBuilder {
     private Long id;
-    private ConvertTypeEnum convertType;
+    private ConvertType convertType;
     private SecurityMailPolicy securityPolicy;
     private String attachmentName;
     private String downloadName;
@@ -18,7 +18,7 @@ public class EmailAttachmentBuilder {
     private EmailSendMessage sendMessage;
 
     public EmailAttachmentBuilder() {
-        this.convertType = ConvertTypeEnum.NONE;
+        this.convertType = ConvertType.NONE;
         this.securityPolicy = null;
     }
 
@@ -26,7 +26,7 @@ public class EmailAttachmentBuilder {
         return new EmailAttachmentBuilder();
     }
 
-    public EmailAttachmentBuilder convertType(ConvertTypeEnum convertType) {
+    public EmailAttachmentBuilder convertType(ConvertType convertType) {
         this.convertType = convertType;
         return this;
     }

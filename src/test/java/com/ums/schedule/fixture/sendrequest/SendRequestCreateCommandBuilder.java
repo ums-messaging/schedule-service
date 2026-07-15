@@ -1,12 +1,12 @@
 package com.ums.schedule.fixture.sendrequest;
 
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
-import com.ums.schedule.common.code.common.ChannelTypeEnum;
+import com.ums.schedule.common.code.common.ChannelType;
 import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 
 public class SendRequestCreateCommandBuilder {
     private Long scheduleId;
-    private ChannelTypeEnum channelType;
+    private ChannelType channelType;
     private TargetUploadTypeEnum uploadType;
     private String uploadFormat;
     private String customerId;
@@ -21,7 +21,7 @@ public class SendRequestCreateCommandBuilder {
 
     private SendRequestCreateCommandBuilder() {
         this.scheduleId = 1L;
-        this.channelType = ChannelTypeEnum.EMAIL;
+        this.channelType = ChannelType.EMAIL;
         this.uploadType = TargetUploadTypeEnum.JSON;
         this.customerId = String.valueOf(SendRequestField.CUSTOMER_ID.givenValue);
         this.customerKey = String.valueOf(SendRequestField.CUSTOMER_REQUEST_ID.givenValue);
@@ -35,7 +35,7 @@ public class SendRequestCreateCommandBuilder {
         return this;
     }
 
-    public SendRequestCreateCommandBuilder channelType(ChannelTypeEnum channelType) {
+    public SendRequestCreateCommandBuilder channelType(ChannelType channelType) {
         this.channelType = channelType;
         return this;
     }

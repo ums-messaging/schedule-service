@@ -1,12 +1,12 @@
 package com.ums.schedule.fixture.target_upload;
 
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 import com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum;
 import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.target.SendTarget;
-import com.ums.schedule.domain.sendrequest.target.upload.state.TargetUploadCreateState;
-import com.ums.schedule.domain.sendrequest.target.upload.state.TargetUploadState;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.target.SendTarget;
+import com.ums.schedule.domain.request.target.upload.state.TargetUploadCreateState;
+import com.ums.schedule.domain.request.target.upload.state.TargetUploadState;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

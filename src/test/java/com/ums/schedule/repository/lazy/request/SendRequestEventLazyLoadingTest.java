@@ -1,6 +1,6 @@
 package com.ums.schedule.repository.lazy.request;
 
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.send.group.SendGroupEvent;
 import com.ums.schedule.domain.send.group.SendGroupTestBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;

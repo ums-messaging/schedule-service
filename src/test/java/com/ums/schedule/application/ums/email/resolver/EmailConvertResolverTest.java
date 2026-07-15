@@ -7,7 +7,7 @@ import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.fixture.email.attachment.AttachmentContextBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertResultBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertPolicyCommandBuilder;
@@ -69,7 +69,7 @@ class EmailConvertResolverTest {
 
             EmailConvertPolicy result = resolver.resolve(givenCommand, null);
 
-            assertThat(result.convertType()).isEqualTo(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE));
+            assertThat(result.convertType()).isEqualTo(EnumMapperValue.fromEnumMapperType(ConvertType.NONE));
         }
 
         @Test
@@ -79,7 +79,7 @@ class EmailConvertResolverTest {
 
             EmailConvertPolicy result = resolver.resolve(givenCommand, mock(SecurityMail.class));
 
-            assertThat(result.convertType()).isEqualTo(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.HTML));
+            assertThat(result.convertType()).isEqualTo(EnumMapperValue.fromEnumMapperType(ConvertType.HTML));
         }
     }
 

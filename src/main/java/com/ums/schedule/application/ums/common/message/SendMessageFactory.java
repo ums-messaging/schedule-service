@@ -7,8 +7,8 @@ import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.common.code.message.MessageType;
-import com.ums.schedule.common.code.message.SendMessageEnumMapper;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.common.code.message.MessageEnumMapper;
+import com.ums.schedule.domain.request.SendRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +31,7 @@ public class SendMessageFactory {
     }
 
     private MessageType getMessageType(String templateType) {
-        EnumMapperValue messageTypeValue = factory.findEnumMapperValue(SendMessageEnumMapper.MESSAGE_TYPE, templateType);
+        EnumMapperValue messageTypeValue = factory.findEnumMapperValue(MessageEnumMapper.MESSAGE_TYPE, templateType);
 
         return Optional.ofNullable(messageTypeValue)
                 .map(v -> MessageType.valueOf(v.code()))

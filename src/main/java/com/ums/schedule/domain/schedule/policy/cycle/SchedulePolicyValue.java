@@ -1,10 +1,10 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.common.code.schedule.CycleCdEnum;
-import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.CycleCd;
+import com.ums.schedule.common.code.schedule.ScheduleType;
 
 public interface SchedulePolicyValue {
-    ScheduleTypeEnum getScheduleType();
-    CycleCdEnum getCycleCdEnum();
+    ScheduleType getScheduleType();
+    CycleCd getCycleCdEnum();
     String getCycleValue();
 }

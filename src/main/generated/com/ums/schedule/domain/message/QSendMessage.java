@@ -29,7 +29,7 @@ public class QSendMessage extends EntityPathBase<SendMessage> {
 
     public final EnumPath<MessageType> messageType = createEnum("messageType", MessageType.class);
 
-    public final com.ums.schedule.domain.sendrequest.QSendRequest sendRequest;
+    public final com.ums.schedule.domain.request.QSendRequest sendRequest;
 
     public QSendMessage(String variable) {
         this(SendMessage.class, forVariable(variable), INITS);
@@ -49,7 +49,7 @@ public class QSendMessage extends EntityPathBase<SendMessage> {
 
     public QSendMessage(Class<? extends SendMessage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.sendRequest = inits.isInitialized("sendRequest") ? new com.ums.schedule.domain.sendrequest.QSendRequest(forProperty("sendRequest"), inits.get("sendRequest")) : null;
+        this.sendRequest = inits.isInitialized("sendRequest") ? new com.ums.schedule.domain.request.QSendRequest(forProperty("sendRequest"), inits.get("sendRequest")) : null;
     }
 
 }

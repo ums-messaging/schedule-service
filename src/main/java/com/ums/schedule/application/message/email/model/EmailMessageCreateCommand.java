@@ -1,16 +1,16 @@
 package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailResult;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 
 import java.util.Map;
 
 public record EmailMessageCreateCommand(
         String title,
-        Map<EmailTemplateSectionEnum, String> templateMap
+        Map<EmailMessageSection, String> templateMap
 ) {
    public static EmailMessageCreateCommand of(EmailTemplateDetailResult template,
-                                              Map<EmailTemplateSectionEnum, String> templateMap) {
+                                              Map<EmailMessageSection, String> templateMap) {
       return new EmailMessageCreateCommand(
               template.msgTitle(),
               templateMap

@@ -1,6 +1,6 @@
 package com.ums.schedule.repository;
 
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;

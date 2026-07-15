@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.send.group;
 
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.send.code.ResultCodeEnum;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.common.code.email.EmailResultCode;
 import com.ums.schedule.common.code.request.SendGroupEventTypeEnum;
 import com.ums.schedule.domain.exception.request.SendRequestException;
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-import static com.ums.schedule.domain.send.code.ResultCodeEnum.FAIL;
+import static com.ums.schedule.common.code.email.EmailResultCode.FAIL;
 
 @Getter
 @Entity
@@ -30,7 +30,7 @@ public class SendGroupEvent {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "result_code", nullable = false)
-    private ResultCodeEnum resultCode;
+    private EmailResultCode resultCode;
 
     private String resultMessage;
 
@@ -60,7 +60,7 @@ public class SendGroupEvent {
 
     private SendGroupEvent(SendGroupEventTypeEnum eventType) {
         this.eventType = eventType;
-        this.resultCode = ResultCodeEnum.SUCCESS;
+        this.resultCode = EmailResultCode.SUCCESS;
     }
 
     private void onError(SendRequest sendRequest, SendRequestException e) {
@@ -68,7 +68,7 @@ public class SendGroupEvent {
     }
 
 
-    private void setResult(ResultCodeEnum code, String message) {
+    private void setResult(EmailResultCode code, String message) {
         this.resultCode = code;
         this.resultMessage = message;
     }

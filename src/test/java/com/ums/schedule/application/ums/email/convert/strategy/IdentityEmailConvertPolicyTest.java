@@ -3,7 +3,7 @@ package com.ums.schedule.application.ums.email.convert.strategy;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.fixture.email.convert.EmailConvertResolveCommandBuilder;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +22,7 @@ class IdentityEmailConvertPolicyTest {
 
     @BeforeEach
     void setUp() {
-        convertTypeValue = EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE);
+        convertTypeValue = EnumMapperValue.fromEnumMapperType(ConvertType.NONE);
         builder = EmailConvertResolveCommandBuilder.builder()
                 .body("body.html");
     }
@@ -33,21 +33,21 @@ class IdentityEmailConvertPolicyTest {
         @Test
         @DisplayName("변환 타입이 NONE이면 TRUE를 반환한다.")
         void shouldReturnTrue_whenConvertTypeIsNone() {
-            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE));
+            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertType.NONE));
             assertThat(result).isTrue();
         }
 
         @Test
         @DisplayName("변환 타입이 PDF이면 FALSE를 반환한다.")
         void shouldReturnFalse_whenConvertTypeIsPdf() {
-            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF));
+            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertType.PDF));
             assertThat(result).isFalse();
         }
 
         @Test
         @DisplayName("변환 타입이 HTML이면 FALSE를 반환한다.")
         void shouldReturnFalse_whenConvertTypeIsHtml() {
-            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.HTML));
+            boolean result = convertPolicy.supports(EnumMapperValue.fromEnumMapperType(ConvertType.HTML));
             assertThat(result).isFalse();
         }
     }
@@ -66,7 +66,7 @@ class IdentityEmailConvertPolicyTest {
 
         assertThatThrownBy(() ->
                 convertPolicy.convert(
-                        EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF),
+                        EnumMapperValue.fromEnumMapperType(ConvertType.PDF),
                         builder.build())
         ).isInstanceOf(expect.getClass())
                 .hasMessage(expect.getMessage());

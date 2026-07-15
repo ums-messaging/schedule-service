@@ -1,13 +1,13 @@
 package com.ums.schedule.application.message.email.model;
 
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
-import com.ums.schedule.domain.sendrequest.target.SendTarget;
+import com.ums.schedule.domain.request.target.SendTarget;
 
 import java.util.Map;
 
 public record AttachmentPipelineCommand(
-        ConvertTypeEnum convertType,
+        ConvertType convertType,
         String filePrefix,
         String fileSuffix,
         String fileKey,

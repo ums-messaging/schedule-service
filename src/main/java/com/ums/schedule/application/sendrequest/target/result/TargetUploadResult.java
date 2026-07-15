@@ -1,6 +1,6 @@
 package com.ums.schedule.application.sendrequest.target.result;
 
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 
 public record TargetUploadResult(
         String reportId,

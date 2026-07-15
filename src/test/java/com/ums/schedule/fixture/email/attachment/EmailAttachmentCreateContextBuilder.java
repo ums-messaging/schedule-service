@@ -1,8 +1,8 @@
 package com.ums.schedule.fixture.email.attachment;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.email.AttachmentType;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class EmailAttachmentCreateContextBuilder {
     private EmailSendMessage sendMessage;
-    private ConvertTypeEnum convertType;
+    private ConvertType convertType;
     private SecurityMailPolicy securityMail;
     private Map<AttachmentType, String> keyMap;
     private String attachmentName;
@@ -33,7 +33,7 @@ public class EmailAttachmentCreateContextBuilder {
         return this;
     }
 
-    public EmailAttachmentCreateContextBuilder convertType(ConvertTypeEnum convertType) {
+    public EmailAttachmentCreateContextBuilder convertType(ConvertType convertType) {
         this.convertType = convertType;
         return this;
     }

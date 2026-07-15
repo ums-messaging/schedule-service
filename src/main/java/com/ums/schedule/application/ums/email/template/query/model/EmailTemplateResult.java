@@ -4,7 +4,7 @@ package com.ums.schedule.application.ums.email.template.query.model;
 import com.ums.schedule.application.ums.common.template.TemplateResult;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -24,17 +24,17 @@ public record EmailTemplateResult(
     }
 
     public AttachmentContext headerTemplate() {
-        EmailTemplateContentResult header = emailTemplate.getHeaderFooter().get(EmailTemplateSectionEnum.HEADER);
+        EmailTemplateContentResult header = emailTemplate.getHeaderFooter().get(EmailMessageSection.HEADER);
         return getTemplate(header);
     }
 
     public AttachmentContext footerTemplate() {
-        EmailTemplateContentResult footer = emailTemplate.getHeaderFooter().get(EmailTemplateSectionEnum.FOOTER);
+        EmailTemplateContentResult footer = emailTemplate.getHeaderFooter().get(EmailMessageSection.FOOTER);
         return getTemplate(footer);
     }
 
     public AttachmentContext coverTemplate() {
-        EmailTemplateContentResult cover = emailTemplate.getHeaderFooter().get(EmailTemplateSectionEnum.COVER);
+        EmailTemplateContentResult cover = emailTemplate.getHeaderFooter().get(EmailMessageSection.COVER);
         return getTemplate(cover);
     }
 
@@ -44,7 +44,7 @@ public record EmailTemplateResult(
     }
 
     public String headerKey() {
-        EmailTemplateContentResult header = emailTemplate.getHeaderFooter().get(EmailTemplateSectionEnum.HEADER);
+        EmailTemplateContentResult header = emailTemplate.getHeaderFooter().get(EmailMessageSection.HEADER);
         return getFileKey(header);
     }
 
@@ -54,12 +54,12 @@ public record EmailTemplateResult(
     }
 
     public String footerKey() {
-        EmailTemplateContentResult footer = emailTemplate.getHeaderFooter().get(EmailTemplateSectionEnum.FOOTER);
+        EmailTemplateContentResult footer = emailTemplate.getHeaderFooter().get(EmailMessageSection.FOOTER);
         return getFileKey(footer);
     }
 
     public String coverKey() {
-        EmailTemplateContentResult cover = emailTemplate.getHeaderFooter().get(EmailTemplateSectionEnum.COVER);
+        EmailTemplateContentResult cover = emailTemplate.getHeaderFooter().get(EmailMessageSection.COVER);
         return getFileKey(cover);
     }
 

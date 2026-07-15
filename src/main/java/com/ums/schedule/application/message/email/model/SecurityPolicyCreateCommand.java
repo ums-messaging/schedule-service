@@ -1,7 +1,7 @@
 package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
 
 public record SecurityPolicyCreateCommand(
         SecurityMailEnumMapper codeKey,

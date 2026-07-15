@@ -1,10 +1,10 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.common.code.schedule.CycleCdEnum;
+import com.ums.schedule.common.code.schedule.CycleCd;
 import com.ums.schedule.application.schedule.factory.cycle_policy.CyclePolicy;
 import com.ums.schedule.application.schedule.factory.cycle_policy.MonthCyclePolicyFactory;
 import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
-import com.ums.schedule.common.exception.validation.InvalidNumberFormatException;
+import com.ums.schedule.domain.exception.validation.InvalidNumberFormatException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ class MonthCyclePolicyTest {
         CyclePolicy cyclePolicy = new MonthCyclePolicyFactory();
         SchedulePolicyValue policy = cyclePolicy.create(11);
 
-        assertThat(policy.getCycleCdEnum()).isEqualTo(CycleCdEnum.MONTH);
+        assertThat(policy.getCycleCdEnum()).isEqualTo(CycleCd.MONTH);
     }
     @Test
     @DisplayName("월 주기 스케쥴의 경우 cycleValue는 1~12까지 입력할 수 있다.")

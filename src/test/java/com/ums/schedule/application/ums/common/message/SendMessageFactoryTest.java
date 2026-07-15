@@ -6,7 +6,7 @@ import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.common.code.message.MessageType;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

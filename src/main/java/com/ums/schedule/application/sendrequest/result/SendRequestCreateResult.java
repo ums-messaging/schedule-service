@@ -2,7 +2,7 @@ package com.ums.schedule.application.sendrequest.result;
 
 import com.ums.schedule.application.sendrequest.target.result.FileTargetUploadResult;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

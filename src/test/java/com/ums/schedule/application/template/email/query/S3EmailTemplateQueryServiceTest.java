@@ -10,8 +10,8 @@ import com.ums.schedule.application.ums.email.template.query.model.EmailTemplate
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
 import com.ums.schedule.application.ums.email.template.query.model.EmailAttachmentDetailQuery;
 import com.ums.schedule.config.properties.EmailTemplateProperties;
-import com.ums.schedule.common.code.email.EmailTemplatePathTypeEnum;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailUploadPrefixType;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 import com.ums.schedule.fixture.template.EmailAttachmentCreateCommandBuilder;
 import com.ums.schedule.fixture.template.EmailTemplateCreateCommandBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -108,7 +108,7 @@ class S3EmailTemplateQueryServiceTest {
 
                 assertThat(expect)
                         .extracting(EmailTemplateContentResult::section)
-                        .doesNotContain(EmailTemplateSectionEnum.HEADER.code());
+                        .doesNotContain(EmailMessageSection.HEADER.code());
             }
             @Test
             @DisplayName("header 템플릿이 존재하면 header의 file_key는 정해진 규칙에 의해 생성된다.")
@@ -121,7 +121,7 @@ class S3EmailTemplateQueryServiceTest {
                 assertThat(expect)
                         .extracting(EmailTemplateContentResult::section, EmailTemplateContentResult::fileKey)
                         .contains(
-                                tuple(EmailTemplateSectionEnum.HEADER.code(), headerKey)
+                                tuple(EmailMessageSection.HEADER.code(), headerKey)
                         );
             }
         }
@@ -159,7 +159,7 @@ class S3EmailTemplateQueryServiceTest {
 
                 assertThat(expect)
                         .extracting(EmailTemplateContentResult::section)
-                        .doesNotContain(EmailTemplateSectionEnum.BODY.code());
+                        .doesNotContain(EmailMessageSection.BODY.code());
             }
 
             @Test
@@ -173,7 +173,7 @@ class S3EmailTemplateQueryServiceTest {
                 assertThat(expect)
                         .extracting(EmailTemplateContentResult::section, EmailTemplateContentResult::fileKey)
                         .contains(
-                                tuple(EmailTemplateSectionEnum.BODY.code(), bodyKey)
+                                tuple(EmailMessageSection.BODY.code(), bodyKey)
                         );
             }
         }
@@ -211,7 +211,7 @@ class S3EmailTemplateQueryServiceTest {
 
                 assertThat(expect)
                         .extracting(EmailTemplateContentResult::section)
-                        .doesNotContain(EmailTemplateSectionEnum.FOOTER.code());
+                        .doesNotContain(EmailMessageSection.FOOTER.code());
             }
             @Test
             @DisplayName("footer 템플릿이 존재하면 footer의 file_key는 정해진 규칙에 의해 생성된다.")
@@ -224,7 +224,7 @@ class S3EmailTemplateQueryServiceTest {
                 assertThat(expect)
                         .extracting(EmailTemplateContentResult::section, EmailTemplateContentResult::fileKey)
                         .contains(
-                                tuple(EmailTemplateSectionEnum.FOOTER.code(), footerKey)
+                                tuple(EmailMessageSection.FOOTER.code(), footerKey)
                         );
             }
         }
@@ -262,7 +262,7 @@ class S3EmailTemplateQueryServiceTest {
 
                 assertThat(expect)
                         .extracting(EmailTemplateContentResult::section)
-                        .doesNotContain(EmailTemplateSectionEnum.COVER.code());
+                        .doesNotContain(EmailMessageSection.COVER.code());
             }
 
             @Test
@@ -276,7 +276,7 @@ class S3EmailTemplateQueryServiceTest {
                 assertThat(expect)
                         .extracting(EmailTemplateContentResult::section, EmailTemplateContentResult::fileKey)
                         .contains(
-                                tuple(EmailTemplateSectionEnum.COVER.code(), coverKey)
+                                tuple(EmailMessageSection.COVER.code(), coverKey)
                         );
             }
         }
@@ -325,7 +325,7 @@ class S3EmailTemplateQueryServiceTest {
             EmailTemplateResult result = templateService.findTemplate(command);
 
             assertThat(result.emailTemplate().contents())
-                    .filteredOn(content -> content.section().equals(EmailTemplateSectionEnum.ATTACHMENT.code()))
+                    .filteredOn(content -> content.section().equals(EmailMessageSection.ATTACHMENT.code()))
                     .hasSize(2);
         }
 
@@ -352,7 +352,7 @@ class S3EmailTemplateQueryServiceTest {
             EmailTemplateResult result = templateService.findTemplate(command);
 
             assertThat(result.emailTemplate().contents())
-                    .filteredOn(content -> content.section().equals(EmailTemplateSectionEnum.ATTACHMENT.code()))
+                    .filteredOn(content -> content.section().equals(EmailMessageSection.ATTACHMENT.code()))
                     .anyMatch(content -> content.fileKey().equals(attachmentKey));
         }
 
@@ -376,7 +376,7 @@ class S3EmailTemplateQueryServiceTest {
             EmailTemplateResult result = templateService.findTemplate(command);
 
             assertThat(result.emailTemplate().contents())
-                    .filteredOn(content -> content.section().equals(EmailTemplateSectionEnum.ATTACHMENT.code()))
+                    .filteredOn(content -> content.section().equals(EmailMessageSection.ATTACHMENT.code()))
                     .anyMatch(content -> fileKeyTemplate.equals(content.fileKeyTemplate()));
         }
 
@@ -428,7 +428,7 @@ class S3EmailTemplateQueryServiceTest {
             void shouldThrowException_whenTemplateKeyPrefixIsEmpty() {
                 doReturn("").when(properties).templateKeyPrefix();
 
-                TemplateNotConfiguredException expect = TemplateNotConfiguredException.of("my_template", EmailTemplatePathTypeEnum.TEMPLATE_PREFIX);
+                TemplateNotConfiguredException expect = TemplateNotConfiguredException.of("my_template", EmailUploadPrefixType.TEMPLATE_PREFIX);
 
                 assertThatThrownBy(() -> templateService.findTemplate(command))
                         .isInstanceOf(expect.getClass())
@@ -460,7 +460,7 @@ class S3EmailTemplateQueryServiceTest {
             void shouldThrowException_whenAttachmentKeySuffixIsEmpty() {
                 doReturn("").when(properties).attachmentKeySuffix();
 
-                TemplateNotConfiguredException expect = TemplateNotConfiguredException.of("my_template", EmailTemplatePathTypeEnum.ATTACHMENT_SUFFIX);
+                TemplateNotConfiguredException expect = TemplateNotConfiguredException.of("my_template", EmailUploadPrefixType.ATTACHMENT_SUFFIX);
 
                 assertThatThrownBy(() -> templateService.findTemplate(command))
                         .isInstanceOf(expect.getClass())
@@ -492,7 +492,7 @@ class S3EmailTemplateQueryServiceTest {
             void shouldThrowException_whenImageKeySuffixIsEmpty() {
                 doReturn("").when(properties).imageKeySuffix();
 
-                TemplateNotConfiguredException expect = TemplateNotConfiguredException.of("my_template", EmailTemplatePathTypeEnum.IMAGE_SUFFIX);
+                TemplateNotConfiguredException expect = TemplateNotConfiguredException.of("my_template", EmailUploadPrefixType.IMAGE_SUFFIX);
 
                 assertThatThrownBy(() -> templateService.findTemplate(command))
                         .isInstanceOf(expect.getClass())

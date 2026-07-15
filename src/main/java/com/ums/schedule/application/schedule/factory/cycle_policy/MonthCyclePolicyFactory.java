@@ -5,7 +5,7 @@ import com.ums.schedule.domain.schedule.policy.cycle.CyclePolicyValue;
 import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
 import org.springframework.stereotype.Component;
 
-import static com.ums.schedule.common.code.schedule.CycleCdEnum.MONTH;
+import static com.ums.schedule.common.code.schedule.CycleCd.MONTH;
 
 @Component
 public class MonthCyclePolicyFactory implements CyclePolicy {

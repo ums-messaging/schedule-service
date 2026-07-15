@@ -2,15 +2,15 @@ package com.ums.schedule.fixture.sendrequest;
 
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.common.code.common.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
+import com.ums.schedule.common.code.common.ChannelType;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.customer.CustomerRequestKey;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
-import com.ums.schedule.domain.sendrequest.state.SendRequestCreateState;
-import com.ums.schedule.domain.sendrequest.state.SendRequestState;
+import com.ums.schedule.domain.request.state.SendRequestCreateState;
+import com.ums.schedule.domain.request.state.SendRequestState;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class SendRequestEntityBuilder {
     private Integer retryCnt;
     private String senderKey;
     private String templateKey;
-    private ChannelTypeEnum channelType;
+    private ChannelType channelType;
     private SendRequestState state;
     private CustomerRequestKey customerRequestKey;
     private TargetUploadReport currentTargetUpload;
@@ -42,7 +42,7 @@ public class SendRequestEntityBuilder {
 
         this.senderKey = "test@test.com";
         this.templateKey = UUID.randomUUID().toString();
-        this.channelType = ChannelTypeEnum.EMAIL;
+        this.channelType = ChannelType.EMAIL;
         this.state = new SendRequestCreateState();
         this.customerRequestKey = customerKey;
         this.retryCnt = 3;
@@ -58,7 +58,7 @@ public class SendRequestEntityBuilder {
         return this;
     }
 
-    public SendRequestEntityBuilder channelType(ChannelTypeEnum channelType) {
+    public SendRequestEntityBuilder channelType(ChannelType channelType) {
         this.channelType = channelType;
         return this;
     }

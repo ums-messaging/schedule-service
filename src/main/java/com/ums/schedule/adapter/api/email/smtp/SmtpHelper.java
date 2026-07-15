@@ -3,9 +3,8 @@ package com.ums.schedule.adapter.api.email.smtp;
 
 import com.ums.schedule.adapter.api.email.dns.DnsClient;
 import com.ums.schedule.adapter.api.email.dns.DnsQuery;
-import com.ums.schedule.adapter.api.email.dns.DnsQueryResult;
 import com.ums.schedule.adapter.api.email.smtp.response.SmtpSessionInfo;
-import com.ums.schedule.domain.send.email.code.DnsQueryResultEnum;
+import com.ums.schedule.common.code.email.DnsQueryResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,7 @@ public class SmtpHelper {
     private final DnsClient dnsClient;
 
     public SmtpSessionInfo createSession(String domain) throws IOException {
-        DnsQueryResult domainInfo = dnsClient.getDomainInfo(domain);
+        com.ums.schedule.adapter.api.email.dns.DnsQueryResult domainInfo = dnsClient.getDomainInfo(domain);
         List<DnsQuery> queryList = getQueryList(domainInfo.queries());
 
         SmtpSessionInfo session = SmtpSessionInfo.of(queryList, "localhost");
@@ -29,7 +28,7 @@ public class SmtpHelper {
 
     private static List<DnsQuery> getQueryList(List<DnsQuery> queries) {
         return queries.stream()
-                .filter(query -> query.result() == DnsQueryResultEnum.SUCCESS)
+                .filter(query -> query.result() == DnsQueryResult.SUCCESS)
                 .collect(Collectors.toList());
     }
 }

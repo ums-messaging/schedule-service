@@ -8,7 +8,7 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 
 
 /**
@@ -25,7 +25,7 @@ public class QEmailAttachment extends EntityPathBase<EmailAttachment> {
 
     public final StringPath attachmentName = createString("attachmentName");
 
-    public final EnumPath<ConvertTypeEnum> convertType = createEnum("convertType", ConvertTypeEnum.class);
+    public final EnumPath<ConvertType> convertType = createEnum("convertType", ConvertType.class);
 
     public final StringPath downloadName = createString("downloadName");
 

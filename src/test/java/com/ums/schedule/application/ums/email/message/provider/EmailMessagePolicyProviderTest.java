@@ -15,8 +15,8 @@ import com.ums.schedule.application.ums.email.template.query.EmailTemplateQueryS
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.ConvertType;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 import com.ums.schedule.fixture.email.convert.ConvertedAttachmentBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertPolicyBuilder;
 import com.ums.schedule.fixture.email.security.EmailSecurityPolicyRequestBuilder;
@@ -206,7 +206,7 @@ class EmailMessagePolicyProviderTest {
         void shouldThrowException_whenBodyTemplateDoesNotExist() {
             givenNullBodyTemplate();
 
-            TemplateNotFoundException expect = TemplateNotFoundException.of(EmailTemplateSectionEnum.BODY);
+            TemplateNotFoundException expect = TemplateNotFoundException.of(EmailMessageSection.BODY);
 
             assertThatThrownBy(() -> provider.provide(query, builder.build()))
                     .isInstanceOf(expect.getClass())
@@ -304,7 +304,7 @@ class EmailMessagePolicyProviderTest {
             EmailMessageContext context = provider.provide(query, builder.build());
 
             assertThat(context.attachments())
-                    .filteredOn(attachment -> attachment.convertType() == ConvertTypeEnum.NONE)
+                    .filteredOn(attachment -> attachment.convertType() == ConvertType.NONE)
                     .hasSize(3);
 
         }
@@ -341,12 +341,12 @@ class EmailMessagePolicyProviderTest {
             EmailMessageContext context = provider.provide(query, builder.build());
 
             assertThat(context.attachments())
-                    .filteredOn(attachment -> attachment.convertType() == ConvertTypeEnum.HTML)
+                    .filteredOn(attachment -> attachment.convertType() == ConvertType.HTML)
                     .hasSize(1);
         }
 
         private EmailConvertPolicy givenConvertedAttachment() {
-            ConvertedAttachment convertedAttachment = ConvertedAttachmentBuilder.builder().convertType(ConvertTypeEnum.HTML).build();
+            ConvertedAttachment convertedAttachment = ConvertedAttachmentBuilder.builder().convertType(ConvertType.HTML).build();
             EmailConvertPolicy policy = policyBuilder
                     .convertedAttachment(convertedAttachment)
                     .build();

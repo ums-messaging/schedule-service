@@ -13,7 +13,7 @@ import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand
 import com.ums.schedule.application.ums.email.template.query.EmailTemplateQueryService;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +36,7 @@ public class EmailMessagePolicyProvider {
 
     private EmailConvertPolicy resolveEmailConvertPolicy(EmailSendCreateRequest request, EmailTemplateResult template, SecurityMail securityMail) {
         AttachmentContext body = Optional.ofNullable(template.bodyTemplate())
-                .orElseThrow(() -> TemplateNotFoundException.of(EmailTemplateSectionEnum.BODY));
+                .orElseThrow(() -> TemplateNotFoundException.of(EmailMessageSection.BODY));
         EmailConvertResolveCommand command = EmailConvertResolveCommand.of(request.convertType(), body, template);
         EmailConvertPolicy policy = resolver.resolve(command, securityMail);
         return policy;

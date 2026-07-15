@@ -1,6 +1,6 @@
 package com.ums.schedule.common.util;
 
-import com.ums.schedule.common.exception.validation.RequiredException;
+import com.ums.schedule.domain.exception.validation.RequiredException;
 import org.springframework.util.StringUtils;
 
 public class ValidationUtils {

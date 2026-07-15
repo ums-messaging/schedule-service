@@ -4,7 +4,7 @@ import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertPolicyContext;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class EmailConvertPolicyContextBuilder {
     }
 
     private EmailConvertPolicyContextBuilder() {
-        this.convertType = EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE);
+        this.convertType = EnumMapperValue.fromEnumMapperType(ConvertType.NONE);
         this.coverKey = "cover.html";
         this.attachments = List.of();
     }

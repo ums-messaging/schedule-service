@@ -3,7 +3,7 @@ package com.ums.schedule.adapter.api.request.email;
 import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 import com.ums.schedule.common.util.ValueResolverUtils;
-import com.ums.schedule.common.code.email.PasswordTypeEnum;
+import com.ums.schedule.common.code.email.security.PasswordTypeEnum;
 import org.springframework.util.StringUtils;
 
 import java.util.*;

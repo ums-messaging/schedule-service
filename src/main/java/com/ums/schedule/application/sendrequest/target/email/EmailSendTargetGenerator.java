@@ -10,8 +10,8 @@ import com.ums.schedule.application.message.email.result.TemplateConversionResul
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.application.ums.email.template.EmailTemplate;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
-import com.ums.schedule.domain.sendrequest.target.SendTarget;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.SendTarget;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

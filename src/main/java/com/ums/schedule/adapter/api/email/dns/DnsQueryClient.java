@@ -2,7 +2,7 @@ package com.ums.schedule.adapter.api.email.dns;
 
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.send.email.code.EmailEnumMapper;
+import com.ums.schedule.common.code.email.EmailEnumMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

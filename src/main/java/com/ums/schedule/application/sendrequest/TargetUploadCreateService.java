@@ -7,9 +7,9 @@ import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.config.properties.TargetUploadProperties;
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReportJpaRepository;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReportJpaRepository;
 import com.ums.schedule.common.code.target_upload.TargetUploadReportEnumMapper;
 import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 import lombok.RequiredArgsConstructor;

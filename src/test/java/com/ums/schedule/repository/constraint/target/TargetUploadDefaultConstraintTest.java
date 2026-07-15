@@ -1,11 +1,11 @@
 package com.ums.schedule.repository.constraint.target;
 
 import com.ums.schedule.common.code.target_upload.TargetUploadStatusEnum;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;

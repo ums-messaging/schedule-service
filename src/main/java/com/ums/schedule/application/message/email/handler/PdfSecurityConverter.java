@@ -7,7 +7,7 @@ import com.ums.schedule.application.exception.email.security.OwnerPasswordNotCon
 import com.ums.schedule.application.ums.email.convert.handler.AttachmentConverter;
 import com.ums.schedule.application.ums.email.convert.handler.PdfMessageConverter;
 import com.ums.schedule.config.properties.SecurityPolicyProperties;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
@@ -57,7 +57,7 @@ public class PdfSecurityConverter implements AttachmentConverter {
     }
 
     @Override
-    public boolean supports(ConvertTypeEnum convertType, boolean isSecurity) {
-        return convertType == ConvertTypeEnum.PDF && isSecurity == true;
+    public boolean supports(ConvertType convertType, boolean isSecurity) {
+        return convertType == ConvertType.PDF && isSecurity == true;
     }
 }

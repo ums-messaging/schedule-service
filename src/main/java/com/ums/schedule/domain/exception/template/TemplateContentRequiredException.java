@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.exception.template;
 
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 
 public class TemplateContentRequiredException extends TemplateException {
     protected TemplateContentRequiredException(String message) {
@@ -8,11 +8,11 @@ public class TemplateContentRequiredException extends TemplateException {
     }
 
     public static TemplateContentRequiredException ofBody() {
-        return new TemplateContentRequiredException(EmailTemplateSectionEnum.BODY.value());
+        return new TemplateContentRequiredException(EmailMessageSection.BODY.value());
     }
 
     public static TemplateContentRequiredException ofCover() {
-        return new TemplateContentRequiredException(EmailTemplateSectionEnum.COVER.value());
+        return new TemplateContentRequiredException(EmailMessageSection.COVER.value());
     }
 
     public static TemplateContentRequiredException ofImageDir() {

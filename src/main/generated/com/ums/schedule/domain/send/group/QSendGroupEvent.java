@@ -8,6 +8,7 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
+import com.ums.schedule.common.code.email.EmailResultCode;
 import com.ums.schedule.common.code.request.SendGroupEventTypeEnum;
 
 
@@ -31,11 +32,11 @@ public class QSendGroupEvent extends EntityPathBase<SendGroupEvent> {
 
     public final StringPath payload = createString("payload");
 
-    public final EnumPath<com.ums.schedule.domain.send.code.ResultCodeEnum> resultCode = createEnum("resultCode", com.ums.schedule.domain.send.code.ResultCodeEnum.class);
+    public final EnumPath<EmailResultCode> resultCode = createEnum("resultCode", EmailResultCode.class);
 
     public final StringPath resultMessage = createString("resultMessage");
 
-    public final com.ums.schedule.domain.sendrequest.QSendRequest sendRequest;
+    public final com.ums.schedule.domain.request.QSendRequest sendRequest;
 
     public QSendGroupEvent(String variable) {
         this(SendGroupEvent.class, forVariable(variable), INITS);
@@ -55,7 +56,7 @@ public class QSendGroupEvent extends EntityPathBase<SendGroupEvent> {
 
     public QSendGroupEvent(Class<? extends SendGroupEvent> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.sendRequest = inits.isInitialized("sendRequest") ? new com.ums.schedule.domain.sendrequest.QSendRequest(forProperty("sendRequest"), inits.get("sendRequest")) : null;
+        this.sendRequest = inits.isInitialized("sendRequest") ? new com.ums.schedule.domain.request.QSendRequest(forProperty("sendRequest"), inits.get("sendRequest")) : null;
     }
 
 }

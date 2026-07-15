@@ -1,0 +1,32 @@
+package com.ums.schedule.common.code.email;
+
+import com.ums.schedule.common.code.mapper.EnumMapperType;
+
+public enum EmailResultCode implements EnumMapperType {
+    SUCCESS("OK", "처리 성공"),
+    FAIL("ERR", "처리 에러"),
+    RETRY("RTY", "재시도");
+
+    String value;
+    String description;
+
+    EmailResultCode(String value, String description) {
+        this.value = value;
+        this.description = description;
+    }
+
+    @Override
+    public String code() {
+        return this.name();
+    }
+
+    @Override
+    public String value() {
+        return this.value;
+    }
+
+    @Override
+    public String description() {
+        return this.description;
+    }
+}

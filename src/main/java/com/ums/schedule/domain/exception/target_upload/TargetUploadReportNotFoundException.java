@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.exception.target_upload;
 
-import com.ums.schedule.common.exception.ResourceNotFoundException;
+import com.ums.schedule.domain.exception.ResourceNotFoundException;
 
 public class TargetUploadReportNotFoundException extends ResourceNotFoundException {
     protected TargetUploadReportNotFoundException() {

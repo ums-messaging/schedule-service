@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.send.email.job;
 
 import com.github.f4b6a3.tsid.TsidCreator;
-import com.ums.schedule.domain.send.email.code.EmailCacheKeyCode;
+import com.ums.schedule.common.code.email.EmailCacheKey;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public record DomainGroup(
 
 
     public String getKey() {
-        return EmailCacheKeyCode.GROUP_ID.value().concat(String.valueOf(groupId));
+        return EmailCacheKey.GROUP_ID.value().concat(String.valueOf(groupId));
     }
 
     public boolean hasLimitSize(List<DomainGroupTarget> groupList, int limitSize) {

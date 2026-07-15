@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.exception.request;
 
-import com.ums.schedule.common.exception.ResourceNotFoundException;
+import com.ums.schedule.domain.exception.ResourceNotFoundException;
 
 public class SendRequestNotFoundException extends ResourceNotFoundException {
     protected SendRequestNotFoundException() {

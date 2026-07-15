@@ -3,8 +3,8 @@ package com.ums.schedule.application.ums.email.security.model;
 import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.PasswordTypeEnum;
-import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.PasswordTypeEnum;
+import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
 
 import java.util.Map;
 

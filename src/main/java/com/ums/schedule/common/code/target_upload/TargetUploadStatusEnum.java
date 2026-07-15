@@ -2,7 +2,7 @@ package com.ums.schedule.common.code.target_upload;
 
 import com.ums.schedule.common.converter.StatusState;
 import com.ums.schedule.common.converter.StatusStateFactory;
-import com.ums.schedule.domain.sendrequest.target.upload.state.*;
+import com.ums.schedule.domain.request.target.upload.state.*;
 
 public enum TargetUploadStatusEnum implements StatusStateFactory {
     CREATED("CREATED", "대상자 업로드 생성") {

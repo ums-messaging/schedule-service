@@ -4,7 +4,7 @@ import com.ums.schedule.application.ums.common.message.model.SendMessageCreateCo
 import com.ums.schedule.common.code.message.MessageType;
 import com.ums.schedule.domain.exception.email.MessageTypeNotFoundException;
 import com.ums.schedule.domain.exception.email.SendMessageMissingException;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.exception.request.SendRequestNotFoundException;
 import com.ums.schedule.fixture.message.SendMessageCreateCommandBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;

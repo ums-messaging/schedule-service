@@ -3,7 +3,7 @@ package com.ums.schedule.application.ums.email.message.model;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailResult;
 import com.ums.schedule.domain.message.SendMessage;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 
 public record EmailMessageCreateContext(
         SendMessage sendMessage,
@@ -16,9 +16,9 @@ public record EmailMessageCreateContext(
       return new EmailMessageCreateContext(
               sendMessage,
               template.msgTitle(),
-              template.getHeaderFooter().get(EmailTemplateSectionEnum.HEADER).fileKey(),
+              template.getHeaderFooter().get(EmailMessageSection.HEADER).fileKey(),
               policy.bodyKey(),
-              template.getHeaderFooter().get(EmailTemplateSectionEnum.FOOTER).fileKey()
+              template.getHeaderFooter().get(EmailMessageSection.FOOTER).fileKey()
       );
    }
 }

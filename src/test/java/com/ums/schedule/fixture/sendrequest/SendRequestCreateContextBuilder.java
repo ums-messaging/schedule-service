@@ -2,12 +2,12 @@ package com.ums.schedule.fixture.sendrequest;
 
 import com.ums.schedule.application.sendrequest.context.SendRequestCreateContext;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.common.code.common.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.customer.CustomerRequestKey;
+import com.ums.schedule.common.code.common.ChannelType;
+import com.ums.schedule.domain.request.customer.CustomerRequestKey;
 import com.ums.schedule.domain.message.SendMessage;
 
 public class SendRequestCreateContextBuilder {
-    private ChannelTypeEnum channelType;
+    private ChannelType channelType;
     private Schedule schedule;
     private CustomerRequestKey customerKey;
     private SendMessage sendMessage;
@@ -19,7 +19,7 @@ public class SendRequestCreateContextBuilder {
         return new SendRequestCreateContextBuilder();
     }
     private SendRequestCreateContextBuilder() {
-        channelType = ChannelTypeEnum.EMAIL;
+        channelType = ChannelType.EMAIL;
         templateKey = "my_template";
         senderKey = "jang@test.com";
         retryCnt = 3;
@@ -37,7 +37,7 @@ public class SendRequestCreateContextBuilder {
         );
     }
 
-    public SendRequestCreateContextBuilder channelType(ChannelTypeEnum channelType) {
+    public SendRequestCreateContextBuilder channelType(ChannelType channelType) {
         this.channelType = channelType;
         return this;
     }

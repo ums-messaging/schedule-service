@@ -7,14 +7,14 @@ import com.ums.schedule.adapter.api.target.request.JsonTargetUploadRequest;
 import com.ums.schedule.application.sendrequest.target.command.TargetUploadCreateCommand;
 import com.ums.schedule.application.sendrequest.target.processor.TargetUploadProcessor;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
+import com.ums.schedule.common.code.common.ChannelType;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.config.properties.TargetUploadProperties;
 import com.ums.schedule.domain.message.ChannelMessage;
-import com.ums.schedule.common.code.common.ChannelTypeEnum;
 import com.ums.schedule.common.code.request.SendRequestEnumMapper;
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReportJpaRepository;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReportJpaRepository;
 import com.ums.schedule.common.code.target_upload.TargetUploadReportEnumMapper;
 import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 import lombok.RequiredArgsConstructor;
@@ -45,11 +45,11 @@ public class TargetUploadReportService {
         return null;
     }
 
-    private TargetUploadCreateCommand toCommand(ChannelTypeEnum channelType, FileTargetUploadRequest fileRequest, JsonTargetUploadRequest jsonRequest) {
+    private TargetUploadCreateCommand toCommand(ChannelType channelType, FileTargetUploadRequest fileRequest, JsonTargetUploadRequest jsonRequest) {
         Map<TargetUploadReportEnumMapper, EnumMapperValue> toMapperMap = toMapperMap(fileRequest.uploadFormat(), fileRequest.uploadFormat());
         return toUploadCommand(channelType, toMapperMap, properties, jsonRequest.targetList());
     }
-    private TargetUploadCreateCommand toUploadCommand(ChannelTypeEnum channelType, Map<TargetUploadReportEnumMapper, EnumMapperValue> toMapperMap, TargetUploadProperties properties, List<SendTargetCreateRequest> targetRequestList) {
+    private TargetUploadCreateCommand toUploadCommand(ChannelType channelType, Map<TargetUploadReportEnumMapper, EnumMapperValue> toMapperMap, TargetUploadProperties properties, List<SendTargetCreateRequest> targetRequestList) {
         return TargetUploadCreateCommand.of(channelType, toMapperMap, properties, targetRequestList);
     }
 

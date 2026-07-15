@@ -2,8 +2,8 @@ package com.ums.schedule.fixture.email.convert;
 
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
 
 public class EmailConvertPolicyBuilder {
     private EnumMapperValue convertType;
@@ -15,7 +15,7 @@ public class EmailConvertPolicyBuilder {
     }
 
     private EmailConvertPolicyBuilder() {
-        this.convertType = EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.PDF);
+        this.convertType = EnumMapperValue.fromEnumMapperType(ConvertType.PDF);
         this.bodyKey = "body.html";
         this.convertedAttachment = ConvertedAttachmentBuilder.builder().build();
     }

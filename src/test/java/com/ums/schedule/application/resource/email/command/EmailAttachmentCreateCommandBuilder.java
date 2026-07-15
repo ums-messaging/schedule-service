@@ -2,6 +2,10 @@ package com.ums.schedule.application.resource.email.command;
 
 import com.ums.schedule.application.message.email.model.AttachmentCreateCommand;
 import com.ums.schedule.common.code.email.*;
+import com.ums.schedule.common.code.email.security.EncryptionTypeEnum;
+import com.ums.schedule.common.code.email.security.PasswordHashEnum;
+import com.ums.schedule.common.code.email.security.PermissionMaskEnum;
+import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 
 import java.util.HashMap;
@@ -29,7 +33,7 @@ public class EmailAttachmentCreateCommandBuilder {
     }
 
     private EmailAttachmentCreateCommandBuilder() {
-        this.convertType = EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE);
+        this.convertType = EnumMapperValue.fromEnumMapperType(ConvertType.NONE);
         this.attachmentName = "file_attachment_name";
         this.downloadName = "file_download_name";
 

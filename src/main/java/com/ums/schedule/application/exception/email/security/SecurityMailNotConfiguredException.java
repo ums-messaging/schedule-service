@@ -2,8 +2,8 @@ package com.ums.schedule.application.exception.email.security;
 
 
 import com.ums.schedule.application.exception.ApplicationException;
-import com.ums.schedule.common.code.email.PasswordTypeEnum;
-import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.PasswordTypeEnum;
+import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
 
 public class SecurityMailNotConfiguredException extends ApplicationException {
     protected SecurityMailNotConfiguredException(String code) {

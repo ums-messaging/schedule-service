@@ -1,15 +1,15 @@
 package com.ums.schedule.domain.send.group;
 
-import com.ums.schedule.domain.send.code.ResultCodeEnum;
+import com.ums.schedule.common.code.email.EmailResultCode;
 import com.ums.schedule.common.code.request.SendGroupEventTypeEnum;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 
 import java.time.LocalDateTime;
 
 public class SendGroupTestBuilder {
     private SendGroupEventTypeEnum eventType = SendGroupEventTypeEnum.SEND_GROUP_CREATED;
-    private ResultCodeEnum resultCode = ResultCodeEnum.SUCCESS;
+    private EmailResultCode resultCode = EmailResultCode.SUCCESS;
     private String resultMessage;
     private SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
     private String payload;
@@ -25,7 +25,7 @@ public class SendGroupTestBuilder {
         return this;
     }
 
-    public SendGroupTestBuilder resultCode(ResultCodeEnum resultCode) {
+    public SendGroupTestBuilder resultCode(EmailResultCode resultCode) {
         this.resultCode = resultCode;
         return this;
     }

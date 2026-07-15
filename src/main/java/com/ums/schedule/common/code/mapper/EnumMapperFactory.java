@@ -1,7 +1,6 @@
 package com.ums.schedule.common.code.mapper;
 
-import com.ums.schedule.common.exception.EnumMapperNotEmptyException;
-import com.ums.schedule.common.exception.EnumMapperNotFoundException;
+import com.ums.schedule.application.exception.mapper.EnumMapperNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 

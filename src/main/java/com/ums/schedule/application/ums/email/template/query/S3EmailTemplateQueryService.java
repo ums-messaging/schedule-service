@@ -8,8 +8,8 @@ import com.ums.schedule.application.ums.email.template.query.model.EmailTemplate
 import com.ums.schedule.application.ums.email.template.query.model.*;
 import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.config.properties.EmailTemplateProperties;
-import com.ums.schedule.common.code.email.EmailTemplatePathTypeEnum;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailUploadPrefixType;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -25,46 +25,46 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
 
     @Override
     public EmailTemplateResult findTemplate(EmailTemplateDetailQuery command) {
-        Map<EmailTemplatePathTypeEnum, String> propertiesMap = toConfiguredMap(command);
-        List<EmailTemplateContentResult> templateList = createTemplateList(propertiesMap.get(EmailTemplatePathTypeEnum.TEMPLATE_PREFIX), command);
-        List<EmailTemplateContentResult> attachments = createAttachmentList(propertiesMap.get(EmailTemplatePathTypeEnum.ATTACHMENT_SUFFIX), command);
+        Map<EmailUploadPrefixType, String> propertiesMap = toConfiguredMap(command);
+        List<EmailTemplateContentResult> templateList = createTemplateList(propertiesMap.get(EmailUploadPrefixType.TEMPLATE_PREFIX), command);
+        List<EmailTemplateContentResult> attachments = createAttachmentList(propertiesMap.get(EmailUploadPrefixType.ATTACHMENT_SUFFIX), command);
         EmailTemplateDetailResult detail = createEmailTemplateDetail(propertiesMap, command, templateList, attachments);
         return EmailTemplateResult.of(detail);
     }
 
-    private Map<EmailTemplatePathTypeEnum, String> toConfiguredMap(EmailTemplateDetailQuery command) {
+    private Map<EmailUploadPrefixType, String> toConfiguredMap(EmailTemplateDetailQuery command) {
         String templateDir = generateTemplateDir(command);
 
-        Map<EmailTemplatePathTypeEnum, String> propertiesMap = new EnumMap<>(EmailTemplatePathTypeEnum.class);
-        propertiesMap.put(EmailTemplatePathTypeEnum.TEMPLATE_PREFIX, templateDir);
-        propertiesMap.put(EmailTemplatePathTypeEnum.IMAGE_SUFFIX, generateImageDir(templateDir, command.templateKey()));
-        propertiesMap.put(EmailTemplatePathTypeEnum.ATTACHMENT_SUFFIX, generateAttachmentDir(templateDir, command.templateKey()));
+        Map<EmailUploadPrefixType, String> propertiesMap = new EnumMap<>(EmailUploadPrefixType.class);
+        propertiesMap.put(EmailUploadPrefixType.TEMPLATE_PREFIX, templateDir);
+        propertiesMap.put(EmailUploadPrefixType.IMAGE_SUFFIX, generateImageDir(templateDir, command.templateKey()));
+        propertiesMap.put(EmailUploadPrefixType.ATTACHMENT_SUFFIX, generateAttachmentDir(templateDir, command.templateKey()));
 
         return propertiesMap;
     }
     private String generateTemplateDir(EmailTemplateDetailQuery command) {
         String prefix = properties.templateKeyPrefix();
         if(!StringUtils.hasText(prefix)) {
-            throw TemplateNotConfiguredException.of(command.templateKey(), EmailTemplatePathTypeEnum.TEMPLATE_PREFIX);
+            throw TemplateNotConfiguredException.of(command.templateKey(), EmailUploadPrefixType.TEMPLATE_PREFIX);
         }
         return FileUtil.generateFilePaths(prefix, command.customerId(), command.templateKey());
     }
     private String generateImageDir(String templateDir, String templateKey) {
         String suffix = properties.imageKeySuffix();
         if(!StringUtils.hasText(suffix)) {
-            throw TemplateNotConfiguredException.of(templateKey, EmailTemplatePathTypeEnum.IMAGE_SUFFIX);
+            throw TemplateNotConfiguredException.of(templateKey, EmailUploadPrefixType.IMAGE_SUFFIX);
         }
         return FileUtil.generateFilePaths(templateDir, suffix);
     }
     private String generateAttachmentDir(String templateDir, String templateKey) {
         String suffix = properties.attachmentKeySuffix();
         if(!StringUtils.hasText(suffix)) {
-            throw TemplateNotConfiguredException.of(templateKey, EmailTemplatePathTypeEnum.ATTACHMENT_SUFFIX);
+            throw TemplateNotConfiguredException.of(templateKey, EmailUploadPrefixType.ATTACHMENT_SUFFIX);
         }
         return FileUtil.generateFilePaths(templateDir, suffix);
     }
 
-    private EmailTemplateDetailResult createEmailTemplateDetail(Map<EmailTemplatePathTypeEnum, String> propertiesMap,
+    private EmailTemplateDetailResult createEmailTemplateDetail(Map<EmailUploadPrefixType, String> propertiesMap,
                                                                 EmailTemplateDetailQuery command, List<EmailTemplateContentResult> templateList,
                                                                 List<EmailTemplateContentResult> attachments) {
         List<EmailTemplateContentResult> contentList = Stream.concat(templateList.stream(), attachments.stream())
@@ -121,15 +121,15 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
         return contents;
     }
 
-    private List<EmailTemplateSectionEnum> getEmailSectionList() {
+    private List<EmailMessageSection> getEmailSectionList() {
         return List.of(
-                EmailTemplateSectionEnum.HEADER,
-                EmailTemplateSectionEnum.BODY,
-                EmailTemplateSectionEnum.FOOTER,
-                EmailTemplateSectionEnum.COVER
+                EmailMessageSection.HEADER,
+                EmailMessageSection.BODY,
+                EmailMessageSection.FOOTER,
+                EmailMessageSection.COVER
         );
     }
-    private EmailTemplateContext toTemplateContext(EmailTemplateSectionEnum section, EmailTemplateDetailQuery command, String templateDir) {
+    private EmailTemplateContext toTemplateContext(EmailMessageSection section, EmailTemplateDetailQuery command, String templateDir) {
         String fileName = "%s.html".formatted(section.code().toLowerCase());
         String fileKey = FileUtil.generateFilePaths(templateDir, fileName);
         return command.toContext(section, fileKey);

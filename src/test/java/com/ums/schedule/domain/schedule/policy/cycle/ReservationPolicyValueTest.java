@@ -1,9 +1,9 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.common.code.schedule.CycleCdEnum;
-import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.CycleCd;
+import com.ums.schedule.common.code.schedule.ScheduleType;
 import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
-import com.ums.schedule.common.exception.validation.InvalidDateFormatException;
+import com.ums.schedule.domain.exception.validation.InvalidDateFormatException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -48,8 +48,8 @@ class ReservationPolicyValueTest {
         ReservationPolicyValue result = ReservationPolicyValue.of(format);
 
         assertThat(result.getCycleValue()).isEqualTo(format);
-        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.RESERVATION);
-        assertThat(result.getCycleCdEnum()).isEqualTo(CycleCdEnum.ONCE);
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleType.RESERVATION);
+        assertThat(result.getCycleCdEnum()).isEqualTo(CycleCd.ONCE);
 
     }
 }

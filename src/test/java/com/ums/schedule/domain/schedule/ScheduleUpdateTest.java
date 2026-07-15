@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
-import com.ums.schedule.common.exception.validation.RequiredException;
+import com.ums.schedule.domain.exception.validation.RequiredException;
 import com.ums.schedule.domain.exception.schedule.InvalidSchedulePeriodException;
 import com.ums.schedule.domain.exception.schedule.InvalidScheduleStatusException;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;

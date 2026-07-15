@@ -4,7 +4,7 @@ import com.ums.schedule.adapter.api.email.smtp.response.SmtpSessionInfo;
 import com.ums.schedule.application.send.mime.MimeWriter;
 import com.ums.schedule.domain.send.email.mime.MimeMessage;
 import com.ums.schedule.adapter.api.email.smtp.response.EmailSmtpResponse;
-import com.ums.schedule.domain.send.email.code.EmailSendCommand;
+import com.ums.schedule.common.code.email.SmtpCommandType;
 import com.ums.schedule.domain.send.email.job.DomainGroupTarget;
 import com.ums.schedule.domain.send.email.job.EmailSendJob;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class EmailSmtpClient {
                 }
             }
 
-            session.sendCommand(EmailSendCommand.QUIT);
+            session.sendCommand(SmtpCommandType.QUIT);
         } catch (ConnectException e) {
             if(retryCount == 3) {
                 throw new RuntimeException(e);

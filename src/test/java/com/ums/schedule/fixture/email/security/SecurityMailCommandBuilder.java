@@ -1,8 +1,8 @@
 package com.ums.schedule.fixture.email.security;
 
 import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand;
-import com.ums.schedule.common.code.email.PasswordTypeEnum;
-import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.PasswordTypeEnum;
+import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
 
 import java.util.EnumMap;
 import java.util.Map;

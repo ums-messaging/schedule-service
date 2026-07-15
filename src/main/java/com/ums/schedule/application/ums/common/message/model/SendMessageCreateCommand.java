@@ -1,7 +1,7 @@
 package com.ums.schedule.application.ums.common.message.model;
 
 import com.ums.schedule.common.code.message.MessageType;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 
 public record SendMessageCreateCommand(
         SendRequest sendRequest,

@@ -1,8 +1,8 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.common.code.schedule.CycleCdEnum;
-import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
-import com.ums.schedule.domain.sendrequest.converter.ScheduleTypeConverter;
+import com.ums.schedule.common.code.schedule.CycleCd;
+import com.ums.schedule.common.code.schedule.ScheduleType;
+import com.ums.schedule.domain.request.converter.ScheduleTypeConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,11 +19,11 @@ import java.time.LocalTime;
 public class ScheduleCyclePolicy {
     @Convert(converter = ScheduleTypeConverter.class)
     @Column(nullable = false)
-    private ScheduleTypeEnum scheduleType;
+    private ScheduleType scheduleType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CycleCdEnum cycleCd;
+    private CycleCd cycleCd;
 
     private String cycleValue;
 
@@ -38,11 +38,11 @@ public class ScheduleCyclePolicy {
     }
 
     public static ScheduleCyclePolicy realtimeOf() {
-        return new ScheduleCyclePolicy(ScheduleTypeEnum.REALTIME, CycleCdEnum.ALWAYS, null, null);
+        return new ScheduleCyclePolicy(ScheduleType.REALTIME, CycleCd.ALWAYS, null, null);
     }
 
     public boolean satisfiedCyclePolicy(LocalDateTime requestedAt) {
-        if(scheduleType != ScheduleTypeEnum.RESERVATION) {
+        if(scheduleType != ScheduleType.RESERVATION) {
             return true;
         }
 

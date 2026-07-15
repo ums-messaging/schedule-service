@@ -8,15 +8,15 @@ import com.ums.schedule.application.ums.email.convert.handler.PdfMessageConverte
 import com.ums.schedule.application.message.email.handler.PdfSecurityConverter;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.util.JsonUtil;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.fixture.email.attachment.EmailAttachmentBuilder;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
-import com.ums.schedule.domain.sendrequest.target.SendTarget;
+import com.ums.schedule.domain.request.target.SendTarget;
 import com.ums.schedule.common.code.target.SendTargetStatusEnum;
 import com.ums.schedule.common.code.target.TargetColumnEnum;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 import com.ums.schedule.application.ums.email.template.EmailTemplate;
 import freemarker.template.Template;
 import org.junit.jupiter.api.BeforeEach;
@@ -152,17 +152,17 @@ class EmailSendTargetGeneratorTest {
         @BeforeEach
         void setUp() {
             EmailAttachment pdfDocument = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.PDF)
+                    .convertType(ConvertType.PDF)
                     .fileKeyTemplate("${targetKey}.pdf")
                     .build();
 
             EmailAttachment htmlDocument = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.HTML)
+                    .convertType(ConvertType.HTML)
                     .fileKeyTemplate("${targetKey}.html")
                     .build();
 
             EmailAttachment noneDocument = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.NONE)
+                    .convertType(ConvertType.NONE)
                     .fileKeyTemplate("${targetKey}.html")
                     .build();
 
@@ -237,7 +237,7 @@ class EmailSendTargetGeneratorTest {
         void shouldParseSecurityPassword() {
             SecurityMailPolicy policy = mock(SecurityMailPolicy.class);
             EmailAttachment attachment = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.PDF)
+                    .convertType(ConvertType.PDF)
                     .fileKeyTemplate("${targetKey}.html")
                     .securityPolicy(policy)
                     .build();
@@ -273,17 +273,17 @@ class EmailSendTargetGeneratorTest {
         @BeforeEach
         void setUp() {
             EmailAttachment pdfDocument = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.PDF)
+                    .convertType(ConvertType.PDF)
                     .fileKeyTemplate("${targetKey}.pdf")
                     .build();
 
             EmailAttachment htmlDocument = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.HTML)
+                    .convertType(ConvertType.HTML)
                     .fileKeyTemplate("${targetKey}.html")
                     .build();
 
             EmailAttachment noneDocument = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.NONE)
+                    .convertType(ConvertType.NONE)
                     .fileKeyTemplate("${targetKey}.html")
                     .build();
 
@@ -325,17 +325,17 @@ class EmailSendTargetGeneratorTest {
         @BeforeEach
         void setUp() {
             EmailAttachment pdfDocument = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.PDF)
+                    .convertType(ConvertType.PDF)
                     .fileKeyTemplate("${targetKey}.pdf")
                     .build();
 
             EmailAttachment htmlDocument = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.HTML)
+                    .convertType(ConvertType.HTML)
                     .fileKeyTemplate("${targetKey}.html")
                     .build();
 
             EmailAttachment noneDocument = EmailAttachmentBuilder.builder()
-                    .convertType(ConvertTypeEnum.NONE)
+                    .convertType(ConvertType.NONE)
                     .fileKeyTemplate("${targetKey}.html")
                     .build();
 

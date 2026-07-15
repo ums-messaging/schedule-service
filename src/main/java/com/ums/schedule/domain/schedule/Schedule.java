@@ -6,16 +6,15 @@ import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
 import com.ums.schedule.domain.exception.schedule.InvalidScheduleStatusException;
 import com.ums.schedule.domain.exception.schedule.ScheduleExpiredException;
 import com.ums.schedule.domain.exception.schedule.ScheduleNotExecutableException;
-import com.ums.schedule.common.code.schedule.ScheduleEventEnum;
-import com.ums.schedule.common.exception.validation.RequiredException;
-import com.ums.schedule.domain.sendrequest.converter.ScheduleStatusConverter;
-import com.ums.schedule.common.code.schedule.ScheduleStatusEnum;
-import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.ScheduleEvent;
+import com.ums.schedule.domain.exception.validation.RequiredException;
+import com.ums.schedule.domain.request.converter.ScheduleStatusConverter;
+import com.ums.schedule.common.code.schedule.ScheduleStatus;
+import com.ums.schedule.common.code.schedule.ScheduleType;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
-import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -46,10 +45,10 @@ public class Schedule {
 
     @Column(name = "status", nullable = false, updatable = false)
     @Convert(converter = ScheduleStatusConverter.class)
-    private ScheduleStatus scheduleStatus;
+    private com.ums.schedule.domain.schedule.state.ScheduleStatus scheduleStatus;
 
     @Transient
-    private ScheduleStatusEnum status;
+    private ScheduleStatus status;
 
     @Embedded
     private SchedulePeriod schedulePeriod;
@@ -83,7 +82,7 @@ public class Schedule {
     }
 
     public boolean availableSchedulePeriodAndStatus() {
-        return this.status == ScheduleStatusEnum.RUNNING && this.schedulePeriod.contains(LocalDateTime.now());
+        return this.status == ScheduleStatus.RUNNING && this.schedulePeriod.contains(LocalDateTime.now());
     }
 
     private void applyScheduleCyclePolicy(ScheduleCyclePolicy cyclePolicy) {
@@ -92,7 +91,7 @@ public class Schedule {
     }
 
     private void validateSchedulePeriodToReservationDate(ScheduleCyclePolicy cyclePolicy) {
-        if(cyclePolicy.getScheduleType() == ScheduleTypeEnum.RESERVATION) {
+        if(cyclePolicy.getScheduleType() == ScheduleType.RESERVATION) {
             LocalDateTime reservationDate = getParseReservationDate(cyclePolicy);
             if(!schedulePeriod.contains(reservationDate)) {
                 throw InvalidCycleValueException.compareToReservationDate();
@@ -109,12 +108,12 @@ public class Schedule {
         this.schedulePeriod = SchedulePeriod.of(scheduleStartAt, scheduleEndAt);
     }
 
-    private void changeScheduleStatus(ScheduleStatus scheduleStatus) {
+    private void changeScheduleStatus(com.ums.schedule.domain.schedule.state.ScheduleStatus scheduleStatus) {
         this.scheduleStatus = scheduleStatus;
     }
 
-    public void toStatus(ScheduleEventEnum event) {
-        ScheduleStatus toState = this.scheduleStatus.onEvent(event);
+    public void toStatus(ScheduleEvent event) {
+        com.ums.schedule.domain.schedule.state.ScheduleStatus toState = this.scheduleStatus.onEvent(event);
         changeScheduleStatus(toState);
     }
 

@@ -1,8 +1,8 @@
 package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
-import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.ConvertType;
+import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ public class EmailMessageCreateCommandBuilder {
     private String passwordHash;
 
     public EmailMessageCreateCommandBuilder() {
-        this.convertType = EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE);
+        this.convertType = EnumMapperValue.fromEnumMapperType(ConvertType.NONE);
         this.attachmentName = "${targetId}";
         this.downloadName = "${targetName}";
         this.fileKey = "1234567.html";
@@ -34,7 +34,7 @@ public class EmailMessageCreateCommandBuilder {
     }
 
     public EmailMessageCreateCommandBuilder convertType(
-            ConvertTypeEnum convertType) {
+            ConvertType convertType) {
         this.convertType = EnumMapperValue.fromEnumMapperType(convertType);
         return this;
     }

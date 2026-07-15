@@ -10,7 +10,7 @@ import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
 import com.ums.schedule.domain.message.SendMessage;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -3,11 +3,10 @@ package com.ums.schedule.fixture.schedule;
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
 import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.common.code.schedule.ScheduleStatusEnum;
+import com.ums.schedule.common.code.schedule.ScheduleStatus;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
-import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,8 +15,8 @@ import java.util.UUID;
 public class ScheduleEntityBuilder {
     private String name = "scheduleName";
     private ScheduleCyclePolicy cyclePolicy = ScheduleCyclePolicy.realtimeOf();
-    private ScheduleStatus scheduleStatus = new ScheduleRunningStatus();
-    private ScheduleStatusEnum status = ScheduleStatusEnum.RUNNING;
+    private com.ums.schedule.domain.schedule.state.ScheduleStatus scheduleStatus = new ScheduleRunningStatus();
+    private ScheduleStatus status = ScheduleStatus.RUNNING;
     private SchedulePeriod schedulePeriod = SchedulePeriodEntityBuilder.builder().build();
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
@@ -37,7 +36,7 @@ public class ScheduleEntityBuilder {
         return this;
     }
 
-    public ScheduleEntityBuilder status(ScheduleStatus status) {
+    public ScheduleEntityBuilder status(com.ums.schedule.domain.schedule.state.ScheduleStatus status) {
         this.scheduleStatus = status;
         this.status = (scheduleStatus != null) ? status.getCurrentCode() : null;
         return this;

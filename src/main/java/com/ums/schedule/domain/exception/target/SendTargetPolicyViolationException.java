@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.exception.target;
 
-import com.ums.schedule.common.exception.PolicyViolationException;
+import com.ums.schedule.domain.exception.PolicyViolationException;
 
 public abstract class SendTargetPolicyViolationException extends PolicyViolationException {
     protected SendTargetPolicyViolationException(String message) {

@@ -2,7 +2,7 @@ package com.ums.schedule.repository.mapping.request;
 
 import com.ums.schedule.domain.send.group.SendGroupEvent;
 import com.ums.schedule.domain.send.group.SendGroupTestBuilder;
-import com.ums.schedule.domain.sendrequest.*;
+import com.ums.schedule.domain.request.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;

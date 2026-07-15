@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.exception.target_upload;
 
-import com.ums.schedule.common.exception.InvalidStateException;
+import com.ums.schedule.domain.exception.InvalidStateException;
 import com.ums.schedule.common.code.target_upload.TargetUploadEventEnum;
 import com.ums.schedule.common.code.target_upload.TargetUploadStatusEnum;
 

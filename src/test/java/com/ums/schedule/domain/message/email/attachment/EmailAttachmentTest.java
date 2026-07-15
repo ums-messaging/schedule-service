@@ -1,15 +1,15 @@
 package com.ums.schedule.domain.message.email.attachment;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
-import com.ums.schedule.common.exception.validation.InvalidFileExtensionException;
-import com.ums.schedule.common.exception.validation.RequiredException;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
+import com.ums.schedule.domain.exception.validation.InvalidFileExtensionException;
+import com.ums.schedule.domain.exception.validation.RequiredException;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.exception.email.EmailAttachmentMissingException;
 import com.ums.schedule.domain.exception.email.EmailSendMessageNotFoundException;
 import com.ums.schedule.common.code.email.AttachmentType;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
-import com.ums.schedule.domain.sendrequest.message.email.EmailSendMessageBuilder;
+import com.ums.schedule.domain.request.message.email.EmailSendMessageBuilder;
 import com.ums.schedule.fixture.email.attachment.EmailAttachmentCreateContextBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +39,7 @@ class EmailAttachmentTest {
         @BeforeEach
         void setUp() {
             contextBuilder
-                    .convertType(ConvertTypeEnum.NONE)
+                    .convertType(ConvertType.NONE)
                     .fileKeyMap(Map.of(
                             AttachmentType.DIRECT,
                             "attachment.html"
@@ -54,7 +54,7 @@ class EmailAttachmentTest {
 
             EmailAttachment result = EmailAttachment.of(context);
 
-            assertThat(result.getConvertType()).isEqualTo(ConvertTypeEnum.NONE);
+            assertThat(result.getConvertType()).isEqualTo(ConvertType.NONE);
         }
 
         @Nested
@@ -171,7 +171,7 @@ class EmailAttachmentTest {
         @DisplayName("보안 정책은 존재하지 않는다.")
         void shouldReturnNullSecurityMailPolicy() {
             AttachmentCreateCommand context = contextBuilder
-                    .convertType(ConvertTypeEnum.NONE)
+                    .convertType(ConvertType.NONE)
                     .fileKeyMap(Map.of(
                             AttachmentType.DIRECT,
                             "attachment.html"
@@ -211,7 +211,7 @@ class EmailAttachmentTest {
             );
             contextBuilder = EmailAttachmentCreateContextBuilder.builder()
                     .sendMessage(mock(EmailSendMessage.class))
-                    .convertType(ConvertTypeEnum.HTML)
+                    .convertType(ConvertType.HTML)
                     .fileKeyMap(bodyKeyMap)
                     ;
         }
@@ -221,7 +221,7 @@ class EmailAttachmentTest {
         void shouldReturnHtml() {
             EmailAttachment result = EmailAttachment.of(contextBuilder.build());
 
-            assertThat(result.getConvertType()).isEqualTo(ConvertTypeEnum.HTML);
+            assertThat(result.getConvertType()).isEqualTo(ConvertType.HTML);
         }
 
         @Test
@@ -358,7 +358,7 @@ class EmailAttachmentTest {
         void setUp() {
             contextBuilder = EmailAttachmentCreateContextBuilder.builder()
                     .sendMessage(mock(EmailSendMessage.class))
-                    .convertType(ConvertTypeEnum.PDF)
+                    .convertType(ConvertType.PDF)
                     .fileKeyMap(
                         Map.of(
                                 AttachmentType.DIRECT, "body.html",
@@ -372,7 +372,7 @@ class EmailAttachmentTest {
         void shouldReturnHtml() {
             EmailAttachment result = EmailAttachment.of(contextBuilder.build());
 
-            assertThat(result.getConvertType()).isEqualTo(ConvertTypeEnum.PDF);
+            assertThat(result.getConvertType()).isEqualTo(ConvertType.PDF);
         }
 
         @Test
@@ -563,7 +563,7 @@ class EmailAttachmentTest {
     void shouldRelateWithEmailSendMessage() {
         EmailSendMessage sendMessage = EmailSendMessageBuilder.builder().build();
         AttachmentCreateCommand context = contextBuilder.sendMessage(sendMessage)
-                .convertType(ConvertTypeEnum.NONE)
+                .convertType(ConvertType.NONE)
                 .fileKeyMap(Map.of(
                         AttachmentType.TEMPLATE, "template.html"
                 ))

@@ -2,7 +2,7 @@ package com.ums.schedule.domain.schedule.policy.cycle;
 
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.schedule.ScheduleEnumMapper;
-import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.ScheduleType;
 import com.ums.schedule.application.schedule.factory.cycle_policy.DayCyclePolicyFactory;
 import com.ums.schedule.application.schedule.factory.cycle_policy.HourCyclePolicyFactory;
 import com.ums.schedule.application.schedule.factory.cycle_policy.MinuteCyclePolicyFactory;
@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static com.ums.schedule.common.code.mapper.EnumMapperValue.fromEnumMapperType;
-import static com.ums.schedule.common.code.schedule.CycleCdEnum.*;
+import static com.ums.schedule.common.code.schedule.CycleCd.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -47,7 +47,7 @@ public class CycleScheduleFactoryTest {
     @Test
     @DisplayName("ScheduleType이 CYCLE이면 TRUE를 반환한다.")
     void shouldReturnTrue_whenScheduleTypeIsCycle() {
-        boolean result = factory.supports(fromEnumMapperType(ScheduleTypeEnum.CYCLE));
+        boolean result = factory.supports(fromEnumMapperType(ScheduleType.CYCLE));
         assertThat(result).isTrue();
     }
 
@@ -75,7 +75,7 @@ public class CycleScheduleFactoryTest {
 
         ScheduleCyclePolicy result = factory.create(MONTH.value(), "3");
 
-        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleType.CYCLE);
         assertThat(result.getCycleCd()).isEqualTo(MONTH);
         assertThat(result.getPolicyValue().getCycleValue()).isEqualTo("3");
     }
@@ -90,7 +90,7 @@ public class CycleScheduleFactoryTest {
 
         ScheduleCyclePolicy result = factory.create(DAY.value(), "3");
 
-        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleType.CYCLE);
         assertThat(result.getCycleCd()).isEqualTo(DAY);
         assertThat(result.getPolicyValue().getCycleValue()).isEqualTo("3");
     }
@@ -105,7 +105,7 @@ public class CycleScheduleFactoryTest {
 
         ScheduleCyclePolicy result = factory.create(MINUTE.value(), "3");
 
-        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleType.CYCLE);
         assertThat(result.getCycleCd()).isEqualTo(MINUTE);
         assertThat(result.getPolicyValue().getCycleValue()).isEqualTo("3");
     }
@@ -120,7 +120,7 @@ public class CycleScheduleFactoryTest {
 
         ScheduleCyclePolicy result = factory.create(HOUR.value(), "3");
 
-        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.CYCLE);
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleType.CYCLE);
         assertThat(result.getCycleCd()).isEqualTo(HOUR);
         assertThat(result.getPolicyValue().getCycleValue()).isEqualTo("3");
     }

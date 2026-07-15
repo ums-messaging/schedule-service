@@ -1,16 +1,16 @@
 package com.ums.schedule.application.ums.email.template.query.model;
 
 import com.ums.schedule.adapter.storage.AwsS3FileMetadataResponse;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 
 public record EmailTemplateContext(
-        EmailTemplateSectionEnum section,
+        EmailMessageSection section,
         String fileKey,
         String fileKeyTemplate,
         String attachmentName,
         String downloadName
 ) {
-    public static EmailTemplateContext of(EmailTemplateSectionEnum section, EmailTemplateDetailQuery command, String fileKey) {
+    public static EmailTemplateContext of(EmailMessageSection section, EmailTemplateDetailQuery command, String fileKey) {
         return new EmailTemplateContext(
                 section,
                 fileKey,
@@ -24,14 +24,14 @@ public record EmailTemplateContext(
     }
     public static EmailTemplateContext of(EmailAttachmentDetailQuery command, String fileKey, String fileKeyTemplate) {
         return new EmailTemplateContext(
-                EmailTemplateSectionEnum.ATTACHMENT,
+                EmailMessageSection.ATTACHMENT,
                 fileKey,
                 fileKeyTemplate,
                 command.attachmentName(),
                 command.downloadName()
         );
     }
-    public static EmailTemplateContext of(EmailTemplateSectionEnum section, EmailTemplateDetailQuery command, String fileKey, String fileKeyTemplate) {
+    public static EmailTemplateContext of(EmailMessageSection section, EmailTemplateDetailQuery command, String fileKey, String fileKeyTemplate) {
         return new EmailTemplateContext(
                 section,
                 fileKey,

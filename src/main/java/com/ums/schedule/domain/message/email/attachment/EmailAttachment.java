@@ -1,16 +1,16 @@
 package com.ums.schedule.domain.message.email.attachment;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
-import com.ums.schedule.common.exception.validation.InvalidFileExtensionException;
-import com.ums.schedule.common.exception.validation.InvalidFilenameValueException;
+import com.ums.schedule.domain.exception.validation.InvalidFileExtensionException;
+import com.ums.schedule.domain.exception.validation.InvalidFilenameValueException;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.domain.exception.email.EmailAttachmentMissingException;
 import com.ums.schedule.domain.exception.email.EmailSendMessageNotFoundException;
 import com.ums.schedule.common.code.email.AttachmentType;
-import com.ums.schedule.domain.sendrequest.target.SendTarget;
+import com.ums.schedule.domain.request.target.SendTarget;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -33,7 +33,7 @@ public class EmailAttachment {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "convert_type", nullable = false)
-    private ConvertTypeEnum convertType;
+    private ConvertType convertType;
 
     @Embedded
     private SecurityMailPolicy securityPolicy;
@@ -63,8 +63,8 @@ public class EmailAttachment {
     }
 
     private void initializeByConvertType(AttachmentCreateCommand context) {
-        ConvertTypeEnum convertType = context.convertType();
-        if(convertType == ConvertTypeEnum.NONE) {
+        ConvertType convertType = context.convertType();
+        if(convertType == ConvertType.NONE) {
             initializeAttachment(context);
             return;
         }
@@ -99,7 +99,7 @@ public class EmailAttachment {
     }
 
 
-    private void assignConvertType(ConvertTypeEnum convertType) {
+    private void assignConvertType(ConvertType convertType) {
         this.convertType = convertType;
     }
 
@@ -187,7 +187,7 @@ public class EmailAttachment {
     }
 
     public String resolveTemplateFileKey(SendTarget target) {
-        if(this.convertType != ConvertTypeEnum.NONE) {
+        if(this.convertType != ConvertType.NONE) {
             ValidationUtils.isEmpty("file_key_template", fileKeyTemplate);
             return target.parse(this.fileKeyTemplate);
         }

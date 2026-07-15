@@ -1,10 +1,10 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.common.code.schedule.CycleCdEnum;
+import com.ums.schedule.common.code.schedule.CycleCd;
 import com.ums.schedule.application.schedule.factory.cycle_policy.CyclePolicy;
 import com.ums.schedule.application.schedule.factory.cycle_policy.DayCyclePolicyFactory;
 import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
-import com.ums.schedule.common.exception.validation.InvalidNumberFormatException;
+import com.ums.schedule.domain.exception.validation.InvalidNumberFormatException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ class DayCyclePolicyTest {
         CyclePolicy policy = new DayCyclePolicyFactory();
         SchedulePolicyValue cycleValue = policy.create(30);
 
-        assertThat(cycleValue.getCycleCdEnum()).isEqualTo(CycleCdEnum.DAY);
+        assertThat(cycleValue.getCycleCdEnum()).isEqualTo(CycleCd.DAY);
     }
 
     @Test

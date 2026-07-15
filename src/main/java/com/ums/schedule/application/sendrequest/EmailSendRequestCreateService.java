@@ -4,7 +4,7 @@ import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
 import com.ums.schedule.adapter.api.request.response.EmailSendRequestCreateResponse;
 import com.ums.schedule.application.ums.email.message.EmailMessageCreateService;
 import com.ums.schedule.application.sendrequest.target.report.TargetUploadReportService;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

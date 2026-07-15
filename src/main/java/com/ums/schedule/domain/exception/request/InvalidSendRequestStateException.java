@@ -1,27 +1,27 @@
 package com.ums.schedule.domain.exception.request;
 
-import com.ums.schedule.common.exception.InvalidStateException;
-import com.ums.schedule.common.code.request.SendRequestEventEnum;
-import com.ums.schedule.common.code.request.SendRequestStatusEnum;
+import com.ums.schedule.domain.exception.InvalidStateException;
+import com.ums.schedule.common.code.request.SendRequestEvent;
+import com.ums.schedule.common.code.request.SendRequestStatus;
 
 public class InvalidSendRequestStateException extends InvalidStateException {
     public InvalidSendRequestStateException(String message) {
         super(message);
     }
 
-    public InvalidSendRequestStateException(SendRequestStatusEnum from, SendRequestEventEnum to) {
+    public InvalidSendRequestStateException(SendRequestStatus from, SendRequestEvent to) {
         super(from.code(), to.value());
     }
 
-    private InvalidSendRequestStateException(SendRequestStatusEnum status) {
+    private InvalidSendRequestStateException(SendRequestStatus status) {
         super("%s 상태는 처리할 수 없습니다.".formatted(status.description()));
     }
 
-    public static InvalidSendRequestStateException of(SendRequestStatusEnum from, SendRequestEventEnum to) {
+    public static InvalidSendRequestStateException of(SendRequestStatus from, SendRequestEvent to) {
         return new InvalidSendRequestStateException(from, to);
     }
 
-    public static InvalidSendRequestStateException of(SendRequestStatusEnum status) {
+    public static InvalidSendRequestStateException of(SendRequestStatus status) {
         return new InvalidSendRequestStateException(status);
     }
 }

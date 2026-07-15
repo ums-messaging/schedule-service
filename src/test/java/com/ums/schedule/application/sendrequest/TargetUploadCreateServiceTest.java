@@ -5,14 +5,14 @@ import com.ums.schedule.application.sendrequest.command.TargetUploadCreateComman
 import com.ums.schedule.application.sendrequest.target.result.FileTargetUploadResult;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.exception.EnumMapperNotFoundException;
+import com.ums.schedule.application.exception.mapper.EnumMapperNotFoundException;
 import com.ums.schedule.config.properties.TargetUploadProperties;
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.common.code.request.SendRequestStatusEnum;
-import com.ums.schedule.domain.sendrequest.state.SendRequestCreateState;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReportJpaRepository;
-import com.ums.schedule.domain.sendrequest.target.upload.builder.TargetUploadCreateCommandBuilder;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.common.code.request.SendRequestStatus;
+import com.ums.schedule.domain.request.state.SendRequestCreateState;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReportJpaRepository;
+import com.ums.schedule.domain.request.target.upload.builder.TargetUploadCreateCommandBuilder;
 import com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum;
 import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
@@ -196,7 +196,7 @@ class TargetUploadCreateServiceTest {
 
             targetUploadService.create(sendRequest, command);
 
-            assertThat(sendRequest.getState().getCurrentCode()).isEqualTo(SendRequestStatusEnum.HOLDING);
+            assertThat(sendRequest.getState().getCurrentCode()).isEqualTo(SendRequestStatus.HOLDING);
         }
 
         @Test

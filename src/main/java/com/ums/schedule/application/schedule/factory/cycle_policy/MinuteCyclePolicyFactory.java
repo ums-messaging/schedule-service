@@ -5,7 +5,7 @@ import com.ums.schedule.domain.schedule.policy.cycle.CyclePolicyValue;
 import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
 import org.springframework.stereotype.Component;
 
-import static com.ums.schedule.common.code.schedule.CycleCdEnum.MINUTE;
+import static com.ums.schedule.common.code.schedule.CycleCd.MINUTE;
 
 
 @Component

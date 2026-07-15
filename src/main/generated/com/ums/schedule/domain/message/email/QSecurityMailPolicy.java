@@ -7,9 +7,9 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.ums.schedule.common.code.email.EncryptionTypeEnum;
-import com.ums.schedule.common.code.email.PasswordHashEnum;
-import com.ums.schedule.common.code.email.PermissionMaskEnum;
+import com.ums.schedule.common.code.email.security.EncryptionTypeEnum;
+import com.ums.schedule.common.code.email.security.PasswordHashEnum;
+import com.ums.schedule.common.code.email.security.PermissionMaskEnum;
 
 
 /**

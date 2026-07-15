@@ -2,8 +2,8 @@ package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
-import com.ums.schedule.common.code.email.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.ConvertType;
+import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public record AttachmentCreateCommand(
 
     public static AttachmentCreateCommand of(EmailTemplateContentResult content) {
         return new AttachmentCreateCommand(
-            EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE),
+            EnumMapperValue.fromEnumMapperType(ConvertType.NONE),
             content.attachmentName(),
             content.downloadName(),
             content.fileKeyTemplate(),

@@ -7,10 +7,10 @@ import com.ums.schedule.application.ums.email.config.EmailMessageProperties;
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -23,7 +23,7 @@ public class AttachmentEmailConvertPolicy implements EmailMessageConvertStrategy
     private final EmailMessageProperties properties;
     @Override
     public boolean supports(EnumMapperValue mapperValue) {
-        return !ConvertTypeEnum.NONE.equals(ConvertTypeEnum.valueOf(mapperValue.code()));
+        return !ConvertType.NONE.equals(ConvertType.valueOf(mapperValue.code()));
     }
 
     @Override
@@ -31,12 +31,12 @@ public class AttachmentEmailConvertPolicy implements EmailMessageConvertStrategy
         ConvertedAttachment convertedAttachment = convertToAttachment(convertType, command.body());
         String bodyKey = Optional.ofNullable(command.cover())
                 .map(AttachmentContext::key)
-                .orElseThrow(() -> TemplateNotFoundException.of(EmailTemplateSectionEnum.COVER));
+                .orElseThrow(() -> TemplateNotFoundException.of(EmailMessageSection.COVER));
         return EmailConvertResult.of(bodyKey, convertedAttachment);
     }
 
     private ConvertedAttachment convertToAttachment(EnumMapperValue convertTypeValue, AttachmentContext body) {
-        ConvertTypeEnum convertType = resolveConvertType(convertTypeValue);
+        ConvertType convertType = resolveConvertType(convertTypeValue);
         String fileKeyTemplate = properties.getConvertFileKeyTemplate();
         if (!StringUtils.hasText(fileKeyTemplate)) {
             throw ConvertMessageNotConfiguredException.of("convert.file_key_template");
@@ -44,10 +44,10 @@ public class AttachmentEmailConvertPolicy implements EmailMessageConvertStrategy
         return ConvertedAttachment.of(convertType, body, fileKeyTemplate);
     }
 
-    private ConvertTypeEnum resolveConvertType(EnumMapperValue convertTypeValue) {
+    private ConvertType resolveConvertType(EnumMapperValue convertTypeValue) {
         return Optional.ofNullable(convertTypeValue)
-                .map(v -> ConvertTypeEnum.valueOf(v.code()))
-                .filter(v -> v != ConvertTypeEnum.NONE)
+                .map(v -> ConvertType.valueOf(v.code()))
+                .filter(v -> v != ConvertType.NONE)
                 .orElseThrow(ConvertTypeNotSupportedException::of);
     }
 }

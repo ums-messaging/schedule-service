@@ -2,7 +2,7 @@ package com.ums.schedule.fixture.message;
 
 import com.ums.schedule.application.ums.common.message.model.SendMessageCreateCommand;
 import com.ums.schedule.common.code.message.MessageType;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.domain.request.SendRequest;
 
 public class SendMessageCreateCommandBuilder {
     private SendRequest sendRequest;

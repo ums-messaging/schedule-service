@@ -5,10 +5,10 @@ import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand
 import com.ums.schedule.application.sendrequest.result.SendRequestCreateResult;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
 import com.ums.schedule.common.config.SendRequestProperties;
-import com.ums.schedule.common.exception.validation.DuplicateViolationException;
-import com.ums.schedule.common.exception.validation.ValidationException;
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.sendrequest.SendRequestRepository;
+import com.ums.schedule.domain.exception.validation.DuplicateViolationException;
+import com.ums.schedule.domain.exception.validation.ValidationException;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.domain.request.SendRequestRepository;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleJpaRepository;
 

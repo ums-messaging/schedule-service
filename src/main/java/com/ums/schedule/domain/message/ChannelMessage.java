@@ -1,10 +1,10 @@
 package com.ums.schedule.domain.message;
 
-import com.ums.schedule.common.code.common.ChannelTypeEnum;
+import com.ums.schedule.common.code.common.ChannelType;
 
 import java.util.UUID;
 
 public interface ChannelMessage {
-    ChannelTypeEnum channelType();
+    ChannelType channelType();
     UUID getId();
 }

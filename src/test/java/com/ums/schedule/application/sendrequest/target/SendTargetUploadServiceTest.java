@@ -7,16 +7,16 @@ import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.application.sendrequest.target.assembler.EmailSendTargetAssembler;
 import com.ums.schedule.application.sendrequest.target.event.SendTargetFailedEvent;
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
-import com.ums.schedule.common.code.common.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.target.SendTarget;
-import com.ums.schedule.domain.sendrequest.target.SendTargetTestBuilder;
-import com.ums.schedule.domain.sendrequest.target.state.SendTargetFailState;
-import com.ums.schedule.domain.sendrequest.target.state.SendTargetReadyState;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.common.code.common.ChannelType;
+import com.ums.schedule.domain.request.target.SendTarget;
+import com.ums.schedule.domain.request.target.SendTargetTestBuilder;
+import com.ums.schedule.domain.request.target.state.SendTargetFailState;
+import com.ums.schedule.domain.request.target.state.SendTargetReadyState;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.common.code.target_upload.TargetUploadStatusEnum;
 import com.ums.schedule.domain.exception.target_upload.InvalidTargetTotalCountMismatchException;
-import com.ums.schedule.domain.sendrequest.target.upload.state.TargetUploadRequestState;
+import com.ums.schedule.domain.request.target.upload.state.TargetUploadRequestState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SendTargetUploadServiceTest {
-    private final Map<ChannelTypeEnum, SendTargetAssembler> targetAssemblerMap = new HashMap<>();
+    private final Map<ChannelType, SendTargetAssembler> targetAssemblerMap = new HashMap<>();
     @Mock private ApplicationEventPublisher publisher;
     @Mock private EmailSendTargetAssembler targetAssembler;
     @Mock private SendTargetService targetService;
@@ -48,7 +48,7 @@ class SendTargetUploadServiceTest {
 
     @BeforeEach
     void setUp() {
-        targetAssemblerMap.put(ChannelTypeEnum.EMAIL, targetAssembler);
+        targetAssemblerMap.put(ChannelType.EMAIL, targetAssembler);
         this.targetUploadService =
                 new SendTargetUploadService(targetAssemblerMap, publisher, targetService);
 
@@ -80,7 +80,7 @@ class SendTargetUploadServiceTest {
         TargetUploadReport report = TargetUploadReportEntityBuilder.builder()
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L).build();
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
 
         SendTargetSaveResult givenResult = SendTargetSaveResult.of(targetList);
 
@@ -111,7 +111,7 @@ class SendTargetUploadServiceTest {
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L).build();
 
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
 
         targetUploadService.upload(report, keyData, targetDataList, 20);
     }
@@ -123,7 +123,7 @@ class SendTargetUploadServiceTest {
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
 
         List<SendTarget> targetList = new ArrayList<>();
         createCompleteTargetList(targetList, 20);
@@ -144,7 +144,7 @@ class SendTargetUploadServiceTest {
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
 
         SendTargetSaveResult givenResult = SendTargetSaveResult.of(targetList);
 
@@ -163,7 +163,7 @@ class SendTargetUploadServiceTest {
                 .uploadStatus(new TargetUploadRequestState())
                 .totalCount(20L)
                 .build();
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
         SendTargetSaveResult givenResult = SendTargetSaveResult.of(targetList);
 
         doReturn(targetList).when(targetAssembler).assemble(any(), any(), any());
@@ -182,7 +182,7 @@ class SendTargetUploadServiceTest {
                 .totalCount(20L)
                 .build();
 
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
 
         List<SendTarget> targetList = new ArrayList<>();
         createCompleteTargetList(targetList, 20);
@@ -214,7 +214,7 @@ class SendTargetUploadServiceTest {
                 .totalCount(20L)
                 .build();
 
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
 
         List<SendTarget> targetList = new ArrayList<>();
         createCompleteTargetList(targetList, 5);
@@ -240,7 +240,7 @@ class SendTargetUploadServiceTest {
                 .totalCount(20L)
                 .build();
 
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
 
         List<SendTarget> targetList = new ArrayList<>();
         createCompleteTargetList(targetList, 5);
@@ -265,7 +265,7 @@ class SendTargetUploadServiceTest {
                 .totalCount(20L)
                 .build();
 
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
 
         List<SendTarget> targetList = new ArrayList<>();
         createCompleteTargetList(targetList, 5);
@@ -293,7 +293,7 @@ class SendTargetUploadServiceTest {
                 .totalCount(20L)
                 .build();
 
-        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelTypeEnum.EMAIL);
+        SendRequestKeyData keyData = SendRequestKeyData.of(1L, UUID.randomUUID().toString(), ChannelType.EMAIL);
 
         List<SendTarget> targetList = new ArrayList<>();
         createCompleteTargetList(targetList, 10);

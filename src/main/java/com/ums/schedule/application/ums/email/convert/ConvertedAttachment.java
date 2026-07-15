@@ -2,22 +2,22 @@ package com.ums.schedule.application.ums.email.convert;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.email.AttachmentType;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
 import org.flywaydb.core.internal.util.StringUtils;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 public record ConvertedAttachment(
-        ConvertTypeEnum convertType,
+        ConvertType convertType,
         String fileKey,
         String fileKeyTemplate,
         Long fileSize,
         String attachmentName,
         String downloadName
 ) {
-    public static ConvertedAttachment of(ConvertTypeEnum convertType, AttachmentContext context, String fileKeyTemplate) {
+    public static ConvertedAttachment of(ConvertType convertType, AttachmentContext context, String fileKeyTemplate) {
         String fullFileKeyTemplate = "%s.%s".formatted(fileKeyTemplate, convertType.description());
         return new ConvertedAttachment(
                 convertType,
@@ -31,7 +31,7 @@ public record ConvertedAttachment(
 
     public static ConvertedAttachment of(EmailTemplateContentResult content) {
         return new ConvertedAttachment(
-                ConvertTypeEnum.NONE,
+                ConvertType.NONE,
                 content.fileKey(),
                 content.fileKeyTemplate(),
                 content.fileSize(),

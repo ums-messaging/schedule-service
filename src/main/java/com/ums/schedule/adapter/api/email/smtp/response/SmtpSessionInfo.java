@@ -2,7 +2,7 @@ package com.ums.schedule.adapter.api.email.smtp.response;
 
 
 import com.ums.schedule.adapter.api.email.dns.DnsQuery;
-import com.ums.schedule.domain.send.email.code.EmailSendCommand;
+import com.ums.schedule.common.code.email.SmtpCommandType;
 import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
@@ -49,7 +49,7 @@ public record SmtpSessionInfo(
     }
 
     public void queryHelo(String ehlo) throws IOException {
-        sendCommand(EmailSendCommand.EHLO.toCommand(ehlo));
+        sendCommand(SmtpCommandType.EHLO.toCommand(ehlo));
 
         while(true) {
             String readLine = readLine();
@@ -75,7 +75,7 @@ public record SmtpSessionInfo(
         }
     }
 
-    public void sendCommand(EmailSendCommand command, String ehlo) throws IOException {
+    public void sendCommand(SmtpCommandType command, String ehlo) throws IOException {
         sendCommand(command.value()+ehlo);
     }
 
@@ -85,7 +85,7 @@ public record SmtpSessionInfo(
         this.os.flush();
     }
 
-    public void sendCommand(EmailSendCommand command) throws IOException {
+    public void sendCommand(SmtpCommandType command) throws IOException {
         sendCommand(command.description());
     }
 

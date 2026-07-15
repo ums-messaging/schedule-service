@@ -1,8 +1,8 @@
 package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
-import com.ums.schedule.common.code.schedule.ScheduleEventEnum;
-import com.ums.schedule.common.exception.validation.RequiredException;
+import com.ums.schedule.common.code.schedule.ScheduleEvent;
+import com.ums.schedule.domain.exception.validation.RequiredException;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ReservationPolicyValue;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
@@ -61,7 +61,7 @@ class ScheduleCreateTest {
                     .status(new ScheduleActiveStatus())
                     .build();
 
-            schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
+            schedule.toStatus(ScheduleEvent.TO_RUNNING);
 
             assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleRunningStatus.class);
         }
@@ -74,7 +74,7 @@ class ScheduleCreateTest {
                     .build();
 
             //when
-            schedule.toStatus(ScheduleEventEnum.TO_ACTIVE);
+            schedule.toStatus(ScheduleEvent.TO_ACTIVE);
 
             assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleActiveStatus.class);
         }
@@ -83,7 +83,7 @@ class ScheduleCreateTest {
         @DisplayName("스케쥴 상태가 ACTIVE일 때, InACTIVE로 변경하면 Status는 INACTIVE가 반환된다.")
         void shouldReturnStatusDeActive_whenCallToInActive(){
             Schedule schedule = ScheduleEntityBuilder.builder().status(new ScheduleActiveStatus()).build();
-            schedule.toStatus(ScheduleEventEnum.TO_INACTIVE);
+            schedule.toStatus(ScheduleEvent.TO_INACTIVE);
 
             assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleInActiveStatus.class);
         }
@@ -159,7 +159,7 @@ class ScheduleCreateTest {
         ScheduleCyclePolicy policy = ScheduleCyclePolicy.realtimeOf();
 
         Schedule schedule = Schedule.of(command, policy);
-        schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
+        schedule.toStatus(ScheduleEvent.TO_RUNNING);
 
         boolean expect = schedule.availableSchedulePeriodAndStatus();
 
@@ -174,7 +174,7 @@ class ScheduleCreateTest {
         ScheduleCyclePolicy policy = ScheduleCyclePolicy.realtimeOf();
 
         Schedule schedule = Schedule.of(command, policy);
-        schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
+        schedule.toStatus(ScheduleEvent.TO_RUNNING);
 
         boolean expect = schedule.availableSchedulePeriodAndStatus();
 

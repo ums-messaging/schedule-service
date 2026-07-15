@@ -1,8 +1,8 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.schedule.CycleCdEnum;
-import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.CycleCd;
+import com.ums.schedule.common.code.schedule.ScheduleType;
 import com.ums.schedule.application.schedule.factory.schedule_policy.RealtimeScheduleFactory;
 import com.ums.schedule.application.schedule.factory.schedule_policy.SchedulePolicyFactory;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +15,7 @@ class RealtimeScheduleFactoryTest {
     @DisplayName("ScheduleType이 REALTIME이면 true를 반환한다.")
     void shouldReturnTrue_whenScheduleTypeIsRealtime() {
         SchedulePolicyFactory cyclePolicy = new RealtimeScheduleFactory();
-        boolean result = cyclePolicy.supports(EnumMapperValue.fromEnumMapperType(ScheduleTypeEnum.REALTIME));
+        boolean result = cyclePolicy.supports(EnumMapperValue.fromEnumMapperType(ScheduleType.REALTIME));
         assertThat(result).isTrue();
     }
 
@@ -28,7 +28,7 @@ class RealtimeScheduleFactoryTest {
         ScheduleCyclePolicy policy = cyclePolicy.create(null, null);
 
         // Then
-        assertThat(policy.getCycleCd()).isEqualTo(CycleCdEnum.ALWAYS);
-        assertThat(policy.getScheduleType()).isEqualTo(ScheduleTypeEnum.REALTIME);
+        assertThat(policy.getCycleCd()).isEqualTo(CycleCd.ALWAYS);
+        assertThat(policy.getScheduleType()).isEqualTo(ScheduleType.REALTIME);
     }
 }

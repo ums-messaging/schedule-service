@@ -8,8 +8,8 @@ import com.ums.schedule.application.ums.email.convert.handler.PdfMessageConverte
 import com.ums.schedule.application.message.email.handler.PdfSecurityConverter;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.ums.email.template.EmailTemplateLoader;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.config.properties.SecurityPolicyProperties;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.exception.template.TemplateNotFoundException;
 import freemarker.template.TemplateException;
@@ -50,13 +50,13 @@ class AttachmentConversionPipelineTest {
 
         @BeforeEach
         void setUp() {
-            builder = builder.convertType(ConvertTypeEnum.HTML);
+            builder = builder.convertType(ConvertType.HTML);
         }
 
         @Test
         @DisplayName("convert_type이 HTML이고, securityPolicy 여부가 false이면 지원한다.")
         void shouldSupport_whenConvertTypeIsHtml() {
-            boolean expect = pipeline.supports(ConvertTypeEnum.HTML, false);
+            boolean expect = pipeline.supports(ConvertType.HTML, false);
             assertThat(expect).isTrue();
         }
 
@@ -88,7 +88,7 @@ class AttachmentConversionPipelineTest {
         @Test
         @DisplayName("convert_type이 HTML이 아니면 빈 내용이 저장된다.")
         void shouldSaveEmptyContent_whenConvertTypeIsNotHtml() throws TemplateException, IOException {
-            AttachmentPipelineCommand command = builder.convertType(ConvertTypeEnum.PDF).build();
+            AttachmentPipelineCommand command = builder.convertType(ConvertType.PDF).build();
             doReturn(templateContent).when(templateLoader).loadAndCompileTemplate(any(), any());
 
             result = pipeline.handle(command);
@@ -166,7 +166,7 @@ class AttachmentConversionPipelineTest {
 
         @BeforeEach
         void setUp() throws IOException {
-            builder = builder.convertType(ConvertTypeEnum.PDF);
+            builder = builder.convertType(ConvertType.PDF);
             tempDir = Files.createTempFile("test", ".pdf");
             tempFile = tempDir.toFile();
         }
@@ -174,7 +174,7 @@ class AttachmentConversionPipelineTest {
         @Test
         @DisplayName("convert_type이 PDF이고, securityPolicy가 NULL이면 지원한다.")
         void shouldSupport_whenConvertTypeIsPdfAndSecurityPolicyIsNull() {
-            boolean expect = handler.supports(ConvertTypeEnum.PDF, false);
+            boolean expect = handler.supports(ConvertType.PDF, false);
             assertThat(expect).isTrue();
         }
         @Test
@@ -235,7 +235,7 @@ class AttachmentConversionPipelineTest {
         private String templateContent = "<html><body><h1>test</h1></body></html>";
         @BeforeEach
         void setUp() throws IOException {
-            builder = builder.convertType(ConvertTypeEnum.PDF);
+            builder = builder.convertType(ConvertType.PDF);
 
             tempFile = tempDir.resolve("test.pdf").toFile();
 
@@ -250,7 +250,7 @@ class AttachmentConversionPipelineTest {
         @Test
         @DisplayName("convert_type이 PDF이고, securityPolicy가 NULL이 아니면 지원한다.")
         void shouldSupport_whenConvertTypeIsPdfAndSecurityPolicyIsNotNull() {
-            boolean expect = handler.supports(ConvertTypeEnum.PDF, true);
+            boolean expect = handler.supports(ConvertType.PDF, true);
 
             assertThat(expect).isTrue();
         }
@@ -349,7 +349,7 @@ class AttachmentConversionPipelineTest {
     }
 
     private static class AttachmentPipelineCommandBuilder {
-        private ConvertTypeEnum convertType;
+        private ConvertType convertType;
         private String filePrefix;
         private String fileSuffix;
         private String fileKey;
@@ -382,7 +382,7 @@ class AttachmentConversionPipelineTest {
         }
 
 
-        AttachmentPipelineCommandBuilder convertType(ConvertTypeEnum convertType) {
+        AttachmentPipelineCommandBuilder convertType(ConvertType convertType) {
             this.convertType = convertType;
             return this;
         }

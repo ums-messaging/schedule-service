@@ -1,23 +1,23 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.common.code.schedule.CycleCdEnum;
-import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.CycleCd;
+import com.ums.schedule.common.code.schedule.ScheduleType;
 
 public class ScheduleCyclePolicyTestBuilder {
-    private ScheduleTypeEnum scheduleType = ScheduleTypeEnum.REALTIME;
-    private CycleCdEnum cycleCd = CycleCdEnum.ALWAYS;
+    private ScheduleType scheduleType = ScheduleType.REALTIME;
+    private CycleCd cycleCd = CycleCd.ALWAYS;
     private String cycleValue = "";
 
     public static ScheduleCyclePolicyTestBuilder builder() {
         return new ScheduleCyclePolicyTestBuilder();
     }
 
-    public ScheduleCyclePolicyTestBuilder scheduleType(ScheduleTypeEnum scheduleType) {
+    public ScheduleCyclePolicyTestBuilder scheduleType(ScheduleType scheduleType) {
         this.scheduleType = scheduleType;
         return this;
     }
 
-    public ScheduleCyclePolicyTestBuilder cycleCd(CycleCdEnum cycleCd) {
+    public ScheduleCyclePolicyTestBuilder cycleCd(CycleCd cycleCd) {
         this.cycleCd = cycleCd;
         return this;
     }

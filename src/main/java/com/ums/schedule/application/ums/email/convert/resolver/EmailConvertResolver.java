@@ -5,11 +5,11 @@ import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConver
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
 import com.ums.schedule.application.ums.email.convert.strategy.EmailMessageConvertStrategy;
+import com.ums.schedule.common.code.email.ConvertType;
+import com.ums.schedule.common.code.email.EmailEnumMapper;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
-import com.ums.schedule.common.code.email.ConvertTypeEnum;
-import com.ums.schedule.common.code.template.TemplateEnumMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +36,13 @@ public class EmailConvertResolver {
 
     private EnumMapperValue resolveConvertType(String convertType, SecurityMail securityMail) {
         return Optional.ofNullable(convertType)
-                .map(type -> mapperFactory.findEnumMapperValue(TemplateEnumMapper.CONVERT_TYPE, type))
+                .map(type -> mapperFactory.findEnumMapperValue(EmailEnumMapper.CONVERT_TYPE, type))
                 .orElseGet(() -> resolveConvertTypeBySecurityPolicy(securityMail));
     }
 
     private EnumMapperValue resolveConvertTypeBySecurityPolicy(SecurityMail securityMail) {
         return Optional.ofNullable(securityMail)
-                .map(policy -> EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.HTML))
-                .orElse(EnumMapperValue.fromEnumMapperType(ConvertTypeEnum.NONE));
+                .map(policy -> EnumMapperValue.fromEnumMapperType(ConvertType.HTML))
+                .orElse(EnumMapperValue.fromEnumMapperType(ConvertType.NONE));
     }
 }

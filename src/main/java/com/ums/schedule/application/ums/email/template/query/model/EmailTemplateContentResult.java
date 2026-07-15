@@ -2,9 +2,9 @@ package com.ums.schedule.application.ums.email.template.query.model;
 
 
 import com.ums.schedule.adapter.storage.AwsS3FileMetadataResponse;
-import com.ums.schedule.domain.send.email.code.ContentTypeEnum;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
-import com.ums.schedule.common.code.email.TemplateContentFormatEnum;
+import com.ums.schedule.common.code.common.FileContentType;
+import com.ums.schedule.common.code.email.EmailMessageSection;
+import com.ums.schedule.common.code.email.EmailTemplateFormat;
 
 public record EmailTemplateContentResult(
         String format,
@@ -19,9 +19,9 @@ public record EmailTemplateContentResult(
     public static EmailTemplateContentResult of(EmailTemplateContext context,
                                                 AwsS3FileMetadataResponse metadata) {
         return new EmailTemplateContentResult(
-                TemplateContentFormatEnum.FILE.value(),
+                EmailTemplateFormat.FILE.value(),
                 context.section().code(),
-                ContentTypeEnum.HTML.code(),
+                FileContentType.HTML.code(),
                 context.attachmentName(),
                 context.downloadName(),
                 context.fileKeyTemplate(),
@@ -31,9 +31,9 @@ public record EmailTemplateContentResult(
     }
     public static EmailTemplateContentResult of(EmailTemplateContext context) {
         return new EmailTemplateContentResult(
-                TemplateContentFormatEnum.FILE.value(),
+                EmailTemplateFormat.FILE.value(),
                 context.section().code(),
-                ContentTypeEnum.HTML.code(),
+                FileContentType.HTML.code(),
                 context.attachmentName(),
                 context.downloadName(),
                 context.fileKeyTemplate(),
@@ -41,9 +41,9 @@ public record EmailTemplateContentResult(
                 null
         );
     }
-    public static EmailTemplateContentResult of(EmailTemplateSectionEnum section, EmailAttachmentDetailQuery command, AwsS3FileMetadataResponse response) {
+    public static EmailTemplateContentResult of(EmailMessageSection section, EmailAttachmentDetailQuery command, AwsS3FileMetadataResponse response) {
         return new EmailTemplateContentResult(
-                TemplateContentFormatEnum.FILE.code(),
+                EmailTemplateFormat.FILE.code(),
                 section.code(),
                 null,
                 null,
@@ -56,8 +56,8 @@ public record EmailTemplateContentResult(
 
     public static EmailTemplateContentResult of(String fileKey) {
         return new EmailTemplateContentResult(
-                TemplateContentFormatEnum.FILE.value(),
-                EmailTemplateSectionEnum.ATTACHMENT.code(),
+                EmailTemplateFormat.FILE.value(),
+                EmailMessageSection.ATTACHMENT.code(),
                 null,
                 null,
                 null,

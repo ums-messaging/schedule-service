@@ -1,18 +1,18 @@
 package com.ums.schedule.domain.send.email.job;
 
 import com.github.f4b6a3.tsid.TsidCreator;
-import com.ums.schedule.common.code.schedule.ScheduleTypeEnum;
-import com.ums.schedule.domain.sendrequest.SendRequest;
+import com.ums.schedule.common.code.schedule.ScheduleType;
+import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
 
 import java.time.LocalDateTime;
 
 public record SendJob(
         Long jobId,
         Long scheduleId,
-        ScheduleTypeEnum scheduleType,
+        ScheduleType scheduleType,
         Long requestId,
         Long reportId,
         String targetUploadId,

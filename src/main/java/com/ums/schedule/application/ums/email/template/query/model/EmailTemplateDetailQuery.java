@@ -1,7 +1,7 @@
 package com.ums.schedule.application.ums.email.template.query.model;
 
 import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
-import com.ums.schedule.common.code.email.EmailTemplateSectionEnum;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +33,7 @@ public record EmailTemplateDetailQuery(
         );
     }
 
-    public EmailTemplateContext toContext(EmailTemplateSectionEnum section, String fileKey) {
+    public EmailTemplateContext toContext(EmailMessageSection section, String fileKey) {
         return EmailTemplateContext.of(section, this, fileKey);
     }
 
