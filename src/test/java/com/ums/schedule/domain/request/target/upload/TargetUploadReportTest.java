@@ -2,6 +2,7 @@ package com.ums.schedule.domain.request.target.upload;
 
 import com.ums.schedule.application.target.upload.model.TargetUploadReportCreateContext;
 import com.ums.schedule.common.code.api.SendRequestErrorCode;
+import com.ums.schedule.common.code.api.TargetUploadErrorCode;
 import com.ums.schedule.common.code.common.ChannelType;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.code.target_upload.TargetUploadType;
@@ -11,8 +12,12 @@ import com.ums.schedule.domain.request.state.*;
 import com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum;
 import com.ums.schedule.common.code.target_upload.TargetUploadStatus;
 import com.ums.schedule.domain.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.upload.exception.InvalidTargetUploadStateException;
+import com.ums.schedule.domain.target.upload.exception.TargetUploadPolicyViolationException;
+import com.ums.schedule.domain.target.upload.state.*;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.fixture.target_upload.TargetUploadReportCreateContextBuilder;
+import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
@@ -96,26 +101,11 @@ public class TargetUploadReportTest {
                         .build();
 
                 TargetUploadReport report = TargetUploadReport.of(context);
-                String expect = "/target/upload/result/hyejin_company/1/email/%s.xlsx".formatted(report.getId().toString());
+                String expect = "%s/%s.xlsx".formatted(downloadKeyPrefix, report.getId().toString());
 
                 assertThat(report.getDownloadKey()).isEqualTo(expect);
             }
 
-//            @Test
-//            @DisplayName("다운로드 키 생성 경로가 빈 값이면 예외가 발생한다.")
-//            void shouldThrowException_whenDownloadKeyPrefixIsEmpty() {
-//                TargetUploadReportCreateContext context = contextBuilder
-//                        .sendRequest(sendRequest)
-//                        .channelType(ChannelType.EMAIL)
-//                        .downloadKeyPrefix("")
-//                        .build();
-//
-//                TargetDownloadKeyGenerationFailedException expect = TargetDownloadKeyGenerationFailedException.of();
-//
-//                assertThatThrownBy(() -> TargetUploadReport.of(context))
-//                        .isInstanceOf(expect.getClass())
-//                        .hasMessage(expect.getMessage());
-//            }
         }
 
         @Nested
@@ -299,37 +289,19 @@ public class TargetUploadReportTest {
             }
 
             @Test
-            @DisplayName("업로드 키는 정해진 규칙에 의해 생성된다.")
+            @DisplayName("업로드 키의 파일명은 ID와 업로드 포맷으로 생성된다.")
             void shouldGenerateUploadKeyAccordingToRule() {
-                SendRequest sendRequest = SendRequestEntityBuilder.builder()
-                        .id(1L)
-                        .customerRequestKey("hyejin_company", "jang314")
-                        .build();
-
                 TargetUploadReportCreateContext context = contextBuilder
-                        .sendRequest(sendRequest)
                         .uploadFormat(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.EXCEL))
                         .channelType(ChannelType.EMAIL)
-                        .downloadKeyPrefix(uploadKeyPrefix)
+                        .uploadKeyPrefix(uploadKeyPrefix)
                         .build();
 
                 TargetUploadReport report = TargetUploadReport.of(context);
-                String expect = "/target/upload/hyejin_company/1/email/%s.xlsx".formatted(report.getId().toString());
+                String expect = "%s/%s.xlsx".formatted(uploadKeyPrefix, report.getId().toString());
 
-                assertThat(report.getDownloadKey()).isEqualTo(expect);
+                assertThat(report.getUploadKey()).isEqualTo(expect);
             }
-
-//            @Test
-//            @DisplayName("업로드 키 생성 경로가 빈 값이면 예외가 발생한다.")
-//            void shouldThrowException_whenUploadKeyPrefixIsEmpty() {
-//                TargetUploadReportCreateContext context = contextBuilder.uploadKeyPrefix("").build();
-//
-//                TargetUploadKeyGenerationFailedException expect = TargetUploadKeyGenerationFailedException.of();
-//
-//                assertThatThrownBy(() -> TargetUploadReport.of(context))
-//                        .isInstanceOf(expect.getClass())
-//                        .hasMessage(expect.getMessage());
-//            }
 
             @Test
             @DisplayName("UPLOAD_FORMAT이 존재하지 않으면 CSV를 반환한다.")
@@ -340,6 +312,121 @@ public class TargetUploadReportTest {
 
                 assertThat(report.getUploadFormat()).isEqualTo(TargetUploadFormatEnum.CSV);
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("대상자 업로드 요청")
+    class WhenTargetUploadRequest {
+        private TargetUploadReportEntityBuilder builder;
+
+        @BeforeEach
+        void setUp() {
+            builder = TargetUploadReportEntityBuilder.builder()
+                    .uploadType(TargetUploadType.FILE)
+                    .uploadStatus(new TargetUploadWaitingState());
+        }
+
+        @Test
+        @DisplayName("업로드 상태가 CREATE이면 예외가 발생한다.")
+        void shouldThrowException_whenStateIsCreate() {
+            TargetUploadReport uploadReport = builder.uploadStatus(new TargetUploadCreateState())
+                    .build();
+
+            InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.CREATED, TargetUploadStatus.REQUEST);
+
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("업로드 상태가 WAITING이면 REQUEST로 변경된다.")
+        void shouldChangeToRequest_whenStateIsWaiting() {
+            TargetUploadReport uploadReport = builder.uploadStatus(new TargetUploadWaitingState())
+                    .build();
+
+            uploadReport.requestTargetUpload(0);
+
+            assertThat(uploadReport.getState().getCurrentCode())
+                    .isEqualTo(TargetUploadStatus.REQUEST);
+        }
+
+        @Test
+        @DisplayName("업로드 상태가 REQUEST이면 예외가 발생한다.")
+        void shouldThrowException_whenStateIsRequest() {
+            TargetUploadReport uploadReport = builder.uploadStatus(new TargetUploadRequestState())
+                    .build();
+
+            InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.REQUEST, TargetUploadStatus.REQUEST);
+
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("업로드 상태가 PARSING이면 예외가 발생한다.")
+        void shouldThrowException_whenStateIsParsing() {
+            TargetUploadReport uploadReport = builder.uploadStatus(new TargetUploadParsingState())
+                    .build();
+
+            InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.REQUEST, TargetUploadStatus.PARSING);
+
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("업로드 상태가 FAIL이면 예외가 발생한다.")
+        void shouldThrowException_whenStateIsFail() {
+            TargetUploadReport uploadReport = builder.uploadStatus(new TargetUploadFailState())
+                    .build();
+
+            InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.FAIL, TargetUploadStatus.REQUEST);
+
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("업로드 상태가 COMPLETED이면 예외가 발생한다.")
+        void shouldThrowException_whenStateIsComplete() {
+            TargetUploadReport uploadReport = builder.uploadStatus(new TargetUploadCompleteState())
+                    .build();
+
+            InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.COMPLETED, TargetUploadStatus.REQUEST);
+
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("업로드 타입이 JSON일 때 totalCount가 0이면 예외가 발생한다.")
+        void shouldThrowException_whenTotalCountIsZero() {
+            TargetUploadReport uploadReport = builder.uploadType(TargetUploadType.JSON)
+                    .build();
+
+            TargetUploadPolicyViolationException expect = TargetUploadPolicyViolationException.of(TargetUploadErrorCode.TARGET_LIST_OF_EMPTY);
+
+
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+                    .isInstanceOf(expect.getClass())
+                    .hasMessage(expect.getMessage());
+        }
+
+        @Test
+        @DisplayName("발송 요청 시각이 생성된다.")
+        void shouldCreateRequestedAt() {
+            TargetUploadReport uploadReport = builder
+                    .build();
+
+            uploadReport.requestTargetUpload(0);
+
+            assertThat(uploadReport.getRequestedAt().toLocalDate()).isEqualTo(LocalDate.now());
         }
     }
 }

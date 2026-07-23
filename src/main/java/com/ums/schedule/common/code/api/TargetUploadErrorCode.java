@@ -6,6 +6,7 @@ public enum TargetUploadErrorCode implements ErrorCode {
     UNSUPPORTED_UPLOAD_TYPE(ApiResponseCode.BAD_REQUEST, "지원하지 않는 요청 타입입니다. (지원 타입 : {0})"),
     UNSUPPORTED_UPLOAD_FORMAT(ApiResponseCode.BAD_REQUEST, "지원되는 업로드 형식이 아닙니다. (지원 형식 : {0})"),
 
+    UPLOAD_FILE_NOT_EXIST(ApiResponseCode.BAD_REQUEST, "[{0}] 업로드 파일 ({1})이 존재하지 않습니다."),
 
 
     DOWNLOAD_KEY_GENERATION_FAILED(ApiResponseCode.SERVER_ERROR, "다운로드 키 생성에 실패했습니다."),

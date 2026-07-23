@@ -154,39 +154,11 @@ public class TargetUploadReport {
         this.createdAt = LocalDateTime.now();
     }
 
-    public boolean isReadyForUpload() {
-        return this.state.getCurrentCode() == TargetUploadStatus.WAITING;
-    }
-
-    private boolean isValidUploadKeyPrefix(String filePrefix) {
-        return uploadType == TargetUploadType.FILE && !StringUtils.hasText(filePrefix);
-    }
-    private void initializeTotalCount(List<TargetMessageData> targetList, Integer maxSize) {
-        Long totalCount = countingTargetList(targetList, maxSize);
-        this.totalCount = totalCount;
-    }
-
-    private void validateTotalCount(Integer totalCount, Integer maxSize) {
-        if(totalCount == 0) {
-            throw TargetUploadPolicyViolationException.of(TargetUploadErrorCode.TARGET_LIST_OF_EMPTY);
-
-        } else if(totalCount > maxSize){
-            throw TargetUploadPolicyViolationException.of(
-                    TargetUploadErrorCode.TARGET_UPLOAD_LIMIT_EXCEEDED,
-                    totalCount,
-                    maxSize);
+    public void requestTargetUpload(Integer totalCount) {
+        if(uploadType == TargetUploadType.JSON) {
+            validateTotalCount(totalCount);
         }
-    }
-    private Long countingTargetList(List<TargetMessageData> targetList, Integer maxSize) {
-        validateTotalCount(targetList.size(), maxSize);
-        return (long) targetList.size();
-    }
-    public void prepareTargetUpload(SendRequest sendRequest) {
-        onEvent(TargetUploadEvent.TARGET_UPLOAD_READY);
-        if(this.uploadType == TargetUploadType.JSON) {
-            requestTargetUpload();
-        }
-        sendRequest.updateStateByTargetUploadReport(this);
+        requestTargetUpload();
     }
 
     private void requestTargetUpload() {
@@ -194,41 +166,19 @@ public class TargetUploadReport {
         onEvent(TargetUploadEvent.TARGET_UPLOAD_REQUESTED);
     }
 
+    private void validateTotalCount(Integer totalCount) {
+        if(totalCount == 0) {
+            throw TargetUploadPolicyViolationException.of(TargetUploadErrorCode.TARGET_LIST_OF_EMPTY);
+        }
+    }
+
     private void initializeRequestedAt() {
         this.requestedAt = LocalDateTime.now();
     }
 
-    private void initializeFileMetaData(TargetFileUploadRequestCommand command) {
-        validateFileMetadata(command, this.uploadKey);
-        this.fileSize = command.fileSize();
-    }
-
-    public void requestFileUpload(TargetFileUploadRequestCommand command) {
-        if(uploadType == TargetUploadType.JSON) {
-            throw TargetUploadPolicyViolationException.of(TargetUploadErrorCode.UNSUPPORTED_UPLOAD_TYPE);
-        }
-        initializeFileMetaData(command);
-        requestTargetUpload();
-    }
 
     private void validateFileMetadata(TargetFileUploadRequestCommand command, String path) {
         validateFileSize(command.maxFileSize(), command.fileSize());
-        validateFileName(command.fileName());
-    }
-
-    private void validateFileName(String fileName) {
-        String[] extractFileExt = fileName.split("\\.");
-        if(!isValidFileExtension(extractFileExt)) {
-            throw TargetUploadPolicyViolationException.of(
-                    TargetUploadErrorCode.UNSUPPORTED_UPLOAD_FORMAT,
-                    this.uploadFormat.code()
-                    );
-        }
-    }
-
-    private boolean isValidFileExtension(String[] extractFileExt) {
-       return extractFileExt.length < 2 ? false :
-               extractFileExt[1].equals(this.uploadFormat.value());
     }
 
     private void validateFileSize(Long maxFileSize, Long fileSize) {

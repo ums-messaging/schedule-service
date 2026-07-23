@@ -17,7 +17,7 @@ public class TargetUploadCreateState implements TargetUploadState {
             }
         }
         throw InvalidTargetUploadStateException.of(
-                TargetUploadStatus.CREATED, null
+                TargetUploadStatus.CREATED, event.stateType()
         );
     }
 
