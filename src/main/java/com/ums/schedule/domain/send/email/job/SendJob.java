@@ -5,7 +5,7 @@ import com.ums.schedule.common.code.schedule.ScheduleType;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 
 import java.time.LocalDateTime;
 

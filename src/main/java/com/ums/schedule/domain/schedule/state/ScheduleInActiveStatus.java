@@ -1,9 +1,9 @@
 package com.ums.schedule.domain.schedule.state;
 
 import com.ums.schedule.common.code.schedule.ScheduleEvent;
-import com.ums.schedule.common.code.schedule.ScheduleStatus;
-import com.ums.schedule.domain.exception.schedule.InvalidScheduleStatusException;
+import com.ums.schedule.common.code.schedule.ScheduleState;
 import com.ums.schedule.common.converter.StatusStateEvent;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleStateException;
 
 
 public class ScheduleInActiveStatus implements com.ums.schedule.domain.schedule.state.ScheduleStatus {
@@ -16,17 +16,17 @@ public class ScheduleInActiveStatus implements com.ums.schedule.domain.schedule.
                 return new ScheduleActiveStatus();
             }
             case TO_RUNNING -> {
-                throw InvalidScheduleStatusException.changeToStatus("INACTIVE", "RUNNING");
+                throw InvalidScheduleStateException.of(ScheduleState.INACTIVE, ScheduleState.RUNNING);
             }
             case TO_INACTIVE -> {
-                throw InvalidScheduleStatusException.changeToStatus("INACTIVE", "INACTIVE");
+                throw InvalidScheduleStateException.of(ScheduleState.INACTIVE, ScheduleState.INACTIVE);
             }
         }
         return null;
     }
 
     @Override
-    public ScheduleStatus getCurrentCode() {
-        return ScheduleStatus.INACTIVE;
+    public ScheduleState getCurrentCode() {
+        return ScheduleState.INACTIVE;
     }
 }

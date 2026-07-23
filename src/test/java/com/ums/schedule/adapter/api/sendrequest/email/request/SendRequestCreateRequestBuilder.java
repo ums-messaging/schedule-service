@@ -1,12 +1,10 @@
 package com.ums.schedule.adapter.api.sendrequest.email.request;
 
-import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
-
-import java.util.UUID;
+import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
 
 public class SendRequestCreateRequestBuilder {
     private Long scheduleId = 1L;
-    private String customerRequestId = UUID.randomUUID().toString();
+    private String customerRequestId;
     private String uploadFormat;
     private Integer retryCount = 3;
     private String messageType;
@@ -67,7 +65,6 @@ public class SendRequestCreateRequestBuilder {
                 scheduleId,
                 customerRequestId,
                 uploadFormat,
-                senderKey,
                 templateKey,
                 messageType,
                 retryCount

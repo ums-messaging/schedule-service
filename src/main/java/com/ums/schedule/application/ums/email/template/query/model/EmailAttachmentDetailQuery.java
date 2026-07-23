@@ -1,6 +1,6 @@
 package com.ums.schedule.application.ums.email.template.query.model;
 
-import com.ums.schedule.adapter.api.request.email.EmailAttachmentRequest;
+import com.ums.schedule.adapter.api.request.email.request.EmailAttachmentRequest;
 
 public record EmailAttachmentDetailQuery(
         String fileKey,

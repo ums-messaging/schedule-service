@@ -1,8 +1,8 @@
 package com.ums.schedule.application.ums.email.security;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.security.PasswordTypeEnum;
-import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.PasswordType;
+import com.ums.schedule.common.code.email.security.SecurityMailCode;
 
 import java.util.Map;
 import java.util.Optional;
@@ -15,16 +15,16 @@ public record SecurityMail(
         String passwordFormat
 ) {
 
-    public static SecurityMail of(Map<SecurityMailEnumMapper, EnumMapperValue> toMap,
-                                  Map<PasswordTypeEnum, String> passwordType,
+    public static SecurityMail of(Map<SecurityMailCode, EnumMapperValue> toMap,
+                                  Map<PasswordType, String> passwordType,
                                   String defaultPasswordPolicy) {
         return new SecurityMail(
-                toMap.get(SecurityMailEnumMapper.ENCRYPTION_TYPE),
-                toMap.get(SecurityMailEnumMapper.PASSWORD_HASH),
-                toMap.get(SecurityMailEnumMapper.PERMISSION_MASK),
+                toMap.get(SecurityMailCode.ENCRYPTION_TYPE),
+                toMap.get(SecurityMailCode.PASSWORD_HASH),
+                toMap.get(SecurityMailCode.PERMISSION_MASK),
                 defaultPasswordPolicy,
                 Optional.ofNullable(passwordType)
-                        .map(type -> type.get(PasswordTypeEnum.PASSWORD_FORMAT))
+                        .map(type -> type.get(PasswordType.PASSWORD_FORMAT))
                         .orElse(null)
         );
     }

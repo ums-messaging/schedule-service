@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.send.email.job;
 
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
-import com.ums.schedule.domain.request.target.SendTarget;
+import com.ums.schedule.domain.target.SendTarget;
 
 import java.util.ArrayList;
 import java.util.List;

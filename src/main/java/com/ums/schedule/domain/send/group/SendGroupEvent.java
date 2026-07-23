@@ -1,9 +1,8 @@
 package com.ums.schedule.domain.send.group;
 
+import com.ums.schedule.common.code.request.SendGroupEventType;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.common.code.email.EmailResultCode;
-import com.ums.schedule.common.code.request.SendGroupEventTypeEnum;
-import com.ums.schedule.domain.exception.request.SendRequestException;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -26,7 +25,7 @@ public class SendGroupEvent {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type", nullable = false)
-    private SendGroupEventTypeEnum eventType;
+    private SendGroupEventType eventType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "result_code", nullable = false)
@@ -48,23 +47,18 @@ public class SendGroupEvent {
         return event;
     }
 
-    public static SendGroupEvent of(SendRequest sendRequest, SendRequestException e) {
-        SendGroupEvent event = SendGroupEvent.of(sendRequest);
-        event.onError(sendRequest, e);
-        return event;
-    }
 
     private void assignSendRequest(SendRequest sendRequest) {
         this.sendRequest = sendRequest;
     }
 
-    private SendGroupEvent(SendGroupEventTypeEnum eventType) {
+    private SendGroupEvent(SendGroupEventType eventType) {
         this.eventType = eventType;
         this.resultCode = EmailResultCode.SUCCESS;
     }
 
-    private void onError(SendRequest sendRequest, SendRequestException e) {
-        setResult(FAIL, e.getMessage());
+    private void onError(SendRequest sendRequest, String message) {
+        setResult(FAIL, message);
     }
 
 

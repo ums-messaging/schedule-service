@@ -2,13 +2,11 @@ package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.message.model.EmailMessageCreateContext;
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
-import com.ums.schedule.domain.exception.validation.RequiredException;
-import com.ums.schedule.domain.exception.email.EmailMessageTemplateFileKeyMissingException;
-import com.ums.schedule.domain.exception.request.SendMessageNotFoundException;
+import com.ums.schedule.common.code.email.EmailRequiredValue;
 import com.ums.schedule.domain.message.SendMessage;
+import com.ums.schedule.domain.message.email.exception.EmailMessageValueMissingException;
 import com.ums.schedule.domain.request.message.SendMessageBuilder;
 import com.ums.schedule.common.code.message.MessageType;
-import com.ums.schedule.common.code.email.EmailMessageSection;
 import com.ums.schedule.fixture.email.message.EmailMessageContextBuilder;
 import com.ums.schedule.domain.request.SendRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,12 +79,11 @@ public class EmailSendMessageTest {
         }
 
         @Test
-        @DisplayName("body_key가 존재하지 않으면 저장되지 않는다.")
-        void shouldNotSaveBodyKey() {
+        @DisplayName("body_key가 존재하지 않으면 예외가 발생한다.")
+        void shouldThrowException_whenBodyKeyDoesNotExist() {
             EmailMessageContext context = contextBuilder.bodyKey(null).build();
 
-            EmailMessageTemplateFileKeyMissingException expect =
-                    EmailMessageTemplateFileKeyMissingException.of(EmailMessageSection.BODY);
+            EmailMessageValueMissingException expect = EmailMessageValueMissingException.of(EmailRequiredValue.BODY_TEMPLATE_KEY);
 
             assertThatThrownBy(() -> EmailSendMessage.of(builder.build(), context))
                     .isInstanceOf(expect.getClass())
@@ -138,11 +135,9 @@ public class EmailSendMessageTest {
         void shouldThrowException_whenSendMessageDoesNotExist() {
             EmailMessageContext context = contextBuilder.build();
 
-            SendMessageNotFoundException expect = SendMessageNotFoundException.of();
-
             assertThatThrownBy(() -> EmailSendMessage.of(null, context))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessage("send_message");
         }
 
         @Test
@@ -176,14 +171,12 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("제목이 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenTitleDoesNotExist() {
-            EmailMessageContext context = contextBuilder.title("").build();
+            EmailMessageContext context = contextBuilder.title(null).build();
             SendMessage sendMessage = builder.messageType(MessageType.NONE).build();
 
-            RequiredException expect = RequiredException.fieldOf("subject");
-
             assertThatThrownBy(() -> EmailSendMessage.of(sendMessage, context))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessage("title");
         }
     }
 }

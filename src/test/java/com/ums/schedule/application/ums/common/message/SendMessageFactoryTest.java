@@ -1,9 +1,12 @@
 package com.ums.schedule.application.ums.common.message;
 
 import com.ums.schedule.application.ums.common.config.SendMessageProperties;
+import com.ums.schedule.application.ums.common.exception.SendMessageNotConfiguredException;
 import com.ums.schedule.application.ums.common.template.model.TemplateResult;
+import com.ums.schedule.common.code.api.SendMessageErrorCode;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
+import com.ums.schedule.common.code.message.MessageConfigurationPrefix;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.common.code.message.MessageType;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -54,6 +58,20 @@ class SendMessageFactoryTest {
 
         verify(properties).getAdvertisingPrefix();
     }
+
+    @Test
+    @DisplayName("설정 파일에서 광고 문구가 존재하지 않으면 예외가 발생한다.")
+    void shouldThrowException_whenAdvertisePrefixIsEmpty() {
+        doReturn(EnumMapperValue.fromEnumMapperType(MessageType.ADVERTISE)).when(mapperFactory).findEnumMapperValue(any(), any());
+        doReturn("").when(properties).getAdvertisingPrefix();
+
+        SendMessageNotConfiguredException expect = SendMessageNotConfiguredException.of(MessageConfigurationPrefix.ADVERTISE_PREFIX);
+
+        assertThatThrownBy(() -> factory.createSendMessage(template))
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage());
+    }
+
 
     @Test
     @DisplayName("템플릿 타입이 광고가 아니면, 설정 파일에서 광고 문구를 조회하지 않는다.")

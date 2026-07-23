@@ -1,12 +1,12 @@
 package com.ums.schedule.application.ums.email.security;
 
-import com.ums.schedule.application.exception.email.security.SecurityMailNotConfiguredException;
 import com.ums.schedule.application.ums.email.config.SecurityMailProperties;
+import com.ums.schedule.application.ums.email.exception.SecurityMailNotConfiguredException;
 import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.security.PasswordTypeEnum;
-import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.PasswordType;
+import com.ums.schedule.common.code.email.security.SecurityMailCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -21,16 +21,16 @@ public class SecurityMailAssembler {
     private final SecurityMailProperties properties;
 
     public SecurityMail assemble(SecurityMailCommand command) {
-        Map<SecurityMailEnumMapper, String> policyMap = command.policyMap();
-        Map<SecurityMailEnumMapper, EnumMapperValue> determinedPolicyMap = determinePolicyMap(policyMap);
+        Map<SecurityMailCode, String> policyMap = command.policyMap();
+        Map<SecurityMailCode, EnumMapperValue> determinedPolicyMap = determinePolicyMap(policyMap);
         String passwordPolicy = getPasswordPolicyOrDefaultValue(command.passwordTypeMap());
 
         return command.toSecurityMail(determinedPolicyMap, passwordPolicy);
     }
 
-    private String getPasswordPolicyOrDefaultValue(Map<PasswordTypeEnum, String> passwordTypeMap) {
+    private String getPasswordPolicyOrDefaultValue(Map<PasswordType, String> passwordTypeMap) {
         return Optional.ofNullable(passwordTypeMap)
-                .map(map -> map.getOrDefault(PasswordTypeEnum.PASSWORD_POLICY, validateAndGetDefaultPasswordValue()))
+                .map(map -> map.getOrDefault(PasswordType.PASSWORD_POLICY, validateAndGetDefaultPasswordValue()))
                 .filter(policy -> StringUtils.hasText(policy))
                 .orElseGet(() -> validateAndGetDefaultPasswordValue());
     }
@@ -38,14 +38,14 @@ public class SecurityMailAssembler {
     private String validateAndGetDefaultPasswordValue() {
         String defaultValue = properties.defaultPasswordPolicy();
         if(!StringUtils.hasText(defaultValue)) {
-            throw SecurityMailNotConfiguredException.of(PasswordTypeEnum.PASSWORD_POLICY);
+            throw SecurityMailNotConfiguredException.of(PasswordType.PASSWORD_POLICY);
         }
         return defaultValue;
     }
 
-    private Map<SecurityMailEnumMapper, EnumMapperValue> determinePolicyMap(Map<SecurityMailEnumMapper, String> policyMap) {
-        Map<SecurityMailEnumMapper, String> defaultPolicyMap = getDefaultConfigureMap();
-        return Arrays.stream(SecurityMailEnumMapper.class.getEnumConstants())
+    private Map<SecurityMailCode, EnumMapperValue> determinePolicyMap(Map<SecurityMailCode, String> policyMap) {
+        Map<SecurityMailCode, String> defaultPolicyMap = getDefaultConfigureMap();
+        return Arrays.stream(SecurityMailCode.class.getEnumConstants())
                 .collect(Collectors.toMap(
                         k -> k,
                         e -> toMapOrDefaultValueToMap(policyMap, defaultPolicyMap, e)
@@ -54,16 +54,16 @@ public class SecurityMailAssembler {
 
     }
 
-    private EnumMapperValue toMapOrDefaultValueToMap(Map<SecurityMailEnumMapper, String> policyMap, Map<SecurityMailEnumMapper, String> defaultPolicyMap, SecurityMailEnumMapper e) {
-        return Optional.ofNullable(defaultPolicyMap.get(e))
+    private EnumMapperValue toMapOrDefaultValueToMap(Map<SecurityMailCode, String> policyMap, Map<SecurityMailCode, String> defaultPolicyMap, SecurityMailCode code) {
+        return Optional.ofNullable(defaultPolicyMap.get(code))
                 .filter(StringUtils::hasText)
                 .map(defaultValue ->
-                        toPolicyMap(policyMap, e, defaultValue)
+                        toPolicyMap(policyMap, code, defaultValue)
                 )
-                .orElseThrow(() -> SecurityMailNotConfiguredException.of(e));
+                .orElseThrow(() -> SecurityMailNotConfiguredException.of(code));
     }
 
-    private EnumMapperValue toPolicyMap(Map<SecurityMailEnumMapper, String> policyMap, SecurityMailEnumMapper e, String defaultValue) {
+    private EnumMapperValue toPolicyMap(Map<SecurityMailCode, String> policyMap, SecurityMailCode e, String defaultValue) {
         return Optional.ofNullable(policyMap)
                 .filter(policy -> StringUtils.hasText(policy.get(e)))
                 .map(policy -> policy.getOrDefault(e, defaultValue))
@@ -71,7 +71,7 @@ public class SecurityMailAssembler {
                 .orElseGet(() -> mapperFactory.findEnumMapperValue(e, defaultValue));
     }
 
-    private Map<SecurityMailEnumMapper, EnumMapperValue> findMapperDefaultValue(Map<SecurityMailEnumMapper, String> defaultPolicyMap) {
+    private Map<SecurityMailCode, EnumMapperValue> findMapperDefaultValue(Map<SecurityMailCode, String> defaultPolicyMap) {
         return defaultPolicyMap.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
@@ -80,7 +80,7 @@ public class SecurityMailAssembler {
                 );
     }
 
-    private Map<SecurityMailEnumMapper, EnumMapperValue> findMapperPolicyValue(Map<SecurityMailEnumMapper, String> policyMap, Map<SecurityMailEnumMapper, String> defaultPolicyMap) {
+    private Map<SecurityMailCode, EnumMapperValue> findMapperPolicyValue(Map<SecurityMailCode, String> policyMap, Map<SecurityMailCode, String> defaultPolicyMap) {
         return policyMap.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
@@ -89,15 +89,15 @@ public class SecurityMailAssembler {
                 ));
     }
 
-    private Map<SecurityMailEnumMapper, String> getDefaultConfigureMap() {
-        Map<SecurityMailEnumMapper, String> enumMap = new EnumMap<>(SecurityMailEnumMapper.class);
-        putSecurityPolicyMap(enumMap, SecurityMailEnumMapper.ENCRYPTION_TYPE, properties.defaultEncryptType());
-        putSecurityPolicyMap(enumMap, SecurityMailEnumMapper.PASSWORD_HASH, properties.defaultPasswordHash());
-        putSecurityPolicyMap(enumMap, SecurityMailEnumMapper.PERMISSION_MASK, properties.defaultPermissionMask());
+    private Map<SecurityMailCode, String> getDefaultConfigureMap() {
+        Map<SecurityMailCode, String> enumMap = new EnumMap<>(SecurityMailCode.class);
+        putSecurityPolicyMap(enumMap, SecurityMailCode.ENCRYPTION_TYPE, properties.defaultEncryptType());
+        putSecurityPolicyMap(enumMap, SecurityMailCode.PASSWORD_HASH, properties.defaultPasswordHash());
+        putSecurityPolicyMap(enumMap, SecurityMailCode.PERMISSION_MASK, properties.defaultPermissionMask());
         return enumMap;
     }
 
-    private void putSecurityPolicyMap(Map<SecurityMailEnumMapper, String> enumMap, SecurityMailEnumMapper mapperKey, String defaultValue) {
+    private void putSecurityPolicyMap(Map<SecurityMailCode, String> enumMap, SecurityMailCode mapperKey, String defaultValue) {
         if(StringUtils.hasText(defaultValue)) {
             enumMap.put(mapperKey, defaultValue);
             return;
@@ -105,13 +105,13 @@ public class SecurityMailAssembler {
         throw SecurityMailNotConfiguredException.of(mapperKey);
     }
 
-    private String getOrDefault(Map<SecurityMailEnumMapper, String> policyMap, Map<SecurityMailEnumMapper, String> defaultPolicyMap, SecurityMailEnumMapper key) {
+    private String getOrDefault(Map<SecurityMailCode, String> policyMap, Map<SecurityMailCode, String> defaultPolicyMap, SecurityMailCode key) {
         return Optional.ofNullable(policyMap)
                 .map(policy -> getConfiguredDefaultValue(policyMap, defaultPolicyMap, key))
                 .orElseThrow();
     }
 
-    private String getConfiguredDefaultValue(Map<SecurityMailEnumMapper, String> policyMap, Map<SecurityMailEnumMapper, String> defaultPolicyMap, SecurityMailEnumMapper key) {
+    private String getConfiguredDefaultValue(Map<SecurityMailCode, String> policyMap, Map<SecurityMailCode, String> defaultPolicyMap, SecurityMailCode key) {
         return Optional.ofNullable(defaultPolicyMap)
                 .filter(defaultMap -> StringUtils.hasText(defaultMap.get(key)))
                 .map(defaultMap -> policyMap.getOrDefault(key, defaultMap.get(key)))

@@ -5,7 +5,7 @@ import com.ums.schedule.common.code.mapper.EnumMapperType;
 
 public enum SendRequestEnumMapper implements EnumMapper {
     SEND_REQUEST_STATUS(SendRequestStatus.class),
-    GROUP_EVENT_TYPE(SendGroupEventTypeEnum.class),
+    GROUP_EVENT_TYPE(SendGroupEventType.class),
     SEND_REQUEST_EVENT(SendRequestEvent.class)
     ;
 

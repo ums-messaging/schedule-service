@@ -2,10 +2,11 @@ package com.ums.schedule.application.message.email.handler;
 
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
-import com.ums.schedule.application.exception.email.EmailMessageConvertException;
-import com.ums.schedule.application.exception.email.security.OwnerPasswordNotConfiguredException;
 import com.ums.schedule.application.ums.email.convert.handler.AttachmentConverter;
 import com.ums.schedule.application.ums.email.convert.handler.PdfMessageConverter;
+import com.ums.schedule.application.ums.email.exception.EmailMessageConvertException;
+import com.ums.schedule.application.ums.email.exception.SecurityMailNotConfiguredException;
+import com.ums.schedule.common.code.api.SecurityMailErrorCode;
 import com.ums.schedule.config.properties.SecurityPolicyProperties;
 import com.ums.schedule.common.code.email.ConvertType;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class PdfSecurityConverter implements AttachmentConverter {
     private final PdfMessageConverter handler;
     private final SecurityPolicyProperties properties;
 
-    public TemplateConversionResult handle(AttachmentPipelineCommand command) throws EmailMessageConvertException {
+    public TemplateConversionResult handle(AttachmentPipelineCommand command)  {
         TemplateConversionResult result = handler.handle(command);
 
         try (InputStream inputStream = new FileInputStream(result.tempFile())) {
@@ -34,7 +35,7 @@ public class PdfSecurityConverter implements AttachmentConverter {
             ap.setCanPrint(command.canPrint());
 
             if(!StringUtils.hasText(properties.getOwnerPassword())) {
-                throw OwnerPasswordNotConfiguredException.of();
+                throw SecurityMailNotConfiguredException.of(SecurityMailErrorCode.OWNER_PW_CONFIGURED_LOAD_FAILS);
             }
 
             StandardProtectionPolicy policy =
@@ -50,9 +51,8 @@ public class PdfSecurityConverter implements AttachmentConverter {
             document.save(result.tempFile());
             document.close();
         } catch (IOException e) {
-            throw EmailMessageConvertException.of(e);
+            throw EmailMessageConvertException.of(command.id(), e);
         }
-
         return result;
     }
 

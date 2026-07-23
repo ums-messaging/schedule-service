@@ -5,9 +5,10 @@ import com.ums.schedule.application.ums.email.convert.strategy.EmailMessageConve
 import com.ums.schedule.application.ums.email.convert.strategy.IdentityEmailConvertPolicy;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
+import com.ums.schedule.application.ums.email.exception.EmailConvertTypeNotSupportedException;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
-import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
 import com.ums.schedule.common.code.email.ConvertType;
+import com.ums.schedule.common.code.mapper.exception.EnumMapperNotFoundException;
 import com.ums.schedule.fixture.email.attachment.AttachmentContextBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertResultBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertPolicyCommandBuilder;
@@ -177,6 +178,22 @@ class EmailConvertResolverTest {
     }
 
     @Test
+    @DisplayName("유효하지 않은 변환 타입이 입력될 경우 예외가 변환된다.")
+    void shouldConvertException_whenInvalidConvertType() {
+        EmailConvertResolveCommand command = EmailConvertPolicyCommandBuilder.builder()
+                .convertType("XXX")
+                .build();
+        doThrow(mock(EnumMapperNotFoundException.class))
+                .when(mapperFactory).findEnumMapperValue(any(), any());
+
+        EmailConvertTypeNotSupportedException expect = EmailConvertTypeNotSupportedException.of("XXX");
+
+        assertThatThrownBy(() -> resolver.resolve(command, mock(SecurityMail.class)))
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage());
+    }
+
+    @Test
     @DisplayName("지원되는 변환 타입이 존재하지 않으면 예외가 발생한다.")
     void shouldThrowException_whenNotSupportedConvertType() {
         EmailConvertResolveCommand command = EmailConvertPolicyCommandBuilder.builder()
@@ -186,7 +203,8 @@ class EmailConvertResolverTest {
         doReturn(false).when(identityPolicy).supports(any());
         doReturn(false).when(attachmentPolicy).supports(any());
 
-        ConvertTypeNotSupportedException expect = ConvertTypeNotSupportedException.of();
+        EmailConvertTypeNotSupportedException expect =
+                EmailConvertTypeNotSupportedException.of(command.convertType());
 
         assertThatThrownBy(() -> resolver.resolve(command, mock(SecurityMail.class)))
                 .isInstanceOf(expect.getClass())

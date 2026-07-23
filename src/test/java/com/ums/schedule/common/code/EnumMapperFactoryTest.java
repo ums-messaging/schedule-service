@@ -4,8 +4,7 @@ import com.ums.schedule.common.code.mapper.EnumMapper;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperType;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.application.exception.mapper.EnumMapperNotEmptyException;
-import com.ums.schedule.application.exception.mapper.EnumMapperNotFoundException;
+import com.ums.schedule.common.code.mapper.exception.EnumMapperNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +30,7 @@ class EnumMapperFactoryTest {
         EnumMapperFactory factory = new EnumMapperFactory();
         factory.register(TestEnumMapper.class);
 
-        EnumMapperNotEmptyException expect = EnumMapperNotEmptyException.of(TestEnumMapper.TEST_ENUM_MAPPER);
+        EnumMapperNotFoundException expect = EnumMapperNotFoundException.of(TestEnumMapper.TEST_ENUM_MAPPER);
 
         assertThatThrownBy(() -> factory.findEnumMapperValue(TestEnumMapper.TEST_ENUM_MAPPER, ""))
                 .isInstanceOf(expect.getClass())
@@ -44,7 +43,7 @@ class EnumMapperFactoryTest {
         EnumMapperFactory factory = new EnumMapperFactory();
         factory.register(TestEnumMapper.class);
 
-        String expectedError = EnumMapperNotFoundException.forEnumMapperValue(TestEnumMapper.TEST_ENUM_MAPPER, "HTML").getMessage();
+        String expectedError = EnumMapperNotFoundException.of(TestEnumMapper.TEST_ENUM_MAPPER, "HTML").getMessage();
 
         assertThatThrownBy(() -> factory.findEnumMapperValue(TestEnumMapper.TEST_ENUM_MAPPER, "HTML"))
                 .isInstanceOf(EnumMapperNotFoundException.class)
@@ -56,7 +55,7 @@ class EnumMapperFactoryTest {
     void shouldThrowException_whenEnumMapperNotExist() {
         EnumMapperFactory factory = new EnumMapperFactory();
 
-        String expectedError = EnumMapperNotFoundException.forEnumMapper(TestEnumMapper.TEST_ENUM_MAPPER).getMessage();
+        String expectedError = EnumMapperNotFoundException.of(TestEnumMapper.TEST_ENUM_MAPPER).getMessage();
 
         assertThatThrownBy(() -> factory.findEnumMapperValue(TestEnumMapper.TEST_ENUM_MAPPER, "PDF"))
                 .isInstanceOf(EnumMapperNotFoundException.class)

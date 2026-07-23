@@ -5,7 +5,7 @@ import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.config.properties.TargetUploadProperties;
 import com.ums.schedule.common.code.common.ChannelType;
-import com.ums.schedule.common.code.target_upload.TargetUploadReportEnumMapper;
+import com.ums.schedule.common.code.target_upload.TargetUploadReportCode;
 
 import java.util.List;
 import java.util.Map;
@@ -18,11 +18,11 @@ public record TargetUploadCreateCommand(
         Integer targetListMaxSize,
         List<TargetMessageData> targetList
 ) {
-    public static TargetUploadCreateCommand of(ChannelType channelType, Map<TargetUploadReportEnumMapper, EnumMapperValue> mapperValueMap, TargetUploadProperties properties, List<SendTargetCreateRequest> targetList) {
+    public static TargetUploadCreateCommand of(ChannelType channelType, Map<TargetUploadReportCode, EnumMapperValue> mapperValueMap, TargetUploadProperties properties, List<SendTargetCreateRequest> targetList) {
         return new TargetUploadCreateCommand(
                 channelType,
-                mapperValueMap.get(TargetUploadReportEnumMapper.UPLOAD_TYPE),
-                mapperValueMap.get(TargetUploadReportEnumMapper.UPLOAD_FORMAT),
+                mapperValueMap.get(TargetUploadReportCode.UPLOAD_TYPE),
+                mapperValueMap.get(TargetUploadReportCode.UPLOAD_FORMAT),
                 properties.getUploadKey(),
                 properties.getUploadMaxSize(),
                 targetList.stream()

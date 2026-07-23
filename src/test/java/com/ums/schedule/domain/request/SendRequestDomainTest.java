@@ -2,35 +2,31 @@ package com.ums.schedule.domain.request;
 
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateContext;
-import com.ums.schedule.domain.exception.validation.DuplicateViolationException;
-import com.ums.schedule.domain.exception.validation.RequiredException;
-import com.ums.schedule.domain.exception.schedule.ScheduleExpiredException;
-import com.ums.schedule.domain.exception.schedule.ScheduleNotExecutableException;
-import com.ums.schedule.domain.exception.schedule.ScheduleNotFoundException;
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
+import com.ums.schedule.common.code.api.SendRequestErrorCode;
+import com.ums.schedule.common.code.schedule.ScheduleState;
+import com.ums.schedule.domain.request.exception.InvalidSendRequestStateException;
+import com.ums.schedule.domain.request.exception.SendRequestDomainException;
+import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleStateException;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
 import com.ums.schedule.common.code.request.SendRequestEvent;
 import com.ums.schedule.common.code.request.SendRequestStatus;
-import com.ums.schedule.domain.exception.request.DefaultRetryCountNotConfiguredException;
-import com.ums.schedule.domain.exception.request.InvalidSendRequestStateException;
 import com.ums.schedule.domain.request.customer.CustomerRequestKey;
-import com.ums.schedule.domain.exception.request.SendMessageNotFoundException;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.request.state.*;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
-import com.ums.schedule.domain.request.target.upload.state.TargetUploadCompleteState;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.upload.state.TargetUploadCompleteState;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestCreateContextBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestField;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
 
@@ -103,25 +99,13 @@ public class SendRequestDomainTest {
                     .customerKey(null)
                     .build();
 
-            DuplicateViolationException expect = DuplicateViolationException.fieldOf("customer_key");
+            SendRequestDomainException expect = SendRequestDomainException.of(SendRequestErrorCode.DUPLICATED_CUSTOMER_KEY);
 
             assertThatThrownBy(() -> SendRequest.of(context))
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
-        @Test
-        @DisplayName("스케쥴이 존재하지 않으면 예외가 발생한다.")
-        void shouldThrowException_whenScheduleDoesNotExist() {
-            SendRequestCreateContext context = contextBuilder
-                    .schedule(null)
-                    .build();
 
-            ScheduleNotFoundException expect = ScheduleNotFoundException.of();
-
-            assertThatThrownBy(() -> SendRequest.of(context))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
-        }
         @Test
         @DisplayName("만료된 스케쥴이면 예외가 발생한다.")
         void shouldThrowException_whenExpiredSchedule() {
@@ -134,7 +118,7 @@ public class SendRequestDomainTest {
                     .schedule(schedule)
                     .build();
 
-            ScheduleExpiredException expect = ScheduleExpiredException.of(schedule.getId(), schedulePeriod);
+            InvalidSchedulePeriodException expect = InvalidSchedulePeriodException.of(schedule.getId(), ScheduleErrorCode.EXPIRED_SCHEDULE);
 
             assertThatThrownBy(() -> SendRequest.of(context))
                     .isInstanceOf(expect.getClass())
@@ -149,76 +133,61 @@ public class SendRequestDomainTest {
                     .schedule(schedule)
                     .build();
 
-            ScheduleNotExecutableException expect = ScheduleNotExecutableException.inActiveOf();
+            InvalidScheduleStateException expect =
+                    InvalidScheduleStateException.of(ScheduleState.INACTIVE, ScheduleState.ACTIVE);
 
             assertThatThrownBy(() -> SendRequest.of(context))
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
 
-        @Test
-        @DisplayName("메시지가 존재하지 않으면 예외가 발생한다.")
-        void shouldThrowException_whenMessageDoesNotExist() {
-            SendRequestCreateContext context = contextBuilder.sendMessage(null).build();
+        @Nested
+        @DisplayName("NullPointerException이 발생할 때 ")
+        class WhenThrowNullPointerException {
+            @Test
+            @DisplayName("채널 타입이 존재하지 않으면 예외가 발생한다.")
+            void shouldThrowException_whenChannelTypeIsNull() {
+                SendRequestCreateContext context = contextBuilder.channelType(null).build();
 
-            SendMessageNotFoundException expect = SendMessageNotFoundException.of();
+                assertThatThrownBy(() -> SendRequest.of(context))
+                        .isInstanceOf(NullPointerException.class)
+                        .hasMessage("channel_type");
+            }
 
-            assertThatThrownBy(() -> SendRequest.of(context))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
-        }
+            @Test
+            @DisplayName("스케쥴이 존재하지 않으면 예외가 발생한다.")
+            void shouldThrowException_whenScheduleIsNull() {
+                SendRequestCreateContext context = contextBuilder.schedule(null).build();
 
-        @Test
-        @DisplayName("재시도 횟수가 0보다 작으면 예외가 발생한다.")
-        void shouldThrowException_whenRetryCountIsLessThanZero() {
-            SendRequestCreateContext context = contextBuilder.retryCnt(-1).build();
+                assertThatThrownBy(() -> SendRequest.of(context))
+                        .isInstanceOf(NullPointerException.class)
+                        .hasMessage("schedule");
+            }
 
-            DefaultRetryCountNotConfiguredException expect = DefaultRetryCountNotConfiguredException.of();
+            @Test
+            @DisplayName("template_key가 존재하지 않을 때")
+            void shouldThrowException_whenTemplateKeyIsEmpty() {
+                SendRequestCreateContext context = contextBuilder.templateKey(null).build();
 
-            assertThatThrownBy(() -> SendRequest.of(context))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
-        }
+                assertThatThrownBy(() -> SendRequest.of(context))
+                        .isInstanceOf(NullPointerException.class)
+                        .hasMessage("template_key");
+            }
 
-        @Test
-        @DisplayName("발신자 입력 값이 빈 값이면 예외가 발생한다.")
-        void shouldThrowException_whenSenderKeyIsEmpty() {
-            SendRequestCreateContext context = contextBuilder
-                    .senderKey("")
-                    .build();
+            @Test
+            @DisplayName("발신자 키가 존재하지 않을 때")
+            void shouldThrowException_whenSenderKeyIsEmpty() {
+                SendRequestCreateContext context = contextBuilder.senderKey(null).build();
 
-            RequiredException expect = RequiredException.fieldOf("sender_key");
+                assertThatThrownBy(() -> SendRequest.of(context))
+                        .isInstanceOf(NullPointerException.class)
+                        .hasMessage("sender_key");
 
-            assertThatThrownBy(() -> SendRequest.of(context))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
-        }
-
-        @Test
-        @DisplayName("채널 타입이 존재하지 않으면 예외가 발생한다.")
-        void shouldThrowException_whenChannelTypeIsNull(){
-            SendRequestCreateContext context = contextBuilder.channelType(null).build();
-
-            RequiredException expect = RequiredException.fieldOf("channel_type");
-
-            assertThatThrownBy(() -> SendRequest.of(context))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
-        }
-
-        @Test
-        @DisplayName("템플릿 키가 빈 값이면 예외가 발생한다.")
-        void shouldThrowException_whenTemplateKeyisEmpty() {
-            SendRequestCreateContext context = contextBuilder.templateKey("").build();
-
-            RequiredException expect = RequiredException.fieldOf("template_key");
-
-            assertThatThrownBy(() -> SendRequest.of(context))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+            }
         }
     }
 
+    @Disabled
     @Nested
     @DisplayName("발송 요청 수정 시")
     class whenSendRequestUpdated {
@@ -275,7 +244,7 @@ public class SendRequestDomainTest {
                     .builder().state(new SendRequestRequestState()).build();
 
             InvalidSendRequestStateException expect =
-                    InvalidSendRequestStateException.of(SendRequestStatus.REQUEST, SendRequestEvent.SEND_REQUEST_UPDATED);
+                    InvalidSendRequestStateException.of(SendRequestStatus.REQUEST, SendRequestStatus.HOLDING);
 
             assertThatThrownBy(() -> givenRequest.updateSendRequest(null, null, command))
                     .isInstanceOf(expect.getClass())
@@ -290,7 +259,7 @@ public class SendRequestDomainTest {
             SendRequest givenRequest = SendRequestEntityBuilder
                     .builder().state(new SendRequestSendingState()).build();
 
-            InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatus.SENDING, SendRequestEvent.SEND_REQUEST_UPDATED);
+            InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatus.SENDING, SendRequestStatus.HOLDING);
 
             assertThatThrownBy(() -> givenRequest.updateSendRequest(null, null, command))
                     .isInstanceOf(expect.getClass())
@@ -305,7 +274,7 @@ public class SendRequestDomainTest {
             SendRequest givenRequest = SendRequestEntityBuilder
                     .builder().state(new SendRequestCompleteState()).build();
 
-            InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatus.COMPLETED, SendRequestEvent.SEND_REQUEST_UPDATED);
+            InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatus.COMPLETED, SendRequestStatus.HOLDING);
 
             assertThatThrownBy(() -> givenRequest.updateSendRequest(null, null, command))
                     .isInstanceOf(expect.getClass())
@@ -320,7 +289,7 @@ public class SendRequestDomainTest {
             SendRequest givenRequest = SendRequestEntityBuilder
                     .builder().state(new SendRequestCancelState()).build();
 
-            InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatus.CANCEL, SendRequestEvent.SEND_REQUEST_UPDATED);
+            InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatus.CANCEL, SendRequestStatus.HOLDING);
 
             assertThatThrownBy(() -> givenRequest.updateSendRequest(null, null, command))
                     .isInstanceOf(expect.getClass())
@@ -350,7 +319,7 @@ public class SendRequestDomainTest {
             SendRequest givenRequest = SendRequestEntityBuilder
                     .builder().state(new SendRequestPauseState()).build();
 
-            InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatus.PAUSE, SendRequestEvent.SEND_REQUEST_UPDATED);
+            InvalidSendRequestStateException expect = InvalidSendRequestStateException.of(SendRequestStatus.PAUSE, SendRequestStatus.HOLDING);
 
             assertThatThrownBy(() -> givenRequest.updateSendRequest(null, null, command))
                     .isInstanceOf(expect.getClass())

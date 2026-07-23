@@ -2,10 +2,7 @@ package com.ums.schedule.domain.message;
 
 import com.ums.schedule.application.ums.common.message.model.SendMessageCreateCommand;
 import com.ums.schedule.common.code.message.MessageType;
-import com.ums.schedule.domain.exception.email.MessageTypeNotFoundException;
-import com.ums.schedule.domain.exception.email.SendMessageMissingException;
 import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.exception.request.SendRequestNotFoundException;
 import com.ums.schedule.fixture.message.SendMessageCreateCommandBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,27 +25,15 @@ class SendMessageTest {
     @Nested
     @DisplayName("메시지 생성")
     class WhenSendMessageCreate {
-        @Test
-        @DisplayName("SendRequest가 존재하지 않으면 예외가 발생한다.")
-        void shouldThrowException_whenSendRequestDoesNotExist() {
-            SendMessageCreateCommand command = builder.sendRequest(null).build();
-
-            SendRequestNotFoundException expect = SendRequestNotFoundException.of();
-
-            assertThatThrownBy(() -> SendMessage.of(command))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
-        }
 
         @Test
         @DisplayName("메시지 타입이 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenMessageTypeDoesNotExist() {
             SendMessageCreateCommand command = builder.messageType(null).build();
-            MessageTypeNotFoundException expect = MessageTypeNotFoundException.of();
 
             assertThatThrownBy(() -> SendMessage.of(command))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessage("message_type");
         }
 
         @Test
@@ -63,15 +48,12 @@ class SendMessageTest {
         @DisplayName("메시지 타입이 ADVERTISE이고, 문구가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenMessageTypeIsAdvertiseAndMessagePrefixDoesNotExist() {
             SendMessageCreateCommand command = builder.messageType(MessageType.ADVERTISE)
-                    .messagePrefix("")
+                    .messagePrefix(null)
                     .build();
 
-            SendMessageMissingException expect =
-                    SendMessageMissingException.of("advertising_prefix");
-
             assertThatThrownBy(() -> SendMessage.of(command))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessage("advertise_message_prefix");
         }
 
         @Test

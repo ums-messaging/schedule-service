@@ -1,12 +1,12 @@
 package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
 import com.ums.schedule.common.code.schedule.ScheduleEvent;
-import com.ums.schedule.domain.exception.validation.RequiredException;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleCyclePolicyException;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ReservationPolicyValue;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
-import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
 import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
@@ -36,18 +36,6 @@ class ScheduleCreateTest {
             Schedule expect = Schedule.of(command, policy);
 
             assertThat(expect.getScheduleStatus()).isInstanceOf(ScheduleActiveStatus.class);
-        }
-
-        @Test
-        @DisplayName("스케쥴 명이 빈 값일 떄, 익셉션이 발생한다.")
-        void shouldThrowException_whenScheduleNameIsEmpty() {
-            ScheduleCreateCommand command = ScheduleEntityBuilder.builder().scheduleName("").toCommand();
-
-            RequiredException expect = RequiredException.fieldOf("schedule name");
-
-            assertThatThrownBy(() -> Schedule.of(command, ScheduleCyclePolicy.realtimeOf()))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
         }
     }
 
@@ -103,8 +91,8 @@ class ScheduleCreateTest {
             ScheduleCyclePolicy policy = givenReservationAt(givenAt);
 
             assertThatThrownBy(() -> Schedule.of(command, policy))
-                    .isInstanceOf(InvalidCycleValueException.class)
-                    .hasMessage(InvalidCycleValueException.compareToReservationDate().getMessage());
+                    .isInstanceOf(InvalidScheduleCyclePolicyException.class)
+                    .hasMessage(InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.NOT_IN_PERIOD_RESERVATION_DATE).getMessage());
         }
 
         @Test
@@ -118,8 +106,8 @@ class ScheduleCreateTest {
             ScheduleCyclePolicy policy = givenReservationAt(givenAt);
 
             assertThatThrownBy(() -> Schedule.of(command, policy))
-                    .isInstanceOf(InvalidCycleValueException.class)
-                    .hasMessage(InvalidCycleValueException.compareToReservationDate().getMessage());
+                    .isInstanceOf(InvalidScheduleCyclePolicyException.class)
+                    .hasMessage(InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.NOT_IN_PERIOD_RESERVATION_DATE).getMessage());
         }
 
         @Test

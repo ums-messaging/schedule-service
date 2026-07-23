@@ -1,10 +1,11 @@
 package com.ums.schedule.domain.schedule.status;
 
 import com.ums.schedule.common.code.schedule.ScheduleEvent;
-import com.ums.schedule.common.code.schedule.ScheduleStatus;
-import com.ums.schedule.domain.exception.schedule.InvalidScheduleStatusException;
+import com.ums.schedule.common.code.schedule.ScheduleState;
 import com.ums.schedule.common.converter.StatusState;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleStateException;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,22 +19,32 @@ class ScheduleInActiveStatusTest {
         com.ums.schedule.domain.schedule.state.ScheduleStatus status = new ScheduleInActiveStatus();
         StatusState toStatus = status.onEvent(ScheduleEvent.TO_ACTIVE);
         assertThat(toStatus.getCurrentCode())
-                .isEqualTo(ScheduleStatus.ACTIVE);
+                .isEqualTo(ScheduleState.ACTIVE);
     }
 
     @Test
     @DisplayName("InActive 상태에서 Running 상태로 변경 불가능하다.")
     void shouldRejectInActiveChangeToRunning() {
-        com.ums.schedule.domain.schedule.state.ScheduleStatus status = new ScheduleInActiveStatus();
+        ScheduleStatus status = new ScheduleInActiveStatus();
+
+        InvalidScheduleStateException expect = InvalidScheduleStateException.of(ScheduleState.INACTIVE, ScheduleState.ACTIVE);
+
         assertThatThrownBy(() -> status.onEvent(ScheduleEvent.TO_RUNNING))
-                .isInstanceOf(InvalidScheduleStatusException.class);
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage())
+        ;
     }
 
     @Test
     @DisplayName("InActive 상태에서 InActive 상태로 변경 불가능하다.")
     void shouldRejectInActiveChangeToInActive() {
-        com.ums.schedule.domain.schedule.state.ScheduleStatus status = new ScheduleInActiveStatus();
+        ScheduleStatus status = new ScheduleInActiveStatus();
+
+        InvalidScheduleStateException expect = InvalidScheduleStateException.of(ScheduleState.INACTIVE, ScheduleState.INACTIVE);
+
         assertThatThrownBy(() -> status.onEvent(ScheduleEvent.TO_INACTIVE))
-                .isInstanceOf(InvalidScheduleStatusException.class);
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage())
+        ;
     }
 }

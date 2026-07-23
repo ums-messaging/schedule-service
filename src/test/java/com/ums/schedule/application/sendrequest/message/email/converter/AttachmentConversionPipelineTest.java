@@ -1,17 +1,18 @@
 package com.ums.schedule.application.sendrequest.message.email.converter;
 
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
-import com.ums.schedule.application.exception.email.EmailMessageConvertException;
-import com.ums.schedule.application.exception.email.security.OwnerPasswordNotConfiguredException;
+import com.ums.schedule.application.ums.common.exception.TemplateLoadFailException;
 import com.ums.schedule.application.ums.email.convert.handler.HtmlMessageConverter;
 import com.ums.schedule.application.ums.email.convert.handler.PdfMessageConverter;
 import com.ums.schedule.application.message.email.handler.PdfSecurityConverter;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
+import com.ums.schedule.application.ums.email.exception.EmailMessageConvertException;
+import com.ums.schedule.application.ums.email.exception.SecurityMailNotConfiguredException;
 import com.ums.schedule.application.ums.email.template.EmailTemplateLoader;
+import com.ums.schedule.common.code.api.SecurityMailErrorCode;
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.config.properties.SecurityPolicyProperties;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
-import com.ums.schedule.domain.exception.template.TemplateNotFoundException;
 import freemarker.template.TemplateException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -62,7 +63,7 @@ class AttachmentConversionPipelineTest {
 
         @Test
         @DisplayName("임시 파일이 생성된다.")
-        void shouldCreateTempFile() throws IOException, TemplateException {
+        void shouldCreateTempFile() {
             AttachmentPipelineCommand command = builder.build();
             doReturn(templateContent).when(templateLoader).loadAndCompileTemplate(any(), any());
 
@@ -101,13 +102,13 @@ class AttachmentConversionPipelineTest {
 
         @Test
         @DisplayName("템플릿 치환 중 오류 발생 시 예외가 변환된다. ")
-        void shouldThrowConvertException_whenTemplateParsingError() throws TemplateException, IOException {
+        void shouldThrowConvertException_whenTemplateParsingError() {
             AttachmentPipelineCommand command = builder.build();
             TemplateException givenException = mock(TemplateException.class);
             doThrow(givenException)
                     .when(templateLoader).loadAndCompileTemplate(any(), any());
 
-            EmailMessageConvertException expect = EmailMessageConvertException.of(givenException);
+            EmailMessageConvertException expect = EmailMessageConvertException.of(command.id(), givenException);
 
             assertThatThrownBy(() -> pipeline.handle(command))
                     .isInstanceOf(expect.getClass())
@@ -115,12 +116,14 @@ class AttachmentConversionPipelineTest {
         }
 
         @Test
-        @DisplayName("템플릿 내용이 null이면 예외가 변환된다.")
-        void shouldConvertException_whenTemplateContentIsNull() throws TemplateException, IOException {
+        @DisplayName("템플릿 읽어오는 중 에러가 발생하면 예외가 변환된다.")
+        void shouldConvertException_whenTemplateContentIsNull() {
             AttachmentPipelineCommand command = builder.build();
-            doReturn(null).when(templateLoader).loadAndCompileTemplate(any(), any());
+            TemplateLoadFailException exception = TemplateLoadFailException.of(command.fileKey(), new IOException());
+            doThrow(exception).when(templateLoader).loadAndCompileTemplate(any(), any());
 
-            EmailMessageConvertException expect = EmailMessageConvertException.of(TemplateNotFoundException.of());
+            EmailMessageConvertException expect =
+                    EmailMessageConvertException.of(command.id(), exception);
 
             assertThatThrownBy(() -> pipeline.handle(command))
                     .isInstanceOf(expect.getClass())
@@ -192,12 +195,13 @@ class AttachmentConversionPipelineTest {
 
         @Test
         @DisplayName("HtmlRenderPipeline 실행 중 오류 발생 시, 예외를 변환한다.")
-        void shouldThrowConvertException_whenHtmlRenderPipelineThrowException() throws IOException {
+        void shouldThrowConvertException_whenHtmlRenderPipelineThrowException() {
             AttachmentPipelineCommand command = builder.build();
-            doThrow(TemplateNotFoundException.of())
+            IOException exception = new IOException();
+            doThrow(exception)
                     .when(htmlHandler).handle(any());
 
-            EmailMessageConvertException expect = EmailMessageConvertException.of(TemplateNotFoundException.of());
+            EmailMessageConvertException expect = EmailMessageConvertException.of(command.id(), exception);
 
             assertThatThrownBy(() -> handler.handle(command))
                     .isInstanceOf(expect.getClass())
@@ -270,9 +274,9 @@ class AttachmentConversionPipelineTest {
         @DisplayName("pdfConvertHandler 실행 중 오류가 발생하면 예외를 반환한다.")
         void shouldThrowConvertException_whenPdfConvertHandlerError() {
             AttachmentPipelineCommand command = builder.build();
-            doThrow(EmailMessageConvertException.of(new IOException())).when(pdfHandler).handle(any());
+            doThrow(EmailMessageConvertException.of(command.id(), new IOException())).when(pdfHandler).handle(any());
 
-            EmailMessageConvertException expect = EmailMessageConvertException.of(new IOException());
+            EmailMessageConvertException expect = EmailMessageConvertException.of(command.id(), new IOException());
 
             assertThatThrownBy(() -> handler.handle(command))
                     .isInstanceOf(expect.getClass())
@@ -302,7 +306,8 @@ class AttachmentConversionPipelineTest {
             doReturn(result).when(pdfHandler).handle(any());
             doReturn("").when(properties).getOwnerPassword();
 
-            OwnerPasswordNotConfiguredException expect = OwnerPasswordNotConfiguredException.of();
+            SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailErrorCode.OWNER_PW_CONFIGURED_LOAD_FAILS);
+
 
             assertThatThrownBy(() -> handler.handle(command))
                     .isInstanceOf(expect.getClass())
@@ -349,6 +354,7 @@ class AttachmentConversionPipelineTest {
     }
 
     private static class AttachmentPipelineCommandBuilder {
+        private Long id;
         private ConvertType convertType;
         private String filePrefix;
         private String fileSuffix;
@@ -363,6 +369,7 @@ class AttachmentConversionPipelineTest {
         private boolean canPrint;
 
         AttachmentPipelineCommandBuilder() {
+            this.id = 1L;
             this.filePrefix = "email";
             this.fileSuffix = "pdf";
             this.fileKey = "email_body.html";
@@ -442,6 +449,7 @@ class AttachmentConversionPipelineTest {
 
         AttachmentPipelineCommand build() {
             return new AttachmentPipelineCommand(
+                    id,
                     convertType,
                     filePrefix,
                     fileSuffix,

@@ -2,14 +2,13 @@ package com.ums.schedule.application.sendrequest.target;
 
 import com.ums.schedule.application.sendrequest.target.assembler.SendTargetAssembler;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.exception.ApplicationException;
 import com.ums.schedule.application.sendrequest.data.SendRequestKeyData;
 import com.ums.schedule.application.sendrequest.target.event.SendTargetFailedEvent;
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
-import com.ums.schedule.domain.exception.DomainException;
 import com.ums.schedule.common.code.common.ChannelType;
-import com.ums.schedule.domain.request.target.SendTarget;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.common.exception.BusinessException;
+import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -52,7 +51,7 @@ public class SendTargetUploadService {
                 }
             }
             report.completeTargetUpload(results);
-        } catch (DomainException | ApplicationException e) {
+        } catch (BusinessException e) {
             report.onError(e.getMessage());
         } finally {
             SendTargetFailedEvent event = SendTargetFailedEvent.of(results);

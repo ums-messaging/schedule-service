@@ -1,20 +1,21 @@
 package com.ums.schedule.domain.schedule.state;
 
+import com.ums.schedule.common.code.schedule.ScheduleState;
 import com.ums.schedule.common.converter.StatusState;
 import com.ums.schedule.common.converter.StatusStateEvent;
 
 public interface ScheduleStatus extends StatusState {
     ScheduleStatus onEvent(StatusStateEvent event);
-    com.ums.schedule.common.code.schedule.ScheduleStatus getCurrentCode();
+    ScheduleState getCurrentCode();
     default boolean isRunning() {
-        return getCurrentCode() == com.ums.schedule.common.code.schedule.ScheduleStatus.RUNNING;
+        return getCurrentCode() == ScheduleState.RUNNING;
     }
 
     default boolean isInActive() {
-        return getCurrentCode() == com.ums.schedule.common.code.schedule.ScheduleStatus.INACTIVE;
+        return getCurrentCode() == ScheduleState.INACTIVE;
     }
 
     default boolean isActive() {
-        return getCurrentCode() == com.ums.schedule.common.code.schedule.ScheduleStatus.ACTIVE;
+        return getCurrentCode() == ScheduleState.ACTIVE;
     }
 }

@@ -1,12 +1,12 @@
 package com.ums.schedule.fixture.target_upload;
 
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.common.code.target_upload.TargetUploadType;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum;
-import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.request.target.SendTarget;
-import com.ums.schedule.domain.request.target.upload.state.TargetUploadCreateState;
-import com.ums.schedule.domain.request.target.upload.state.TargetUploadState;
+import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.upload.state.TargetUploadCreateState;
+import com.ums.schedule.domain.target.upload.state.TargetUploadState;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class TargetUploadReportEntityBuilder {
     private UUID id;
-    private TargetUploadTypeEnum uploadType = TargetUploadTypeEnum.FILE;
+    private TargetUploadType uploadType = TargetUploadType.FILE;
     private TargetUploadState uploadStatus = new TargetUploadCreateState();
     private TargetUploadFormatEnum format = TargetUploadFormatEnum.CSV;
     private String resultMessage ;
@@ -37,7 +37,7 @@ public class TargetUploadReportEntityBuilder {
         return this;
     }
 
-    public TargetUploadReportEntityBuilder uploadType(TargetUploadTypeEnum uploadType) {
+    public TargetUploadReportEntityBuilder uploadType(TargetUploadType uploadType) {
         this.uploadType = uploadType;
         return this;
     }

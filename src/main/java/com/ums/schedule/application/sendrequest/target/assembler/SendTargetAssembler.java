@@ -1,8 +1,8 @@
 package com.ums.schedule.application.sendrequest.target.assembler;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.domain.request.target.SendTarget;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 
 import java.util.List;
 

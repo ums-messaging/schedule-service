@@ -1,9 +1,10 @@
 package com.ums.schedule.domain.request.state;
 
+import com.ums.schedule.common.code.api.SendRequestErrorCode;
 import com.ums.schedule.common.code.request.SendRequestEvent;
 import com.ums.schedule.common.code.request.SendRequestStatus;
-import com.ums.schedule.domain.exception.request.InvalidSendRequestStateException;
 import com.ums.schedule.common.converter.StatusStateEvent;
+import com.ums.schedule.domain.request.exception.InvalidSendRequestStateException;
 
 public class SendRequestRequestState implements SendRequestState {
 
@@ -14,7 +15,8 @@ public class SendRequestRequestState implements SendRequestState {
             case SEND_REQUEST_SEND_STARTED -> {
                 return new SendRequestSendingState();
             }
-            default -> throw InvalidSendRequestStateException.of(getCurrentCode(), eventCode);
+            default -> throw InvalidSendRequestStateException.of(
+                    SendRequestStatus.REQUEST, eventCode.stateType());
         }
     }
 

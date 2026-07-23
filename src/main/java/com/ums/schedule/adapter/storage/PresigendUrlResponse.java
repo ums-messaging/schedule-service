@@ -8,10 +8,10 @@ import java.time.ZoneId;
 public record PresigendUrlResponse(
         String objectKey,
         String presignedUrl,
-        LocalDateTime expiredAt
+        Instant expiredAt
 ) {
     public static PresigendUrlResponse of(String key, String url, Duration expiredDuration) {
         Instant expiredAt = Instant.now().plus(expiredDuration);
-        return new PresigendUrlResponse(key, url, LocalDateTime.ofInstant(expiredAt, ZoneId.systemDefault()));
+        return new PresigendUrlResponse(key, url, expiredAt);
     }
 }

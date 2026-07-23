@@ -1,7 +1,7 @@
 package com.ums.schedule.application.sendrequest.target.event;
 
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
-import com.ums.schedule.domain.request.target.SendTarget;
+import com.ums.schedule.domain.target.SendTarget;
 
 import java.util.ArrayList;
 import java.util.List;

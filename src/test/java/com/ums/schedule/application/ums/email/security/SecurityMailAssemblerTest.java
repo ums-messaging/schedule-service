@@ -1,12 +1,12 @@
 package com.ums.schedule.application.ums.email.security;
 
-import com.ums.schedule.application.exception.email.security.SecurityMailNotConfiguredException;
 import com.ums.schedule.application.ums.email.config.SecurityMailProperties;
+import com.ums.schedule.application.ums.email.exception.SecurityMailNotConfiguredException;
 import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.security.PasswordTypeEnum;
-import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.PasswordType;
+import com.ums.schedule.common.code.email.security.SecurityMailCode;
 import com.ums.schedule.fixture.email.security.SecurityMailCommandBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,8 +32,8 @@ class SecurityMailAssemblerTest {
     @InjectMocks private SecurityMailAssembler assembler;
 
     private SecurityMailCommandBuilder commandBuilder;
-    private Map<SecurityMailEnumMapper, String> policyMap;
-    private Map<PasswordTypeEnum, String> passwordTypeMap;
+    private Map<SecurityMailCode, String> policyMap;
+    private Map<PasswordType, String> passwordTypeMap;
 
     @BeforeEach
     void setUp() {
@@ -67,7 +67,7 @@ class SecurityMailAssemblerTest {
                 SecurityMailCommand command = commandBuilder.build();
                 doReturn("").when(properties).defaultEncryptType();
 
-                SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailEnumMapper.ENCRYPTION_TYPE);
+                SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailCode.ENCRYPTION_TYPE);
 
                 assertThatThrownBy(() -> assembler.assemble(command))
                         .isInstanceOf(expect.getClass())
@@ -96,7 +96,7 @@ class SecurityMailAssemblerTest {
             void shouldReturnConfiguredValue_whenEncryptionTypeIsEmpty() {
                 ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
                 SecurityMailCommand command = commandBuilder
-                        .policyMap(Map.of(SecurityMailEnumMapper.ENCRYPTION_TYPE, ""))
+                        .policyMap(Map.of(SecurityMailCode.ENCRYPTION_TYPE, ""))
                         .build();
                 givenSecurityMailAllConfigure();
                 doReturn(mock(EnumMapperValue.class)).when(factory).findEnumMapperValue(any(), any());
@@ -113,7 +113,7 @@ class SecurityMailAssemblerTest {
             void shouldReturnEncryptionType_whenEncryptionTypeIsNotEmpty() {
                 ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
                 SecurityMailCommand command = commandBuilder
-                        .policyMap(Map.of(SecurityMailEnumMapper.ENCRYPTION_TYPE, "ASE-256"))
+                        .policyMap(Map.of(SecurityMailCode.ENCRYPTION_TYPE, "ASE-256"))
                         .build();
                 givenSecurityMailAllConfigure();
                 doReturn(mock(EnumMapperValue.class)).when(factory).findEnumMapperValue(any(), any());
@@ -150,7 +150,7 @@ class SecurityMailAssemblerTest {
                 doReturn("ASE-126").when(properties).defaultEncryptType();
                 doReturn("").when(properties).defaultPasswordHash();
 
-                SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailEnumMapper.PASSWORD_HASH);
+                SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailCode.PASSWORD_HASH);
 
                 assertThatThrownBy(() -> assembler.assemble(command))
                         .isInstanceOf(expect.getClass())
@@ -179,7 +179,7 @@ class SecurityMailAssemblerTest {
             void shouldReturnConfiguredValue_whenPasswordHashIsEmpty() {
                 ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
                 SecurityMailCommand command = commandBuilder
-                        .policyMap(Map.of(SecurityMailEnumMapper.PASSWORD_HASH, ""))
+                        .policyMap(Map.of(SecurityMailCode.PASSWORD_HASH, ""))
                         .build();
                 givenSecurityMailAllConfigure();
                 doReturn(mock(EnumMapperValue.class)).when(factory).findEnumMapperValue(any(), any());
@@ -196,7 +196,7 @@ class SecurityMailAssemblerTest {
             void shouldReturnEncryptionType_whenEncryptionTypeIsNotEmpty() {
                 ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
                 SecurityMailCommand command = commandBuilder
-                        .policyMap(Map.of(SecurityMailEnumMapper.PASSWORD_HASH, "SHA-128"))
+                        .policyMap(Map.of(SecurityMailCode.PASSWORD_HASH, "SHA-128"))
                         .build();
                 givenSecurityMailAllConfigure();
                 doReturn(mock(EnumMapperValue.class)).when(factory).findEnumMapperValue(any(), any());
@@ -233,7 +233,7 @@ class SecurityMailAssemblerTest {
                 doReturn("SHA-256").when(properties).defaultPasswordHash();
                 doReturn("").when(properties).defaultPermissionMask();
 
-                SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailEnumMapper.PERMISSION_MASK);
+                SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailCode.PERMISSION_MASK);
 
                 assertThatThrownBy(() -> assembler.assemble(command))
                         .isInstanceOf(expect.getClass())
@@ -262,7 +262,7 @@ class SecurityMailAssemblerTest {
             void shouldReturnConfiguredValue_whenPasswordHashIsEmpty() {
                 ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
                 SecurityMailCommand command = commandBuilder
-                        .policyMap(Map.of(SecurityMailEnumMapper.PERMISSION_MASK, ""))
+                        .policyMap(Map.of(SecurityMailCode.PERMISSION_MASK, ""))
                         .build();
                 givenSecurityMailAllConfigure();
                 doReturn(mock(EnumMapperValue.class)).when(factory).findEnumMapperValue(any(), any());
@@ -279,7 +279,7 @@ class SecurityMailAssemblerTest {
             void shouldReturnEncryptionType_whenEncryptionTypeIsNotEmpty() {
                 ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
                 SecurityMailCommand command = commandBuilder
-                        .policyMap(Map.of(SecurityMailEnumMapper.PASSWORD_HASH, "ALL"))
+                        .policyMap(Map.of(SecurityMailCode.PASSWORD_HASH, "ALL"))
                         .build();
                 givenSecurityMailAllConfigure();
                 doReturn(mock(EnumMapperValue.class)).when(factory).findEnumMapperValue(any(), any());
@@ -336,7 +336,7 @@ class SecurityMailAssemblerTest {
                         .build();
                 doReturn("").when(properties).defaultPasswordPolicy();
 
-                SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(PasswordTypeEnum.PASSWORD_POLICY);
+                SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(PasswordType.PASSWORD_POLICY);
 
                 assertThatThrownBy(() -> assembler.assemble(command))
                         .isInstanceOf(expect.getClass())
@@ -361,7 +361,7 @@ class SecurityMailAssemblerTest {
             @DisplayName("비밀번호 정책 입력 값이 존재하지 않으면 설정 파일에서 조회한 값이 반환된다.")
             void shouldReturnConfiguredValue_whenPasswordPolicyIsEmpty() {
                 SecurityMailCommand command = commandBuilder
-                        .passwordTypeMap(Map.of(PasswordTypeEnum.PASSWORD_POLICY, ""))
+                        .passwordTypeMap(Map.of(PasswordType.PASSWORD_POLICY, ""))
                         .build();
                 doReturn("birthday").when(properties).defaultPasswordPolicy();
 
@@ -375,7 +375,7 @@ class SecurityMailAssemblerTest {
             @DisplayName("비밀번호 정책 입력값이 존재하면 입력값이 반환된다.")
             void shouldReturnPasswordPolicy_whenCommandValueIsNotEmpty() {
                 SecurityMailCommand command = commandBuilder
-                        .passwordTypeMap(Map.of(PasswordTypeEnum.PASSWORD_POLICY, "id"))
+                        .passwordTypeMap(Map.of(PasswordType.PASSWORD_POLICY, "id"))
                         .build();
                 doReturn("birthday").when(properties).defaultPasswordPolicy();
 
@@ -400,7 +400,7 @@ class SecurityMailAssemblerTest {
             @DisplayName("비밀번호 형식 입력 값이 존재하지 않으면 NULL을 반환한다.")
             void shouldReturnNull_whenPasswordFormatDoesNotExist() {
                 SecurityMailCommand command = commandBuilder
-                        .passwordTypeMap(Map.of(PasswordTypeEnum.PASSWORD_POLICY, ""))
+                        .passwordTypeMap(Map.of(PasswordType.PASSWORD_POLICY, ""))
                         .build();
 
                 SecurityMail result = assembler.assemble(command);

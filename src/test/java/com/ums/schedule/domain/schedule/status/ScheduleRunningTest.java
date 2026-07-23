@@ -1,16 +1,15 @@
 package com.ums.schedule.domain.schedule.status;
 
 import com.ums.schedule.common.code.schedule.ScheduleEvent;
-import com.ums.schedule.domain.exception.schedule.InvalidScheduleStatusException;
 import com.ums.schedule.common.converter.StatusState;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleStateException;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.ums.schedule.common.code.schedule.ScheduleStatus.ACTIVE;
-import static com.ums.schedule.common.code.schedule.ScheduleStatus.RUNNING;
+import static com.ums.schedule.common.code.schedule.ScheduleState.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -35,8 +34,12 @@ class ScheduleRunningTest {
         ScheduleStatus status = new ScheduleRunningStatus();
 
         // Then
+        InvalidScheduleStateException expect = InvalidScheduleStateException.of(RUNNING, RUNNING);
+
         assertThatThrownBy(() -> status.onEvent(ScheduleEvent.TO_RUNNING))
-                .isInstanceOf(InvalidScheduleStatusException.class);
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage())
+        ;
     }
 
 
@@ -51,11 +54,16 @@ class ScheduleRunningTest {
     }
 
     @Test
-    @DisplayName("Running 상태에서 INACTIVE 상태로 변경 불가하다.")
+    @DisplayName("RUNNING 상태에서 INACTIVE 상태로 변경 불가하다.")
     void shouldRejectRunningToInactive() {
         ScheduleStatus status = new ScheduleRunningStatus();
+
+        InvalidScheduleStateException expect = InvalidScheduleStateException.of(RUNNING, INACTIVE);
+
         assertThatThrownBy(() -> status.onEvent(ScheduleEvent.TO_INACTIVE))
-                .isInstanceOf(InvalidScheduleStatusException.class);
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage())
+                ;
     }
 
 }

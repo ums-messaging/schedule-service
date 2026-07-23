@@ -1,10 +1,10 @@
 package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.security.SecurityMail;
-import com.ums.schedule.domain.exception.email.SecurityMailPolicyNotFoundException;
 import com.ums.schedule.common.code.email.security.*;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.request.target.SendTarget;
+import com.ums.schedule.domain.message.email.exception.SecurityMailDomainException;
+import com.ums.schedule.domain.target.SendTarget;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -48,7 +48,7 @@ public class SecurityMailPolicy {
 
     private String validateAndGetPasswordPolicy(String passwordPolicy) {
         if (!StringUtils.hasText(passwordPolicy)) {
-            throw SecurityMailPolicyNotFoundException.of(PasswordTypeEnum.PASSWORD_POLICY);
+            throw SecurityMailDomainException.of(PasswordType.PASSWORD_POLICY);
         }
         return passwordPolicy;
     }
@@ -57,19 +57,19 @@ public class SecurityMailPolicy {
     private void resolvePermissionMask(EnumMapperValue permissionMask) {
         this.permissionMask = Optional.ofNullable(permissionMask)
                 .map(v -> PermissionMaskEnum.valueOf(v.code()))
-                .orElseThrow(() -> SecurityMailPolicyNotFoundException.of(SecurityMailEnumMapper.PERMISSION_MASK));
+                .orElseThrow(() -> SecurityMailDomainException.of(SecurityMailCode.PERMISSION_MASK));
     }
 
     private void resolvePasswordHash(EnumMapperValue passwordHash) {
         this.passwordHash = Optional.ofNullable(passwordHash)
                 .map(v -> PasswordHashEnum.valueOf(v.code()))
-                .orElseThrow(() -> SecurityMailPolicyNotFoundException.of(SecurityMailEnumMapper.PASSWORD_HASH));
+                .orElseThrow(() -> SecurityMailDomainException.of(SecurityMailCode.PASSWORD_HASH));
     }
 
     private void resolveEncryptionType(EnumMapperValue encryptionType) {
         this.encryptionType = Optional.ofNullable(encryptionType)
                 .map(v -> EncryptionTypeEnum.valueOf(v.code()))
-                .orElseThrow(() -> SecurityMailPolicyNotFoundException.of(SecurityMailEnumMapper.ENCRYPTION_TYPE));
+                .orElseThrow(() -> SecurityMailDomainException.of(SecurityMailCode.ENCRYPTION_TYPE));
     }
 
     public String getTargetPassword(SendTarget target) {

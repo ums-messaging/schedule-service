@@ -3,7 +3,7 @@ package com.ums.schedule.config;
 import com.ums.schedule.application.sendrequest.target.processor.FileTargetUploadProcessor;
 import com.ums.schedule.application.sendrequest.target.processor.JsonTargetUploadProcessor;
 import com.ums.schedule.application.sendrequest.target.processor.TargetUploadProcessor;
-import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +17,10 @@ public class TargetUploaderConfig {
     private final JsonTargetUploadProcessor jsonTargetUploader;
 
     @Bean
-    public Map<TargetUploadTypeEnum, TargetUploadProcessor> targetUploaderMap() {
+    public Map<TargetUploadType, TargetUploadProcessor> targetUploaderMap() {
         return Map.of(
-                TargetUploadTypeEnum.FILE, fileTargetUploader,
-                TargetUploadTypeEnum.JSON, jsonTargetUploader
+                TargetUploadType.FILE, fileTargetUploader,
+                TargetUploadType.JSON, jsonTargetUploader
         );
     }
 }

@@ -2,11 +2,11 @@ package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
-import com.ums.schedule.domain.request.target.SendTarget;
-
+import com.ums.schedule.domain.target.SendTarget;
 import java.util.Map;
 
 public record AttachmentPipelineCommand(
+        Long id,
         ConvertType convertType,
         String filePrefix,
         String fileSuffix,
@@ -22,6 +22,7 @@ public record AttachmentPipelineCommand(
 ) {
     public static AttachmentPipelineCommand of(EmailAttachment attachment, SendTarget target) {
         return new AttachmentPipelineCommand(
+                attachment.getId(),
                 attachment.getConvertType(),
                 target.getTargetKey(),
                 attachment.getConvertType().value().toLowerCase(),

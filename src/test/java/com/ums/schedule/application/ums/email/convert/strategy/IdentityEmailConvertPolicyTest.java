@@ -1,8 +1,8 @@
 package com.ums.schedule.application.ums.email.convert.strategy;
 
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
+import com.ums.schedule.application.ums.email.exception.EmailConvertTypeNotSupportedException;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.fixture.email.convert.EmailConvertResolveCommandBuilder;
 import org.junit.jupiter.api.*;
@@ -62,7 +62,7 @@ class IdentityEmailConvertPolicyTest {
     @Test
     @DisplayName("변환 타입이 NONE이 아니면 예외가 발생한다.")
     void shouldThrowException_whenConvertTypeIsNone() {
-        ConvertTypeNotSupportedException expect = ConvertTypeNotSupportedException.of();
+        EmailConvertTypeNotSupportedException expect = EmailConvertTypeNotSupportedException.of(ConvertType.PDF);
 
         assertThatThrownBy(() ->
                 convertPolicy.convert(

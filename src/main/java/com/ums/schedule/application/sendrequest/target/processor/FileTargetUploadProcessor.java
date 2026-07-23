@@ -2,11 +2,11 @@ package com.ums.schedule.application.sendrequest.target.processor;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum.FILE;
+import static com.ums.schedule.common.code.target_upload.TargetUploadType.FILE;
 
 
 @Service
@@ -16,7 +16,7 @@ public class FileTargetUploadProcessor implements TargetUploadProcessor {
 
     @Override
     public boolean supports(EnumMapperValue mapperValue) {
-        return FILE == TargetUploadTypeEnum.valueOf(mapperValue.code());
+        return FILE == TargetUploadType.valueOf(mapperValue.code());
     }
 
 //    @Override

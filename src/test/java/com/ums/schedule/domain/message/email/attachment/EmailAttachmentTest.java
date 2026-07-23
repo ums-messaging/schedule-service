@@ -1,14 +1,12 @@
 package com.ums.schedule.domain.message.email.attachment;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
+import com.ums.schedule.common.code.api.AttachmentErrorCode;
 import com.ums.schedule.common.code.email.ConvertType;
-import com.ums.schedule.domain.exception.validation.InvalidFileExtensionException;
-import com.ums.schedule.domain.exception.validation.RequiredException;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
-import com.ums.schedule.domain.exception.email.EmailAttachmentMissingException;
-import com.ums.schedule.domain.exception.email.EmailSendMessageNotFoundException;
 import com.ums.schedule.common.code.email.AttachmentType;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
+import com.ums.schedule.domain.message.email.exception.AttachmentPolicyViolationException;
 import com.ums.schedule.domain.request.message.email.EmailSendMessageBuilder;
 import com.ums.schedule.fixture.email.attachment.EmailAttachmentCreateContextBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,7 +89,7 @@ class EmailAttachmentTest {
                         ))
                         .build();
 
-                EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key");
+                AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_TEMPLATE_EMPTY);
 
                 assertThatThrownBy(() -> EmailAttachment.of(context))
                         .isInstanceOf(expect.getClass())
@@ -104,7 +102,8 @@ class EmailAttachmentTest {
                         .fileSize(null)
                         .build();
 
-                EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_size");
+
+                AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_SIZE_EMPTY);
 
                 assertThatThrownBy(() -> EmailAttachment.of(context))
                         .isInstanceOf(expect.getClass())
@@ -147,7 +146,7 @@ class EmailAttachmentTest {
                         )
                         .build();
 
-                EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key_template");
+                AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_EMPTY);
 
                 assertThatThrownBy(() -> EmailAttachment.of(context))
                         .isInstanceOf(expect.getClass())
@@ -190,7 +189,7 @@ class EmailAttachmentTest {
             AttachmentCreateCommand context = contextBuilder
                     .fileKeyMap(null).build();
 
-            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key or file_key_template");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_MAP_IS_NULL);
 
             assertThatThrownBy(() -> EmailAttachment.of(context))
                     .isInstanceOf(expect.getClass())
@@ -254,7 +253,7 @@ class EmailAttachmentTest {
                             Map.of(AttachmentType.TEMPLATE, "${template}.html")
                     );
 
-            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_EMPTY);
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -269,7 +268,7 @@ class EmailAttachmentTest {
                             AttachmentType.DIRECT, "body.html"
                     ));
 
-            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key_template");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_TEMPLATE_EMPTY);
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -282,7 +281,8 @@ class EmailAttachmentTest {
             contextBuilder = contextBuilder
                     .fileSize(null);
 
-            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_size");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_SIZE_EMPTY);
+
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -300,7 +300,7 @@ class EmailAttachmentTest {
                             )
                     );
 
-            InvalidFileExtensionException expect = InvalidFileExtensionException.of("html");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.INVALID_FILE_INFO_FORMAT);
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -318,7 +318,7 @@ class EmailAttachmentTest {
                             )
                     );
 
-            InvalidFileExtensionException expect = InvalidFileExtensionException.of("html");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.INVALID_FILE_INFO_FORMAT);
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -342,7 +342,8 @@ class EmailAttachmentTest {
             AttachmentCreateCommand context = contextBuilder
                     .fileKeyMap(null).build();
 
-            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key and file_key_template");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_MAP_IS_NULL);
+
 
             assertThatThrownBy(() -> EmailAttachment.of(context))
                     .isInstanceOf(expect.getClass())
@@ -407,7 +408,7 @@ class EmailAttachmentTest {
                             )
                     );
 
-            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_EMPTY);
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -424,7 +425,7 @@ class EmailAttachmentTest {
                             )
                     );
 
-            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key_template");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_EMPTY);
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -437,7 +438,7 @@ class EmailAttachmentTest {
             contextBuilder = contextBuilder
                     .fileSize(null);
 
-            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_size");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_SIZE_EMPTY);
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -455,7 +456,7 @@ class EmailAttachmentTest {
                             )
                     );
 
-            InvalidFileExtensionException expect = InvalidFileExtensionException.of("html");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.INVALID_FILE_INFO_FORMAT);
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -473,7 +474,7 @@ class EmailAttachmentTest {
                             )
                     );
 
-            InvalidFileExtensionException expect = InvalidFileExtensionException.of("pdf");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.INVALID_FILE_INFO_FORMAT);
 
             assertThatThrownBy(() -> EmailAttachment.of(contextBuilder.build()))
                     .isInstanceOf(expect.getClass())
@@ -498,7 +499,7 @@ class EmailAttachmentTest {
                     .fileKeyMap(null)
                     .build();
 
-            EmailAttachmentMissingException expect = EmailAttachmentMissingException.of("file_key and file_key_template");
+            AttachmentPolicyViolationException expect = AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_EMPTY);
 
             assertThatThrownBy(() -> EmailAttachment.of(context))
                     .isInstanceOf(expect.getClass())
@@ -522,39 +523,37 @@ class EmailAttachmentTest {
             AttachmentCreateCommand context = contextBuilder.sendMessage(null)
                     .build();
 
-            EmailSendMessageNotFoundException expect = EmailSendMessageNotFoundException.of();
+            NullPointerException expect = new NullPointerException();
 
             assertThatThrownBy(() -> EmailAttachment.of(context))
                     .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+                    .hasMessage("email_send_message");
         }
 
         @Test
         @DisplayName("첨부파일 명이 빈 값이면, 익셉션이 발생한다.")
         void shouldThrowException_whenAttachmentNameIsEmpty() {
-            AttachmentCreateCommand context = contextBuilder.attachmentName("")
+            AttachmentCreateCommand context = contextBuilder.attachmentName(null)
                     .sendMessage(sendMessage)
                     .build();
 
-            RequiredException expect = RequiredException.fieldOf("attachment_name");
-
             assertThatThrownBy(() -> EmailAttachment.of(context))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessage("attachment_name");
         }
 
         @Test
         @DisplayName("다운로드 명이 빈 값이면, 익셉션이 발생한다.")
         void shouldThrowException_whenDownloadNameIsNull() {
-            AttachmentCreateCommand context = contextBuilder.downloadName("")
+            AttachmentCreateCommand context = contextBuilder.downloadName(null)
                     .sendMessage(sendMessage)
                     .build();
 
-            RequiredException expect = RequiredException.fieldOf("download_name");
+            NullPointerException expect = new NullPointerException();
 
             assertThatThrownBy(() -> EmailAttachment.of(context))
                     .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+                    .hasMessage("download_name");
         }
     }
 

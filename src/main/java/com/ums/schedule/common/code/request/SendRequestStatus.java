@@ -2,9 +2,9 @@ package com.ums.schedule.common.code.request;
 
 import com.ums.schedule.domain.request.state.*;
 import com.ums.schedule.common.converter.StatusState;
-import com.ums.schedule.common.converter.StatusStateFactory;
+import com.ums.schedule.common.converter.StatusStateType;
 
-public enum SendRequestStatus implements StatusStateFactory {
+public enum SendRequestStatus implements StatusStateType {
     CREATE("C", "발송 요청 등록") {
         @Override
         public StatusState createStatus() {

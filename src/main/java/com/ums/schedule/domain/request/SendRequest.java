@@ -3,32 +3,27 @@ package com.ums.schedule.domain.request;
 import com.github.f4b6a3.tsid.TsidCreator;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateContext;
-import com.ums.schedule.domain.exception.validation.DuplicateViolationException;
+import com.ums.schedule.common.code.api.SendRequestErrorCode;
 import com.ums.schedule.common.util.FileUtil;
-import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.common.code.request.SendRequestEvent;
 import com.ums.schedule.common.code.common.ChannelType;
 import com.ums.schedule.domain.request.converter.ChannelTypeConverter;
 import com.ums.schedule.domain.request.customer.CustomerRequestKey;
-import com.ums.schedule.domain.exception.request.DefaultRetryCountNotConfiguredException;
-import com.ums.schedule.domain.exception.request.SendMessageNotFoundException;
 import com.ums.schedule.domain.message.SendMessage;
+import com.ums.schedule.domain.request.exception.SendRequestDomainException;
 import com.ums.schedule.domain.request.state.SendRequestCreateState;
 import com.ums.schedule.domain.request.state.SendRequestState;
 import com.ums.schedule.domain.request.converter.SendRequestStateConverter;
-import com.ums.schedule.domain.exception.schedule.ScheduleNotFoundException;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.exception.target_upload.InvalidTargetUploadReportMismatchException;
-import com.ums.schedule.domain.exception.target_upload.TargetUploadReportNotFoundException;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Entity
 @Table(name = "send_request", uniqueConstraints = {
@@ -98,21 +93,12 @@ public class SendRequest {
     }
 
     private void assignSendMessage(SendMessage sendMessage) {
-        this.sendMessage = Optional.ofNullable(sendMessage)
-                .orElseThrow(SendMessageNotFoundException::of);
+        this.sendMessage = Objects.requireNonNull(sendMessage);
         sendMessage.assignSendRequest(this);
     }
 
     private void assignChannelType(ChannelType channelType) {
-        ValidationUtils.isEmpty("channel_type", channelType);
-        this.channelType = channelType;
-    }
-
-    private void assignCurrentTargetUploadReport(TargetUploadReport targetUploadReport) {
-        if(targetUploadReport == null) {
-            TargetUploadReportNotFoundException.of();
-        }
-        this.currentTargetUpload = targetUploadReport;
+        this.channelType = Objects.requireNonNull(channelType, "channel_type");
     }
 
     protected SendRequest() {
@@ -128,19 +114,15 @@ public class SendRequest {
         assignTemplate(templateKey);
     }
     private void assignSender(String senderKey) {
-        ValidationUtils.isEmpty("sender_key", senderKey);
-        this.senderKey = senderKey;
+        this.senderKey = Objects.requireNonNull(senderKey, "sender_key");
     }
 
     private void assignTemplate(String templateKey) {
-        ValidationUtils.isEmpty("template_key", templateKey);
-        this.templateKey = templateKey;
+        this.templateKey = Objects.requireNonNull(templateKey, "template_key");
     }
 
     private void initializeRetryCount(Integer retryCount) {
-        this.retryCnt = Optional.ofNullable(retryCount)
-                .filter(count -> count >= 0)
-                .orElseThrow(DefaultRetryCountNotConfiguredException::of);
+        this.retryCnt = retryCount;
     }
 
     private void initializeCreateAt() {
@@ -148,20 +130,13 @@ public class SendRequest {
     }
 
     private void assignSchedule(Schedule schedule) {
-        checkScheduleExists(schedule);
+        this.schedule = Objects.requireNonNull(schedule, "schedule");
         schedule.checkScheduleAvailability();
-        this.schedule = schedule;
-    }
-
-    private void checkScheduleExists(Schedule schedule){
-        if(schedule == null) {
-            throw ScheduleNotFoundException.of();
-        }
     }
 
     private void assignCustomerKey(CustomerRequestKey customerRequestKey) {
         this.customerRequestKey = Optional.ofNullable(customerRequestKey)
-                .orElseThrow(() -> DuplicateViolationException.fieldOf("customer_key"));
+                .orElseThrow(() -> SendRequestDomainException.of(SendRequestErrorCode.DUPLICATED_CUSTOMER_KEY));
     }
 
     public SendRequest updateSendRequest(Schedule schedule, TargetUploadReport targetUpload, SendRequestUpdateCommand command) {
@@ -205,8 +180,7 @@ public class SendRequest {
     }
 
     public void assignTargetUpload(TargetUploadReport targetUpload) {
-        this.currentTargetUpload = Optional.ofNullable(targetUpload)
-                .orElseThrow(TargetUploadReportNotFoundException::of);
+        this.currentTargetUpload = Objects.requireNonNull(targetUpload, "target_upload_report");
         changeStateByTargetUploadReport();
     }
 
@@ -223,39 +197,17 @@ public class SendRequest {
         return FileUtil.generateFilePaths(customerId, String.valueOf(this.id), channelType.code().toLowerCase());
     }
 
-    public void prepareForUpload(TargetUploadReport targetUploadReport) {
-        if(this.currentTargetUpload != null) {
-            validateCurrentTargetUploadReport(targetUploadReport);
-            if(isValidTargetUploadState(targetUploadReport)) {
-                onEvent(SendRequestEvent.SEND_REQUEST_UPDATED);
-                return;
-            }
-        }
-        throw TargetUploadReportNotFoundException.of();
-    }
 
     public void readyForSendRequest(TargetUploadReport targetUploadReport) {
-        validateCurrentTargetUploadReport(targetUploadReport);
         if(targetUploadReport.isCompleted()) {
             onEvent(SendRequestEvent.SEND_REQUEST_READY);
         }
     }
 
-    private boolean isValidTargetUploadState(TargetUploadReport targetUploadReport) {
-        return targetUploadReport.isReadyForUpload();
-    }
 
-    private void validateCurrentTargetUploadReport(TargetUploadReport targetUploadReport) {
-        if(!isEqualToCurrentTargetUpload(targetUploadReport)) {
-            throw InvalidTargetUploadReportMismatchException.of(this.currentTargetUpload.getId(), targetUploadReport.getId());
-        }
-    }
 
     private boolean isEqualToCurrentTargetUpload(TargetUploadReport targetUploadReport) {
         return this.currentTargetUpload == targetUploadReport;
     }
 
-    public UUID getCurrentUploadId() {
-        return this.currentTargetUpload.getId();
-    }
 }

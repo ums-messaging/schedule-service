@@ -2,7 +2,7 @@ package com.ums.schedule.application.sendrequest.data;
 
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.common.code.common.ChannelType;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 
 public record SendRequestKeyData(Long requestId, String messageId, ChannelType channelType) {
     public static SendRequestKeyData of(Long requestId, String messageId, ChannelType channelType) {

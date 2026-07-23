@@ -3,14 +3,14 @@ package com.ums.schedule.fixture.sendrequest;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
 import com.ums.schedule.common.code.common.ChannelType;
+import com.ums.schedule.common.code.target_upload.TargetUploadType;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.request.customer.CustomerRequestKey;
 import com.ums.schedule.domain.message.SendMessage;
-import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
 import com.ums.schedule.domain.request.state.SendRequestCreateState;
 import com.ums.schedule.domain.request.state.SendRequestState;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -93,10 +93,10 @@ public class SendRequestEntityBuilder {
         return this;
     }
     public SendRequestCreateCommand toCreateCommand() {
-        return toCreateCommand(TargetUploadTypeEnum.JSON, false);
+        return toCreateCommand(TargetUploadType.JSON, false);
     }
 
-    public SendRequestCreateCommand toCreateCommand(TargetUploadTypeEnum uploadType, boolean exists) {
+    public SendRequestCreateCommand toCreateCommand(TargetUploadType uploadType, boolean exists) {
         return new SendRequestCreateCommand(
                 schedule.getId(),
                 channelType,

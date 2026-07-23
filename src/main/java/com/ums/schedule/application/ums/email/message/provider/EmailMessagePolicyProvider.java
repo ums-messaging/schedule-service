@@ -1,12 +1,11 @@
 package com.ums.schedule.application.ums.email.message.provider;
 
-import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
-import com.ums.schedule.application.exception.email.security.SecurityMailProcessException;
-import com.ums.schedule.application.exception.template.TemplateNotFoundException;
+import com.ums.schedule.adapter.api.request.email.request.EmailSendCreateRequest;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
 import com.ums.schedule.application.ums.email.convert.resolver.EmailConvertResolver;
 import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
+import com.ums.schedule.application.ums.email.exception.SecurityMailProcessException;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.application.ums.email.security.SecurityMailAssembler;
 import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand;
@@ -14,6 +13,7 @@ import com.ums.schedule.application.ums.email.template.query.EmailTemplateQueryS
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
 import com.ums.schedule.common.code.email.EmailMessageSection;
+import com.ums.schedule.domain.message.email.exception.EmailMessagePolicyViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +36,7 @@ public class EmailMessagePolicyProvider {
 
     private EmailConvertPolicy resolveEmailConvertPolicy(EmailSendCreateRequest request, EmailTemplateResult template, SecurityMail securityMail) {
         AttachmentContext body = Optional.ofNullable(template.bodyTemplate())
-                .orElseThrow(() -> TemplateNotFoundException.of(EmailMessageSection.BODY));
+                .orElseThrow(() -> EmailMessagePolicyViolationException.of(EmailMessageSection.BODY));
         EmailConvertResolveCommand command = EmailConvertResolveCommand.of(request.convertType(), body, template);
         EmailConvertPolicy policy = resolver.resolve(command, securityMail);
         return policy;

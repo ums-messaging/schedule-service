@@ -1,9 +1,10 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
 import com.ums.schedule.common.code.schedule.CycleCd;
 import com.ums.schedule.common.code.schedule.ScheduleType;
-import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
-import com.ums.schedule.domain.exception.validation.InvalidDateFormatException;
+import com.ums.schedule.common.exception.validate.InvalidDateFormatException;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleCyclePolicyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +24,8 @@ class ReservationPolicyValueTest {
 
         // when
         assertThatThrownBy(() -> ReservationPolicyValue.of(format))
-                .isInstanceOf(InvalidCycleValueException.class)
-                .hasMessage(InvalidCycleValueException.toReservationDate().getMessage());
+                .isInstanceOf(InvalidScheduleCyclePolicyException.class)
+                .hasMessage(InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.INVALID_RESERVATION_DATE).getMessage());
     }
 
     @Test
@@ -35,7 +36,7 @@ class ReservationPolicyValueTest {
         // when
         assertThatThrownBy(() -> ReservationPolicyValue.of(format))
                 .isInstanceOf(InvalidDateFormatException.class)
-                .hasMessage(InvalidDateFormatException.ofReservationDate().getMessage());
+                .hasMessage(InvalidDateFormatException.of("RESERVATION_DATE").getMessage());
     }
 
     @Test

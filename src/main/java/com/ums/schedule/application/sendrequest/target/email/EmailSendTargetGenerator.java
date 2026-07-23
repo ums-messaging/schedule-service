@@ -1,17 +1,17 @@
 package com.ums.schedule.application.sendrequest.target.email;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
-import com.ums.schedule.application.exception.ApplicationException;
 import com.ums.schedule.application.message.email.EmailResourceCommand;
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
-import com.ums.schedule.application.exception.email.EmailMessageConvertException;
 import com.ums.schedule.application.ums.email.convert.handler.AttachmentConverter;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
+import com.ums.schedule.application.ums.email.exception.EmailMessageConvertException;
 import com.ums.schedule.application.ums.email.template.EmailTemplate;
+import com.ums.schedule.common.exception.BusinessException;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
-import com.ums.schedule.domain.request.target.SendTarget;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ public class EmailSendTargetGenerator {
                     .toList();
             target.generateAttachments(resources);
             return target;
-        } catch (ApplicationException e) {
+        } catch (BusinessException e) {
             return SendTarget.failureOf(targetDto, e.getMessage());
         }
     }
@@ -58,7 +58,7 @@ public class EmailSendTargetGenerator {
             fileRepository.upload(result.tempFile(), command.objectKey());
             return result;
         } catch (IOException e) {
-            throw EmailMessageConvertException.of(e);
+            throw EmailMessageConvertException.of(command.id(), e);
         }
     }
 }

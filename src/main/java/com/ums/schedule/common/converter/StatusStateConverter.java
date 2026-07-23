@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 public abstract class StatusStateConverter implements AttributeConverter<StatusState, String> {
-    private final Class<? extends StatusStateFactory> enumClass;
+    private final Class<? extends StatusStateType> enumClass;
 
     @Override
     public String convertToDatabaseColumn(StatusState attribute) {

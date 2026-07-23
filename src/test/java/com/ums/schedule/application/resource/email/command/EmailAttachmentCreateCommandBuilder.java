@@ -5,7 +5,7 @@ import com.ums.schedule.common.code.email.*;
 import com.ums.schedule.common.code.email.security.EncryptionTypeEnum;
 import com.ums.schedule.common.code.email.security.PasswordHashEnum;
 import com.ums.schedule.common.code.email.security.PermissionMaskEnum;
-import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.SecurityMailCode;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 
 import java.util.HashMap;
@@ -93,15 +93,15 @@ public class EmailAttachmentCreateCommandBuilder {
     }
 
     public AttachmentCreateCommand build() {
-        Map<SecurityMailEnumMapper, EnumMapperValue> securityMap = new HashMap<>();
+        Map<SecurityMailCode, EnumMapperValue> securityMap = new HashMap<>();
         if(encryptionType != null) {
-            securityMap.put(SecurityMailEnumMapper.ENCRYPTION_TYPE, EnumMapperValue.fromEnumMapperType(encryptionType));
+            securityMap.put(SecurityMailCode.ENCRYPTION_TYPE, EnumMapperValue.fromEnumMapperType(encryptionType));
         }
         if(passwordHash != null) {
-            securityMap.put(SecurityMailEnumMapper.PASSWORD_HASH, EnumMapperValue.fromEnumMapperType(passwordHash));
+            securityMap.put(SecurityMailCode.PASSWORD_HASH, EnumMapperValue.fromEnumMapperType(passwordHash));
         }
         if(permissionMask != null) {
-            securityMap.put(SecurityMailEnumMapper.PERMISSION_MASK, EnumMapperValue.fromEnumMapperType(permissionMask));
+            securityMap.put(SecurityMailCode.PERMISSION_MASK, EnumMapperValue.fromEnumMapperType(permissionMask));
         }
 
         return new AttachmentCreateCommand(

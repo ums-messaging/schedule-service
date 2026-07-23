@@ -2,7 +2,7 @@ package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.code.email.ConvertType;
-import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.SecurityMailCode;
 
 import java.util.*;
 
@@ -13,7 +13,7 @@ public class EmailMessageCreateCommandBuilder {
     private String fileKey;
     private String fileKeyTemplate;
     private Long fileSize;
-    private Map<SecurityMailEnumMapper, EnumMapperValue> securityPolicyMap;
+    private Map<SecurityMailCode, EnumMapperValue> securityPolicyMap;
     private String passwordFormat;
     private String passwordHash;
 

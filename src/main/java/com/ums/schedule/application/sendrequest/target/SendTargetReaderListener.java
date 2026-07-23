@@ -5,7 +5,7 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.ums.schedule.adapter.api.target.context.TargetUploadContext;
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.application.sendrequest.target.row.SendTargetRow;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.*;

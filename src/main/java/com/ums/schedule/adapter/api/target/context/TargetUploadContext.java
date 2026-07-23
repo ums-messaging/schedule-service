@@ -1,7 +1,7 @@
 package com.ums.schedule.adapter.api.target.context;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 
 import java.util.List;
 

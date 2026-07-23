@@ -1,10 +1,10 @@
 package com.ums.schedule.domain.message.email.attachment;
 
 import com.ums.schedule.application.ums.email.security.SecurityMail;
-import com.ums.schedule.domain.exception.email.SecurityMailPolicyNotFoundException;
-import com.ums.schedule.common.code.email.security.PasswordTypeEnum;
-import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.PasswordType;
+import com.ums.schedule.common.code.email.security.SecurityMailCode;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
+import com.ums.schedule.domain.message.email.exception.SecurityMailDomainException;
 import com.ums.schedule.fixture.email.attachment.SecurityMailBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +25,7 @@ class SecurityMailPolicyTest {
     void shouldThrowException_whenEncryptionTypeIsNull() {
         SecurityMail securityMail = securityBuilder.encryptionType(null).build();
 
-        SecurityMailPolicyNotFoundException expect = SecurityMailPolicyNotFoundException.of(SecurityMailEnumMapper.ENCRYPTION_TYPE);
+        SecurityMailDomainException expect = SecurityMailDomainException.of(SecurityMailCode.ENCRYPTION_TYPE);
 
         assertThatThrownBy(() -> SecurityMailPolicy.of(securityMail))
                 .isInstanceOf(expect.getClass())
@@ -38,7 +38,7 @@ class SecurityMailPolicyTest {
     void shouldThrowException_whenPermissionMaskIsNull() {
         SecurityMail securityMail = securityBuilder.permissionMask(null).build();
 
-        SecurityMailPolicyNotFoundException expect = SecurityMailPolicyNotFoundException.of(SecurityMailEnumMapper.PERMISSION_MASK);
+        SecurityMailDomainException expect = SecurityMailDomainException.of(SecurityMailCode.PERMISSION_MASK);
 
         assertThatThrownBy(() -> SecurityMailPolicy.of(securityMail))
                 .isInstanceOf(expect.getClass())
@@ -50,7 +50,7 @@ class SecurityMailPolicyTest {
     void shouldThrowException_whenPasswordHashIsNull() {
         SecurityMail securityMail = securityBuilder.passwordHash(null).build();
 
-        SecurityMailPolicyNotFoundException expect = SecurityMailPolicyNotFoundException.of(SecurityMailEnumMapper.PASSWORD_HASH);
+        SecurityMailDomainException expect = SecurityMailDomainException.of(SecurityMailCode.PASSWORD_HASH);
 
         assertThatThrownBy(() -> SecurityMailPolicy.of(securityMail))
                 .isInstanceOf(expect.getClass())
@@ -62,7 +62,7 @@ class SecurityMailPolicyTest {
     void shouldThrowException_whenPasswordPolicyIsEmpty() {
         SecurityMail securityMail = securityBuilder.passwordPolicy(null).build();
 
-        SecurityMailPolicyNotFoundException expect = SecurityMailPolicyNotFoundException.of(PasswordTypeEnum.PASSWORD_POLICY);
+        SecurityMailDomainException expect = SecurityMailDomainException.of(PasswordType.PASSWORD_POLICY);
         assertThatThrownBy(() -> SecurityMailPolicy.of(securityMail))
                 .isInstanceOf(expect.getClass())
                 .hasMessage(expect.getMessage());

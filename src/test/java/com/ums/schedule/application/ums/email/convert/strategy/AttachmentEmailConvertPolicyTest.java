@@ -1,15 +1,17 @@
 package com.ums.schedule.application.ums.email.convert.strategy;
 
-import com.ums.schedule.application.exception.email.ConvertMessageNotConfiguredException;
-import com.ums.schedule.application.exception.template.TemplateNotFoundException;
 import com.ums.schedule.application.ums.email.config.EmailMessageProperties;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
 import com.ums.schedule.application.ums.email.convert.strategy.model.EmailConvertResult;
+import com.ums.schedule.application.ums.email.exception.EmailConvertTypeNotSupportedException;
+import com.ums.schedule.application.ums.email.exception.EmailPolicyViolationException;
+import com.ums.schedule.application.ums.email.template.exception.EmailTemplateNotConfiguredException;
+import com.ums.schedule.common.code.api.EmailMessageErrorCode;
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.application.exception.email.ConvertTypeNotSupportedException;
 import com.ums.schedule.common.code.email.EmailMessageSection;
+import com.ums.schedule.domain.message.email.exception.EmailContentMissingException;
 import com.ums.schedule.fixture.email.attachment.AttachmentContextBuilder;
 import com.ums.schedule.fixture.email.convert.EmailConvertResolveCommandBuilder;
 import org.junit.jupiter.api.*;
@@ -89,10 +91,11 @@ class AttachmentEmailConvertPolicyTest {
         @Test
         @DisplayName("커버 정보가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenConvertTemplateDoesNotExist() {
-            EmailConvertResolveCommand command = builder.cover(null).build();
+            EmailConvertResolveCommand command = builder
+                    .cover(null).build();
 
-            TemplateNotFoundException expect =
-                    TemplateNotFoundException.of(EmailMessageSection.COVER);
+            EmailContentMissingException expect =
+                    EmailContentMissingException.of(EmailMessageSection.COVER);
 
             assertThatThrownBy(() -> convertPolicy.convert(convertTypeValue, command))
                     .isInstanceOf(expect.getClass())
@@ -123,8 +126,6 @@ class AttachmentEmailConvertPolicyTest {
 
             assertThat(result.convertedAttachment().fileKeyTemplate()).isEqualTo("${template}.pdf");
         }
-
-
     }
 
     @Nested
@@ -135,7 +136,7 @@ class AttachmentEmailConvertPolicyTest {
         void shouldThrowException_whenConfiguredValueIsEmpty() {
             doReturn("").when(properties).getConvertFileKeyTemplate();
 
-            ConvertMessageNotConfiguredException expect = ConvertMessageNotConfiguredException.of("convert.file_key_template");
+            EmailTemplateNotConfiguredException expect = EmailTemplateNotConfiguredException.of(EmailMessageErrorCode.NOT_CONFIGURED_FILE_KEY_TEMPLATE);
 
             assertThatThrownBy(() -> convertPolicy.convert(convertTypeValue, builder.build()))
                     .isInstanceOf(expect.getClass())
@@ -145,7 +146,7 @@ class AttachmentEmailConvertPolicyTest {
         @Test
         @DisplayName("변환 타입이 NONE이면 예외가 발생한다.")
         void shouldThrowException_whenConvertTypeIsNone() {
-            ConvertTypeNotSupportedException expect = ConvertTypeNotSupportedException.of();
+            EmailConvertTypeNotSupportedException expect = EmailConvertTypeNotSupportedException.of(ConvertType.NONE);
 
             assertThatThrownBy(() ->
                         convertPolicy.convert(

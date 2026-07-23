@@ -1,17 +1,18 @@
 package com.ums.schedule.common.code.schedule;
 
 import com.ums.schedule.common.converter.StatusStateEvent;
+import com.ums.schedule.common.converter.StatusStateType;
 
 public enum ScheduleEvent implements StatusStateEvent {
-    TO_ACTIVE("active", "활성화"),
-    TO_INACTIVE("inactvie", "비활성화"),
-    TO_RUNNING("running", "실행중");
+    TO_ACTIVE(ScheduleState.ACTIVE, "활성화"),
+    TO_INACTIVE(ScheduleState.INACTIVE, "비활성화"),
+    TO_RUNNING(ScheduleState.RUNNING, "실행중");
 
-    String value;
+    ScheduleState state;
     String description;
 
-    ScheduleEvent(String value, String description) {
-        this.value = value;
+    ScheduleEvent(ScheduleState state, String description) {
+        this.state = state;
         this.description = description;
     }
 
@@ -22,11 +23,16 @@ public enum ScheduleEvent implements StatusStateEvent {
 
     @Override
     public String value() {
-        return this.value;
+        return this.state.code();
     }
 
     @Override
     public String description() {
         return this.description;
+    }
+
+    @Override
+    public ScheduleState stateType() {
+        return ScheduleState.valueOf(this.state.code());
     }
 }

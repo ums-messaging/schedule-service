@@ -3,18 +3,19 @@ package com.ums.schedule.domain.request.state;
 import com.ums.schedule.common.code.request.SendRequestEvent;
 import com.ums.schedule.common.code.request.SendRequestStatus;
 import com.ums.schedule.common.converter.StatusStateEvent;
-import com.ums.schedule.domain.exception.request.InvalidSendRequestStateException;
+import com.ums.schedule.domain.request.exception.InvalidSendRequestStateException;
 
 public class SendRequestCreateState implements SendRequestState {
     @Override
     public SendRequestState onEvent(StatusStateEvent event) {
-        SendRequestEvent eventType = SendRequestEvent.valueOf(event.code());
-        switch (eventType) {
+        SendRequestEvent eventCode = SendRequestEvent.valueOf(event.code());
+
+        switch (eventCode) {
             case SEND_REQUEST_UPDATED -> {
                 return new SendRequestHoldingState();
             }
             default ->
-                throw InvalidSendRequestStateException.of(getCurrentCode(), eventType);
+                throw InvalidSendRequestStateException.of(SendRequestStatus.COMPLETED, eventCode.stateType());
         }
     }
 

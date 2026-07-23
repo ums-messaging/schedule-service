@@ -2,12 +2,11 @@ package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
 import com.ums.schedule.common.code.common.ChannelType;
-import com.ums.schedule.common.util.ValidationUtils;
+import com.ums.schedule.common.code.email.ConvertType;
+import com.ums.schedule.common.code.email.EmailRequiredValue;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
-import com.ums.schedule.domain.exception.email.EmailMessageMissingException;
-import com.ums.schedule.domain.exception.email.EmailMessageTemplateFileKeyMissingException;
+import com.ums.schedule.domain.message.email.exception.EmailMessageValueMissingException;
 import com.ums.schedule.domain.request.converter.UuidBinaryConverter;
-import com.ums.schedule.domain.exception.request.SendMessageNotFoundException;
 import com.ums.schedule.domain.message.ChannelMessage;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.common.code.email.EmailMessageSection;
@@ -68,8 +67,7 @@ public class EmailSendMessage implements ChannelMessage {
     }
 
     private void assignSendMessageAndResolveTitle(SendMessage sendMessage, String title) {
-        this.sendMessage = Optional.ofNullable(sendMessage)
-                .orElseThrow(SendMessageNotFoundException::of);
+        this.sendMessage = Objects.requireNonNull(sendMessage, "send_message");
         assignSubject(sendMessage, title);
     }
 
@@ -94,12 +92,12 @@ public class EmailSendMessage implements ChannelMessage {
     private void assignBodyTemplateKey(String bodyKey) {
         this.bodyTemplateKey = Optional.ofNullable(bodyKey)
                 .filter(StringUtils::hasText)
-                .orElseThrow(() -> EmailMessageTemplateFileKeyMissingException.of(EmailMessageSection.BODY));
+                .orElseThrow(() -> EmailMessageValueMissingException.of(EmailRequiredValue.BODY_TEMPLATE_KEY));
     }
 
     private void assignBodyTemplate(String template) {
         if(!StringUtils.hasText(template)) {
-            throw EmailMessageMissingException.bodyOf();
+            throw EmailMessageValueMissingException.of(EmailRequiredValue.BODY_TEMPLATE);
         }
         this.bodyTemplate = template;
     }
@@ -112,9 +110,8 @@ public class EmailSendMessage implements ChannelMessage {
 
     }
 
-
     private void assignSubject(SendMessage message, String title) {
-        ValidationUtils.isEmpty("subject", title);
+        Objects.requireNonNull(title, "title");
         this.subject = message.generatePhraseByMessageType(title);
     }
 
@@ -125,5 +122,18 @@ public class EmailSendMessage implements ChannelMessage {
 
     public void addAttachments(EmailAttachment attachment) {
         this.attachmentList.add(attachment);
+    }
+
+    public ConvertType findConvertType() {
+        return attachmentList
+                .stream()
+                .filter(attachment -> attachment.getConvertType() != ConvertType.NONE)
+                .map(EmailAttachment::getConvertType)
+                .findFirst()
+                .orElse(ConvertType.NONE);
+    }
+
+    public Integer getAttachmentCount() {
+        return attachmentList.size();
     }
 }

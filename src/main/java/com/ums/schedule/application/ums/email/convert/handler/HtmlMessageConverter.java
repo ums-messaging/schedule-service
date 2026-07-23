@@ -2,10 +2,10 @@ package com.ums.schedule.application.ums.email.convert.handler;
 
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
-import com.ums.schedule.application.exception.email.EmailMessageConvertException;
+import com.ums.schedule.application.ums.common.exception.TemplatePolicyViolationException;
+import com.ums.schedule.application.ums.email.exception.EmailMessageConvertException;
 import com.ums.schedule.application.ums.email.template.EmailTemplateLoader;
 import com.ums.schedule.common.code.email.ConvertType;
-import com.ums.schedule.domain.exception.template.TemplateNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class HtmlMessageConverter implements AttachmentConverter {
     private final EmailTemplateLoader templateLoader;
-    // html 업로드
+
     @Override
     public TemplateConversionResult handle(AttachmentPipelineCommand command) {
         File file;
@@ -29,15 +29,15 @@ public class HtmlMessageConverter implements AttachmentConverter {
         try {
             Path path = Files.createTempFile("%s_".formatted(command.filePrefix()), ".%s".formatted(command.fileSuffix()));
             templateContent = templateLoader.loadAndCompileTemplate(command.fileKey(), command.targetDataParam());
-            file = validateContentAndWriteFileByConvertType(path, command.convertType(), templateContent);
-        } catch (IOException e) {
-            throw EmailMessageConvertException.of(e);
+            file = validateContentAndWriteFileByConvertType(command.fileKey(), path, command.convertType(), templateContent);
+        } catch (Exception e) {
+            throw EmailMessageConvertException.of(command.id(), e);
         }
         return TemplateConversionResult.of(file, command.objectKey(), templateContent);
     }
 
-    private File validateContentAndWriteFileByConvertType(Path path, ConvertType convertType, String templateContent) throws IOException {
-        validateTemplateContent(templateContent);
+    private File validateContentAndWriteFileByConvertType(String fileKey, Path path, ConvertType convertType, String templateContent) throws IOException {
+        validateTemplateContent(fileKey, templateContent);
         if(convertType == ConvertType.HTML) {
             path = Files.writeString(path, templateContent, StandardCharsets.UTF_8);
         }
@@ -46,9 +46,9 @@ public class HtmlMessageConverter implements AttachmentConverter {
                 .orElse(path.toFile());
     }
 
-    private void validateTemplateContent(String templateContent) {
+    private void validateTemplateContent(String fileKey, String templateContent) {
         if(!StringUtils.hasText(templateContent)) {
-            throw TemplateNotFoundException.of();
+            throw TemplatePolicyViolationException.of(fileKey);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.ums.schedule.repository.constraint.schedule;
 
-import com.ums.schedule.common.code.schedule.ScheduleStatus;
+import com.ums.schedule.common.code.schedule.ScheduleState;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import jakarta.persistence.EntityManager;
@@ -32,7 +32,7 @@ public class ScheduleDefaultConstraintTest {
                 .getResultList()
                 .get(0);
 
-        assertThat(expect.getStatus()).isEqualTo(ScheduleStatus.ACTIVE);
+        assertThat(expect.getStatus()).isEqualTo(ScheduleState.ACTIVE);
     }
 
     @Test

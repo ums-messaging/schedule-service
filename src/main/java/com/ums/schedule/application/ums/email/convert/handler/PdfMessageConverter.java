@@ -3,7 +3,7 @@ package com.ums.schedule.application.ums.email.convert.handler;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.ums.schedule.application.message.email.model.AttachmentPipelineCommand;
 import com.ums.schedule.application.message.email.result.TemplateConversionResult;
-import com.ums.schedule.application.exception.email.EmailMessageConvertException;
+import com.ums.schedule.application.ums.email.exception.EmailMessageConvertException;
 import com.ums.schedule.common.code.email.ConvertType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,7 @@ public class PdfMessageConverter implements AttachmentConverter {
             builder.toStream(os);
             builder.run();
         } catch (IOException e) {
-            throw EmailMessageConvertException.of(e);
+            throw EmailMessageConvertException.of(command.id(), e);
         }
         return result;
     }

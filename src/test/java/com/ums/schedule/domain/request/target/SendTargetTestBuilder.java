@@ -1,8 +1,9 @@
 package com.ums.schedule.domain.request.target;
 
 import com.ums.schedule.common.code.target.SendTargetStatusEnum;
-import com.ums.schedule.domain.request.target.state.SendTargetState;
-import com.ums.schedule.domain.request.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.state.SendTargetState;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

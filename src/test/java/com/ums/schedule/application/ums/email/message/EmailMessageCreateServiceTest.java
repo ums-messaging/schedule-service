@@ -1,8 +1,7 @@
 package com.ums.schedule.application.ums.email.message;
 
-import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
+import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
 import com.ums.schedule.adapter.api.sendrequest.email.request.SendRequestCreateRequestBuilder;
-import com.ums.schedule.application.exception.email.security.SecurityMailProcessException;
 import com.ums.schedule.application.sendrequest.email.command.EmailSendCreateRequestBuilder;
 import com.ums.schedule.application.ums.common.message.SendMessageFactory;
 import com.ums.schedule.application.ums.common.template.model.TemplateResult;
@@ -10,7 +9,8 @@ import com.ums.schedule.application.ums.email.attachment.EmailAttachmentCreateSe
 import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
 import com.ums.schedule.application.ums.email.message.provider.EmailMessagePolicyProvider;
-import com.ums.schedule.domain.exception.validation.RequiredException;
+import com.ums.schedule.application.ums.email.exception.SecurityMailProcessException;
+import com.ums.schedule.common.exception.DbNotFoundException;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
 import com.ums.schedule.domain.message.SendMessage;
@@ -68,7 +68,6 @@ class EmailMessageCreateServiceTest {
         @DisplayName("EmailMessageProvider 실행 중 오류 발생 시 이메일 메시지는 저장되지 않는다.")
         void shouldNotSaveEmailSendMessage_whenEmailMessageProviderFails() {
             doThrow(mock(SecurityMailProcessException.class)).when(provider).provide(any(), any());
-
             assertThatThrownBy(() -> messageService.create("hyejin_company", builder.build()));
 
             verify(repository, never()).save(any(EmailSendMessage.class));
@@ -78,7 +77,7 @@ class EmailMessageCreateServiceTest {
         @DisplayName("SendMessage 생성 중 오류 발생 시 이메일 메시지는 저장되지 않는다.")
         void shouldNotSaveEmailSendMessage_whenSendMessageCreateFails() {
             doReturn(contextBuilder.build()).when(provider).provide(any(), any());
-            doThrow(mock(RequiredException.class)).when(factory).createSendMessage(any());
+            doThrow(mock(DbNotFoundException.class)).when(factory).createSendMessage(any());
 
             assertThatThrownBy(() -> messageService.create("hyejin_company", builder.build()));
             verify(repository, never()).save(any(EmailSendMessage.class));

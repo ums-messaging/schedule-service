@@ -1,10 +1,10 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
 import com.ums.schedule.common.code.schedule.CycleCd;
 import com.ums.schedule.application.schedule.factory.cycle_policy.CyclePolicy;
 import com.ums.schedule.application.schedule.factory.cycle_policy.HourCyclePolicyFactory;
-import com.ums.schedule.domain.exception.schedule.InvalidCycleValueException;
-import com.ums.schedule.domain.exception.validation.InvalidNumberFormatException;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleCyclePolicyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,16 +24,23 @@ class HourCyclePolicyTest {
     void shouldReturnCycleValueHour() {
         CyclePolicy cyclePolicy = new HourCyclePolicyFactory();
 
+        InvalidScheduleCyclePolicyException expect = InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.CYCLE_VALUE_NOT_HOUR);
+
         assertThatThrownBy(() -> cyclePolicy.create(13))
-                .isInstanceOf(InvalidCycleValueException.class);
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage())
+        ;
     }
 
     @Test
     @DisplayName("숫자가 아닌 값이 입력되면 에러가 발생한다.")
     void shouldThrowException_whenCycleValueIsNotNumber() {
         CyclePolicy policy = new HourCyclePolicyFactory();
+
+        InvalidScheduleCyclePolicyException expect = InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.CYCLE_VALUE_NOT_HOUR);
+
         assertThatThrownBy(() -> policy.create("number"))
-                .isInstanceOf(InvalidNumberFormatException.class)
-                .hasMessage(InvalidNumberFormatException.ofCycleValue().getMessage());
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage());
     }
 }

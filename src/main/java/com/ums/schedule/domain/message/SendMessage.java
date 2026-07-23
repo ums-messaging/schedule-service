@@ -1,11 +1,8 @@
 package com.ums.schedule.domain.message;
 
 import com.ums.schedule.application.ums.common.message.model.SendMessageCreateCommand;
-import com.ums.schedule.domain.exception.email.MessageTypeNotFoundException;
-import com.ums.schedule.domain.exception.email.SendMessageMissingException;
 import com.ums.schedule.domain.request.converter.UuidBinaryConverter;
 import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.exception.request.SendRequestNotFoundException;
 import com.ums.schedule.common.code.message.MessageType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,8 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
-import org.springframework.util.StringUtils;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,26 +44,18 @@ public class SendMessage {
     }
 
     private void assignMessageTypeAndAdvertisingPrefix(MessageType messageType, String messagePrefix) {
-        if(MessageType.ADVERTISE == messageType) {
-            if (!StringUtils.hasText(messagePrefix)) {
-                throw SendMessageMissingException.of("advertising_prefix");
-            }
-            this.messagePrefix = messagePrefix;
-        }
         assignMessageType(messageType);
+        if(MessageType.ADVERTISE == messageType) {
+            this.messagePrefix = Objects.requireNonNull(messagePrefix, "advertise_message_prefix");
+        }
     }
 
     private void assignMessageType(MessageType messageType) {
-        this.messageType = Optional.ofNullable(messageType)
-                .orElseThrow(MessageTypeNotFoundException::of);
+        this.messageType = Objects.requireNonNull(messageType, "message_type");
     }
 
-
     public void assignSendRequest(SendRequest sendRequest) {
-        if(sendRequest == null) {
-            throw SendRequestNotFoundException.of();
-        }
-        this.sendRequest = sendRequest;
+        this.sendRequest = Objects.requireNonNull(sendRequest, "send_request");
     }
 
     public String generatePhraseByMessageType(String content) {

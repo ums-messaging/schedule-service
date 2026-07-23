@@ -2,8 +2,12 @@ package com.ums.schedule.application.sendrequest;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.adapter.storage.PresigendUrlResponse;
-import com.ums.schedule.application.exception.common.FileStorageException;
-import com.ums.schedule.application.sendrequest.target.result.FileTargetUploadResult;
+import com.ums.schedule.application.target.upload.exception.TargetUploadProcessException;
+import com.ums.schedule.application.target.upload.handler.FileTargetUploadResult;
+import com.ums.schedule.application.target.upload.handler.FileTargetUploadUrlProvider;
+import com.ums.schedule.common.code.api.FileErrorCode;
+import com.ums.schedule.common.code.api.TargetUploadErrorCode;
+import com.ums.schedule.common.exception.file.AmazonS3FileException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,9 +44,9 @@ class FileTargetUploadUrlProviderTest {
         NoSuchKeyException exception = mock(NoSuchKeyException.class);
         doThrow(exception).when(repository).generateUploadUrl(anyString());
 
-        FileStorageException expect = FileStorageException.of(exception);
+        TargetUploadProcessException expect = TargetUploadProcessException.of(TargetUploadErrorCode.UPLOAD_KEY_GENERATION_FAILED, exception);
 
-        assertThatThrownBy(()->provider.provide("/target/upload/id.xlsx"))
+        assertThatThrownBy(() -> provider.provide("/target/upload/id.xlsx"))
                 .isInstanceOf(expect.getClass())
                 .hasMessage(expect.getMessage())
         ;

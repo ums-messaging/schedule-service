@@ -9,7 +9,7 @@ import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
 import com.ums.schedule.fixture.email.attachment.EmailAttachmentBuilder;
-import com.ums.schedule.domain.request.target.SendTarget;
+import com.ums.schedule.domain.target.SendTarget;
 import com.ums.schedule.domain.request.target.SendTargetTestBuilder;
 import com.ums.schedule.intergration.kafka.KafkaTestProducer;
 import org.junit.jupiter.api.Test;

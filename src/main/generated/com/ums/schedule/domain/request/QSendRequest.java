@@ -26,7 +26,7 @@ public class QSendRequest extends EntityPathBase<SendRequest> {
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
-    public final com.ums.schedule.domain.request.target.upload.QTargetUploadReport currentTargetUpload;
+    public final com.ums.schedule.domain.target.upload.QTargetUploadReport currentTargetUpload;
 
     public final com.ums.schedule.domain.request.customer.QCustomerRequestKey customerRequestKey;
 
@@ -68,7 +68,7 @@ public class QSendRequest extends EntityPathBase<SendRequest> {
 
     public QSendRequest(Class<? extends SendRequest> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.currentTargetUpload = inits.isInitialized("currentTargetUpload") ? new com.ums.schedule.domain.request.target.upload.QTargetUploadReport(forProperty("currentTargetUpload"), inits.get("currentTargetUpload")) : null;
+        this.currentTargetUpload = inits.isInitialized("currentTargetUpload") ? new com.ums.schedule.domain.target.upload.QTargetUploadReport(forProperty("currentTargetUpload"), inits.get("currentTargetUpload")) : null;
         this.customerRequestKey = inits.isInitialized("customerRequestKey") ? new com.ums.schedule.domain.request.customer.QCustomerRequestKey(forProperty("customerRequestKey")) : null;
         this.schedule = inits.isInitialized("schedule") ? new com.ums.schedule.domain.schedule.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
         this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.message.QSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;

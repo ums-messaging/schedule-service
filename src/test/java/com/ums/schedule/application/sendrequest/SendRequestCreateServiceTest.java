@@ -1,15 +1,16 @@
 package com.ums.schedule.application.sendrequest;
 
-import com.ums.schedule.application.exception.schedule.ScheduleNotFoundException;
+import com.ums.schedule.application.schedule.exception.ScheduleNotFoundException;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
+import com.ums.schedule.application.target.upload.TargetUploadCreateService;
 import com.ums.schedule.application.ums.common.request.SendRequestCreateService;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateResult;
-import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
+import com.ums.schedule.application.target.upload.model.TargetUploadResult;
+import com.ums.schedule.common.code.api.SendRequestErrorCode;
 import com.ums.schedule.common.config.SendRequestProperties;
-import com.ums.schedule.domain.exception.validation.DuplicateViolationException;
-import com.ums.schedule.domain.exception.validation.ValidationException;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.request.SendRequestRepository;
+import com.ums.schedule.domain.request.exception.SendRequestDomainException;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleJpaRepository;
 
@@ -26,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -65,7 +67,7 @@ class SendRequestCreateServiceTest {
             doReturn(Optional.ofNullable(schedule)).when(scheduleRepository).findById(any());
             doReturn(true).when(sendRequestRepository).existsByCustomerRequestKey(any());
 
-            ValidationException expect = DuplicateViolationException.fieldOf("customer_key");
+            SendRequestDomainException expect = SendRequestDomainException.of(SendRequestErrorCode.DUPLICATED_CUSTOMER_KEY);
 
             assertThatThrownBy(() -> sendRequestService.create(command, sendMessage))
                     .isInstanceOf(expect.getClass())
@@ -80,6 +82,7 @@ class SendRequestCreateServiceTest {
 
             doReturn(Optional.ofNullable(schedule)).when(scheduleRepository).findById(any());
             doReturn(mock(TargetUploadResult.class)).when(targetUploadService).create(any(), any());
+            doReturn(mock(UUID.class)).when(sendMessage).getId();
 
             sendRequestService.create(command, sendMessage);
 
@@ -99,6 +102,7 @@ class SendRequestCreateServiceTest {
             doReturn(Optional.ofNullable(schedule)).when(scheduleRepository).findById(any());
             doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
             doReturn(mock(TargetUploadResult.class)).when(targetUploadService).create(any(), any());
+            doReturn(mock(UUID.class)).when(sendMessage).getId();
 
             sendRequestService.create(command, sendMessage);
 
@@ -132,11 +136,11 @@ class SendRequestCreateServiceTest {
             doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
             doReturn(uploadResult).when(targetUploadService).create(any(), any());
             doReturn(4).when(properties).retryCount();
+            doReturn(mock(UUID.class)).when(sendMessage).getId();
 
             SendRequestCreateResult result = sendRequestService.create(command, sendMessage);
-            SendRequest sendRequest = result.sendRequest();
 
-            assertThat(sendRequest.getRetryCnt()).isEqualTo(4);
+            assertThat(result.retryCount()).isEqualTo(4);
             verify(properties).retryCount();
         }
 
@@ -148,11 +152,11 @@ class SendRequestCreateServiceTest {
             doReturn(Optional.ofNullable(schedule)).when(scheduleRepository).findById(any());
             doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
             doReturn(uploadResult).when(targetUploadService).create(any(), any());
+            doReturn(mock(UUID.class)).when(sendMessage).getId();
 
             SendRequestCreateResult result = sendRequestService.create(command, sendMessage);
-            SendRequest sendRequest = result.sendRequest();
 
-            assertThat(sendRequest.getRetryCnt()).isEqualTo(3);
+            assertThat(result.retryCount()).isEqualTo(3);
             verify(properties, never()).retryCount();
         }
     }
@@ -168,6 +172,7 @@ class SendRequestCreateServiceTest {
             doReturn(Optional.ofNullable(schedule)).when(scheduleRepository).findById(any());
             doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
             doReturn(mock(TargetUploadResult.class)).when(targetUploadService).create(any(), any());
+            doReturn(mock(UUID.class)).when(sendMessage).getId();
 
             sendRequestService.create(command, sendMessage);
 
@@ -182,7 +187,6 @@ class SendRequestCreateServiceTest {
             doReturn(Optional.ofNullable(mock(Schedule.class))).when(scheduleRepository).findById(any());
             doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
             doThrow(new DataIntegrityViolationException("not null")).when(sendRequestRepository).save(any(SendRequest.class));
-
 
             assertThatThrownBy(() -> sendRequestService.create(command, sendMessage));
             verify(targetUploadService).create(any(), any());
@@ -201,6 +205,7 @@ class SendRequestCreateServiceTest {
             doReturn(Optional.ofNullable(mock(Schedule.class))).when(scheduleRepository).findById(any());
             doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
             doReturn(mock(TargetUploadResult.class)).when(targetUploadService).create(any(), any());
+            doReturn(mock(UUID.class)).when(sendMessage).getId();
 
             sendRequestService.create(command, sendMessage);
 

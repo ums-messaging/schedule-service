@@ -1,16 +1,14 @@
 package com.ums.schedule.domain.message.email.attachment;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
-import com.ums.schedule.domain.exception.validation.InvalidFileExtensionException;
-import com.ums.schedule.domain.exception.validation.InvalidFilenameValueException;
+import com.ums.schedule.common.code.api.AttachmentErrorCode;
 import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.SecurityMailPolicy;
 import com.ums.schedule.common.code.email.ConvertType;
-import com.ums.schedule.domain.exception.email.EmailAttachmentMissingException;
-import com.ums.schedule.domain.exception.email.EmailSendMessageNotFoundException;
 import com.ums.schedule.common.code.email.AttachmentType;
-import com.ums.schedule.domain.request.target.SendTarget;
+import com.ums.schedule.domain.message.email.exception.AttachmentPolicyViolationException;
+import com.ums.schedule.domain.target.SendTarget;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,6 +18,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Getter
@@ -74,7 +73,7 @@ public class EmailAttachment {
     private void initializeAttachment(AttachmentCreateCommand context) {
         Map<AttachmentType, String> typeMap = Optional.ofNullable(context.keyMap())
                 .filter(map -> !map.isEmpty())
-                .orElseThrow(() -> EmailAttachmentMissingException.of("file_key or file_key_template"));
+                .orElseThrow(() -> AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_MAP_IS_NULL));
         if(typeMap.containsKey(AttachmentType.DIRECT)) {
             initializeMetadata(typeMap.get(AttachmentType.DIRECT), context.fileSize());
             return;
@@ -85,12 +84,12 @@ public class EmailAttachment {
     private void initializeConvertInfo(AttachmentCreateCommand context) {
         Map<AttachmentType, String> typeMap = Optional.ofNullable(context.keyMap())
                 .filter(map -> !map.isEmpty())
-                .orElseThrow(() -> EmailAttachmentMissingException.of("file_key and file_key_template"));
+                .orElseThrow(() -> AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_INFO_EMPTY));
         initializeMetadata(typeMap.get(AttachmentType.DIRECT), context.fileSize());
         assignSecurityPolicy(context.securityMail());
         assignFileKeyTemplate(typeMap.get(AttachmentType.TEMPLATE));
-        validateFileTemplateExtension(typeMap.get(AttachmentType.DIRECT), "html");
-        validateFileTemplateExtension(typeMap.get(AttachmentType.TEMPLATE), context.convertType().description());
+        validateFileTemplateExtension(typeMap.get(AttachmentType.DIRECT), AttachmentType.DIRECT, ConvertType.HTML);
+        validateFileTemplateExtension(typeMap.get(AttachmentType.TEMPLATE),AttachmentType.TEMPLATE, context.convertType());
     }
 
     private void initializeMetadata(String fileKey, Long fileSize) {
@@ -109,30 +108,28 @@ public class EmailAttachment {
     }
 
     private void assignSendMessage(EmailSendMessage sendMessage) {
-        this.sendMessage = Optional.ofNullable(sendMessage)
-                .orElseThrow(EmailSendMessageNotFoundException::of);
+        this.sendMessage = Objects.requireNonNull(sendMessage, "email_send_message");
         sendMessage.addAttachments(this);
     }
 
-    private void validateFileTemplateExtension(String fileKey, String toExtension) {
+    private void validateFileTemplateExtension(String fileKey, AttachmentType type, ConvertType convertType) {
         String extension = extractFileExtension(fileKey);
-        if(!extension.equals(toExtension)) {
-            throw InvalidFileExtensionException.of(toExtension);
+        if(!StringUtils.hasText(extension) || !extension.equals(convertType.description())) {
+            throw AttachmentPolicyViolationException.of(type, convertType);
         }
     }
 
     private String extractFileExtension(String fileKeyTemplate) {
         String[] extractFileStrs = fileKeyTemplate.split("\\.");
-        try {
-            return extractFileStrs[1];
-        } catch (IndexOutOfBoundsException e) {
-            throw InvalidFilenameValueException.of();
+        if(extractFileStrs.length < 2) {
+            return null;
         }
+        return extractFileStrs[1];
     }
 
     private void assignFileKeyTemplate(String fileKeyTemplate) {
         if(!StringUtils.hasText(fileKeyTemplate)) {
-            throw EmailAttachmentMissingException.of("file_key_template");
+            throw AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_TEMPLATE_EMPTY);
         }
         this.fileKeyTemplate = fileKeyTemplate;
     }
@@ -140,12 +137,12 @@ public class EmailAttachment {
 
     private void assignFileSize(Long fileSize) {
         this.fileSize = Optional.ofNullable(fileSize)
-                .orElseThrow(() -> EmailAttachmentMissingException.of("file_size"));
+                .orElseThrow(() -> AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_SIZE_EMPTY));
     }
 
     private void assignFileKey(String fileKey) {
         if(!StringUtils.hasText(fileKey)) {
-            throw EmailAttachmentMissingException.of("file_key");
+            throw AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_EMPTY);
         }
         this.fileKey = fileKey;
     }
@@ -156,13 +153,11 @@ public class EmailAttachment {
     }
 
     private void assignDownloadName(String downloadName) {
-        ValidationUtils.isEmpty("download_name", downloadName);
-        this.downloadName = downloadName;
+        this.downloadName = Objects.requireNonNull(downloadName, "download_name");
     }
 
     private void assignAttachmentName(String attachmentName) {
-        ValidationUtils.isEmpty("attachment_name", attachmentName);
-        this.attachmentName = attachmentName;
+        this.attachmentName = Objects.requireNonNull(attachmentName, "attachment_name");
     }
 
 

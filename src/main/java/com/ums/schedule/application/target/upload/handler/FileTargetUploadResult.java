@@ -1,0 +1,19 @@
+package com.ums.schedule.application.target.upload.handler;
+
+import com.ums.schedule.adapter.storage.PresigendUrlResponse;
+
+import java.time.Instant;
+
+public record FileTargetUploadResult(
+        String objectKey,
+        String uploadUrl,
+        Instant expiredAt
+) {
+    public static FileTargetUploadResult of(PresigendUrlResponse response) {
+        return new FileTargetUploadResult(
+                response.objectKey(),
+                response.presignedUrl(),
+                response.expiredAt()
+        );
+    }
+}

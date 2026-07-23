@@ -1,13 +1,13 @@
 package com.ums.schedule.application.ums.email.template;
 
 import com.ums.schedule.adapter.storage.AwsS3Repository;
-import com.ums.schedule.application.exception.email.EmailMessageNotFoundException;
+import com.ums.schedule.application.ums.common.exception.TemplateLoadFailException;
+import com.ums.schedule.application.ums.common.exception.TemplateParseException;
+import com.ums.schedule.application.ums.email.exception.EmailMessageNotFoundException;
 import com.ums.schedule.common.util.UuidUtil;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
-import com.ums.schedule.domain.exception.email.MessageParseException;
 import com.ums.schedule.common.code.target.TargetColumnEnum;
-import com.ums.schedule.application.exception.template.TemplateLoadFailedException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -30,7 +30,7 @@ public class EmailTemplateLoader {
         try (Writer writer = new StringWriter()) {
             return loadAndCompileTemplate(fileKey, messageVariable, writer);
         } catch (IOException e) {
-            throw TemplateLoadFailedException.of(e);
+            throw TemplateLoadFailException.of(fileKey, e);
         }
     }
 
@@ -40,8 +40,8 @@ public class EmailTemplateLoader {
             Template template = loadTemplate(fileKey, fileContent);
             template.process(messageVariable, writer);
         } catch (TemplateException e) {
-            TargetColumnEnum targetKey = TargetColumnEnum.TARGET_KEY;
-            throw MessageParseException.of(fileKey, String.valueOf(messageVariable.get(targetKey.value().toLowerCase())));
+            String targetKey = String.valueOf(messageVariable.get(TargetColumnEnum.TARGET_KEY));
+            throw TemplateParseException.of(targetKey, e);
         }
         return fileContent;
     }
@@ -58,7 +58,7 @@ public class EmailTemplateLoader {
             Template html = loadTemplate(messageId, findMessage.getBodyTemplate());
             return EmailTemplate.of(findMessage.getSubject(), html, findMessage.getAttachmentList());
         } catch (IOException e) {
-            throw TemplateLoadFailedException.of(e);
+            throw TemplateLoadFailException.of(messageId, e);
         }
     }
 

@@ -1,7 +1,7 @@
 package com.ums.schedule.application.ums.email.request;
 
-import com.ums.schedule.adapter.api.request.SendRequestCreateRequest;
-import com.ums.schedule.adapter.api.request.email.EmailSendCreateRequest;
+import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
+import com.ums.schedule.adapter.api.request.email.request.EmailSendCreateRequest;
 import com.ums.schedule.adapter.api.sendrequest.email.request.SendRequestCreateRequestBuilder;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.email.command.EmailSendCreateRequestBuilder;
@@ -9,10 +9,8 @@ import com.ums.schedule.application.ums.common.request.SendRequestCreateService;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateResult;
 import com.ums.schedule.application.ums.email.message.EmailMessageCreateService;
 import com.ums.schedule.common.code.common.ChannelType;
-import com.ums.schedule.common.code.target_upload.TargetUploadTypeEnum;
+import com.ums.schedule.common.code.target_upload.TargetUploadType;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
-import com.ums.schedule.fixture.sendrequest.SendRequestCreateCommandBuilder;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +56,7 @@ class EmailSendRequestCreateServiceTest {
         doReturn(mock(SendRequestCreateResult.class)).when(sendRequestService).create(any(), any());
 
         EmailSendCreateRequest request = EmailSendCreateRequestBuilder.builder().request(this.request).build();
-        emailRequestService.create("hyejin_company", TargetUploadTypeEnum.FILE, request);
+        emailRequestService.create("hyejin_company", TargetUploadType.FILE, request);
 
         verify(messageService).create("hyejin_company", request);
 
@@ -72,9 +70,11 @@ class EmailSendRequestCreateServiceTest {
         doReturn(mock(EmailSendMessage.class)).when(messageService).create(any(), any());
         doReturn(mock(SendRequestCreateResult.class)).when(sendRequestService).create(any(), any());
 
-        EmailSendCreateRequest request = EmailSendCreateRequestBuilder.builder().request(this.request).build();
+        EmailSendCreateRequest request = EmailSendCreateRequestBuilder.builder()
+                .senderKey("test@test.com")
+                .request(this.request).build();
 
-        emailRequestService.create("hyejin_company", TargetUploadTypeEnum.FILE, request);
+        emailRequestService.create("hyejin_company", TargetUploadType.FILE, request);
         verify(sendRequestService).create(captor.capture(), any());
 
         assertThat(captor.getValue())
@@ -94,7 +94,7 @@ class EmailSendRequestCreateServiceTest {
                         "my_send_request",
                         "csv",
                         ChannelType.EMAIL,
-                        TargetUploadTypeEnum.FILE,
+                        TargetUploadType.FILE,
                         3
                 );
     }

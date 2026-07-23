@@ -1,13 +1,13 @@
 package com.ums.schedule.application.message.email.model;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.email.security.SecurityMailEnumMapper;
+import com.ums.schedule.common.code.email.security.SecurityMailCode;
 
 public record SecurityPolicyCreateCommand(
-        SecurityMailEnumMapper codeKey,
+        SecurityMailCode codeKey,
         EnumMapperValue codeValue
 ) {
-    public static SecurityPolicyCreateCommand of(SecurityMailEnumMapper codeKey, EnumMapperValue codeValue) {
+    public static SecurityPolicyCreateCommand of(SecurityMailCode codeKey, EnumMapperValue codeValue) {
         if(codeValue == null) {
             return new SecurityPolicyCreateCommand(codeKey, null);
         }

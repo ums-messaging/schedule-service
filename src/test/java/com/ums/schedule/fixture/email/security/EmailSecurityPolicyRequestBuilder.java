@@ -1,6 +1,6 @@
 package com.ums.schedule.fixture.email.security;
 
-import com.ums.schedule.adapter.api.request.email.EmailSecurityPolicyRequest;
+import com.ums.schedule.adapter.api.request.email.request.EmailSecurityPolicyRequest;
 
 public class EmailSecurityPolicyRequestBuilder {
     private String encryptionType;

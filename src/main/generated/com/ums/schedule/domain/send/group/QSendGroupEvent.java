@@ -24,7 +24,7 @@ public class QSendGroupEvent extends EntityPathBase<SendGroupEvent> {
 
     public final NumberPath<Long> eventId = createNumber("eventId", Long.class);
 
-    public final EnumPath<com.ums.schedule.common.code.request.SendGroupEventTypeEnum> eventType = createEnum("eventType", com.ums.schedule.common.code.request.SendGroupEventTypeEnum.class);
+    public final EnumPath<com.ums.schedule.common.code.request.SendGroupEventType> eventType = createEnum("eventType", com.ums.schedule.common.code.request.SendGroupEventType.class);
 
     public final DateTimePath<java.time.LocalDateTime> issuedAt = createDateTime("issuedAt", java.time.LocalDateTime.class);
 

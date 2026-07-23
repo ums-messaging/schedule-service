@@ -1,12 +1,12 @@
 package com.ums.schedule.application.ums.common.request;
 
-import com.ums.schedule.application.sendrequest.TargetUploadCreateService;
+import com.ums.schedule.application.schedule.exception.ScheduleNotFoundException;
+import com.ums.schedule.application.target.upload.TargetUploadCreateService;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.TargetUploadCreateCommand;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateContext;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateResult;
-import com.ums.schedule.application.sendrequest.target.result.TargetUploadResult;
-import com.ums.schedule.application.exception.schedule.ScheduleNotFoundException;
+import com.ums.schedule.application.target.upload.model.TargetUploadResult;
 import com.ums.schedule.common.config.SendRequestProperties;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.request.SendRequestRepository;
@@ -42,7 +42,7 @@ public class SendRequestCreateService {
 
         sendRequestRepository.save(sendRequest);
 
-        return SendRequestCreateResult.of(sendRequest, result);
+        return SendRequestCreateResult.of(message.getId(), sendRequest, result);
     }
 
     private Integer getOrDefaultRetryCount(Integer retryCount) {
