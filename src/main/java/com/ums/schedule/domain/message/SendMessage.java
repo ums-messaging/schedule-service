@@ -11,9 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
 @Entity
@@ -28,14 +26,14 @@ public class SendMessage {
     @Convert(converter = UuidBinaryConverter.class)
     private UUID id;
 
-    @Enumerated
+    @Column(name = "template_key", nullable = false)
+    private String templateKey;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "message_type", nullable = false)
     private MessageType messageType;
 
     private String messagePrefix;
-
-    @ManyToOne
-    @JoinColumn(name = "send_request_id", nullable = false)
-    private SendRequest sendRequest;
 
     public static SendMessage of(SendMessageCreateCommand command) {
         SendMessage message = new SendMessage();
@@ -52,10 +50,6 @@ public class SendMessage {
 
     private void assignMessageType(MessageType messageType) {
         this.messageType = Objects.requireNonNull(messageType, "message_type");
-    }
-
-    public void assignSendRequest(SendRequest sendRequest) {
-        this.sendRequest = Objects.requireNonNull(sendRequest, "send_request");
     }
 
     public String generatePhraseByMessageType(String content) {

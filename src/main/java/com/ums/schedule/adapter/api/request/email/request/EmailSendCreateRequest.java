@@ -2,6 +2,7 @@ package com.ums.schedule.adapter.api.request.email.request;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
+import com.ums.schedule.application.ums.email.template.query.model.EmailAttachmentDetailQuery;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 import com.ums.schedule.common.util.ValueResolverUtils;
 import com.ums.schedule.common.code.email.security.PasswordType;
@@ -16,6 +17,7 @@ public record EmailSendCreateRequest(
         @Valid
         @JsonUnwrapped
         SendRequestCreateRequest request,
+        String mailType,
         @NotBlank(message = "SEND_REQUEST:SENDER_KEY_REQUIRED")
         @Email(message = "EMAIL_SEND_REQUEST:INVALID_SENDER_EMAIL")
         String senderKey,
@@ -24,14 +26,15 @@ public record EmailSendCreateRequest(
         String title,
         String attachmentName,
         String downloadName,
+        String fileKeyTemplate,
         @Valid
         EmailSecurityPolicyRequest securityPolicy,
         @Valid
-        List<EmailAttachmentRequest> attachmentList
+        EmailAttachmentListRequest attachmentList
         )
 {
-        public EmailTemplateDetailQuery toQuery(String customerId) {
-                return EmailTemplateDetailQuery.of(customerId, this);
+        public EmailTemplateDetailQuery toQuery(String customerId, List<EmailAttachmentDetailQuery> queries) {
+                return EmailTemplateDetailQuery.of(customerId, this, queries);
         }
 
         public String passwordPolicy() {

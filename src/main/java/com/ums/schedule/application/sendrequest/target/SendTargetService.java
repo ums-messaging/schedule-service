@@ -1,7 +1,7 @@
 package com.ums.schedule.application.sendrequest.target;
 
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
-import com.ums.schedule.common.code.target.SendTargetStatusEnum;
+import com.ums.schedule.common.code.target.SendTargetStatus;
 import com.ums.schedule.domain.target.SendTargetRepository;
 import com.ums.schedule.domain.target.SendTarget;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class SendTargetService {
     }
 
     public SendTargetSaveResult saveTarget(List<SendTarget> targetList) {
-        Map<SendTargetStatusEnum, List<SendTarget>> targetResultMap = targetList.stream()
+        Map<SendTargetStatus, List<SendTarget>> targetResultMap = targetList.stream()
                 .map(target -> {
                     try {
                         return repository.saveAndFlush(target);
@@ -35,7 +35,7 @@ public class SendTargetService {
                         return target.onError(e.getMessage());
                     }
                 })
-                .collect(Collectors.groupingBy(target -> target.getState().currentStatusCode()));
+                .collect(Collectors.groupingBy(target -> target.getState().getCurrentCode()));
 
         return SendTargetSaveResult.of(targetResultMap);
     }

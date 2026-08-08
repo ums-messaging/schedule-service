@@ -4,6 +4,7 @@ import com.github.f4b6a3.tsid.TsidCreator;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateContext;
 import com.ums.schedule.common.code.api.SendRequestErrorCode;
+import com.ums.schedule.common.code.target_upload.TargetUploadStatus;
 import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.common.code.request.SendRequestEvent;
 import com.ums.schedule.common.code.common.ChannelType;
@@ -53,7 +54,7 @@ public class SendRequest {
     private ChannelType channelType;
 
     @Convert(converter = SendRequestStateConverter.class)
-    @Column(name = "status", nullable = false, columnDefinition = "varchar(10) default 'CREATE'")
+    @Column(name = "status", nullable = false)
     private SendRequestState state;
 
     @Transient
@@ -62,7 +63,7 @@ public class SendRequest {
     @Embedded
     private CustomerRequestKey customerRequestKey;
 
-    @JoinColumn(name = "upload_id")
+    @JoinColumn(name = "current_upload_id")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private TargetUploadReport currentTargetUpload;
 
@@ -70,7 +71,7 @@ public class SendRequest {
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_id", nullable = false)
     private SendMessage sendMessage;
 
@@ -94,7 +95,6 @@ public class SendRequest {
 
     private void assignSendMessage(SendMessage sendMessage) {
         this.sendMessage = Objects.requireNonNull(sendMessage);
-        sendMessage.assignSendRequest(this);
     }
 
     private void assignChannelType(ChannelType channelType) {
@@ -116,6 +116,7 @@ public class SendRequest {
     private void assignSender(String senderKey) {
         this.senderKey = Objects.requireNonNull(senderKey, "sender_key");
     }
+
 
     private void assignTemplate(String templateKey) {
         this.templateKey = Objects.requireNonNull(templateKey, "template_key");
@@ -181,12 +182,12 @@ public class SendRequest {
 
     public void assignTargetUpload(TargetUploadReport targetUpload) {
         this.currentTargetUpload = Objects.requireNonNull(targetUpload, "target_upload_report");
-        changeStateByTargetUploadReport();
+        changeStateByTargetUploadReport(targetUpload.getState().getCurrentCode());
     }
 
-    private void changeStateByTargetUploadReport() {
+    public void changeStateByTargetUploadReport(TargetUploadStatus status) {
         this.state.validate();
-        switch (currentTargetUpload.getState().getCurrentCode()) {
+        switch (status) {
             case WAITING -> onEvent(SendRequestEvent.SEND_REQUEST_UPDATED);
             case COMPLETED -> onEvent(SendRequestEvent.SEND_REQUEST_READY);
         }
@@ -203,8 +204,6 @@ public class SendRequest {
             onEvent(SendRequestEvent.SEND_REQUEST_READY);
         }
     }
-
-
 
     private boolean isEqualToCurrentTargetUpload(TargetUploadReport targetUploadReport) {
         return this.currentTargetUpload == targetUploadReport;

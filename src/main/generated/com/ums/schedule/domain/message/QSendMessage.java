@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -18,8 +17,6 @@ public class QSendMessage extends EntityPathBase<SendMessage> {
 
     private static final long serialVersionUID = -1618317723L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QSendMessage sendMessage = new QSendMessage("sendMessage");
 
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
@@ -28,27 +25,18 @@ public class QSendMessage extends EntityPathBase<SendMessage> {
 
     public final EnumPath<com.ums.schedule.common.code.message.MessageType> messageType = createEnum("messageType", com.ums.schedule.common.code.message.MessageType.class);
 
-    public final com.ums.schedule.domain.request.QSendRequest sendRequest;
+    public final StringPath templateKey = createString("templateKey");
 
     public QSendMessage(String variable) {
-        this(SendMessage.class, forVariable(variable), INITS);
+        super(SendMessage.class, forVariable(variable));
     }
 
     public QSendMessage(Path<? extends SendMessage> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QSendMessage(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QSendMessage(PathMetadata metadata, PathInits inits) {
-        this(SendMessage.class, metadata, inits);
-    }
-
-    public QSendMessage(Class<? extends SendMessage> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.sendRequest = inits.isInitialized("sendRequest") ? new com.ums.schedule.domain.request.QSendRequest(forProperty("sendRequest"), inits.get("sendRequest")) : null;
+        super(SendMessage.class, metadata);
     }
 
 }

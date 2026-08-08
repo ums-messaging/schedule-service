@@ -1,9 +1,7 @@
 package com.ums.schedule.domain.target.upload;
 
 import com.github.f4b6a3.uuid.UuidCreator;
-import com.ums.schedule.application.target.upload.model.TargetUploadReportCreateContext;
-import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.sendrequest.target.command.TargetFileUploadRequestCommand;
+import com.ums.schedule.application.target.report.model.TargetUploadReportCreateContext;
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
 import com.ums.schedule.common.code.api.TargetUploadErrorCode;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
@@ -26,7 +24,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.StringUtils;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -40,6 +38,8 @@ import java.util.stream.Collectors;
 public class TargetUploadReport {
     @Id
     @Column(name = "report_id")
+    @UuidGenerator
+    @GeneratedValue
     @Convert(converter = UuidBinaryConverter.class)
     private UUID id;
 
@@ -71,10 +71,10 @@ public class TargetUploadReport {
     @Column(name = "upload_key")
     private String uploadKey;
 
-    @Column(name = "download_key")
+    @Column(name = "download_key", nullable = false)
     private String downloadKey;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "uploaded_at")
@@ -84,7 +84,7 @@ public class TargetUploadReport {
     private LocalDateTime requestedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_id")
+    @JoinColumn(name = "request_id", nullable = false)
     private SendRequest sendRequest;
 
     public static TargetUploadReport of(TargetUploadReportCreateContext context) {
@@ -154,37 +154,15 @@ public class TargetUploadReport {
         this.createdAt = LocalDateTime.now();
     }
 
-    public void requestTargetUpload(Integer totalCount) {
-        if(uploadType == TargetUploadType.JSON) {
-            validateTotalCount(totalCount);
-        }
-        requestTargetUpload();
-    }
 
-    private void requestTargetUpload() {
+    public TargetUploadStatus requestTargetUpload() {
         initializeRequestedAt();
         onEvent(TargetUploadEvent.TARGET_UPLOAD_REQUESTED);
-    }
-
-    private void validateTotalCount(Integer totalCount) {
-        if(totalCount == 0) {
-            throw TargetUploadPolicyViolationException.of(TargetUploadErrorCode.TARGET_LIST_OF_EMPTY);
-        }
+        return this.state.getCurrentCode();
     }
 
     private void initializeRequestedAt() {
         this.requestedAt = LocalDateTime.now();
-    }
-
-
-    private void validateFileMetadata(TargetFileUploadRequestCommand command, String path) {
-        validateFileSize(command.maxFileSize(), command.fileSize());
-    }
-
-    private void validateFileSize(Long maxFileSize, Long fileSize) {
-        if(maxFileSize < fileSize) {
-            throw TargetUploadPolicyViolationException.of(TargetUploadErrorCode.TARGET_UPLOAD_LIMIT_EXCEEDED, maxFileSize, fileSize);
-        }
     }
 
     public void initializeDownloadKey(String fileKeyPrefix, String id) {
@@ -241,7 +219,7 @@ public class TargetUploadReport {
         this.event = event;
     }
 
-    public void onError(String message) {
+    public void onFailed(String message) {
         this.resultMessage = message;
         onEvent(TargetUploadEvent.TARGET_UPLOAD_FAIL);
     }
@@ -249,5 +227,32 @@ public class TargetUploadReport {
     private void assignSendRequest(SendRequest request) {
         this.sendRequest = Objects.requireNonNull(request, "send_request");
         request.assignTargetUpload(this);
+    }
+
+    private void validateSupportedUploadType(TargetUploadType uploadType) {
+        if(this.uploadType != uploadType) {
+            throw TargetUploadPolicyViolationException.of(
+                    TargetUploadErrorCode.UNSUPPORTED_UPLOAD_TYPE, uploadType
+            );
+        }
+    }
+
+    public void assignTotalCount(Integer totalCount) {
+        if(totalCount == 0) {
+            throw TargetUploadPolicyViolationException.of(TargetUploadErrorCode.TARGET_LIST_OF_EMPTY);
+        }
+        this.totalCount += totalCount;
+    }
+
+    public void assignFileSize(Long fileSize) {
+        validateSupportedUploadType(TargetUploadType.FILE);
+        if(fileSize == 0) {
+            throw TargetUploadPolicyViolationException.of(TargetUploadErrorCode.FILE_IS_EMPTY);
+        }
+        this.fileSize = fileSize;
+    }
+
+    public void startTargetUpload() {
+        onEvent(TargetUploadEvent.TARGET_UPLOAD_STARTED);
     }
 }

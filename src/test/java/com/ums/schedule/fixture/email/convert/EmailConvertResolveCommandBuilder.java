@@ -1,7 +1,7 @@
 package com.ums.schedule.fixture.email.convert;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
-import com.ums.schedule.application.ums.email.convert.resolver.model.EmailConvertResolveCommand;
+import com.ums.schedule.application.ums.email.generator.resolver.model.EmailConvertResolveCommand;
 import com.ums.schedule.fixture.email.attachment.AttachmentContextBuilder;
 
 public class EmailConvertResolveCommandBuilder {

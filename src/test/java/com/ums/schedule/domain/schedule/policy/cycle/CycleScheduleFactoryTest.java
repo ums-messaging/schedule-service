@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
-import com.ums.schedule.common.code.schedule.ScheduleEnumMapper;
+import com.ums.schedule.common.code.schedule.ScheduleCode;
 import com.ums.schedule.common.code.schedule.ScheduleType;
 import com.ums.schedule.application.schedule.factory.cycle_policy.DayCyclePolicyFactory;
 import com.ums.schedule.application.schedule.factory.cycle_policy.HourCyclePolicyFactory;
@@ -61,7 +61,7 @@ public class CycleScheduleFactoryTest {
 
         factory.create(MONTH.value(), "3");
 
-        verify(enumMapperFactory).findEnumMapperValue(ScheduleEnumMapper.CYCLE_CD, MONTH.value());
+        verify(enumMapperFactory).findEnumMapperValue(ScheduleCode.CYCLE_CD, MONTH.value());
         verify(monthFactory).create(3);
     }
 

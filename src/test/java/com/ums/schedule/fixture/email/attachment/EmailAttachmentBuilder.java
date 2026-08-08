@@ -1,44 +1,38 @@
 package com.ums.schedule.fixture.email.attachment;
 
+import com.ums.schedule.common.code.email.AttachmentType;
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
-import com.ums.schedule.domain.message.email.SecurityMailPolicy;
+import com.ums.schedule.domain.message.email.security.SecurityMailPolicy;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.request.SendRequest;
 
+import java.util.List;
+import java.util.UUID;
+
 public class EmailAttachmentBuilder {
-    private Long id;
-    private ConvertType convertType;
-    private SecurityMailPolicy securityPolicy;
+    private UUID id;
+    private AttachmentType type;
     private String attachmentName;
     private String downloadName;
-    private String fileKeyTemplate;
     private String fileKey;
     private Long fileSize;
     private EmailSendMessage sendMessage;
 
     public EmailAttachmentBuilder() {
-        this.convertType = ConvertType.NONE;
-        this.securityPolicy = null;
+        this.type = AttachmentType.DIRECT;
+        this.fileKey = "document.pdf";
+        this.attachmentName = "8 month bills.";
+        this.downloadName = "guest's bills.";
     }
 
     public static EmailAttachmentBuilder builder() {
         return new EmailAttachmentBuilder();
     }
 
-    public EmailAttachmentBuilder convertType(ConvertType convertType) {
-        this.convertType = convertType;
-        return this;
-    }
 
-
-    public EmailAttachmentBuilder fileKeyTemplate(String fileKeyTemplate) {
-        this.fileKeyTemplate = fileKeyTemplate;
-        return this;
-    }
-
-    public EmailAttachmentBuilder securityPolicy(SecurityMailPolicy securityPolicy) {
-        this.securityPolicy = securityPolicy;
+    public EmailAttachmentBuilder attachmentType(AttachmentType type) {
+        this.type = type;
         return this;
     }
 
@@ -52,9 +46,18 @@ public class EmailAttachmentBuilder {
         return this;
     }
 
+    public EmailAttachmentBuilder attachmentName(String attachmentName) {
+        this.attachmentName = attachmentName;
+        return this;
+    }
 
+    public EmailAttachmentBuilder downloadName(String downloadName) {
+        this.downloadName = downloadName;
+        return this;
+    }
 
-    public EmailAttachmentBuilder sendRequest(SendRequest sendRequest) {
+    public EmailAttachmentBuilder sendMessage(EmailSendMessage sendMessage) {
+        this.sendMessage = sendMessage;
         return this;
     }
 
@@ -62,11 +65,9 @@ public class EmailAttachmentBuilder {
 
         return new EmailAttachment(
                 id,
-                convertType,
-                securityPolicy,
+                type,
                 attachmentName,
                 downloadName,
-                fileKeyTemplate,
                 fileKey,
                 fileSize,
                 sendMessage

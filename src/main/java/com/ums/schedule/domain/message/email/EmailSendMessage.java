@@ -1,15 +1,21 @@
 package com.ums.schedule.domain.message.email;
 
-import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
+import com.ums.schedule.application.ums.email.message.model.EmailMessageCreateContext;
+import com.ums.schedule.application.ums.email.message.provider.EmailPolicyResult;
+import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.common.ChannelType;
 import com.ums.schedule.common.code.email.ConvertType;
+import com.ums.schedule.common.code.email.EmailMessageSection;
 import com.ums.schedule.common.code.email.EmailRequiredValue;
+import com.ums.schedule.common.code.email.EmailType;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
+import com.ums.schedule.domain.message.email.convert.ConvertMail;
 import com.ums.schedule.domain.message.email.exception.EmailMessageValueMissingException;
+import com.ums.schedule.domain.message.email.security.SecurityMailPolicy;
 import com.ums.schedule.domain.request.converter.UuidBinaryConverter;
 import com.ums.schedule.domain.message.ChannelMessage;
 import com.ums.schedule.domain.message.SendMessage;
-import com.ums.schedule.common.code.email.EmailMessageSection;
+import com.ums.schedule.domain.target.message.EmailTargetMessage;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,10 +31,9 @@ import java.util.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class EmailSendMessage implements ChannelMessage {
-
     @MapsId
     @OneToOne
-    @JoinColumn(name = "message_id")
+    @JoinColumn(name = "message_id", nullable = false)
     private SendMessage sendMessage;
 
     @Id
@@ -38,28 +43,51 @@ public class EmailSendMessage implements ChannelMessage {
     @Convert(converter = UuidBinaryConverter.class)
     private UUID id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "email_type", nullable = false)
+    private EmailType emailType;
+
+    @Column(name = "subject", nullable = false)
     private String subject;
 
     private String headerTemplateKey;
-    private String headerTemplate;
 
+    @Column(name = "body_template_key", nullable = false)
     private String bodyTemplateKey;
-    private String bodyTemplate;
 
+    private String coverTemplateKey;
     private String footerTemplateKey;
-    private String footerTemplate;
-
     private String imageDir;
 
-    @OneToMany(mappedBy = "sendMessage", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<EmailAttachment> attachmentList = new ArrayList<>();
+    @OneToMany(mappedBy = "sendMessage", fetch = FetchType.LAZY)
+    private List<EmailAttachment> attachments = new ArrayList<>();
 
-    public static EmailSendMessage of(SendMessage message, EmailMessageContext context) {
+    @Embedded
+    private SecurityMailPolicy securityMail;
+
+    @Embedded
+    private ConvertMail convertMail;
+
+
+    public static EmailSendMessage of(SendMessage message, EmailMessageCreateContext context) {
         EmailSendMessage sendMessage = new EmailSendMessage();
         sendMessage.assignTemplateKeyInfo(context.headerKey(), context.bodyKey(), context.footerKey());
         sendMessage.assignSendMessageAndResolveTitle(message, context.title());
         sendMessage.assignImageDir(context.imageDir());
+        sendMessage.assignSecurityMailPolicy(context.securityMail());
+        sendMessage.assignConvertPolicy(context.convertMail());
         return sendMessage;
+    }
+
+    private void assignSecurityMailPolicy(SecurityMail securityMail) {
+        this.securityMail = Optional.ofNullable(securityMail)
+                .map(SecurityMailPolicy::of)
+                .orElse(null);
+    }
+
+    private void assignConvertPolicy(ConvertMail convertMail) {
+        this.convertMail = Optional.ofNullable(convertMail)
+                .orElseGet(() -> ConvertMail.of());
     }
 
     private void assignImageDir(String imageDir) {
@@ -95,21 +123,6 @@ public class EmailSendMessage implements ChannelMessage {
                 .orElseThrow(() -> EmailMessageValueMissingException.of(EmailRequiredValue.BODY_TEMPLATE_KEY));
     }
 
-    private void assignBodyTemplate(String template) {
-        if(!StringUtils.hasText(template)) {
-            throw EmailMessageValueMissingException.of(EmailRequiredValue.BODY_TEMPLATE);
-        }
-        this.bodyTemplate = template;
-    }
-
-    private void assignFooterTemplate(String template) {
-
-    }
-
-    private void assignHeaderTemplate(String headerKey) {
-
-    }
-
     private void assignSubject(SendMessage message, String title) {
         Objects.requireNonNull(title, "title");
         this.subject = message.generatePhraseByMessageType(title);
@@ -120,20 +133,46 @@ public class EmailSendMessage implements ChannelMessage {
         return ChannelType.EMAIL;
     }
 
-    public void addAttachments(EmailAttachment attachment) {
-        this.attachmentList.add(attachment);
+    public Map<EmailMessageSection, String> mapToTemplateKey() {
+        Map<EmailMessageSection, String> templateMap = new EnumMap<>(EmailMessageSection.class);
+        putIfKeyExists(templateMap, EmailMessageSection.HEADER, this.headerTemplateKey);
+        putIfKeyExists(templateMap, EmailMessageSection.FOOTER, this.footerTemplateKey);
+        putIfKeyExists(templateMap, EmailMessageSection.BODY, validateTemplateKey(this.bodyTemplateKey));
+        putIfKeyExists(templateMap, EmailMessageSection.COVER, validateAndGetCoverKey());
+        return templateMap;
     }
 
-    public ConvertType findConvertType() {
-        return attachmentList
-                .stream()
-                .filter(attachment -> attachment.getConvertType() != ConvertType.NONE)
-                .map(EmailAttachment::getConvertType)
-                .findFirst()
-                .orElse(ConvertType.NONE);
+    private void putIfKeyExists(Map<EmailMessageSection, String> templateMap, EmailMessageSection section, String fileKey) {
+        if(StringUtils.hasText(fileKey)) {
+            templateMap.put(section, fileKey);
+        }
+    }
+
+    private String validateAndGetCoverKey() {
+        return Optional
+                .ofNullable(convertMail)
+                .map(v -> validateTemplateKey(this.coverTemplateKey))
+                .orElse(null);
+    }
+
+    private String validateTemplateKey(String templateKey) {
+        return Optional.ofNullable(templateKey)
+                .filter(StringUtils::hasText)
+                .orElseThrow();
+    }
+
+    public ConvertType getConvertType() {
+        return Optional.ofNullable(this.convertMail)
+                .map(ConvertMail::getConvertType)
+                .orElseGet(() -> ConvertType.NONE);
+    }
+
+    public void addAttachments(EmailAttachment attachment) {
+        this.attachments.add(attachment);
     }
 
     public Integer getAttachmentCount() {
-        return attachmentList.size();
+        return this.attachments.size();
     }
+
 }

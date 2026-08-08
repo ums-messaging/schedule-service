@@ -5,7 +5,8 @@ import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.common.code.message.MessageType;
 
 public class SendMessageBuilder {
-    private MessageType templateType;
+    private MessageType messageType;
+    private String templateKey;
     private String messagePrefix;
     private SendRequest sendRequest;
 
@@ -14,12 +15,13 @@ public class SendMessageBuilder {
     }
 
     private SendMessageBuilder() {
-        this.templateType = MessageType.NONE;
+        this.messageType = MessageType.NONE;
+        this.templateKey = "my_template";
         this.messagePrefix = "(광고)";
     }
 
-    public SendMessageBuilder messageType(MessageType templateType) {
-        this.templateType = templateType;
+    public SendMessageBuilder messageType(MessageType messageType) {
+        this.messageType = messageType;
         return this;
     }
 
@@ -36,9 +38,9 @@ public class SendMessageBuilder {
     public SendMessage build() {
         return new SendMessage(
                 null,
-                templateType,
-                messagePrefix,
-                sendRequest
+                templateKey,
+                messageType,
+                messagePrefix
         );
     }
 }

@@ -121,18 +121,23 @@ public class AwsS3Repository {
         return PresigendUrlResponse.of(objectKey, url, expiredDuration);
     }
 
-    public String upload(File file, String key) throws IOException {
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(BUCKET_NAME)
-                .key(key)
-                .contentType(Files.probeContentType(file.toPath()))
-                .build();
+    public String upload(File file, String key) {
+        PutObjectRequest request = null;
+        try {
+            request = PutObjectRequest.builder()
+                    .bucket(BUCKET_NAME)
+                    .key(key)
+                    .contentType(Files.probeContentType(file.toPath()))
+                    .build();
+            s3Client.putObject(
+                    request,
+                    RequestBody.fromFile(file)
+            );
 
-        s3Client.putObject(
-                request,
-                RequestBody.fromFile(file)
-        );
+            return key;
+        } catch (IOException e) {
+            throw AmazonS3FileException.of(FileErrorCode.FILE_UPLOAD_FAIL, key, e);
 
-        return key;
+        }
     }
 }

@@ -24,21 +24,17 @@ public class QEmailAttachment extends EntityPathBase<EmailAttachment> {
 
     public final StringPath attachmentName = createString("attachmentName");
 
-    public final EnumPath<com.ums.schedule.common.code.email.ConvertType> convertType = createEnum("convertType", com.ums.schedule.common.code.email.ConvertType.class);
-
     public final StringPath downloadName = createString("downloadName");
 
     public final StringPath fileKey = createString("fileKey");
 
-    public final StringPath fileKeyTemplate = createString("fileKeyTemplate");
-
     public final NumberPath<Long> fileSize = createNumber("fileSize", Long.class);
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final com.ums.schedule.domain.message.email.QSecurityMailPolicy securityPolicy;
+    public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
     public final com.ums.schedule.domain.message.email.QEmailSendMessage sendMessage;
+
+    public final EnumPath<com.ums.schedule.common.code.email.AttachmentType> type = createEnum("type", com.ums.schedule.common.code.email.AttachmentType.class);
 
     public QEmailAttachment(String variable) {
         this(EmailAttachment.class, forVariable(variable), INITS);
@@ -58,7 +54,6 @@ public class QEmailAttachment extends EntityPathBase<EmailAttachment> {
 
     public QEmailAttachment(Class<? extends EmailAttachment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.securityPolicy = inits.isInitialized("securityPolicy") ? new com.ums.schedule.domain.message.email.QSecurityMailPolicy(forProperty("securityPolicy")) : null;
         this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.message.email.QEmailSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
     }
 

@@ -2,17 +2,19 @@ package com.ums.schedule.application.template.email.query;
 
 import com.ums.schedule.adapter.storage.AwsS3FileMetadataResponse;
 import com.ums.schedule.adapter.storage.AwsS3Repository;
+import com.ums.schedule.application.ums.common.exception.TemplateLoadFailException;
 import com.ums.schedule.application.ums.email.template.exception.EmailTemplateNotConfiguredException;
 import com.ums.schedule.application.ums.email.template.query.S3EmailTemplateQueryService;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
 import com.ums.schedule.application.ums.email.template.query.model.EmailAttachmentDetailQuery;
+import com.ums.schedule.common.code.email.AttachmentType;
 import com.ums.schedule.common.exception.file.FileNotFoundException;
 import com.ums.schedule.config.properties.EmailTemplateProperties;
 import com.ums.schedule.common.code.email.EmailUploadPrefixType;
 import com.ums.schedule.common.code.email.EmailMessageSection;
-import com.ums.schedule.fixture.template.EmailAttachmentCreateCommandBuilder;
+import com.ums.schedule.fixture.template.EmailAttachmentDetailQueryBuilder;
 import com.ums.schedule.fixture.template.EmailTemplateCreateCommandBuilder;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,12 +36,12 @@ class S3EmailTemplateQueryServiceTest {
     @InjectMocks private S3EmailTemplateQueryService templateService;
 
     private EmailTemplateCreateCommandBuilder templateBuilder;
-    private EmailAttachmentCreateCommandBuilder attachmentBuilder;
+    private EmailAttachmentDetailQueryBuilder attachmentBuilder;
 
     @BeforeEach
     void setUp() {
         templateBuilder = EmailTemplateCreateCommandBuilder.builder();
-        attachmentBuilder = EmailAttachmentCreateCommandBuilder.builder();
+        attachmentBuilder = EmailAttachmentDetailQueryBuilder.builder();
     }
 
     @Test
@@ -288,7 +290,7 @@ class S3EmailTemplateQueryServiceTest {
         @BeforeEach
         void setUp() {
             EmailAttachmentDetailQuery fileKeyAttachment = createAttachmentWithFileKey();
-            EmailAttachmentDetailQuery fileKeyTemplateAttachment = createAttahmentWithFileKeyTemplate();
+            EmailAttachmentDetailQuery fileKeyTemplateAttachment = createAttachmentWithFileKeyTemplate();
             templateBuilder = templateBuilder
                     .customerId("jang314")
                     .templateKey("my_template")
@@ -299,17 +301,17 @@ class S3EmailTemplateQueryServiceTest {
             doReturn("attachment").when(properties).attachmentKeySuffix();
         }
 
-        private EmailAttachmentDetailQuery createAttahmentWithFileKeyTemplate() {
+        private EmailAttachmentDetailQuery createAttachmentWithFileKeyTemplate() {
             return attachmentBuilder
-                    .fileKey(null)
-                    .fileKeyTemplate("${target_name}.pdf")
+                    .type(AttachmentType.TEMPLATE)
+                    .fileKey("${target_name}.pdf")
                     .build();
         }
 
         private EmailAttachmentDetailQuery createAttachmentWithFileKey() {
             return attachmentBuilder
+                    .type(AttachmentType.DIRECT)
                     .fileKey("attachment.pdf")
-                    .fileKeyTemplate(null)
                     .build();
         }
 
@@ -327,7 +329,7 @@ class S3EmailTemplateQueryServiceTest {
         }
 
         @Test
-        @DisplayName("attachment의 file_key가 존재하면, 파일 정보를 조회한다.")
+        @DisplayName("attachment의 type이 DIRECT인 첨부파일만 조회한다.")
         void shouldGetFileMetadata_whenAttachmentFileKeyDoesExist() {
             ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
             EmailTemplateDetailQuery command = templateBuilder.build();
@@ -341,7 +343,7 @@ class S3EmailTemplateQueryServiceTest {
         }
 
         @Test
-        @DisplayName("attachment의 file_key가 존재하면 file_key는 정해진 규칙에 의해 생성된다.")
+        @DisplayName("attachment의 type이 DIRECT이면 file_key는 정해진 규칙에 의해 생성된다.")
         void shouldGenerateAttachmentFileKey_whenAttachmentFileKeyDoesExist() {
             EmailTemplateDetailQuery command = templateBuilder.build();
             doReturn(mock(AwsS3FileMetadataResponse.class)).when(fileRepository).getFileMetadata(anyString());
@@ -365,7 +367,7 @@ class S3EmailTemplateQueryServiceTest {
         }
 
         @Test
-        @DisplayName("attachment의 file_key_template이 존재하면 file_key_template를 반환한다.")
+        @DisplayName("첨부파일 타입이 TEMPLATE이면, file_key_template를 반환한다.")
         void shouldGenerateFileKeyTemplate_whenAttachmentFileKeyTemplateDoesExist() {
             EmailTemplateDetailQuery command = templateBuilder.build();
             doReturn(mock(AwsS3FileMetadataResponse.class)).when(fileRepository).getFileMetadata(anyString());
@@ -378,14 +380,21 @@ class S3EmailTemplateQueryServiceTest {
         }
 
         @Test
-        @Disabled
-        @DisplayName("첨부 파일이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("타입이 DIRECT인 첨부 파일이 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenAttachmentDoesNotExist() {
-            EmailTemplateDetailQuery command = templateBuilder.build();
-            doReturn(null).when(fileRepository).getFileMetadata(anyString());
+            EmailTemplateDetailQuery command = templateBuilder.templateKey("my_template")
+                    .build();
+            FileNotFoundException exception = FileNotFoundException.of(attachmentKey);
+            doAnswer(invocation -> {
+                String key = invocation.getArgument(0);
+                if(key.equals(attachmentKey)) {
+                    throw exception;
+                }
+                return mock(AwsS3FileMetadataResponse.class);
+            }).when(fileRepository).getFileMetadata(anyString());
 
-            FileNotFoundException expect =
-                    FileNotFoundException.of(attachmentKey);
+            TemplateLoadFailException expect =
+                    TemplateLoadFailException.of("my_template", exception);
 
             assertThatThrownBy(() -> templateService.findTemplate(command))
                     .isInstanceOf(expect.getClass())

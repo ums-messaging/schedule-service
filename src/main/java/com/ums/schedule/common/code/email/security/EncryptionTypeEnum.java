@@ -29,4 +29,8 @@ public enum EncryptionTypeEnum implements EnumMapperType {
     public String description() {
         return this.description;
     }
+
+    public int length() {
+        return Integer.parseInt(description);
+    }
 }

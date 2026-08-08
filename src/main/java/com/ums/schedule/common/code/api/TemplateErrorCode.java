@@ -6,7 +6,7 @@ public enum TemplateErrorCode implements ErrorCode {
     TEMPLATE_NOT_CONFIGURED(ApiResponseCode.SERVER_ERROR, "[{0}][{1}] 템플릿 정보를 불러들이는데 실패했습니다."),
 
     TEMPLATE_CONTENT_EMPTY(ApiResponseCode.SERVER_ERROR, "[{0}] 템플릿 정보가 존재하지 않습니다."),
-    FILE_KEY_TEMPLATE_EMPTY(ApiResponseCode.SERVER_ERROR, "[{0}] 파일 키 템플릿이 존재하지 않습니다.")
+    FILE_KEY_TEMPLATE_EMPTY(ApiResponseCode.SERVER_ERROR, "[{0}] 파일 키 템플릿이 존재하지 않습니다."),
     ;
 
 

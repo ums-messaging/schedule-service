@@ -4,9 +4,10 @@ import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public record AttachmentCreateResult(
-        Long id,
+        UUID id,
         String fileKey
 ) {
     public static AttachmentCreateResult of(EmailAttachment attachment) {
@@ -14,7 +15,7 @@ public record AttachmentCreateResult(
                 attachment.getId(),
                 Optional.ofNullable(attachment.getFileKey())
                         .filter(StringUtils::hasText)
-                        .orElseGet(() -> attachment.getFileKeyTemplate())
+                        .orElseGet(() -> attachment.getFileKey())
         );
     }
 }

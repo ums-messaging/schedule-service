@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.request.target.upload;
 
-import com.ums.schedule.application.target.upload.model.TargetUploadReportCreateContext;
+import com.ums.schedule.application.target.report.model.TargetUploadReportCreateContext;
 import com.ums.schedule.common.code.api.SendRequestErrorCode;
 import com.ums.schedule.common.code.api.TargetUploadErrorCode;
 import com.ums.schedule.common.code.common.ChannelType;
@@ -15,9 +15,9 @@ import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.target.upload.exception.InvalidTargetUploadStateException;
 import com.ums.schedule.domain.target.upload.exception.TargetUploadPolicyViolationException;
 import com.ums.schedule.domain.target.upload.state.*;
-import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
+import com.ums.schedule.fixture.entity.SendRequestEntityBuilder;
 import com.ums.schedule.fixture.target_upload.TargetUploadReportCreateContextBuilder;
-import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
+import com.ums.schedule.fixture.entity.TargetUploadReportEntityBuilder;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
@@ -335,7 +335,7 @@ public class TargetUploadReportTest {
 
             InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.CREATED, TargetUploadStatus.REQUEST);
 
-            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload())
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
@@ -346,7 +346,7 @@ public class TargetUploadReportTest {
             TargetUploadReport uploadReport = builder.uploadStatus(new TargetUploadWaitingState())
                     .build();
 
-            uploadReport.requestTargetUpload(0);
+            uploadReport.requestTargetUpload();
 
             assertThat(uploadReport.getState().getCurrentCode())
                     .isEqualTo(TargetUploadStatus.REQUEST);
@@ -360,7 +360,7 @@ public class TargetUploadReportTest {
 
             InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.REQUEST, TargetUploadStatus.REQUEST);
 
-            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload())
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
@@ -373,7 +373,7 @@ public class TargetUploadReportTest {
 
             InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.REQUEST, TargetUploadStatus.PARSING);
 
-            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload())
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
@@ -386,7 +386,7 @@ public class TargetUploadReportTest {
 
             InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.FAIL, TargetUploadStatus.REQUEST);
 
-            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload())
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
@@ -399,7 +399,7 @@ public class TargetUploadReportTest {
 
             InvalidTargetUploadStateException expect = InvalidTargetUploadStateException.of(TargetUploadStatus.COMPLETED, TargetUploadStatus.REQUEST);
 
-            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload())
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
@@ -413,7 +413,7 @@ public class TargetUploadReportTest {
             TargetUploadPolicyViolationException expect = TargetUploadPolicyViolationException.of(TargetUploadErrorCode.TARGET_LIST_OF_EMPTY);
 
 
-            assertThatThrownBy(() -> uploadReport.requestTargetUpload(0))
+            assertThatThrownBy(() -> uploadReport.requestTargetUpload())
                     .isInstanceOf(expect.getClass())
                     .hasMessage(expect.getMessage());
         }
@@ -424,7 +424,7 @@ public class TargetUploadReportTest {
             TargetUploadReport uploadReport = builder
                     .build();
 
-            uploadReport.requestTargetUpload(0);
+            uploadReport.requestTargetUpload();
 
             assertThat(uploadReport.getRequestedAt().toLocalDate()).isEqualTo(LocalDate.now());
         }

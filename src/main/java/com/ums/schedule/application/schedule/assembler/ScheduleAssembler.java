@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.ums.schedule.common.code.schedule.ScheduleEnumMapper.SCHEDULE_TYPE;
+import static com.ums.schedule.common.code.schedule.ScheduleCode.SCHEDULE_TYPE;
 
 @Component
 @RequiredArgsConstructor

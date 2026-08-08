@@ -1,15 +1,15 @@
 package com.ums.schedule.application.sendrequest;
 
 import com.ums.schedule.application.sendrequest.command.TargetUploadCreateCommand;
-import com.ums.schedule.application.target.upload.exception.TargetUploadReportNotConfiguredException;
-import com.ums.schedule.application.target.upload.handler.FileTargetUploadResult;
-import com.ums.schedule.application.target.upload.TargetUploadCreateService;
-import com.ums.schedule.application.target.upload.handler.FileTargetUploadUrlProvider;
+import com.ums.schedule.application.target.exception.TargetUploadReportNotConfiguredException;
+import com.ums.schedule.application.target.provider.FileTargetUploadResult;
+import com.ums.schedule.application.target.report.TargetUploadReportCreateService;
+import com.ums.schedule.application.target.provider.FileTargetUploadUrlProvider;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.code.mapper.exception.EnumMapperNotFoundException;
 import com.ums.schedule.common.code.target_upload.TargetUploadType;
-import com.ums.schedule.common.code.target_upload.TargetUploadUploadPrefix;
+import com.ums.schedule.common.code.target_upload.TargetUploadConfiguration;
 import com.ums.schedule.common.exception.BusinessException;
 import com.ums.schedule.config.properties.TargetUploadProperties;
 import com.ums.schedule.domain.request.SendRequest;
@@ -19,7 +19,7 @@ import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.target.upload.TargetUploadReportJpaRepository;
 import com.ums.schedule.domain.request.target.upload.builder.TargetUploadCreateCommandBuilder;
 import com.ums.schedule.common.code.target_upload.TargetUploadFormatEnum;
-import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
+import com.ums.schedule.fixture.entity.SendRequestEntityBuilder;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -38,7 +38,7 @@ class TargetUploadCreateServiceTest {
     @Mock private TargetUploadProperties properties;
     @Mock private FileTargetUploadUrlProvider provider;
     @Mock private TargetUploadReportJpaRepository repository;
-    @InjectMocks private TargetUploadCreateService targetUploadService;
+    @InjectMocks private TargetUploadReportCreateService targetUploadService;
 
     private TargetUploadCreateCommandBuilder commandBuilder;
     private SendRequest sendRequest;
@@ -61,8 +61,8 @@ class TargetUploadCreateServiceTest {
         void shouldCallFileTargetUploadUrlProvider_whenUploadTypeIsFile() {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.FILE).build();
 
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
             doReturn(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.CSV)).when(factory).findEnumMapperValue(any() ,any());
             doReturn(mock(TargetUploadReport.class)).when(repository).save(any(TargetUploadReport.class));
 
@@ -76,8 +76,8 @@ class TargetUploadCreateServiceTest {
         void shouldNotCallTargetUploadUrlProvider_whenUploadTypeisJson() {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.JSON).build();
 
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
             doReturn(mock(TargetUploadReport.class)).when(repository).save(any(TargetUploadReport.class));
             doReturn(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.CSV)).when(factory).findEnumMapperValue(any() ,any());
 
@@ -90,8 +90,8 @@ class TargetUploadCreateServiceTest {
         void shouldNotSave_whenFilTargetUploadUrlProviderFails() {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.FILE).build();
 
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
             doReturn(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.CSV)).when(factory).findEnumMapperValue(any() ,any());
             doThrow(mock(BusinessException.class)).when(provider).provide(any());
 
@@ -109,12 +109,12 @@ class TargetUploadCreateServiceTest {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.JSON).build();
 
             doReturn(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.CSV)).when(factory).findEnumMapperValue(any() ,any());
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
 
             targetUploadService.create(sendRequest, command);
 
-            verify(properties).getDownloadKey();
+            verify(properties).getPrefixDownloadKey();
         }
 
         @Test
@@ -124,8 +124,8 @@ class TargetUploadCreateServiceTest {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.JSON).build();
 
             doReturn(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.CSV)).when(factory).findEnumMapperValue(any() ,any());
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
 
             targetUploadService.create(sendRequest, command);
 
@@ -143,10 +143,10 @@ class TargetUploadCreateServiceTest {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.JSON).build();
 
             doReturn(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.CSV)).when(factory).findEnumMapperValue(any() ,any());
-            doReturn("").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
 
-            TargetUploadReportNotConfiguredException expect = TargetUploadReportNotConfiguredException.of(TargetUploadUploadPrefix.DOWNLOAD_KEY);
+            TargetUploadReportNotConfiguredException expect = TargetUploadReportNotConfiguredException.of(TargetUploadConfiguration.DOWNLOAD_KEY);
 
             assertThatThrownBy(() -> targetUploadService.create(sendRequest, command))
                 .isInstanceOf(expect.getClass())
@@ -159,13 +159,13 @@ class TargetUploadCreateServiceTest {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.FILE).build();
 
             doReturn(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.CSV)).when(factory).findEnumMapperValue(any() ,any());
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
             doReturn(mock(FileTargetUploadResult.class)).when(provider).provide(any());
 
             targetUploadService.create(sendRequest, command);
 
-            verify(properties).getUploadKey();
+            verify(properties).getPrefixUploadKey();
         }
         @Test
         @DisplayName("업로드 키는 정해진 규칙에 의해 생성된다.")
@@ -174,8 +174,8 @@ class TargetUploadCreateServiceTest {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.FILE).build();
 
             doReturn(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.CSV)).when(factory).findEnumMapperValue(any() ,any());
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
 
             targetUploadService.create(sendRequest, command);
 
@@ -193,9 +193,9 @@ class TargetUploadCreateServiceTest {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.JSON).build();
 
             doReturn(EnumMapperValue.fromEnumMapperType(TargetUploadFormatEnum.CSV)).when(factory).findEnumMapperValue(any() ,any());
-            doReturn("").when(properties).getUploadKey();
+            doReturn("").when(properties).getPrefixUploadKey();
 
-            TargetUploadReportNotConfiguredException expect = TargetUploadReportNotConfiguredException.of(TargetUploadUploadPrefix.UPLOAD_KEY);
+            TargetUploadReportNotConfiguredException expect = TargetUploadReportNotConfiguredException.of(TargetUploadConfiguration.UPLOAD_KEY);
 
             assertThatThrownBy(() -> targetUploadService.create(sendRequest, command))
                     .isInstanceOf(expect.getClass())
@@ -212,8 +212,8 @@ class TargetUploadCreateServiceTest {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.FILE).build();
 
             doReturn(null).when(factory).findEnumMapperValue(any() ,any());
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
             doReturn(mock(FileTargetUploadResult.class)).when(provider).provide(any());
 
             targetUploadService.create(sendRequest, command);
@@ -227,8 +227,8 @@ class TargetUploadCreateServiceTest {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.JSON).build();
 
             doReturn(null).when(factory).findEnumMapperValue(any() ,any());
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
 
             targetUploadService.create(sendRequest, command);
 
@@ -255,8 +255,8 @@ class TargetUploadCreateServiceTest {
         void shouldCreateTargetUploadReport() {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.FILE).build();
 
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
             doReturn(mock(FileTargetUploadResult.class)).when(provider).provide(any());
 
             targetUploadService.create(sendRequest, command);
@@ -269,8 +269,8 @@ class TargetUploadCreateServiceTest {
         void shouldChangeSendRequestStateToHolding() {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.FILE).build();
 
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
             doReturn(mock(FileTargetUploadResult.class)).when(provider).provide(any());
 
             targetUploadService.create(sendRequest, command);
@@ -283,8 +283,8 @@ class TargetUploadCreateServiceTest {
         void shouldSaveTargetUploadReport() {
             TargetUploadCreateCommand command = commandBuilder.uploadType(TargetUploadType.FILE).build();
 
-            doReturn("/target/upload/download").when(properties).getDownloadKey();
-            doReturn("/target/upload").when(properties).getUploadKey();
+            doReturn("/target/upload/download").when(properties).getPrefixDownloadKey();
+            doReturn("/target/upload").when(properties).getPrefixUploadKey();
 
             targetUploadService.create(sendRequest, command);
 
@@ -296,7 +296,6 @@ class TargetUploadCreateServiceTest {
         @DisplayName("대상자 업로드 생성 실패 시 대상자 업로드 리포트는 저장되지 않는다.")
         void shouldNotSaveTargetUploadReport_whenTargetUploadCreateFails() {
             TargetUploadCreateCommand command = commandBuilder.uploadType(null).build();
-//            doReturn("/target/upload/download").when(properties).getDownloadKey();
 
             assertThatThrownBy(() -> targetUploadService.create(sendRequest, command));
 

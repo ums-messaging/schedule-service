@@ -1,6 +1,7 @@
 package com.ums.schedule.domain.send.email.job;
 
 import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.TargetMessage;
 
 public record DomainGroupTarget(
         DomainGroup group,
@@ -11,14 +12,16 @@ public record DomainGroupTarget(
         String content,
         Integer retryCount
 ) {
-    public static DomainGroupTarget of(DomainGroup domainGroup, SendTarget target) {
+    public static DomainGroupTarget of(DomainGroup domainGroup, TargetMessage targetMessage)
+    {
+        SendTarget target = targetMessage.getSendTarget();
         return new DomainGroupTarget(
                 domainGroup,
                 target.getId().toString(),
                 target.getTargetName(),
                 target.getContact(),
-                target.getTitle(),
-                target.getContent(),
+                null,
+                null,
                 target.getAttemptNo()
         );
     }

@@ -1,12 +1,12 @@
 package com.ums.schedule.application.ums.common.request;
 
 import com.ums.schedule.application.schedule.exception.ScheduleNotFoundException;
-import com.ums.schedule.application.target.upload.TargetUploadCreateService;
+import com.ums.schedule.application.target.report.TargetUploadReportCreateService;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.TargetUploadCreateCommand;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateContext;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateResult;
-import com.ums.schedule.application.target.upload.model.TargetUploadResult;
+import com.ums.schedule.application.target.report.model.TargetUploadResult;
 import com.ums.schedule.common.config.SendRequestProperties;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.request.SendRequestRepository;
@@ -24,7 +24,7 @@ public class SendRequestCreateService {
     private final SendRequestProperties properties;
     private final ScheduleJpaRepository scheduleRepository;
     private final SendRequestRepository sendRequestRepository;
-    private final TargetUploadCreateService targetUploadService;
+    private final TargetUploadReportCreateService targetUploadService;
 
     @Transactional
     public SendRequestCreateResult create(SendRequestCreateCommand command, SendMessage message) {

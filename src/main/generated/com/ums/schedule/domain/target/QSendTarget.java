@@ -26,8 +26,6 @@ public class QSendTarget extends EntityPathBase<SendTarget> {
 
     public final StringPath contact = createString("contact");
 
-    public final StringPath content = createString("content");
-
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
@@ -36,19 +34,17 @@ public class QSendTarget extends EntityPathBase<SendTarget> {
 
     public final StringPath messageVariable = createString("messageVariable");
 
-    public final StringPath resourceJson = createString("resourceJson");
-
     public final StringPath resultMessage = createString("resultMessage");
 
     public final SimplePath<com.ums.schedule.domain.target.state.SendTargetState> state = createSimple("state", com.ums.schedule.domain.target.state.SendTargetState.class);
 
     public final StringPath targetKey = createString("targetKey");
 
+    public final QTargetMessage targetMessage;
+
     public final StringPath targetName = createString("targetName");
 
     public final com.ums.schedule.domain.target.upload.QTargetUploadReport targetUpload;
-
-    public final StringPath title = createString("title");
 
     public QSendTarget(String variable) {
         this(SendTarget.class, forVariable(variable), INITS);
@@ -68,6 +64,7 @@ public class QSendTarget extends EntityPathBase<SendTarget> {
 
     public QSendTarget(Class<? extends SendTarget> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.targetMessage = inits.isInitialized("targetMessage") ? new QTargetMessage(forProperty("targetMessage"), inits.get("targetMessage")) : null;
         this.targetUpload = inits.isInitialized("targetUpload") ? new com.ums.schedule.domain.target.upload.QTargetUploadReport(forProperty("targetUpload"), inits.get("targetUpload")) : null;
     }
 

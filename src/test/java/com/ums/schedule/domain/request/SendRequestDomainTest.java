@@ -18,13 +18,13 @@ import com.ums.schedule.domain.request.customer.CustomerRequestKey;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.request.state.*;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
+import com.ums.schedule.fixture.entity.ScheduleEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.target.upload.state.TargetUploadCompleteState;
 import com.ums.schedule.domain.target.upload.TargetUploadReport;
-import com.ums.schedule.fixture.target_upload.TargetUploadReportEntityBuilder;
+import com.ums.schedule.fixture.entity.TargetUploadReportEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestCreateContextBuilder;
-import com.ums.schedule.fixture.sendrequest.SendRequestEntityBuilder;
+import com.ums.schedule.fixture.entity.SendRequestEntityBuilder;
 import com.ums.schedule.fixture.sendrequest.SendRequestField;
 import org.junit.jupiter.api.*;
 

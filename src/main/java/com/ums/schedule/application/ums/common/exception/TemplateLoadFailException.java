@@ -15,4 +15,7 @@ public class TemplateLoadFailException extends ExternalSystemException {
     public static TemplateLoadFailException of(String templateKey, TemplateErrorCode errorCode, String fileKey) {
         return new TemplateLoadFailException(templateKey, errorCode, fileKey);
     }
+    public static TemplateLoadFailException of(String templateKey, TemplateErrorCode errorCode) {
+        return new TemplateLoadFailException(templateKey, errorCode);
+    }
 }

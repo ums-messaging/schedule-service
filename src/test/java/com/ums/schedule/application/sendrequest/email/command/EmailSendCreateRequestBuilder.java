@@ -1,22 +1,22 @@
 package com.ums.schedule.application.sendrequest.email.command;
 
+import com.ums.schedule.adapter.api.request.email.request.EmailAttachmentListRequest;
 import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
-import com.ums.schedule.adapter.api.request.email.request.EmailAttachmentRequest;
 import com.ums.schedule.adapter.api.request.email.request.EmailSecurityPolicyRequest;
 import com.ums.schedule.adapter.api.request.email.request.EmailSendCreateRequest;
 import com.ums.schedule.adapter.api.sendrequest.email.request.SendRequestCreateRequestBuilder;
 
-import java.util.List;
-
 public class EmailSendCreateRequestBuilder {
     private SendRequestCreateRequest request;
+    private String mailType;
     private String convertType;
     private String senderKey;
     private String title;
-    private String attachmentNameFormat;
-    private String downloadNameFormat;
+    private String fileKeyTemplate;
+    private String attachmentName;
+    private String downloadName;
     private EmailSecurityPolicyRequest securityPolicy;
-    private List<EmailAttachmentRequest> attachmentList;
+    private EmailAttachmentListRequest attachmentList;
 
     public static EmailSendCreateRequestBuilder builder() {
         return new EmailSendCreateRequestBuilder();
@@ -27,6 +27,11 @@ public class EmailSendCreateRequestBuilder {
         this.title = "hello world!";
         this.senderKey = "test@test.com";
 
+    }
+
+    public EmailSendCreateRequestBuilder mailType(String mailType) {
+        this.mailType = mailType;
+        return this;
     }
 
     public EmailSendCreateRequestBuilder senderKey(String senderKey) {
@@ -43,12 +48,12 @@ public class EmailSendCreateRequestBuilder {
         return this;
     }
     public EmailSendCreateRequestBuilder attachmentName(String attachmentName) {
-        this.attachmentNameFormat = attachmentName;
+        this.attachmentName = attachmentName;
         return this;
     }
 
     public EmailSendCreateRequestBuilder downloadName(String downloadName) {
-        this.downloadNameFormat = downloadName;
+        this.downloadName = downloadName;
         return this;
     }
     private SendRequestCreateRequest givenSendRequest() {
@@ -69,11 +74,13 @@ public class EmailSendCreateRequestBuilder {
     public EmailSendCreateRequest build() {
         return new EmailSendCreateRequest(
                 request,
+                mailType,
                 senderKey,
                 convertType,
                 title,
-                attachmentNameFormat,
-                downloadNameFormat,
+                fileKeyTemplate,
+                attachmentName,
+                downloadName,
                 securityPolicy,
                 attachmentList
         );

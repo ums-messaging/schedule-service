@@ -19,6 +19,7 @@ public record EmailTemplateContext(
                 command.downloadName()
         );
     }
+
     public EmailTemplateContentResult toContent(AwsS3FileMetadataResponse metadata) {
         return EmailTemplateContentResult.of(this, metadata);
     }

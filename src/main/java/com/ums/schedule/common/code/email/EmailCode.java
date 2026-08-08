@@ -5,6 +5,7 @@ import com.ums.schedule.common.code.mapper.EnumMapperType;
 
 public enum EmailCode implements EnumMapper {
     ATTACHMENT_TYPE(AttachmentType.class),
+    EMAIL_TYPE(EmailType.class),
     CONVERT_TYPE(ConvertType.class),
     DNS_QUERY_RESULT(DnsQueryResult.class),
     CACHE_KEY(EmailCacheKey.class),

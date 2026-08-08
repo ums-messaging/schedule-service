@@ -33,4 +33,13 @@ public enum PermissionMaskEnum implements EnumMapperType  {
     public String description() {
         return this.description;
     }
+
+    public boolean canModify() {
+        return this == WRITE || this == ALL;
+    }
+
+
+    public boolean canPrint() {
+        return this == PRINT || this == ALL;
+    }
 }

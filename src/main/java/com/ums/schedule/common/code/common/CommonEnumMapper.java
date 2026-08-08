@@ -3,7 +3,7 @@ package com.ums.schedule.common.code.common;
 import com.ums.schedule.common.code.mapper.EnumMapper;
 import com.ums.schedule.common.code.mapper.EnumMapperType;
 
-public enum CommonEnumMapper implements EnumMapperType {
+public enum CommonEnumMapper implements EnumMapper {
     CHANNEL_TYPE(ChannelType.class),
     STORAGE_TYPE(StorageType.class),
     CHARSET(CharsetType.class),
@@ -18,17 +18,14 @@ public enum CommonEnumMapper implements EnumMapperType {
     }
 
     @Override
-    public String code() {
-        return null;
+    public String key() {
+        return this.name();
     }
 
     @Override
-    public String value() {
-        return null;
+    public Class<? extends EnumMapperType> code() {
+        return this.code;
     }
 
-    @Override
-    public String description() {
-        return null;
-    }
+
 }

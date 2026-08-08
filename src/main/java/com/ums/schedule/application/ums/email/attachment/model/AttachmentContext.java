@@ -1,5 +1,6 @@
 package com.ums.schedule.application.ums.email.attachment.model;
 
+import com.ums.schedule.application.ums.email.template.query.model.EmailAttachmentDetailQuery;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContentResult;
 import com.ums.schedule.common.code.email.AttachmentType;
 import org.springframework.util.StringUtils;
@@ -37,4 +38,12 @@ public record AttachmentContext(
         );
     }
 
+    public static AttachmentContext of(EmailAttachmentDetailQuery query, String fileKey) {
+        return new AttachmentContext(
+                query.type(),
+                fileKey,
+                query.attachmentName(),
+                query.downloadName(),
+                null);
+    }
 }

@@ -13,6 +13,7 @@ public enum SendRequestField {
     CUSTOMER_REQUEST_ID("customerRequestId", "hyejin_company"),
     CUSTOMER_ID("customerId", "jang314"),
     STATUS("status", new SendRequestCreateState())
+
     ;
     String field;
     Object givenValue;

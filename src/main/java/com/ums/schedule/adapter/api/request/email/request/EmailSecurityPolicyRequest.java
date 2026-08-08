@@ -3,7 +3,7 @@ package com.ums.schedule.adapter.api.request.email.request;
 import com.ums.schedule.application.ums.email.security.model.SecurityMailCommand;
 import com.ums.schedule.common.code.email.security.PasswordType;
 import com.ums.schedule.common.code.email.security.SecurityMailCode;
-import com.ums.schedule.domain.message.email.SecurityMailPolicy;
+import com.ums.schedule.domain.message.email.security.SecurityMailPolicy;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.util.StringUtils;
 

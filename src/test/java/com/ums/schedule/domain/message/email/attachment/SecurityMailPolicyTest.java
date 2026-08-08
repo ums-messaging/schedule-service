@@ -3,7 +3,7 @@ package com.ums.schedule.domain.message.email.attachment;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.email.security.PasswordType;
 import com.ums.schedule.common.code.email.security.SecurityMailCode;
-import com.ums.schedule.domain.message.email.SecurityMailPolicy;
+import com.ums.schedule.domain.message.email.security.SecurityMailPolicy;
 import com.ums.schedule.domain.message.email.exception.SecurityMailDomainException;
 import com.ums.schedule.fixture.email.attachment.SecurityMailBuilder;
 import org.junit.jupiter.api.BeforeEach;

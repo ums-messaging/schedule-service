@@ -1,14 +1,13 @@
 package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.message.model.EmailMessageCreateContext;
-import com.ums.schedule.application.ums.email.message.provider.EmailMessageContext;
 import com.ums.schedule.common.code.email.EmailRequiredValue;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.message.email.exception.EmailMessageValueMissingException;
 import com.ums.schedule.domain.request.message.SendMessageBuilder;
 import com.ums.schedule.common.code.message.MessageType;
-import com.ums.schedule.fixture.email.message.EmailMessageContextBuilder;
 import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.fixture.email.EmailMessageCreateContextBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,11 +38,11 @@ public class EmailSendMessageTest {
     @Nested
     @DisplayName("이메일 메시지 생성")
     class WhenEmailSendMessageCreate {
-        private EmailMessageContextBuilder contextBuilder;
+        private EmailMessageCreateContextBuilder contextBuilder;
 
         @BeforeEach
         void setUp() {
-            contextBuilder = EmailMessageContextBuilder.builder()
+            contextBuilder = EmailMessageCreateContextBuilder.builder()
                     .title("이메일 제목")
                     .bodyKey("body.html");
         }
@@ -51,7 +50,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("header_key가 존재하면 저장된다.")
         void shouldSaveHeaderKey() {
-            EmailMessageContext context = contextBuilder.headerKey("header.html").build();
+            EmailMessageCreateContext context = contextBuilder.headerKey("header.html").build();
 
             EmailSendMessage message = EmailSendMessage.of(builder.build(), context);
 
@@ -61,7 +60,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("header_key가 존재하지 않으면 저장되지 않는다.")
         void shouldNotSaveHeaderKey() {
-            EmailMessageContext context = contextBuilder.headerKey(null).build();
+            EmailMessageCreateContext context = contextBuilder.headerKey(null).build();
 
             EmailSendMessage message = EmailSendMessage.of(builder.build(), context);
 
@@ -71,7 +70,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("body_key가 존재하면 저장된다.")
         void shouldSaveBodyKey() {
-            EmailMessageContext context = contextBuilder.bodyKey("body.html").build();
+            EmailMessageCreateContext context = contextBuilder.bodyKey("body.html").build();
 
             EmailSendMessage message = EmailSendMessage.of(builder.build(), context);
 
@@ -81,7 +80,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("body_key가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenBodyKeyDoesNotExist() {
-            EmailMessageContext context = contextBuilder.bodyKey(null).build();
+            EmailMessageCreateContext context = contextBuilder.bodyKey(null).build();
 
             EmailMessageValueMissingException expect = EmailMessageValueMissingException.of(EmailRequiredValue.BODY_TEMPLATE_KEY);
 
@@ -93,7 +92,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("footer_key가 존재하면 저장된다.")
         void shouldSaveFooterKey() {
-            EmailMessageContext context = contextBuilder.footerKey("footer.html").build();
+            EmailMessageCreateContext context = contextBuilder.footerKey("footer.html").build();
 
             EmailSendMessage message = EmailSendMessage.of(builder.build(), context);
 
@@ -103,7 +102,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("footer_key가 존재하지 않으면 저장되지 않는다.")
         void shouldNotSaveFooterKey() {
-            EmailMessageContext context = contextBuilder.footerKey(null).build();
+            EmailMessageCreateContext context = contextBuilder.footerKey(null).build();
 
             EmailSendMessage message = EmailSendMessage.of(builder.build(), context);
 
@@ -113,7 +112,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("이미지 경로가 존재하면, 저장된다.")
         void shouldSaveImageDir() {
-            EmailMessageContext context = contextBuilder.imageDir("/message/email/images").build();
+            EmailMessageCreateContext context = contextBuilder.imageDir("/message/email/images").build();
 
             EmailSendMessage message = EmailSendMessage.of(builder.build(), context);
 
@@ -123,7 +122,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("이미지 경로가 존재하지 않으면, 저장되지 않는다.")
         void shouldNotSaveImageDir() {
-            EmailMessageContext context = contextBuilder.imageDir(null).build();
+            EmailMessageCreateContext context = contextBuilder.imageDir(null).build();
 
             EmailSendMessage message = EmailSendMessage.of(builder.build(), context);
 
@@ -133,7 +132,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("SendMessage가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenSendMessageDoesNotExist() {
-            EmailMessageContext context = contextBuilder.build();
+            EmailMessageCreateContext context = contextBuilder.build();
 
             assertThatThrownBy(() -> EmailSendMessage.of(null, context))
                     .isInstanceOf(NullPointerException.class)
@@ -143,7 +142,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("SendMessage가 존재하면 저장된다.")
         void shouldSaveSendMessage() {
-            EmailMessageContext context = contextBuilder.build();
+            EmailMessageCreateContext context = contextBuilder.build();
             EmailSendMessage message = EmailSendMessage.of(builder.build(), context);
             assertThat(message.getSendMessage()).isNotNull();
         }
@@ -151,7 +150,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("SendMessage의 메시지 타입이 ADVERTISE이면, 제목 앞에 '(광고)' 표시가 붙는다.")
         void shouldPrependAdvertisePrefix_whenMessageTypeIsAdvertise() {
-            EmailMessageContext context = contextBuilder.title("hello world!").build();
+            EmailMessageCreateContext context = contextBuilder.title("hello world!").build();
             SendMessage sendMessage = builder.messageType(MessageType.ADVERTISE).build();
             EmailSendMessage message = EmailSendMessage.of(sendMessage, context);
 
@@ -161,7 +160,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("SendMessage의 메시지 타입이 NONE이면, 제목 그대로 저장된다.")
         void shouldSaveSubject_whenMessageTypeIsNone() {
-            EmailMessageContext context = contextBuilder.title("hello world!").build();
+            EmailMessageCreateContext context = contextBuilder.title("hello world!").build();
             SendMessage sendMessage = builder.messageType(MessageType.NONE).build();
             EmailSendMessage message = EmailSendMessage.of(sendMessage, context);
 
@@ -171,7 +170,7 @@ public class EmailSendMessageTest {
         @Test
         @DisplayName("제목이 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenTitleDoesNotExist() {
-            EmailMessageContext context = contextBuilder.title(null).build();
+            EmailMessageCreateContext context = contextBuilder.title(null).build();
             SendMessage sendMessage = builder.messageType(MessageType.NONE).build();
 
             assertThatThrownBy(() -> EmailSendMessage.of(sendMessage, context))

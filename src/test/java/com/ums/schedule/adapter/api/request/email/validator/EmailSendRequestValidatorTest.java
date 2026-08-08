@@ -3,7 +3,6 @@ package com.ums.schedule.adapter.api.request.email.validator;
 import com.ums.schedule.adapter.api.request.email.request.EmailSecurityPolicyRequest;
 import com.ums.schedule.adapter.api.request.email.request.EmailSendCreateRequest;
 import com.ums.schedule.application.sendrequest.email.command.EmailSendCreateRequestBuilder;
-import com.ums.schedule.common.code.api.EmailSendRequestErrorCode;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +21,6 @@ import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class EmailSendRequestValidatorTest {
-    @Mock private EnumMapperFactory factory;
     @InjectMocks private EmailSendRequestValidator validator;
     private EmailSendCreateRequestBuilder builder;
 
@@ -102,7 +100,7 @@ class EmailSendRequestValidatorTest {
         }
 
         @Test
-        @DisplayName("보안 정책이 존재하면 변환타입 상관없이 에러를 반환한다.")
+        @DisplayName("이메일 타입이 보안메일이면 변환타입 상관없이 에러를 반환한다.")
         void shouldReturnFieldError_whenSecurityPolicyExists() {
             EmailSendCreateRequest request = builder
                     .convertType(null)
@@ -193,6 +191,7 @@ class EmailSendRequestValidatorTest {
         @DisplayName("보안 정책이 존재하면 변환타입 상관없이 에러를 반환한다.")
         void shouldReturnFieldError_whenSecurityPolicyExists() {
             EmailSendCreateRequest request = builder
+                    .mailType("SECURITY")
                     .convertType(null)
                     .securityPolicy(mock(EmailSecurityPolicyRequest.class))
                     .build();
@@ -206,5 +205,24 @@ class EmailSendRequestValidatorTest {
                     .extracting(FieldError::getField, FieldError::getCode)
                     .contains("downloadName", "EMAIL_SEND_REQUEST:DOWNLOAD_NAME_REQUIRED");
         }
+    }
+
+    @Test
+    @DisplayName("메일 타입이 SECURITY이고, 보안 정책이 존재하지 않으면 에러를 반환한다.")
+    void shouldReturnFieldError_whenMailTypeIsSecurityAndExistSecurityPolicy() {
+        EmailSendCreateRequest request = builder
+                .mailType("SECURITY")
+                .convertType(null)
+                .securityPolicy(null)
+                .build();
+
+        Errors error = new BeanPropertyBindingResult(request, "emailSendRequest");
+
+        validator.validate(request, error);
+
+        FieldError fieldError = error.getFieldError();
+        assertThat(fieldError)
+                .extracting(FieldError::getField, FieldError::getCode)
+                .contains("downloadName", "EMAIL_SEND_REQUEST:SECURITY_POLICY_NOT_NULL");
     }
 }

@@ -3,7 +3,6 @@ package com.ums.schedule.application.ums.email.template.query.model;
 
 import com.ums.schedule.application.ums.common.template.model.TemplateResult;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
-import com.ums.schedule.application.ums.email.convert.ConvertedAttachment;
 import com.ums.schedule.common.code.email.EmailMessageSection;
 import org.springframework.util.StringUtils;
 
@@ -80,17 +79,5 @@ public record EmailTemplateResult(
         return emailTemplate.imageDir();
     }
 
-    private String getFileKeyTemplate(EmailTemplateContentResult content) {
-        return Optional.ofNullable(content)
-                .map(EmailTemplateContentResult::fileKeyTemplate)
-                .filter(StringUtils::hasText)
-                .orElse(null);
-    }
-
-    public List<ConvertedAttachment> convertAndAttachments() {
-        return emailTemplate.getAttachmentList().stream()
-                .map(ConvertedAttachment::of)
-                .toList();
-    }
 
 }

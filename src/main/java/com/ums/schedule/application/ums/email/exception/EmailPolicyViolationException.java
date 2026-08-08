@@ -2,6 +2,7 @@ package com.ums.schedule.application.ums.email.exception;
 
 import com.ums.schedule.common.code.api.EmailMessageErrorCode;
 import com.ums.schedule.common.code.api.ErrorCode;
+import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.exception.PolicyViolationException;
 
 public class EmailPolicyViolationException extends PolicyViolationException {
@@ -10,7 +11,7 @@ public class EmailPolicyViolationException extends PolicyViolationException {
     }
 
 
-    public static EmailPolicyViolationException of(EmailMessageErrorCode errorCode) {
-        return new EmailPolicyViolationException(errorCode);
+    public static EmailPolicyViolationException of(EmailMessageErrorCode errorCode, ConvertType convertType) {
+        return new EmailPolicyViolationException(errorCode, convertType.code());
     }
 }

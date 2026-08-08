@@ -1,0 +1,45 @@
+package com.ums.schedule.domain.message.email.security;
+
+import static com.querydsl.core.types.PathMetadataFactory.*;
+
+import com.querydsl.core.types.dsl.*;
+
+import com.querydsl.core.types.PathMetadata;
+import javax.annotation.processing.Generated;
+import com.querydsl.core.types.Path;
+
+
+/**
+ * QSecurityMailPolicy is a Querydsl query type for SecurityMailPolicy
+ */
+@Generated("com.querydsl.codegen.DefaultEmbeddableSerializer")
+public class QSecurityMailPolicy extends BeanPath<SecurityMailPolicy> {
+
+    private static final long serialVersionUID = -197171701L;
+
+    public static final QSecurityMailPolicy securityMailPolicy = new QSecurityMailPolicy("securityMailPolicy");
+
+    public final EnumPath<com.ums.schedule.common.code.email.security.EncryptionTypeEnum> encryptionType = createEnum("encryptionType", com.ums.schedule.common.code.email.security.EncryptionTypeEnum.class);
+
+    public final StringPath passwordFormat = createString("passwordFormat");
+
+    public final EnumPath<com.ums.schedule.common.code.email.security.PasswordHashEnum> passwordHash = createEnum("passwordHash", com.ums.schedule.common.code.email.security.PasswordHashEnum.class);
+
+    public final StringPath passwordPolicy = createString("passwordPolicy");
+
+    public final EnumPath<com.ums.schedule.common.code.email.security.PermissionMaskEnum> permissionMask = createEnum("permissionMask", com.ums.schedule.common.code.email.security.PermissionMaskEnum.class);
+
+    public QSecurityMailPolicy(String variable) {
+        super(SecurityMailPolicy.class, forVariable(variable));
+    }
+
+    public QSecurityMailPolicy(Path<? extends SecurityMailPolicy> path) {
+        super(path.getType(), path.getMetadata());
+    }
+
+    public QSecurityMailPolicy(PathMetadata metadata) {
+        super(SecurityMailPolicy.class, metadata);
+    }
+
+}
+

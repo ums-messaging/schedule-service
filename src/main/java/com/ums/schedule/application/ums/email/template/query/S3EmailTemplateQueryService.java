@@ -6,7 +6,7 @@ import com.ums.schedule.application.ums.common.exception.TemplateLoadFailExcepti
 import com.ums.schedule.application.ums.email.template.exception.EmailTemplateNotConfiguredException;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContext;
 import com.ums.schedule.application.ums.email.template.query.model.*;
-import com.ums.schedule.common.code.api.TemplateErrorCode;
+import com.ums.schedule.common.code.email.AttachmentType;
 import com.ums.schedule.common.exception.file.FileStorageException;
 import com.ums.schedule.common.util.FileUtil;
 import com.ums.schedule.config.properties.EmailTemplateProperties;
@@ -26,11 +26,11 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
     private final AwsS3Repository fileRepository;
 
     @Override
-    public EmailTemplateResult findTemplate(EmailTemplateDetailQuery command) {
-        Map<EmailUploadPrefixType, String> propertiesMap = toConfiguredMap(command);
-        List<EmailTemplateContentResult> templateList = createTemplateList(command.templateKey(), propertiesMap.get(EmailUploadPrefixType.TEMPLATE_PREFIX), command);
-        List<EmailTemplateContentResult> attachments = createAttachmentList(command.templateKey(), propertiesMap.get(EmailUploadPrefixType.ATTACHMENT_SUFFIX), command);
-        EmailTemplateDetailResult detail = createEmailTemplateDetail(propertiesMap, command, templateList, attachments);
+    public EmailTemplateResult findTemplate(EmailTemplateDetailQuery query) {
+        Map<EmailUploadPrefixType, String> propertiesMap = toConfiguredMap(query);
+        List<EmailTemplateContentResult> templateList = createTemplateList(propertiesMap.get(EmailUploadPrefixType.TEMPLATE_PREFIX), query);
+        List<EmailTemplateContentResult> attachments = createAttachmentList(query.templateKey(), propertiesMap.get(EmailUploadPrefixType.ATTACHMENT_SUFFIX), query.attachmentQueries());
+        EmailTemplateDetailResult detail = createEmailTemplateDetail(propertiesMap, query, templateList, attachments);
         return EmailTemplateResult.of(detail);
     }
 
@@ -51,6 +51,7 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
         }
         return FileUtil.generateFilePaths(prefix, command.customerId(), command.templateKey());
     }
+
     private String generateImageDir(String templateDir, String templateKey) {
         String suffix = properties.imageKeySuffix();
         if(!StringUtils.hasText(suffix)) {
@@ -74,8 +75,8 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
         return EmailTemplateDetailResult.of(propertiesMap, command, contentList);
     }
 
-    private List<EmailTemplateContentResult> createAttachmentList(String templateKey, String attachmentDir, EmailTemplateDetailQuery command) {
-        return Optional.ofNullable(command.attachmentKeyList())
+    private List<EmailTemplateContentResult> createAttachmentList(String templateKey, String attachmentDir, List<EmailAttachmentDetailQuery> queries) {
+        return Optional.ofNullable(queries)
                 .map(list -> toAttachmentList(templateKey, attachmentDir, list))
                 .orElse(Collections.EMPTY_LIST);
     }
@@ -83,30 +84,23 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
     private List<EmailTemplateContentResult> toAttachmentList(String templateKey, String templateDir, List<EmailAttachmentDetailQuery> list) {
         return list
                 .stream()
-                .map(key -> getEmailContentResult(templateKey, templateDir, key))
+                .map(key -> attachmentToContent(templateKey, templateDir, key))
                 .toList();
     }
 
-    private EmailTemplateContentResult getEmailContentResult(String templateKey, String templateDir, EmailAttachmentDetailQuery query) {
-        try {
-            EmailTemplateContext context = toAttachmentContext(templateDir, query);
-
-            if(StringUtils.hasText(context.fileKey())) {
-                return createEmailContent(context);
-            }
-            return Optional.ofNullable(context)
-                    .filter(ctx -> StringUtils.hasText(ctx.fileKeyTemplate()))
-                    .map(EmailTemplateContentResult::of)
-                    .orElseThrow();
-        } catch (Exception e) {
-            throw TemplateLoadFailException.of(templateKey, e);
-        }
-    }
-
-    private EmailTemplateContext toAttachmentContext(String templateDir, EmailAttachmentDetailQuery query) {
+    private EmailTemplateContentResult attachmentToContent(String templateKey, String templateDir, EmailAttachmentDetailQuery query) {
         String fileKey = generateFileName(templateDir, query.fileKey());
-        String fileKeyTemplate = generateFileName(templateDir, query.fileKeyTemplate());
-        return query.toContext(fileKey, fileKeyTemplate);
+
+        if(query.type() == AttachmentType.DIRECT) {
+            try {
+                AwsS3FileMetadataResponse fileMetadata = fileRepository.getFileMetadata(fileKey);
+                return EmailTemplateContentResult.of(query, fileKey, fileMetadata);
+            } catch (FileStorageException e) {
+                throw TemplateLoadFailException.of(templateKey, e);
+            }
+
+        }
+        return EmailTemplateContentResult.of(query, fileKey);
     }
 
     private String generateFileName(String templateDir, String fileKey) {
@@ -116,7 +110,7 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
         return null;
     }
 
-    private List<EmailTemplateContentResult> createTemplateList(String templateKey, String templateDir, EmailTemplateDetailQuery command) {
+    private List<EmailTemplateContentResult> createTemplateList(String templateDir, EmailTemplateDetailQuery command) {
         List<EmailTemplateContentResult> contents = getEmailSectionList()
                 .stream()
                 .map(section -> toTemplateContext(section, command, templateDir))

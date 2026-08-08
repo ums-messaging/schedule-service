@@ -54,16 +54,29 @@ public record EmailTemplateContentResult(
         );
     }
 
-    public static EmailTemplateContentResult of(String fileKey) {
+    public static EmailTemplateContentResult of(EmailAttachmentDetailQuery query, String fileKey, AwsS3FileMetadataResponse metadata) {
+        return new EmailTemplateContentResult(
+                EmailTemplateFormat.FILE.value(),
+                EmailMessageSection.ATTACHMENT.code(),
+                metadata.contentType(),
+                query.attachmentName(),
+                query.downloadName(),
+                null,
+                fileKey,
+                metadata.contentLength()
+        );
+    }
+
+    public static EmailTemplateContentResult of(EmailAttachmentDetailQuery query, String fileKey) {
         return new EmailTemplateContentResult(
                 EmailTemplateFormat.FILE.value(),
                 EmailMessageSection.ATTACHMENT.code(),
                 null,
-                null,
-                null,
-                null,
+                query.attachmentName(),
+                query.downloadName(),
                 fileKey,
-                0L
+                null,
+                null
         );
     }
 }

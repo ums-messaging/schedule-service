@@ -2,7 +2,7 @@ package com.ums.schedule.fixture.email.attachment;
 
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.application.ums.email.attachment.model.AttachmentListCreateCommand;
-import com.ums.schedule.application.ums.email.convert.EmailConvertPolicy;
+import com.ums.schedule.application.ums.email.generator.policy.model.EmailConvertPolicy;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.fixture.email.convert.EmailConvertPolicyBuilder;
 

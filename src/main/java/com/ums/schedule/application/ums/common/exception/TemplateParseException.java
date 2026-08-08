@@ -2,7 +2,6 @@ package com.ums.schedule.application.ums.common.exception;
 
 import com.ums.schedule.common.code.api.ErrorCode;
 import com.ums.schedule.common.code.api.TemplateErrorCode;
-import com.ums.schedule.common.code.target.TargetColumnEnum;
 import com.ums.schedule.common.exception.PolicyViolationException;
 
 public class TemplateParseException extends PolicyViolationException {

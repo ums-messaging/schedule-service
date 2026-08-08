@@ -1,6 +1,6 @@
 package com.ums.schedule.application.ums.email.request.model;
 
-import com.ums.schedule.application.target.upload.model.TargetUploadResult;
+import com.ums.schedule.application.target.report.model.TargetUploadResult;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateResult;
 import com.ums.schedule.application.ums.common.request.model.TargetUploadCreateSummary;
 import com.ums.schedule.common.code.email.ConvertType;
@@ -24,7 +24,7 @@ public record EmailSendRequestCreateSummary(
                 result.requestId(),
                 result.retryCount(),
                 result.messageId(),
-                sendMessage.findConvertType(),
+                sendMessage.getConvertType(),
                 sendMessage.getAttachmentCount(),
                 summary
         );

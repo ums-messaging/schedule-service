@@ -10,7 +10,7 @@ import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
-import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
+import com.ums.schedule.fixture.entity.ScheduleEntityBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

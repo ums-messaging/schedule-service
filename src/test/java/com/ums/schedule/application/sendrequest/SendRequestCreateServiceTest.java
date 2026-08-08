@@ -2,10 +2,10 @@ package com.ums.schedule.application.sendrequest;
 
 import com.ums.schedule.application.schedule.exception.ScheduleNotFoundException;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
-import com.ums.schedule.application.target.upload.TargetUploadCreateService;
+import com.ums.schedule.application.target.report.TargetUploadReportCreateService;
 import com.ums.schedule.application.ums.common.request.SendRequestCreateService;
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateResult;
-import com.ums.schedule.application.target.upload.model.TargetUploadResult;
+import com.ums.schedule.application.target.report.model.TargetUploadResult;
 import com.ums.schedule.common.code.api.SendRequestErrorCode;
 import com.ums.schedule.common.config.SendRequestProperties;
 import com.ums.schedule.domain.request.SendRequest;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 class SendRequestCreateServiceTest {
     @Mock private ScheduleJpaRepository scheduleRepository;
     @Mock private SendRequestRepository sendRequestRepository;
-    @Mock private TargetUploadCreateService targetUploadService;
+    @Mock private TargetUploadReportCreateService targetUploadService;
     @Mock private SendRequestProperties properties;
     @InjectMocks private SendRequestCreateService sendRequestService;
 

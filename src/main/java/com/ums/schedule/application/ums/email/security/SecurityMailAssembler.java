@@ -71,24 +71,6 @@ public class SecurityMailAssembler {
                 .orElseGet(() -> mapperFactory.findEnumMapperValue(e, defaultValue));
     }
 
-    private Map<SecurityMailCode, EnumMapperValue> findMapperDefaultValue(Map<SecurityMailCode, String> defaultPolicyMap) {
-        return defaultPolicyMap.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> mapperFactory.findEnumMapperValue(entry.getKey(), entry.getValue()))
-                );
-    }
-
-    private Map<SecurityMailCode, EnumMapperValue> findMapperPolicyValue(Map<SecurityMailCode, String> policyMap, Map<SecurityMailCode, String> defaultPolicyMap) {
-        return policyMap.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> mapperFactory.findEnumMapperValue(entry.getKey(), getOrDefault(policyMap, defaultPolicyMap, entry.getKey()))
-                ));
-    }
-
     private Map<SecurityMailCode, String> getDefaultConfigureMap() {
         Map<SecurityMailCode, String> enumMap = new EnumMap<>(SecurityMailCode.class);
         putSecurityPolicyMap(enumMap, SecurityMailCode.ENCRYPTION_TYPE, properties.defaultEncryptType());
@@ -103,12 +85,6 @@ public class SecurityMailAssembler {
             return;
         }
         throw SecurityMailNotConfiguredException.of(mapperKey);
-    }
-
-    private String getOrDefault(Map<SecurityMailCode, String> policyMap, Map<SecurityMailCode, String> defaultPolicyMap, SecurityMailCode key) {
-        return Optional.ofNullable(policyMap)
-                .map(policy -> getConfiguredDefaultValue(policyMap, defaultPolicyMap, key))
-                .orElseThrow();
     }
 
     private String getConfiguredDefaultValue(Map<SecurityMailCode, String> policyMap, Map<SecurityMailCode, String> defaultPolicyMap, SecurityMailCode key) {

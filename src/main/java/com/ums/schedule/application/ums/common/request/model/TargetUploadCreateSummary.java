@@ -1,7 +1,7 @@
 package com.ums.schedule.application.ums.common.request.model;
 
-import com.ums.schedule.application.target.upload.handler.FileTargetUploadResult;
-import com.ums.schedule.application.target.upload.model.TargetUploadResult;
+import com.ums.schedule.application.target.provider.FileTargetUploadResult;
+import com.ums.schedule.application.target.report.model.TargetUploadResult;
 import com.ums.schedule.common.code.target_upload.TargetUploadStatus;
 import com.ums.schedule.common.code.target_upload.TargetUploadType;
 

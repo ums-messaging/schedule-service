@@ -1,14 +1,9 @@
 package com.ums.schedule.adapter.api.request.email.validator;
 
-import com.ums.schedule.adapter.api.request.email.request.EmailSecurityPolicyRequest;
+import com.ums.schedule.adapter.api.request.email.request.EmailAttachmentListRequest;
 import com.ums.schedule.adapter.api.request.email.request.EmailSendCreateRequest;
 import com.ums.schedule.common.code.email.ConvertType;
-import com.ums.schedule.common.code.email.EmailCode;
-import com.ums.schedule.common.code.mapper.EnumMapperFactory;
-import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.common.code.mapper.exception.EnumMapperNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.ums.schedule.common.code.email.EmailType;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -17,10 +12,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-@Component
-@RequiredArgsConstructor
 public class EmailSendRequestValidator implements Validator {
-    private final EnumMapperFactory factory;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -32,8 +24,23 @@ public class EmailSendRequestValidator implements Validator {
         EmailSendCreateRequest request = (EmailSendCreateRequest) target;
         validateIfConvertTypeExists(request, errors);
         validateIfSecurityPolicyExists(request, errors);
+        validateAttachmentList(request, errors);
     }
 
+    private void validateAttachmentList(EmailSendCreateRequest request, Errors errors) {
+        EmailAttachmentListRequest attachment = request.attachmentList();
+        if(StringUtils.hasText(attachment.attachmentUploadKey())) {
+            if(attachment.list().size() == 0) {
+                errors.rejectValue("attachmentList", "EMAIL_SEND_REQUEST:ATTACHMENT_LIST_EMPTY");
+            }
+        }
+
+        if(attachment.list().size() > 0) {
+            if(StringUtils.hasText(attachment.attachmentUploadKey())) {
+                errors.rejectValue("attachmentUploadKey", "EMAIL_SEND_REQUEST:ATTACHMENT_UPLOAD_KEY_REQUIRED");
+            }
+        }
+    }
 
     private void validateIfConvertTypeExists(EmailSendCreateRequest request, Errors errors) {
         if(existsConvertType(request)) {
@@ -58,8 +65,10 @@ public class EmailSendRequestValidator implements Validator {
     }
 
     private void validateIfSecurityPolicyExists(EmailSendCreateRequest request, Errors errors) {
-        EmailSecurityPolicyRequest securityPolicy = request.securityPolicy();
-        if(securityPolicy != null) {
+        if(request.mailType().equals(EmailType.SECURITY.value())) {
+            if(request.securityPolicy() == null) {
+                errors.rejectValue("securityPolicy", "EMAIL_SEND_REQUEST:SECURITY_POLICY_NOT_NULL");
+            }
             validateAttachmentNameAndDownloadName(request.attachmentName(), request.downloadName(), errors);
         }
     }
@@ -74,6 +83,4 @@ public class EmailSendRequestValidator implements Validator {
             errors.rejectValue(field, message);
         }
     }
-
-
 }

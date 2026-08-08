@@ -8,7 +8,7 @@ public class AmazonS3FileException extends FileStorageException {
         super(errorCode, args);
     }
 
-    public static AmazonS3FileException of(FileErrorCode errorCode, String fileKey, AwsServiceException e) {
+    public static AmazonS3FileException of(FileErrorCode errorCode, String fileKey, Throwable e) {
         return new AmazonS3FileException(errorCode, fileKey, e.getMessage());
     }
 }

@@ -1,150 +1,106 @@
 package com.ums.schedule.domain.message.email.attachment;
 
-import com.ums.schedule.application.ums.email.attachment.model.AttachmentCreateCommand;
+import com.ums.schedule.application.ums.email.attachment.model.AttachmentContext;
 import com.ums.schedule.common.code.api.AttachmentErrorCode;
-import com.ums.schedule.common.util.ValidationUtils;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
-import com.ums.schedule.domain.message.email.SecurityMailPolicy;
-import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.email.AttachmentType;
 import com.ums.schedule.domain.message.email.exception.AttachmentPolicyViolationException;
-import com.ums.schedule.domain.target.SendTarget;
-import io.hypersistence.utils.hibernate.id.Tsid;
+import com.ums.schedule.domain.request.converter.UuidBinaryConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.StringUtils;
+import org.hibernate.annotations.UuidGenerator;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
+@Table(
+        name = "email_attachment",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name="uq_message_file_key",
+                        columnNames = {"message_id", "file_key"}
+                ),
+        }
+)
 public class EmailAttachment {
     @Id
-    @Tsid
-    private Long id;
+    @Column(columnDefinition = "BINARY(16)")
+    @UuidGenerator
+    @GeneratedValue
+    @Convert(converter = UuidBinaryConverter.class)
+    private UUID id;
 
+    @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Column(name = "convert_type", nullable = false)
-    private ConvertType convertType;
+    private AttachmentType type;
 
-    @Embedded
-    private SecurityMailPolicy securityPolicy;
-
+    @Column(name = "attachment_name", nullable = false)
     private String attachmentName;
+    @Column(name = "download_name", nullable = false)
     private String downloadName;
 
-    private String fileKeyTemplate;
+    @Column(name = "file_key", nullable = false)
     private String fileKey;
     private Long fileSize;
 
-    @JoinColumn(name = "message_id")
+    @JoinColumn(name = "message_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private EmailSendMessage sendMessage;
 
-    public static EmailAttachment of(AttachmentCreateCommand context) {
+    public static EmailAttachment of(EmailSendMessage sendMessage, AttachmentContext context) {
         EmailAttachment message = new EmailAttachment();
-        message.assignSendMessage(context.sendMessage());
+        message.assignSendMessage(sendMessage);
+        message.assignFileTypeAndKey(context.type(), context.key());
+        message.assignFileSize(context.type(), context.fileSize());
         message.createAttachmentPolicy(context.attachmentName(), context.downloadName());
-        message.resolveConvertedAttachment(context);
         return message;
     }
 
-    private void resolveConvertedAttachment(AttachmentCreateCommand context) {
-        assignConvertType(context.convertType());
-        initializeByConvertType(context);
-    }
-
-    private void initializeByConvertType(AttachmentCreateCommand context) {
-        ConvertType convertType = context.convertType();
-        if(convertType == ConvertType.NONE) {
-            initializeAttachment(context);
+    private void assignFileTypeAndKey(AttachmentType type, String fileKey) {
+        Objects.requireNonNull(type, "file_type");
+        Objects.requireNonNull(fileKey, "file_key");
+        if(validateFileTypeAndKey(type, fileKey)) {
+            this.type = type;
+            this.fileKey = fileKey;
             return;
         }
-        initializeConvertInfo(context);
+        throw AttachmentPolicyViolationException.of(AttachmentErrorCode.INVALID_FILE_KEY_TEMPLATE);
     }
 
-    private void initializeAttachment(AttachmentCreateCommand context) {
-        Map<AttachmentType, String> typeMap = Optional.ofNullable(context.keyMap())
-                .filter(map -> !map.isEmpty())
-                .orElseThrow(() -> AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_MAP_IS_NULL));
-        if(typeMap.containsKey(AttachmentType.DIRECT)) {
-            initializeMetadata(typeMap.get(AttachmentType.DIRECT), context.fileSize());
-            return;
+    private boolean validateFileTypeAndKey(AttachmentType type, String fileKey) {
+        if (type == AttachmentType.TEMPLATE) {
+            Pattern pattern = Pattern.compile("\\$\\{([^}]+)\\}");
+            Matcher matcher = pattern.matcher(fileKey);
+            while(matcher.find()) {
+                return true;
+            }
+            return false;
         }
-        assignFileKeyTemplate(typeMap.get(AttachmentType.TEMPLATE));
-    }
-
-    private void initializeConvertInfo(AttachmentCreateCommand context) {
-        Map<AttachmentType, String> typeMap = Optional.ofNullable(context.keyMap())
-                .filter(map -> !map.isEmpty())
-                .orElseThrow(() -> AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_INFO_EMPTY));
-        initializeMetadata(typeMap.get(AttachmentType.DIRECT), context.fileSize());
-        assignSecurityPolicy(context.securityMail());
-        assignFileKeyTemplate(typeMap.get(AttachmentType.TEMPLATE));
-        validateFileTemplateExtension(typeMap.get(AttachmentType.DIRECT), AttachmentType.DIRECT, ConvertType.HTML);
-        validateFileTemplateExtension(typeMap.get(AttachmentType.TEMPLATE),AttachmentType.TEMPLATE, context.convertType());
-    }
-
-    private void initializeMetadata(String fileKey, Long fileSize) {
-        assignFileKey(fileKey);
-        assignFileSize(fileSize);
-    }
-
-
-    private void assignConvertType(ConvertType convertType) {
-        this.convertType = convertType;
-    }
-
-    private void assignSecurityPolicy(SecurityMailPolicy securityMail) {
-        this.securityPolicy = Optional.ofNullable(securityMail)
-                .orElse(null);
+        return true;
     }
 
     private void assignSendMessage(EmailSendMessage sendMessage) {
-        this.sendMessage = Objects.requireNonNull(sendMessage, "email_send_message");
+        Objects.requireNonNull(sendMessage, "email_send_message is not null");
+        this.sendMessage = sendMessage;
         sendMessage.addAttachments(this);
     }
 
-    private void validateFileTemplateExtension(String fileKey, AttachmentType type, ConvertType convertType) {
-        String extension = extractFileExtension(fileKey);
-        if(!StringUtils.hasText(extension) || !extension.equals(convertType.description())) {
-            throw AttachmentPolicyViolationException.of(type, convertType);
+    private void assignFileSize(AttachmentType type, Long fileSize) {
+        if(type == AttachmentType.DIRECT) {
+            this.fileSize = Optional.ofNullable(fileSize)
+                    .filter(size -> size > 0L)
+                    .orElseThrow(() ->
+                            AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_SIZE_EMPTY)
+                    );
         }
-    }
-
-    private String extractFileExtension(String fileKeyTemplate) {
-        String[] extractFileStrs = fileKeyTemplate.split("\\.");
-        if(extractFileStrs.length < 2) {
-            return null;
-        }
-        return extractFileStrs[1];
-    }
-
-    private void assignFileKeyTemplate(String fileKeyTemplate) {
-        if(!StringUtils.hasText(fileKeyTemplate)) {
-            throw AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_TEMPLATE_EMPTY);
-        }
-        this.fileKeyTemplate = fileKeyTemplate;
-    }
-
-
-    private void assignFileSize(Long fileSize) {
-        this.fileSize = Optional.ofNullable(fileSize)
-                .orElseThrow(() -> AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_SIZE_EMPTY));
-    }
-
-    private void assignFileKey(String fileKey) {
-        if(!StringUtils.hasText(fileKey)) {
-            throw AttachmentPolicyViolationException.of(AttachmentErrorCode.FILE_KEY_EMPTY);
-        }
-        this.fileKey = fileKey;
     }
 
     private void createAttachmentPolicy(String attachmentName, String downloadName) {
@@ -160,40 +116,12 @@ public class EmailAttachment {
         this.attachmentName = Objects.requireNonNull(attachmentName, "attachment_name");
     }
 
-
-    public boolean hasSecurityPolicy() {
-        return this.securityPolicy != null;
+    public String fileKey() {
+        return this.type == AttachmentType.DIRECT ? fileKey : null;
     }
 
-    public int getEncryptionLength() {
-        return hasSecurityPolicy() ? this.securityPolicy.getEncryptionLength() : 0;
-    }
-
-    public boolean getCanModify() {
-        return hasSecurityPolicy() ? this.securityPolicy.hasModifyAuth() : false;
-    }
-
-    public boolean getCanPrint() {
-        return hasSecurityPolicy() ? this.securityPolicy.hasPrintAuth() : false;
-    }
-
-    public String resolveSecurityPassword(SendTarget target) {
-        return hasSecurityPolicy() ? this.securityPolicy.getTargetPassword(target) : null;
-    }
-
-    public String resolveTemplateFileKey(SendTarget target) {
-        if(this.convertType != ConvertType.NONE) {
-            ValidationUtils.isEmpty("file_key_template", fileKeyTemplate);
-            return target.parse(this.fileKeyTemplate);
-        }
-        return StringUtils.hasText(this.fileKeyTemplate) ? target.parse(this.fileKeyTemplate) : null;
-    }
-
-    public String resolveAttachmentName(SendTarget target) {
-        return target.parse(this.attachmentName);
-    }
-
-    public String resolveDownloadName(SendTarget target) {
-        return target.parse(this.downloadName);
+    public String fileKeyTemplate() {
+        return this.type == AttachmentType.TEMPLATE ? fileKey : null;
     }
 }
+

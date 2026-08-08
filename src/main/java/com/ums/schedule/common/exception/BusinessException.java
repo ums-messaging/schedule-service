@@ -10,6 +10,7 @@ public abstract class BusinessException extends RuntimeException {
     private final Object[] args;
 
     protected BusinessException(ErrorCode errorCode, Object... args) {
+        super(errorCode.description());
         this.id = null;
         this.errorCode = errorCode;
         this.args = args;
