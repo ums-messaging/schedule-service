@@ -9,6 +9,7 @@ import com.ums.schedule.common.code.email.security.PasswordType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -17,6 +18,7 @@ public record EmailSendCreateRequest(
         @Valid
         @JsonUnwrapped
         SendRequestCreateRequest request,
+        @NotBlank(message = "EMAIL_SEND_REQUEST:MAIL_TYPE_REQUIRED")
         String mailType,
         @NotBlank(message = "SEND_REQUEST:SENDER_KEY_REQUIRED")
         @Email(message = "EMAIL_SEND_REQUEST:INVALID_SENDER_EMAIL")
@@ -30,7 +32,7 @@ public record EmailSendCreateRequest(
         @Valid
         EmailSecurityPolicyRequest securityPolicy,
         @Valid
-        EmailAttachmentListRequest attachmentList
+        List<EmailAttachmentRequest> attachmentList
         )
 {
         public EmailTemplateDetailQuery toQuery(String customerId, List<EmailAttachmentDetailQuery> queries) {

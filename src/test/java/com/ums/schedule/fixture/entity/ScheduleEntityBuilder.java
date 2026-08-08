@@ -69,7 +69,6 @@ public class ScheduleEntityBuilder {
                 name,
                 cyclePolicy,
                 scheduleStatus,
-                status,
                 schedulePeriod,
                 createdAt,
                 lastUpdatedAt,

@@ -4,6 +4,7 @@ import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand
 import com.ums.schedule.application.ums.common.request.model.SendRequestCreateContext;
 import com.ums.schedule.common.code.api.ScheduleErrorCode;
 import com.ums.schedule.common.code.api.SendRequestErrorCode;
+import com.ums.schedule.common.code.api.StateErrorCode;
 import com.ums.schedule.common.code.schedule.ScheduleState;
 import com.ums.schedule.domain.request.exception.InvalidSendRequestStateException;
 import com.ums.schedule.domain.request.exception.SendRequestDomainException;
@@ -122,7 +123,9 @@ public class SendRequestDomainTest {
 
             assertThatThrownBy(() -> SendRequest.of(context))
                     .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+                    .extracting(v -> ((InvalidSchedulePeriodException) v).getErrorCode())
+                    .isEqualTo(ScheduleErrorCode.EXPIRED_SCHEDULE);
+
         }
 
         @Test
@@ -138,7 +141,8 @@ public class SendRequestDomainTest {
 
             assertThatThrownBy(() -> SendRequest.of(context))
                     .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+                    .extracting(v -> ((InvalidScheduleStateException) v).getErrorCode())
+                    .isEqualTo(ScheduleErrorCode.STATE_TO_SCHEDULE);
         }
 
         @Nested

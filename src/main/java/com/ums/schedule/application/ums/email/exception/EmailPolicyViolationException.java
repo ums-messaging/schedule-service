@@ -11,7 +11,4 @@ public class EmailPolicyViolationException extends PolicyViolationException {
     }
 
 
-    public static EmailPolicyViolationException of(EmailMessageErrorCode errorCode, ConvertType convertType) {
-        return new EmailPolicyViolationException(errorCode, convertType.code());
-    }
 }

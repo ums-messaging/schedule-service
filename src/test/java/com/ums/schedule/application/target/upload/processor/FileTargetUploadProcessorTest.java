@@ -10,6 +10,7 @@ import com.ums.schedule.application.target.exception.TargetUploadReportNotFoundE
 import com.ums.schedule.application.target.processor.FileTargetUploadProcessor;
 import com.ums.schedule.application.target.reader.model.FileTargetUploadRequestedEvent;
 import com.ums.schedule.application.target.report.model.TargetUploadRequestResult;
+import com.ums.schedule.common.code.target_upload.TargetUploadType;
 import com.ums.schedule.common.exception.file.FileNotFoundException;
 import com.ums.schedule.config.properties.TargetUploadProperties;
 import com.ums.schedule.domain.target.upload.TargetUploadReport;
@@ -55,6 +56,7 @@ class FileTargetUploadProcessorTest {
         this.id = givenId();
         this.responseBuilder = AwsS3FileMetadataResponseBuilder.builder();
         this.targetUploadReport = TargetUploadReportEntityBuilder.builder()
+                .uploadType(TargetUploadType.FILE)
                 .uploadStatus(new TargetUploadWaitingState())
                 .build();
     }
@@ -140,7 +142,7 @@ class FileTargetUploadProcessorTest {
         }
 
         @Test
-        @DisplayName("설정 파일에서 조회하면 배치 크기가 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("설정 파일에서 조회한 배치 크기가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenConfiguredBatchSizeIsEmpty() {
             doReturn(10000L).when(properties).getFileLimitSize();
             doReturn(0).when(properties).getBatchSize();

@@ -22,7 +22,7 @@ import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.message.email.convert.ConvertMail;
 import com.ums.schedule.fixture.email.convert.EmailPolicyResultBuilder;
-import com.ums.schedule.fixture.template.EmailContentResultBuilder;
+import com.ums.schedule.fixture.template.EmailTemplateContentResultBuilder;
 import com.ums.schedule.fixture.template.EmailTemplateDetailResultBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -183,7 +183,7 @@ class EmailMessageCreateServiceTest {
 
     private void givenTemplate() {
         EmailTemplateDetailResult template = EmailTemplateDetailResultBuilder.builder()
-                .contents(EmailContentResultBuilder.builder().body().build())
+                .contents(EmailTemplateContentResultBuilder.builder().body().build())
                 .build();
         EmailTemplateResult result = new EmailTemplateResult(mock(TemplateResult.class), template);
         doReturn(result).when(templateQueryService).findTemplate(any());
@@ -192,10 +192,10 @@ class EmailMessageCreateServiceTest {
     private void givenTemplateWithAttachments() {
         EmailTemplateDetailResult template = EmailTemplateDetailResultBuilder.builder()
                 .contents(
-                        EmailContentResultBuilder.builder().body().build(),
-                        EmailContentResultBuilder.builder().attachment().build(),
-                        EmailContentResultBuilder.builder().attachment().build(),
-                        EmailContentResultBuilder.builder().attachment().build()
+                        EmailTemplateContentResultBuilder.builder().body().build(),
+                        EmailTemplateContentResultBuilder.builder().attachment().build(),
+                        EmailTemplateContentResultBuilder.builder().attachment().build(),
+                        EmailTemplateContentResultBuilder.builder().attachment().build()
 
                 )
                 .build();

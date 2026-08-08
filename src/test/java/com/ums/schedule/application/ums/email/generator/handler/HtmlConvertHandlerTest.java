@@ -1,7 +1,5 @@
 package com.ums.schedule.application.ums.email.generator.handler;
 
-import com.ums.schedule.application.message.email.result.TemplateConversionResult;
-import com.ums.schedule.application.ums.common.exception.TemplateLoadFailException;
 import com.ums.schedule.application.ums.email.exception.EmailMessageConvertException;
 import com.ums.schedule.application.ums.email.exception.EmailPolicyViolationException;
 import com.ums.schedule.application.ums.email.generator.handler.model.EmailConvertContext;
@@ -9,7 +7,6 @@ import com.ums.schedule.common.code.api.EmailMessageErrorCode;
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.email.EmailType;
 import com.ums.schedule.fixture.email.convert.EmailConvertContextBuilder;
-import freemarker.template.TemplateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,11 +47,10 @@ class HtmlConvertHandlerTest {
         this.path = Files.createTempFile("test", "pdf");
         EmailConvertContext context = builder.path(this.path).build();
 
-        EmailPolicyViolationException expect = EmailMessageConvertException.of(EmailMessageErrorCode.INVALID_CONVERT_TYPE_FILE, ConvertType.HTML);
-
         assertThatThrownBy(() -> handler.handle(context))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(EmailMessageConvertException.class)
+                .extracting(v -> ((EmailMessageConvertException) v).getErrorCode())
+                .isEqualTo(EmailMessageErrorCode.INVALID_CONVERT_TYPE_FILE);
     }
 
     @Test
@@ -62,11 +58,10 @@ class HtmlConvertHandlerTest {
     void shouldThrowException_whenTemplateIsEmpty() {
         EmailConvertContext context = builder.template("").build();
 
-        EmailPolicyViolationException expect = EmailMessageConvertException.of(EmailMessageErrorCode.NOT_CONVERT_MESSAGE);
-
         assertThatThrownBy(() -> handler.handle(context))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(EmailPolicyViolationException.class)
+                .extracting(v -> ((EmailPolicyViolationException) v).getErrorCode())
+                .isEqualTo(EmailMessageErrorCode.NOT_FOUND_CONVERTED_CONTENT);
     }
 
     @Test

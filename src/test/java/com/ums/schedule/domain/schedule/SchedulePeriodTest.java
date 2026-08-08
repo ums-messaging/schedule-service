@@ -22,11 +22,10 @@ public class SchedulePeriodTest {
     void shouldThrowException_whenScheduleStartAtIsEmpty() {
         String scheduleEndAt = LocalDate.now().plusMonths(1).format(formatter);
 
-        InvalidDateFormatException expect = InvalidDateFormatException.of("RESERVATION_DATE");
-
         assertThatThrownBy(() -> SchedulePeriod.of("", scheduleEndAt))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidSchedulePeriodException.class)
+                .extracting(v -> ((InvalidSchedulePeriodException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_PERIOD_FORMAT);;
     }
 
     @Test
@@ -35,11 +34,10 @@ public class SchedulePeriodTest {
         String scheduleStartAt = "Invalid Date";
         String scheduleEndAt = LocalDate.now().plusMonths(1).format(formatter);
 
-        InvalidDateFormatException expect = InvalidDateFormatException.of("RESERVATION_DATE");
-
         assertThatThrownBy(() -> SchedulePeriod.of(scheduleStartAt, scheduleEndAt))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidSchedulePeriodException.class)
+                .extracting(v -> ((InvalidSchedulePeriodException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_PERIOD_FORMAT);
     }
 
     @Test
@@ -47,11 +45,10 @@ public class SchedulePeriodTest {
     void shouldThrowException_whenScheduleEndAtIsEmpty() {
         String scheduleStartAt = LocalDate.now().plusMonths(1).format(formatter);
 
-        InvalidDateFormatException expect = InvalidDateFormatException.of("RESERVATION_DATE");
-
         assertThatThrownBy(() -> SchedulePeriod.of(scheduleStartAt, " "))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidSchedulePeriodException.class)
+                .extracting(v -> ((InvalidSchedulePeriodException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_PERIOD_FORMAT);
     }
 
     @Test
@@ -60,11 +57,10 @@ public class SchedulePeriodTest {
         String scheduleStartAt = LocalDate.now().plusMonths(1).format(formatter);
         String scheduleEndAt = "Invalid Date";
 
-        InvalidDateFormatException expect = InvalidDateFormatException.of("RESERVATION_DATE");
-
         assertThatThrownBy(() -> SchedulePeriod.of(scheduleStartAt, scheduleEndAt))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidSchedulePeriodException.class)
+                .extracting(v -> ((InvalidSchedulePeriodException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_PERIOD_FORMAT);
     }
 
     @Test

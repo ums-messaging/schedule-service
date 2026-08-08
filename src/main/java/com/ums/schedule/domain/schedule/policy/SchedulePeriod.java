@@ -61,7 +61,15 @@ public class SchedulePeriod {
     }
 
     public boolean contains(LocalDateTime dateTime) {
-        return !(dateTime.toLocalDate().isBefore(scheduleStartAt) || dateTime.toLocalDate().isAfter(scheduleEndAt));
+        return compareStartAt(dateTime) && compareEndAt(dateTime);
+    }
+
+    private boolean compareStartAt(LocalDateTime dateTime) {
+        return dateTime.toLocalDate().isEqual(scheduleStartAt) || dateTime.toLocalDate().isAfter(scheduleStartAt);
+    }
+
+    private boolean compareEndAt(LocalDateTime dateTime) {
+        return dateTime.toLocalDate().isEqual(scheduleEndAt) || dateTime.toLocalDate().isBefore(scheduleEndAt);
     }
 
     public boolean isExpired() {

@@ -46,7 +46,8 @@ class EmailAttachmentTest {
 
             assertThatThrownBy(() -> EmailAttachment.of(sendMessage, context))
                     .isInstanceOf(AttachmentPolicyViolationException.class)
-                    .hasMessage(AttachmentErrorCode.FILE_SIZE_EMPTY.description());
+                    .extracting(v -> ((AttachmentPolicyViolationException) v).getErrorCode())
+                    .isEqualTo(AttachmentErrorCode.FILE_SIZE_EMPTY);
         }
     }
 
@@ -65,7 +66,8 @@ class EmailAttachmentTest {
 
             assertThatThrownBy(() -> EmailAttachment.of(sendMessage, context))
                     .isInstanceOf(AttachmentPolicyViolationException.class)
-                    .hasMessage(AttachmentErrorCode.INVALID_FILE_KEY_TEMPLATE.description());
+                    .extracting(v -> ((AttachmentPolicyViolationException) v).getErrorCode())
+                    .isEqualTo(AttachmentErrorCode.INVALID_FILE_KEY_TEMPLATE);
         }
     }
 

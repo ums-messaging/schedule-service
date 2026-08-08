@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public interface EmailConvertHandler {
     boolean supports(ConvertType convertType, EmailType emailType);
-    File handle(EmailConvertContext context) throws IOException ;
+    File handle(EmailConvertContext context) throws IOException;
 }
 
 

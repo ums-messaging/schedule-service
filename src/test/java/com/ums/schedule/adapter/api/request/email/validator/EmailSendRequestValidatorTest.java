@@ -122,7 +122,8 @@ class EmailSendRequestValidatorTest {
     class WhenDownloadNameIsEmpty {
         @BeforeEach
         void setUp() {
-            builder = builder.attachmentName("attachment_name.xlsx")
+            builder = builder
+                    .attachmentName("attachment_name.xlsx")
                     .downloadName("");
         }
         @Test
@@ -223,6 +224,6 @@ class EmailSendRequestValidatorTest {
         FieldError fieldError = error.getFieldError();
         assertThat(fieldError)
                 .extracting(FieldError::getField, FieldError::getCode)
-                .contains("downloadName", "EMAIL_SEND_REQUEST:SECURITY_POLICY_NOT_NULL");
+                .contains("securityPolicy", "EMAIL_SEND_REQUEST:SECURITY_POLICY_NOT_NULL");
     }
 }

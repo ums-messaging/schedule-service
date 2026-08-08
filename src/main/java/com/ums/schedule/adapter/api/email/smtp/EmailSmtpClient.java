@@ -8,6 +8,8 @@ import com.ums.schedule.common.code.email.SmtpCommandType;
 import com.ums.schedule.domain.send.email.job.DomainGroupTarget;
 import com.ums.schedule.domain.send.email.job.EmailSendJob;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,10 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class EmailSmtpClient {
     private final SmtpHelper helper;
     private final MimeWriter writer;
+
+    @Autowired
+    public EmailSmtpClient(SmtpHelper smtpHelper, @Qualifier("mimeHtmlWriter") MimeWriter writer) {
+        this.helper = smtpHelper;
+        this.writer = writer;
+    }
 
     public List<EmailSmtpResponse> send(EmailSendJob job, String domain, List<DomainGroupTarget> targetList) {
         int retryCount = 0;

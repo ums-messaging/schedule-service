@@ -48,4 +48,8 @@ public record EmailConvertContext(
                 null
         );
     }
+
+    public String fileName() {
+        return path.getFileName().toString();
+    }
 }

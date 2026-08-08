@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Base64;
 
-@Component
+@Component(value = "mimeAttachmentWriter")
 public class MimeAttachmentWriter extends MimeMessageWriter {
     private final AwsS3Repository repository;
     public MimeAttachmentWriter(@Qualifier("mimeImageWriter") MimeWriter writer, AwsS3Repository repository) {

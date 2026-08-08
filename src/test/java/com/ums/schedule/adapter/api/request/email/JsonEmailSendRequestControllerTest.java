@@ -74,6 +74,7 @@ class JsonEmailSendRequestControllerTest {
 
         @BeforeEach
         void setUp() {
+            jsonMap.put("mail_type", "PLAIN");
             jsonMap.put("schedule_id", 1);
             jsonMap.put("template_key", "my_template");
             jsonMap.put("sender_key", "test@test.com");
@@ -258,12 +259,14 @@ class JsonEmailSendRequestControllerTest {
 
         private String givenRequestJson() {
             return """
+                        "mail_type" : "%s",
                         "schedule_id" : %d,
                         "template_key" : "%s",
                         "sender_key" : "%s",
                         "customer_request_key": "%s",
                         "title" : "%s"
                     """.formatted(
+                            jsonMap.get("mail_type"),
                     jsonMap.get("schedule_id"),
                     jsonMap.get("template_key"),
                     jsonMap.get("sender_key"),

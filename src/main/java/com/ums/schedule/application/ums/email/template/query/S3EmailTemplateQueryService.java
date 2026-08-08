@@ -45,7 +45,7 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
         return propertiesMap;
     }
     private String generateTemplateDir(EmailTemplateDetailQuery command) {
-        String prefix = properties.templateKeyPrefix();
+        String prefix = properties.getTemplateKeyPrefix();
         if(!StringUtils.hasText(prefix)) {
             throw EmailTemplateNotConfiguredException.of(EmailUploadPrefixType.TEMPLATE_PREFIX);
         }
@@ -53,14 +53,14 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
     }
 
     private String generateImageDir(String templateDir, String templateKey) {
-        String suffix = properties.imageKeySuffix();
+        String suffix = properties.getImageKeySuffix();
         if(!StringUtils.hasText(suffix)) {
             throw EmailTemplateNotConfiguredException.of(EmailUploadPrefixType.IMAGE_SUFFIX);
         }
         return FileUtil.generateFilePaths(templateDir, suffix);
     }
     private String generateAttachmentDir(String templateDir, String templateKey) {
-        String suffix = properties.attachmentKeySuffix();
+        String suffix = properties.getAttachmentKeySuffix();
         if(!StringUtils.hasText(suffix)) {
             throw EmailTemplateNotConfiguredException.of(EmailUploadPrefixType.ATTACHMENT_SUFFIX);
         }

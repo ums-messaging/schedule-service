@@ -135,13 +135,13 @@ class SendRequestCreateServiceTest {
             doReturn(Optional.ofNullable(schedule)).when(scheduleRepository).findById(any());
             doReturn(false).when(sendRequestRepository).existsByCustomerRequestKey(any());
             doReturn(uploadResult).when(targetUploadService).create(any(), any());
-            doReturn(4).when(properties).retryCount();
+            doReturn(4).when(properties).getRetryCount();
             doReturn(mock(UUID.class)).when(sendMessage).getId();
 
             SendRequestCreateResult result = sendRequestService.create(command, sendMessage);
 
             assertThat(result.retryCount()).isEqualTo(4);
-            verify(properties).retryCount();
+            verify(properties).getRetryCount();
         }
 
         @Test
@@ -157,7 +157,7 @@ class SendRequestCreateServiceTest {
             SendRequestCreateResult result = sendRequestService.create(command, sendMessage);
 
             assertThat(result.retryCount()).isEqualTo(3);
-            verify(properties, never()).retryCount();
+            verify(properties, never()).getRetryCount();
         }
     }
 

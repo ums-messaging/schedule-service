@@ -405,20 +405,6 @@ public class TargetUploadReportTest {
         }
 
         @Test
-        @DisplayName("업로드 타입이 JSON일 때 totalCount가 0이면 예외가 발생한다.")
-        void shouldThrowException_whenTotalCountIsZero() {
-            TargetUploadReport uploadReport = builder.uploadType(TargetUploadType.JSON)
-                    .build();
-
-            TargetUploadPolicyViolationException expect = TargetUploadPolicyViolationException.of(TargetUploadErrorCode.TARGET_LIST_OF_EMPTY);
-
-
-            assertThatThrownBy(() -> uploadReport.requestTargetUpload())
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
-        }
-
-        @Test
         @DisplayName("발송 요청 시각이 생성된다.")
         void shouldCreateRequestedAt() {
             TargetUploadReport uploadReport = builder

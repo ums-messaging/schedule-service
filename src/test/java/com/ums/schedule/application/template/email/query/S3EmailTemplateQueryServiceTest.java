@@ -48,9 +48,9 @@ class S3EmailTemplateQueryServiceTest {
     @DisplayName("title을 입력하면 제목이 반환된다.")
     void shouldReturnTitle() {
         EmailTemplateDetailQuery command = templateBuilder.title("hello world!").build();
-        doReturn("image").when(properties).imageKeySuffix();
-        doReturn("attachment").when(properties).attachmentKeySuffix();
-        doReturn("/template/email").when(properties).templateKeyPrefix();
+        doReturn("image").when(properties).getImageKeySuffix();
+        doReturn("attachment").when(properties).getAttachmentKeySuffix();
+        doReturn("/template/email").when(properties).getTemplateKeyPrefix();
 
         EmailTemplateResult result = templateService.findTemplate(command);
 
@@ -68,9 +68,9 @@ class S3EmailTemplateQueryServiceTest {
                     .customerId("jang314")
                     .templateKey("my_template")
                     .build();
-            doReturn("/template/email").when(properties).templateKeyPrefix();
-            doReturn("image").when(properties).imageKeySuffix();
-            doReturn("attachment").when(properties).attachmentKeySuffix();
+            doReturn("/template/email").when(properties).getTemplateKeyPrefix();
+            doReturn("image").when(properties).getImageKeySuffix();
+            doReturn("attachment").when(properties).getAttachmentKeySuffix();
         }
 
         @Nested
@@ -296,9 +296,9 @@ class S3EmailTemplateQueryServiceTest {
                     .templateKey("my_template")
                     .attachmentList(List.of(fileKeyAttachment, fileKeyTemplateAttachment));
 
-            doReturn("/template/email").when(properties).templateKeyPrefix();
-            doReturn("image").when(properties).imageKeySuffix();
-            doReturn("attachment").when(properties).attachmentKeySuffix();
+            doReturn("/template/email").when(properties).getTemplateKeyPrefix();
+            doReturn("image").when(properties).getImageKeySuffix();
+            doReturn("attachment").when(properties).getAttachmentKeySuffix();
         }
 
         private EmailAttachmentDetailQuery createAttachmentWithFileKeyTemplate() {
@@ -421,19 +421,19 @@ class S3EmailTemplateQueryServiceTest {
             @Test
             @DisplayName("템플릿 기본 경로는 설정 파일에서 조회한다.")
             void shouldGetConfiguredTemplateFileKeyPrefix() {
-                doReturn("/template/email").when(properties).templateKeyPrefix();
-                doReturn("image").when(properties).imageKeySuffix();
-                doReturn("attachment").when(properties).attachmentKeySuffix();
+                doReturn("/template/email").when(properties).getTemplateKeyPrefix();
+                doReturn("image").when(properties).getImageKeySuffix();
+                doReturn("attachment").when(properties).getAttachmentKeySuffix();
 
                 templateService.findTemplate(command);
 
-                verify(properties).templateKeyPrefix();
+                verify(properties).getTemplateKeyPrefix();
             }
 
             @Test
             @DisplayName("템플릿 기본 경로가 존재하지 않을 경우, 예외가 발생한다.")
             void shouldThrowException_whenTemplateKeyPrefixIsEmpty() {
-                doReturn("").when(properties).templateKeyPrefix();
+                doReturn("").when(properties).getTemplateKeyPrefix();
 
                 EmailTemplateNotConfiguredException expect = EmailTemplateNotConfiguredException.of(EmailUploadPrefixType.TEMPLATE_PREFIX);
 
@@ -448,24 +448,24 @@ class S3EmailTemplateQueryServiceTest {
         class WhenAttachmentKeySuffix {
             @BeforeEach
             void setUp() {
-                doReturn("/template/email").when(properties).templateKeyPrefix();
-                doReturn("image").when(properties).imageKeySuffix();
+                doReturn("/template/email").when(properties).getTemplateKeyPrefix();
+                doReturn("image").when(properties).getImageKeySuffix();
             }
 
             @Test
             @DisplayName("첨부파일 기본 경로는 설정 파일에서 조회한다.")
             void shouldGetConfiguredAttachmentFileKeySuffix() {
-                doReturn("/template/email").when(properties).attachmentKeySuffix();
+                doReturn("/template/email").when(properties).getAttachmentKeySuffix();
 
                 templateService.findTemplate(command);
 
-                verify(properties).attachmentKeySuffix();
+                verify(properties).getAttachmentKeySuffix();
             }
 
             @Test
             @DisplayName("첨부파일 기본 경로가 존재하지 않을 경우, 예외가 발생한다.")
             void shouldThrowException_whenAttachmentKeySuffixIsEmpty() {
-                doReturn("").when(properties).attachmentKeySuffix();
+                doReturn("").when(properties).getAttachmentKeySuffix();
 
                 EmailTemplateNotConfiguredException expect = EmailTemplateNotConfiguredException.of(EmailUploadPrefixType.ATTACHMENT_SUFFIX);
 
@@ -480,24 +480,24 @@ class S3EmailTemplateQueryServiceTest {
         class WhenImageFileKeySuffix {
             @BeforeEach
             void setUp() {
-                doReturn("/template/email").when(properties).templateKeyPrefix();
+                doReturn("/template/email").when(properties).getTemplateKeyPrefix();
             }
 
             @Test
             @DisplayName("템플릿 이미지 기본 경로는 설정 파일에서 조회한다.")
             void shouldGetConfiguredImageKeySuffix() {
-                doReturn("image").when(properties).imageKeySuffix();
-                doReturn("attachment").when(properties).attachmentKeySuffix();
+                doReturn("image").when(properties).getImageKeySuffix();
+                doReturn("attachment").when(properties).getAttachmentKeySuffix();
 
                 templateService.findTemplate(command);
 
-                verify(properties).imageKeySuffix();
+                verify(properties).getImageKeySuffix();
             }
 
             @Test
             @DisplayName("템플릿 이미지 기본 경로가 존재하지 않을 경우 예외가 발생한다.")
             void shouldThrowException_whenImageKeySuffixIsEmpty() {
-                doReturn("").when(properties).imageKeySuffix();
+                doReturn("").when(properties).getImageKeySuffix();
 
                 EmailTemplateNotConfiguredException expect = EmailTemplateNotConfiguredException.of(EmailUploadPrefixType.IMAGE_SUFFIX);
 
@@ -509,8 +509,8 @@ class S3EmailTemplateQueryServiceTest {
             @Test
             @DisplayName("템플릿 이미지 기본 경로는 정해진 규칙에 의해 생성된다.")
             void shouldGenerateImageDir_whenAccordingToRule() {
-                doReturn("image").when(properties).imageKeySuffix();
-                doReturn("attachment").when(properties).attachmentKeySuffix();
+                doReturn("image").when(properties).getImageKeySuffix();
+                doReturn("attachment").when(properties).getAttachmentKeySuffix();
 
                 EmailTemplateResult template = templateService.findTemplate(command);
 

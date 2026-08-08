@@ -38,10 +38,9 @@ class MinuteCyclePolicyTest {
     void shouldThrowException_whenCycleValueIsNotNumber() {
         CyclePolicy policy = new MinuteCyclePolicyFactory();
 
-        InvalidScheduleCyclePolicyException expect = InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.CYCLE_VALUE_NOT_MINUTE);
-
         assertThatThrownBy(() -> policy.create("number"))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidScheduleCyclePolicyException.class)
+                .extracting(v -> ((InvalidScheduleCyclePolicyException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_CYCLE_VALUE);
     }
 }

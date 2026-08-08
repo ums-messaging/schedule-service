@@ -36,7 +36,7 @@ public class SecurityMailAssembler {
     }
 
     private String validateAndGetDefaultPasswordValue() {
-        String defaultValue = properties.defaultPasswordPolicy();
+        String defaultValue = properties.getDefaultPasswordPolicy();
         if(!StringUtils.hasText(defaultValue)) {
             throw SecurityMailNotConfiguredException.of(PasswordType.PASSWORD_POLICY);
         }
@@ -73,9 +73,9 @@ public class SecurityMailAssembler {
 
     private Map<SecurityMailCode, String> getDefaultConfigureMap() {
         Map<SecurityMailCode, String> enumMap = new EnumMap<>(SecurityMailCode.class);
-        putSecurityPolicyMap(enumMap, SecurityMailCode.ENCRYPTION_TYPE, properties.defaultEncryptType());
-        putSecurityPolicyMap(enumMap, SecurityMailCode.PASSWORD_HASH, properties.defaultPasswordHash());
-        putSecurityPolicyMap(enumMap, SecurityMailCode.PERMISSION_MASK, properties.defaultPermissionMask());
+        putSecurityPolicyMap(enumMap, SecurityMailCode.ENCRYPTION_TYPE, properties.getDefaultEncryptType());
+        putSecurityPolicyMap(enumMap, SecurityMailCode.PASSWORD_HASH, properties.getDefaultPasswordHash());
+        putSecurityPolicyMap(enumMap, SecurityMailCode.PERMISSION_MASK, properties.getDefaultPermissionMask());
         return enumMap;
     }
 

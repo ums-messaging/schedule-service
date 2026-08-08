@@ -30,6 +30,6 @@ public enum SendTargetColumn implements EnumMapperType {
 
     @Override
     public String description() {
-        return this.description();
+        return this.description;
     }
 }

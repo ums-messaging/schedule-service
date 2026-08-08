@@ -75,6 +75,7 @@ class FileEmailSendRequestControllerTest {
 
         @BeforeEach
         void setUp() {
+            jsonMap.put("mail_type", "PLAIN");
             jsonMap.put("schedule_id", 1);
             jsonMap.put("template_key", "my_template");
             jsonMap.put("sender_key", "test@test.com");
@@ -261,17 +262,19 @@ class FileEmailSendRequestControllerTest {
 
         private String givenRequestJson() {
             return """
+                        "mail_type" : "%s",
                         "schedule_id" : %d,
                         "template_key" : "%s",
                         "sender_key" : "%s",
                         "customer_request_key": "%s",
                         "title" : "%s"
                     """.formatted(
-                    jsonMap.get("schedule_id"),
-                    jsonMap.get("template_key"),
-                    jsonMap.get("sender_key"),
-                    jsonMap.get("customer_request_key"),
-                    jsonMap.get("title")
+                            jsonMap.get("mail_type"),
+                        jsonMap.get("schedule_id"),
+                        jsonMap.get("template_key"),
+                        jsonMap.get("sender_key"),
+                        jsonMap.get("customer_request_key"),
+                        jsonMap.get("title")
             );
         }
 

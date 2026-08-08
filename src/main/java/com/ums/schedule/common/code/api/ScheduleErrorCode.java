@@ -22,7 +22,8 @@ public enum ScheduleErrorCode implements ErrorCode {
     CYCLE_VALUE_NOT_HOUR(ApiResponseCode.BAD_REQUEST, "주기 값은 (시간) 단위이어야 합니다."),
     CYCLE_VALUE_NOT_DAY(ApiResponseCode.BAD_REQUEST, "주기 값은 (일) 단위이어야 합니다."),
     CYCLE_VALUE_NOT_MONTH(ApiResponseCode.BAD_REQUEST, "주기 값은 (월) 단위이어야 합니다."),
-    NOT_UPDATE_RUNNING_SCHEDULE(ApiResponseCode.CONFLICT, "[{0}] 실행 중인 스케쥴은 변경할 수 없습니다.");
+    NOT_UPDATE_RUNNING_SCHEDULE(ApiResponseCode.CONFLICT, "[{0}] 실행 중인 스케쥴은 변경할 수 없습니다."),
+    INVALID_CYCLE_VALUE(ApiResponseCode.BAD_REQUEST, "주기 값은 숫자 형태이어야 합니다.");
 
     ApiResponseCode responseCode;
     String message;

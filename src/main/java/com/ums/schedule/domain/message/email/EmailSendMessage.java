@@ -137,8 +137,8 @@ public class EmailSendMessage implements ChannelMessage {
         Map<EmailMessageSection, String> templateMap = new EnumMap<>(EmailMessageSection.class);
         putIfKeyExists(templateMap, EmailMessageSection.HEADER, this.headerTemplateKey);
         putIfKeyExists(templateMap, EmailMessageSection.FOOTER, this.footerTemplateKey);
-        putIfKeyExists(templateMap, EmailMessageSection.BODY, validateTemplateKey(this.bodyTemplateKey));
-        putIfKeyExists(templateMap, EmailMessageSection.COVER, validateAndGetCoverKey());
+        putIfKeyExists(templateMap, EmailMessageSection.BODY, this.bodyTemplateKey);
+        putIfKeyExists(templateMap, EmailMessageSection.COVER, this.coverTemplateKey);
         return templateMap;
     }
 

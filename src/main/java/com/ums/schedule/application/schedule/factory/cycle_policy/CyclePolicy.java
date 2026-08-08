@@ -1,5 +1,6 @@
 package com.ums.schedule.application.schedule.factory.cycle_policy;
 
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
 import com.ums.schedule.common.code.mapper.EnumMapperSelector;
 import com.ums.schedule.domain.schedule.exception.InvalidScheduleCyclePolicyException;
 import com.ums.schedule.domain.schedule.policy.cycle.SchedulePolicyValue;
@@ -11,7 +12,7 @@ public interface CyclePolicy extends EnumMapperSelector  {
             int cycle = Integer.parseInt(cycleValue);
             return create(cycle);
         } catch (NumberFormatException e) {
-            throw e;
+            throw InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.INVALID_CYCLE_VALUE);
         }
     }
 }

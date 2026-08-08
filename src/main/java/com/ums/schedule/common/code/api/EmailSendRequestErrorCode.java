@@ -3,6 +3,7 @@ package com.ums.schedule.common.code.api;
 import com.ums.schedule.common.code.mapper.EnumMapperType;
 
 public enum EmailSendRequestErrorCode implements EnumMapperType {
+    MAIL_TYPE_REQUIRED(ApiResponseCode.BAD_REQUEST, "이메일 타입은 필수 값입니다."),
     TITLE_REQUIRED(ApiResponseCode.BAD_REQUEST, "제목은 필수 값 입니다."),
     INVALID_SENDER_EMAIL(ApiResponseCode.BAD_REQUEST, "발신자 키는 이메일 형식이어야 합니다."),
     ATTACHMENT_NAME_REQUIRED(ApiResponseCode.BAD_REQUEST, "첨부파일 명은 필수 값 입니다."),

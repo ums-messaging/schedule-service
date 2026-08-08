@@ -68,16 +68,13 @@ public class EmailMessageCreateService {
     }
 
     private EmailTemplateDetailQuery toQuery(String customerId, EmailSendCreateRequest request) {
-        List<EmailAttachmentDetailQuery> attachmentQueries = Optional.ofNullable(request.attachmentList())
-                .map(req ->
-                     req.list().stream()
-                            .map(l -> {
-                                EnumMapperValue attachmentType = mapperFactory.findEnumMapperValue(EmailCode.ATTACHMENT_TYPE, l.type());
-                                return l.toQuery(attachmentType);
-                            })
-                            .toList()
-                )
-                .orElseGet(() -> Collections.EMPTY_LIST);
+        List<EmailAttachmentDetailQuery> attachmentQueries = request.attachmentList().stream()
+                .map(l -> {
+                    EnumMapperValue attachmentType = mapperFactory.findEnumMapperValue(EmailCode.ATTACHMENT_TYPE, l.type());
+                    return l.toQuery(attachmentType);
+                })
+                .toList();
+
         return request.toQuery(customerId, attachmentQueries);
     }
 }

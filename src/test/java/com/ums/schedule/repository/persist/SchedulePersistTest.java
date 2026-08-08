@@ -11,9 +11,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+@ActiveProfiles("test")
 @DataJpaTest
 public class SchedulePersistTest {
     @Autowired
@@ -48,7 +49,7 @@ public class SchedulePersistTest {
 
             Schedule expect = entityManager.find(Schedule.class, scheduleId);
 
-            assertThat(expect.getScheduleStatus()).isInstanceOf(ScheduleActiveStatus.class);
+            assertThat(expect.getStatus()).isInstanceOf(ScheduleActiveStatus.class);
         }
 
         @Test
@@ -63,7 +64,7 @@ public class SchedulePersistTest {
 
             Schedule expect = entityManager.find(Schedule.class, scheduleId);
 
-            assertThat(expect.getScheduleStatus()).isInstanceOf(ScheduleRunningStatus.class);
+            assertThat(expect.getStatus()).isInstanceOf(ScheduleRunningStatus.class);
         }
 
         @Test
@@ -78,7 +79,7 @@ public class SchedulePersistTest {
 
             Schedule expect = entityManager.find(Schedule.class, scheduleId);
 
-            assertThat(expect.getScheduleStatus()).isInstanceOf(ScheduleInActiveStatus.class);
+            assertThat(expect.getStatus()).isInstanceOf(ScheduleInActiveStatus.class);
         }
     }
 }

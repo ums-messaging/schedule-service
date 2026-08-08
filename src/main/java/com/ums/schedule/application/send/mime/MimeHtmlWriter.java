@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
+@Component(value = "mimeHtmlWriter")
 public class MimeHtmlWriter implements MimeWriter {
 
     @Override

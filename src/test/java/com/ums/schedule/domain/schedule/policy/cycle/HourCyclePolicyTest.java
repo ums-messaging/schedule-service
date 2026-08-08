@@ -37,10 +37,9 @@ class HourCyclePolicyTest {
     void shouldThrowException_whenCycleValueIsNotNumber() {
         CyclePolicy policy = new HourCyclePolicyFactory();
 
-        InvalidScheduleCyclePolicyException expect = InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.CYCLE_VALUE_NOT_HOUR);
-
         assertThatThrownBy(() -> policy.create("number"))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidScheduleCyclePolicyException.class)
+                .extracting(v -> ((InvalidScheduleCyclePolicyException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_CYCLE_VALUE);
     }
 }

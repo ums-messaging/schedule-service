@@ -1,8 +1,6 @@
 package com.ums.schedule.application.ums.email.generator.handler;
 
-import com.ums.schedule.application.message.email.result.TemplateConversionResult;
 import com.ums.schedule.application.ums.email.exception.EmailMessageConvertException;
-import com.ums.schedule.application.ums.email.exception.EmailPolicyViolationException;
 import com.ums.schedule.application.ums.email.generator.handler.model.EmailConvertContext;
 import com.ums.schedule.common.code.api.EmailMessageErrorCode;
 import com.ums.schedule.common.code.email.ConvertType;
@@ -38,19 +36,18 @@ class PdfConvertHandlerTest {
         this.path = Files.createTempFile("test", ".pdf");
         builder = EmailConvertContextBuilder.builder()
                 .path(path)
-                .template("my template.");
+                .template("<html><body>my template</body></html>");
     }
     @Test
     @DisplayName("파일 확장자가 PDF가 아니면 예외가 발생한다.")
-    void shouldThrowException_whenFileExtensionIsNotHtml() throws IOException {
-        this.path = Files.createTempFile("test", "html");
+    void shouldThrowException_whenFileExtensionIsNotPdf() throws IOException {
+        this.path = Files.createTempFile("test", ".html");
         EmailConvertContext context = builder.path(this.path).build();
 
-        EmailPolicyViolationException expect = EmailMessageConvertException.of(EmailMessageErrorCode.INVALID_CONVERT_TYPE_FILE, ConvertType.PDF);
-
         assertThatThrownBy(() -> handler.handle(context))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isExactlyInstanceOf(EmailMessageConvertException.class)
+                .extracting(v -> ((EmailMessageConvertException) v).getErrorCode())
+                .isEqualTo(EmailMessageErrorCode.INVALID_CONVERT_TYPE_FILE);
     }
 
     @Test
@@ -58,12 +55,12 @@ class PdfConvertHandlerTest {
     void shouldThrowException_whenTemplateIsEmpty() {
         EmailConvertContext context = builder.template("").build();
 
-        EmailPolicyViolationException expect = EmailMessageConvertException.of(EmailMessageErrorCode.NOT_CONVERT_MESSAGE);
-
         assertThatThrownBy(() -> handler.handle(context))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isExactlyInstanceOf(EmailMessageConvertException.class)
+                .extracting(v -> ((EmailMessageConvertException) v).getErrorCode())
+                .isEqualTo(EmailMessageErrorCode.NOT_FOUND_CONVERTED_CONTENT);
     }
+
     @Test
     @DisplayName("CONVERT_TYPE이 PDF이고, EMAIL_TYPE이 PLAIN이면 지원한다.")
     void shouldSupport_whenConvertTypeIsPdfAndSecurityPolicyIsNull() {
@@ -73,7 +70,6 @@ class PdfConvertHandlerTest {
     @Test
     @DisplayName("임시 파일 경로에 PDF 파일이 생성된다.")
     void shouldCreateFileAtTempFilePath() throws IOException {
-
         File file = handler.handle(builder.build());
 
         assertThat(file).exists();

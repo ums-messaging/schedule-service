@@ -51,7 +51,7 @@ public class SendRequestCreateService {
     }
 
     private Integer getConfiguredRetryCount() {
-        Integer getRetryCount = properties.retryCount();
+        Integer getRetryCount = properties.getRetryCount();
         return getRetryCount == null ? -1 : getRetryCount;
     }
 

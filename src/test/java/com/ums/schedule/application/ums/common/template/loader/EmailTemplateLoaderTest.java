@@ -27,7 +27,6 @@ class EmailTemplateLoaderTest {
     @Mock private AwsS3Repository fileRepository;
     @Spy
     private Configuration configuration;
-
     @InjectMocks private EmailTemplateLoader loader;
 
     private EmailSendMessageBuilder builder ;
@@ -271,7 +270,8 @@ class EmailTemplateLoaderTest {
 
             loader.loadTemplate(sendMessage);
 
-            verify(fileRepository).getFileStringContent(captor.capture());
+            verify(fileRepository, times(2)).getFileStringContent(captor.capture());
+
             assertThat(captor.getAllValues())
                     .extracting(v -> v)
                     .contains("body.html");

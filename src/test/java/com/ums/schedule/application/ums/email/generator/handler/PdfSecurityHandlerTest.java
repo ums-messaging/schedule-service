@@ -1,6 +1,6 @@
 package com.ums.schedule.application.ums.email.generator.handler;
 
-import com.ums.schedule.application.message.email.result.TemplateConversionResult;
+import com.ums.schedule.application.ums.email.config.SecurityMailProperties;
 import com.ums.schedule.application.ums.email.exception.EmailMessageConvertException;
 import com.ums.schedule.application.ums.email.exception.SecurityMailNotConfiguredException;
 import com.ums.schedule.common.code.api.SecurityMailErrorCode;
@@ -8,12 +8,11 @@ import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.email.EmailType;
 import com.ums.schedule.common.code.email.security.EncryptionTypeEnum;
 import com.ums.schedule.common.code.email.security.PermissionMaskEnum;
-import com.ums.schedule.config.properties.SecurityPolicyProperties;
-import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.fixture.email.convert.EmailConvertContextBuilder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,6 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -38,7 +36,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class PdfSecurityHandlerTest {
     @Mock
-    private SecurityPolicyProperties properties;
+    private SecurityMailProperties properties;
     @Mock private PdfConvertHandler pdfHandler;
     @InjectMocks
     private PdfSecurityHandler handler;
@@ -48,10 +46,11 @@ class PdfSecurityHandlerTest {
     private File tempFile;
 
     private EmailConvertContextBuilder builder;
+
     @BeforeEach
     void setUp() throws IOException {
         path = Files.createTempFile("test", ".pdf");
-        tempFile = path.resolve("test.pdf").toFile();
+        tempFile = path.resolve(path).toFile();
         builder = EmailConvertContextBuilder.builder()
                 .path(path)
                 .userPassword("19940314")
@@ -101,8 +100,9 @@ class PdfSecurityHandlerTest {
         doReturn(tempFile).when(pdfHandler).handle(any());
         doReturn("test").when(properties).getOwnerPassword();
 
+        handler.handle(builder.build());
 
-        try (PDDocument document = PDDocument.load(tempFile, "20000314")) {
+        try (PDDocument document = PDDocument.load(tempFile, "19940314")) {
             AccessPermission permission = document.getCurrentAccessPermission();
 
             assertThat(permission.canPrint()).isFalse();
@@ -129,9 +129,9 @@ class PdfSecurityHandlerTest {
         doReturn(tempFile).when(pdfHandler).handle(any());
         doReturn("test").when(properties).getOwnerPassword();
 
-        File file = handler.handle(builder.build());
+        handler.handle(builder.build());
 
-        try (PDDocument document = PDDocument.load(tempFile, "20000314")) {
+        try (PDDocument document = PDDocument.load(tempFile, "19940314")) {
             AccessPermission permission = document.getCurrentAccessPermission();
 
             assertThat(permission.isOwnerPermission()).isFalse();
@@ -147,7 +147,7 @@ class PdfSecurityHandlerTest {
 
         handler.handle(builder.build());
 
-        try (PDDocument document = PDDocument.load(tempFile, "20000314")) {
+        try (PDDocument document = PDDocument.load(tempFile, "19940314")) {
             assertThat(document.isEncrypted()).isTrue();
         }
 
@@ -155,7 +155,13 @@ class PdfSecurityHandlerTest {
 
     @Test
     @DisplayName("잘못된 사용자 비밀번호로는 PDF를 열 수 없다.")
-    void givenWrongUserPassword_whenOpeningPdf_thenThrowException() {
+    void givenWrongUserPassword_whenOpeningPdf_thenThrowException() throws IOException {
+        doReturn(tempFile).when(pdfHandler).handle(any());
+        doReturn("test").when(properties).getOwnerPassword();
 
+        handler.handle(builder.build());
+
+        assertThatThrownBy(()->PDDocument.load(tempFile, "20000314"))
+                .isInstanceOf(InvalidPasswordException.class);
     }
 }

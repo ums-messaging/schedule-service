@@ -4,6 +4,7 @@ import com.ums.schedule.adapter.api.request.email.request.EmailAttachmentListReq
 import com.ums.schedule.adapter.api.request.email.request.EmailSendCreateRequest;
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.email.EmailType;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
+@Component
 public class EmailSendRequestValidator implements Validator {
 
     @Override
@@ -24,26 +26,10 @@ public class EmailSendRequestValidator implements Validator {
         EmailSendCreateRequest request = (EmailSendCreateRequest) target;
         validateIfConvertTypeExists(request, errors);
         validateIfSecurityPolicyExists(request, errors);
-        validateAttachmentList(request, errors);
-    }
-
-    private void validateAttachmentList(EmailSendCreateRequest request, Errors errors) {
-        EmailAttachmentListRequest attachment = request.attachmentList();
-        if(StringUtils.hasText(attachment.attachmentUploadKey())) {
-            if(attachment.list().size() == 0) {
-                errors.rejectValue("attachmentList", "EMAIL_SEND_REQUEST:ATTACHMENT_LIST_EMPTY");
-            }
-        }
-
-        if(attachment.list().size() > 0) {
-            if(StringUtils.hasText(attachment.attachmentUploadKey())) {
-                errors.rejectValue("attachmentUploadKey", "EMAIL_SEND_REQUEST:ATTACHMENT_UPLOAD_KEY_REQUIRED");
-            }
-        }
     }
 
     private void validateIfConvertTypeExists(EmailSendCreateRequest request, Errors errors) {
-        if(existsConvertType(request)) {
+        if(existsConvertType(request) || request.securityPolicy() != null) {
             validateAttachmentNameAndDownloadName(request.attachmentName(), request.downloadName(), errors);
         }
     }
@@ -51,7 +37,7 @@ public class EmailSendRequestValidator implements Validator {
     private Boolean existsConvertType(EmailSendCreateRequest request) {
         return Optional.ofNullable(request.convertType())
                 .map(type -> isValidConvertType(type))
-                .orElse(false);
+                .orElseGet(() -> false);
     }
 
     private boolean isValidConvertType(String type) {

@@ -23,7 +23,7 @@ public class HtmlConvertHandler implements EmailConvertHandler {
     }
 
     public File handle(EmailConvertContext context) throws IOException {
-        if(context.path().getFileName().endsWith(ConvertType.HTML.description())) {
+        if(context.fileName().endsWith(ConvertType.HTML.description())) {
             if(!StringUtils.hasText(context.template())) {
                 throw EmailMessageConvertException.of(EmailMessageErrorCode.NOT_FOUND_CONVERTED_CONTENT);
             }

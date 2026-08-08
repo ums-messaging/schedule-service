@@ -58,14 +58,14 @@ class SecurityMailAssemblerTest {
 
                 assembler.assemble(command);
 
-                verify(properties).defaultEncryptType();
+                verify(properties).getDefaultEncryptType();
             }
 
             @Test
             @DisplayName("암호화 타입 기본 값이 빈 값이면 예외가 발생한다.")
             void shouldThrowException_whenEncryptionTypeDefaultValueIsEmpty() {
                 SecurityMailCommand command = commandBuilder.build();
-                doReturn("").when(properties).defaultEncryptType();
+                doReturn("").when(properties).getDefaultEncryptType();
 
                 SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailCode.ENCRYPTION_TYPE);
 
@@ -139,7 +139,7 @@ class SecurityMailAssemblerTest {
 
                 assembler.assemble(command);
 
-                verify(properties).defaultPasswordHash();
+                verify(properties).getDefaultPasswordHash();
             }
 
             @Test
@@ -147,8 +147,8 @@ class SecurityMailAssemblerTest {
             void shouldThrowException_whenPasswordHashDefaultValueIsEmpty() {
                 SecurityMailCommand command = commandBuilder.build();
 
-                doReturn("ASE-126").when(properties).defaultEncryptType();
-                doReturn("").when(properties).defaultPasswordHash();
+                doReturn("ASE-126").when(properties).getDefaultEncryptType();
+                doReturn("").when(properties).getDefaultPasswordHash();
 
                 SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailCode.PASSWORD_HASH);
 
@@ -221,7 +221,7 @@ class SecurityMailAssemblerTest {
 
                 assembler.assemble(command);
 
-                verify(properties).defaultPermissionMask();
+                verify(properties).getDefaultPermissionMask();
             }
 
             @Test
@@ -229,9 +229,9 @@ class SecurityMailAssemblerTest {
             void shouldThrowException_whenPermissionMaskDefaultValueIsEmpty() {
                 SecurityMailCommand command = commandBuilder.build();
 
-                doReturn("ASE-128").when(properties).defaultEncryptType();
-                doReturn("SHA-256").when(properties).defaultPasswordHash();
-                doReturn("").when(properties).defaultPermissionMask();
+                doReturn("ASE-128").when(properties).getDefaultEncryptType();
+                doReturn("SHA-256").when(properties).getDefaultPasswordHash();
+                doReturn("").when(properties).getDefaultPermissionMask();
 
                 SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(SecurityMailCode.PERMISSION_MASK);
 
@@ -294,10 +294,10 @@ class SecurityMailAssemblerTest {
     }
 
     private void givenSecurityMailAllConfigure() {
-        doReturn("ASE-126").when(properties).defaultEncryptType();
-        doReturn("SHA-256").when(properties).defaultPasswordHash();
-        doReturn("NONE").when(properties).defaultPermissionMask();
-        doReturn("birthday").when(properties).defaultPasswordPolicy();
+        doReturn("ASE-126").when(properties).getDefaultEncryptType();
+        doReturn("SHA-256").when(properties).getDefaultPasswordHash();
+        doReturn("NONE").when(properties).getDefaultPermissionMask();
+        doReturn("birthday").when(properties).getDefaultPasswordPolicy();
     }
 
     @Nested
@@ -310,9 +310,9 @@ class SecurityMailAssemblerTest {
         }
 
         private void givenConfiguredPasswordPolicy() {
-            doReturn("ASE-126").when(properties).defaultEncryptType();
-            doReturn("SHA-256").when(properties).defaultPasswordHash();
-            doReturn("NONE").when(properties).defaultPermissionMask();
+            doReturn("ASE-126").when(properties).getDefaultEncryptType();
+            doReturn("SHA-256").when(properties).getDefaultPasswordHash();
+            doReturn("NONE").when(properties).getDefaultPermissionMask();
         }
 
         @Nested
@@ -322,11 +322,11 @@ class SecurityMailAssemblerTest {
             @DisplayName("설정 파일에서 비밀번호 정책 기본 값을 조회한다.")
             void shouldGetPasswordPolicyDefaultValue() {
                 SecurityMailCommand command = commandBuilder.build();
-                doReturn("birthday").when(properties).defaultPasswordPolicy();
+                doReturn("birthday").when(properties).getDefaultPasswordPolicy();
 
                 assembler.assemble(command);
 
-                verify(properties).defaultPasswordPolicy();
+                verify(properties).getDefaultPasswordPolicy();
             }
 
             @Test
@@ -334,7 +334,7 @@ class SecurityMailAssemblerTest {
             void shouldThrowException_whenPasswordPolicyDefaultValueIsEmpty() {
                 SecurityMailCommand command = commandBuilder
                         .build();
-                doReturn("").when(properties).defaultPasswordPolicy();
+                doReturn("").when(properties).getDefaultPasswordPolicy();
 
                 SecurityMailNotConfiguredException expect = SecurityMailNotConfiguredException.of(PasswordType.PASSWORD_POLICY);
 
@@ -349,7 +349,7 @@ class SecurityMailAssemblerTest {
                 SecurityMailCommand command = commandBuilder
                         .passwordTypeMap(null)
                         .build();
-                doReturn("birthday").when(properties).defaultPasswordPolicy();
+                doReturn("birthday").when(properties).getDefaultPasswordPolicy();
 
                 SecurityMail result = assembler.assemble(command);
 
@@ -363,7 +363,7 @@ class SecurityMailAssemblerTest {
                 SecurityMailCommand command = commandBuilder
                         .passwordTypeMap(Map.of(PasswordType.PASSWORD_POLICY, ""))
                         .build();
-                doReturn("birthday").when(properties).defaultPasswordPolicy();
+                doReturn("birthday").when(properties).getDefaultPasswordPolicy();
 
                 SecurityMail result = assembler.assemble(command);
 
@@ -377,7 +377,7 @@ class SecurityMailAssemblerTest {
                 SecurityMailCommand command = commandBuilder
                         .passwordTypeMap(Map.of(PasswordType.PASSWORD_POLICY, "id"))
                         .build();
-                doReturn("birthday").when(properties).defaultPasswordPolicy();
+                doReturn("birthday").when(properties).getDefaultPasswordPolicy();
 
                 SecurityMail result = assembler.assemble(command);
 
@@ -393,7 +393,7 @@ class SecurityMailAssemblerTest {
 
             @BeforeEach
             void setUp() {
-                doReturn("birthday").when(properties).defaultPasswordPolicy();
+                doReturn("birthday").when(properties).getDefaultPasswordPolicy();
             }
 
             @Test

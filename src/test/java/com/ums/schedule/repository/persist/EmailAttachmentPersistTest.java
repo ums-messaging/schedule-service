@@ -1,10 +1,7 @@
 package com.ums.schedule.repository.persist;
 
-import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
-import com.ums.schedule.domain.request.message.SendMessageBuilder;
-import com.ums.schedule.domain.request.message.email.EmailSendMessageBuilder;
 import com.ums.schedule.fixture.email.attachment.EmailAttachmentBuilder;
 import com.ums.schedule.repository.EntityJpaTestSupport;
 import jakarta.persistence.EntityManager;
@@ -14,14 +11,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@ActiveProfiles("test")
 @DataJpaTest
-public class EmaiAttachmentPersistTest extends EntityJpaTestSupport {
+public class EmailAttachmentPersistTest extends EntityJpaTestSupport {
     @Autowired
     private EntityManager entityManager;
 

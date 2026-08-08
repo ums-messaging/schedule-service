@@ -7,6 +7,7 @@ import com.ums.schedule.domain.schedule.exception.InvalidScheduleCyclePolicyExce
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ReservationPolicyValue;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
+import com.ums.schedule.fixture.schedule.ScheduleCreateCommandBuilder;
 import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
@@ -35,7 +36,7 @@ class ScheduleCreateTest {
 
             Schedule expect = Schedule.of(command, policy);
 
-            assertThat(expect.getScheduleStatus()).isInstanceOf(ScheduleActiveStatus.class);
+            assertThat(expect.getStatus()).isInstanceOf(ScheduleActiveStatus.class);
         }
     }
 
@@ -51,7 +52,7 @@ class ScheduleCreateTest {
 
             schedule.toStatus(ScheduleEvent.TO_RUNNING);
 
-            assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleRunningStatus.class);
+            assertThat(schedule.getStatus()).isInstanceOf(ScheduleRunningStatus.class);
         }
 
         @Test
@@ -64,7 +65,7 @@ class ScheduleCreateTest {
             //when
             schedule.toStatus(ScheduleEvent.TO_ACTIVE);
 
-            assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleActiveStatus.class);
+            assertThat(schedule.getStatus()).isInstanceOf(ScheduleActiveStatus.class);
         }
 
         @Test
@@ -73,7 +74,7 @@ class ScheduleCreateTest {
             Schedule schedule = ScheduleEntityBuilder.builder().status(new ScheduleActiveStatus()).build();
             schedule.toStatus(ScheduleEvent.TO_INACTIVE);
 
-            assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleInActiveStatus.class);
+            assertThat(schedule.getStatus()).isInstanceOf(ScheduleInActiveStatus.class);
         }
     }
 
@@ -158,7 +159,7 @@ class ScheduleCreateTest {
     @Test
     @DisplayName("현재 날짜가 스케쥴 기간에 포함되고, 상태가 RUNNING이면 TRUE를 반환한다.")
     void shouldReturnTrue_whenCurrentDateContainsInSchedulePeriodAndStatusIsRunning() {
-        ScheduleCreateCommand command = ScheduleEntityBuilder.builder().toCommand();
+        ScheduleCreateCommand command = ScheduleCreateCommandBuilder.builder().build();
         ScheduleCyclePolicy policy = ScheduleCyclePolicy.realtimeOf();
 
         Schedule schedule = Schedule.of(command, policy);

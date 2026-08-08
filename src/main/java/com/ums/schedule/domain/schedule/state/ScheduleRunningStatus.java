@@ -5,10 +5,10 @@ import com.ums.schedule.common.code.schedule.ScheduleState;
 import com.ums.schedule.common.converter.StatusStateEvent;
 import com.ums.schedule.domain.schedule.exception.InvalidScheduleStateException;
 
-public class ScheduleRunningStatus implements com.ums.schedule.domain.schedule.state.ScheduleStatus {
+public class ScheduleRunningStatus implements ScheduleStatus {
 
     @Override
-    public com.ums.schedule.domain.schedule.state.ScheduleStatus onEvent(StatusStateEvent event) {
+    public ScheduleStatus onEvent(StatusStateEvent event) {
         ScheduleEvent eventCode = ScheduleEvent.valueOf(event.code());
         switch (eventCode) {
             case TO_ACTIVE -> {

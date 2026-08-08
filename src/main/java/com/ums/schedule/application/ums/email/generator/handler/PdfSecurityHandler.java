@@ -1,12 +1,12 @@
 package com.ums.schedule.application.ums.email.generator.handler;
 
+import com.ums.schedule.application.ums.email.config.SecurityMailProperties;
 import com.ums.schedule.application.ums.email.generator.handler.model.EmailConvertContext;
 import com.ums.schedule.application.ums.email.exception.SecurityMailNotConfiguredException;
 import com.ums.schedule.common.code.api.SecurityMailErrorCode;
 import com.ums.schedule.common.code.email.EmailType;
 import com.ums.schedule.common.code.email.security.EncryptionTypeEnum;
 import com.ums.schedule.common.code.email.security.PermissionMaskEnum;
-import com.ums.schedule.config.properties.SecurityPolicyProperties;
 import com.ums.schedule.common.code.email.ConvertType;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -21,7 +21,7 @@ import java.io.*;
 @RequiredArgsConstructor
 public class PdfSecurityHandler implements EmailConvertHandler {
     private final PdfConvertHandler handler;
-    private final SecurityPolicyProperties properties;
+    private final SecurityMailProperties properties;
 
     @Override
     public boolean supports(ConvertType convertType, EmailType emailType) {

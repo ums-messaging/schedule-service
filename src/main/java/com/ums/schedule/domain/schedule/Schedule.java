@@ -15,6 +15,7 @@ import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
+import com.ums.schedule.domain.schedule.state.ScheduleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -44,10 +45,7 @@ public class Schedule {
 
     @Column(name = "status", nullable = false, updatable = false)
     @Convert(converter = ScheduleStatusConverter.class)
-    private com.ums.schedule.domain.schedule.state.ScheduleStatus scheduleStatus;
-
-    @Transient
-    private ScheduleState status;
+    private ScheduleStatus status;
 
     @Embedded
     private SchedulePeriod schedulePeriod;
@@ -78,7 +76,7 @@ public class Schedule {
     }
 
     public boolean availableSchedulePeriodAndStatus() {
-        return this.status == ScheduleState.RUNNING && this.schedulePeriod.contains(LocalDateTime.now());
+        return this.status.getCurrentCode() == ScheduleState.RUNNING && this.schedulePeriod.contains(LocalDateTime.now());
     }
 
     private void assignScheduleCyclePolicy(ScheduleCyclePolicy cyclePolicy) {
@@ -104,12 +102,12 @@ public class Schedule {
         this.schedulePeriod = SchedulePeriod.of(scheduleStartAt, scheduleEndAt);
     }
 
-    private void changeScheduleStatus(com.ums.schedule.domain.schedule.state.ScheduleStatus scheduleStatus) {
-        this.scheduleStatus = scheduleStatus;
+    private void changeScheduleStatus(ScheduleStatus scheduleStatus) {
+        this.status = scheduleStatus;
     }
 
     public void toStatus(ScheduleEvent event) {
-        com.ums.schedule.domain.schedule.state.ScheduleStatus toState = this.scheduleStatus.onEvent(event);
+        ScheduleStatus toState = this.status.onEvent(event);
         changeScheduleStatus(toState);
     }
 
@@ -121,7 +119,7 @@ public class Schedule {
 
     private void validateExpiredPeriod() {
         if(schedulePeriod.isExpired()) {
-            if(!this.scheduleStatus.isInActive()) {
+            if(!this.status.isInActive()) {
                 changeScheduleStatus(new ScheduleInActiveStatus());
             }
             throw InvalidSchedulePeriodException.of(id, ScheduleErrorCode.EXPIRED_SCHEDULE);
@@ -129,13 +127,13 @@ public class Schedule {
     }
 
     private void validateState() {
-        if(this.scheduleStatus.isRunning()) {
+        if(this.status.isRunning()) {
             throw InvalidScheduleStateException.of(id, ScheduleState.RUNNING);
         }
     }
 
     public void checkScheduleAvailability() {
-        if(this.scheduleStatus.isInActive()) {
+        if(this.status.isInActive()) {
             throw InvalidScheduleStateException.of(id, ScheduleState.INACTIVE);
         }
         if(schedulePeriod.isExpired()) {
@@ -151,7 +149,7 @@ public class Schedule {
 
     private boolean isExecutable(LocalDateTime requestedAt) {
         return schedulePeriod.contains(requestedAt) &&
-                this.scheduleStatus.isRunning() &&
+                this.status.isRunning() &&
                 cyclePolicy.satisfiedCyclePolicy(requestedAt);
     }
 

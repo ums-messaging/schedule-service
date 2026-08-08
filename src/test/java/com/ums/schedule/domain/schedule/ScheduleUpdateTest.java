@@ -71,7 +71,7 @@ public class ScheduleUpdateTest {
         ScheduleUpdateCommand command = ScheduleEntityBuilder.builder().scheduleName("schedule").toUpdateCommand();
 
         assertThatThrownBy(() -> schedule.update(command));
-        assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleInActiveStatus.class);
+        assertThat(schedule.getStatus()).isInstanceOf(ScheduleInActiveStatus.class);
     }
 
 
