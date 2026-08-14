@@ -8,6 +8,7 @@ public class SendMessageCreateCommandBuilder {
     private SendRequest sendRequest;
     private MessageType messageType;
     private String messagePrefix;
+    private String templateKey;
 
     public static SendMessageCreateCommandBuilder builder() {
         return new SendMessageCreateCommandBuilder();
@@ -16,6 +17,7 @@ public class SendMessageCreateCommandBuilder {
     private SendMessageCreateCommandBuilder() {
         this.messageType = MessageType.NONE;
         this.messagePrefix = "(광고)";
+        this.templateKey = "my_template";
     }
 
     public SendMessageCreateCommandBuilder sendRequest(SendRequest sendRequest) {
@@ -27,7 +29,10 @@ public class SendMessageCreateCommandBuilder {
         this.messageType = messageType;
         return this;
     }
-
+    public SendMessageCreateCommandBuilder templateKey(String templateKey) {
+        this.templateKey = templateKey;
+        return this;
+    }
     public SendMessageCreateCommandBuilder messagePrefix(String messagePrefix) {
         this.messagePrefix = messagePrefix;
         return this;
@@ -36,7 +41,8 @@ public class SendMessageCreateCommandBuilder {
     public SendMessageCreateCommand build() {
         return new SendMessageCreateCommand(
                 messageType,
-                messagePrefix
+                messagePrefix,
+                templateKey
         );
     }
 }

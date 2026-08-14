@@ -31,17 +31,6 @@ public abstract class TargetUploadCreateFileUtils {
         return temp;
     }
 
-
-    private static void createFailRow(Row row, int i) {
-        createRow(row, 0, null);
-        createRow(row, 1, RandomStringUtils.randomAlphabetic(6)); // name
-        createRow(row, 2, null); // email
-        createRow(row, 3, randomBirthday(i)); // birthday
-        createRow(row, 4, randomFruit(i)); // fruit
-        createRow(row, 5, randomPosition(i)); // position
-    }
-
-
     private static void createRows(XSSFSheet sheet, int rowSize) {
         for (int i = 1; i <= rowSize; i++) {
             Row row = sheet.createRow(i);

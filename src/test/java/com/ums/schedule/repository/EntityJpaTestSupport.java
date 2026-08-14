@@ -1,5 +1,6 @@
 package com.ums.schedule.repository;
 
+import com.github.f4b6a3.tsid.TsidCreator;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.request.SendRequest;
@@ -80,7 +81,7 @@ public class EntityJpaTestSupport {
     }
     protected SendRequest givenSendRequest(Schedule schedule, SendMessage sendMessage) {
         SendRequest sendRequest = SendRequestEntityBuilder.builder()
-                .id(null)
+                .id(TsidCreator.getTsid().toLong())
                 .schedule(schedule)
                 .sendMessage(sendMessage)
                 .build();

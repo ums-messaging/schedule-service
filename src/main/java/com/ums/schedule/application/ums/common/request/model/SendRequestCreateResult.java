@@ -16,7 +16,6 @@ public record SendRequestCreateResult(
 ) {
 
     public static SendRequestCreateResult of(UUID messageId, SendRequest sendRequest, TargetUploadResult result) {
-        SendMessage message = sendRequest.getSendMessage();
         return new SendRequestCreateResult(
                 sendRequest.getId(),
                 messageId.toString(),

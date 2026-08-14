@@ -2,6 +2,7 @@ package com.ums.schedule.domain.message.email;
 
 import com.ums.schedule.application.ums.email.message.model.EmailMessageCreateContext;
 import com.ums.schedule.common.code.email.EmailRequiredValue;
+import com.ums.schedule.common.code.email.EmailType;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.message.email.exception.EmailMessageValueMissingException;
 import com.ums.schedule.domain.request.message.SendMessageBuilder;
@@ -43,6 +44,7 @@ public class EmailSendMessageTest {
         @BeforeEach
         void setUp() {
             contextBuilder = EmailMessageCreateContextBuilder.builder()
+                    .emailType(EmailType.PLAIN)
                     .title("이메일 제목")
                     .bodyKey("body.html");
         }

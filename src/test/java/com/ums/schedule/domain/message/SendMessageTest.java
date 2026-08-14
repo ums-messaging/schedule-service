@@ -20,6 +20,7 @@ class SendMessageTest {
     void setUp() {
         this.builder = SendMessageCreateCommandBuilder
                 .builder()
+                .templateKey("my_template")
                 .sendRequest(mock(SendRequest.class));
     }
     @Nested

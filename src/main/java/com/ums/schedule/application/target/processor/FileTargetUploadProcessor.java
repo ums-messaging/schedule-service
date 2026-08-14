@@ -19,12 +19,14 @@ import com.ums.schedule.config.properties.TargetUploadProperties;
 import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.target.upload.TargetUploadReportJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FileTargetUploadProcessor {
@@ -36,16 +38,17 @@ public class FileTargetUploadProcessor {
 
     @Transactional
     public FileTargetUploadRequestResult request(String id) {
-        UUID uploadId = UuidUtil.decode(id);
+        UUID uploadId = UUID.fromString(id);
         TargetUploadReport report = jpaRepository.findById(uploadId)
                 .orElseThrow(() -> TargetUploadReportNotFoundException.of(uploadId));
 
         try {
+            Integer partitionSize = properties.getPartitionSize();
             Integer batchSize = properties.getBatchSize();
             Long fileLimitSize = properties.getFileLimitSize();
             AwsS3FileMetadataResponse response = getFileMetadataAndUploadRequest(report, fileLimitSize);
             TargetUploadRequestResult result = requestService.request(report);
-            publishTargetUploadRequestedEvent(report, result, batchSize);
+            publishTargetUploadRequestedEvent(report, result, partitionSize, batchSize);
             return FileTargetUploadRequestResult.of(report, response);
         } catch (FileNotFoundException e) {
             throw TargetUploadProcessException.of(
@@ -54,8 +57,8 @@ public class FileTargetUploadProcessor {
         }
     }
 
-    private void publishTargetUploadRequestedEvent(TargetUploadReport report, TargetUploadRequestResult result, Integer batchSize) {
-        FileTargetUploadRequestedEvent event = FileTargetUploadRequestedEvent.of(report, result, getBatchSize(batchSize));
+    private void publishTargetUploadRequestedEvent(TargetUploadReport report, TargetUploadRequestResult result, Integer partitionSize, Integer batchSize) {
+        FileTargetUploadRequestedEvent event = FileTargetUploadRequestedEvent.of(report, result, getPartitionSize(partitionSize), getBatchSize(batchSize));
         publisher.publishEvent(event);
     }
 
@@ -64,6 +67,13 @@ public class FileTargetUploadProcessor {
             throw TargetUploadReportNotConfiguredException.of(TargetUploadConfiguration.FILE_BATCH_SIZE);
         }
         return batchSize;
+    }
+
+    private Integer getPartitionSize(Integer partitionSize) {
+        if(partitionSize == 0) {
+            throw TargetUploadReportNotConfiguredException.of(TargetUploadConfiguration.PARTITION_SIZE);
+        }
+        return partitionSize;
     }
 
     private AwsS3FileMetadataResponse getFileMetadataAndUploadRequest(TargetUploadReport report, Long fileLimitSize) {

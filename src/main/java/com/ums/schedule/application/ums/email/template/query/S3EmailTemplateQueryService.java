@@ -6,6 +6,7 @@ import com.ums.schedule.application.ums.common.exception.TemplateLoadFailExcepti
 import com.ums.schedule.application.ums.email.template.exception.EmailTemplateNotConfiguredException;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateContext;
 import com.ums.schedule.application.ums.email.template.query.model.*;
+import com.ums.schedule.common.code.common.ChannelType;
 import com.ums.schedule.common.code.email.AttachmentType;
 import com.ums.schedule.common.exception.file.FileStorageException;
 import com.ums.schedule.common.util.FileUtil;
@@ -13,12 +14,14 @@ import com.ums.schedule.config.properties.EmailTemplateProperties;
 import com.ums.schedule.common.code.email.EmailUploadPrefixType;
 import com.ums.schedule.common.code.email.EmailMessageSection;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Stream;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
@@ -31,7 +34,7 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
         List<EmailTemplateContentResult> templateList = createTemplateList(propertiesMap.get(EmailUploadPrefixType.TEMPLATE_PREFIX), query);
         List<EmailTemplateContentResult> attachments = createAttachmentList(query.templateKey(), propertiesMap.get(EmailUploadPrefixType.ATTACHMENT_SUFFIX), query.attachmentQueries());
         EmailTemplateDetailResult detail = createEmailTemplateDetail(propertiesMap, query, templateList, attachments);
-        return EmailTemplateResult.of(detail);
+        return EmailTemplateResult.of(query.templateKey(), query.messageType(), detail);
     }
 
     private Map<EmailUploadPrefixType, String> toConfiguredMap(EmailTemplateDetailQuery command) {
@@ -46,14 +49,17 @@ public class S3EmailTemplateQueryService implements EmailTemplateQueryService {
     }
     private String generateTemplateDir(EmailTemplateDetailQuery command) {
         String prefix = properties.getTemplateKeyPrefix();
+        log.info("[template-key-prefix] %s", prefix);
         if(!StringUtils.hasText(prefix)) {
             throw EmailTemplateNotConfiguredException.of(EmailUploadPrefixType.TEMPLATE_PREFIX);
         }
-        return FileUtil.generateFilePaths(prefix, command.customerId(), command.templateKey());
+        return FileUtil.generateFilePaths(prefix, command.customerId(), command.templateKey(), ChannelType.EMAIL.code().toLowerCase());
     }
 
     private String generateImageDir(String templateDir, String templateKey) {
         String suffix = properties.getImageKeySuffix();
+        log.info("[image-key-suffix] %s", suffix);
+
         if(!StringUtils.hasText(suffix)) {
             throw EmailTemplateNotConfiguredException.of(EmailUploadPrefixType.IMAGE_SUFFIX);
         }

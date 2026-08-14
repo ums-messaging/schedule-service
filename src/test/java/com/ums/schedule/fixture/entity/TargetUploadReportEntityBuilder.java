@@ -33,6 +33,7 @@ public class TargetUploadReportEntityBuilder {
     }
 
     private TargetUploadReportEntityBuilder() {
+        this.id = UUID.randomUUID();
         uploadType = TargetUploadType.JSON;
         downloadKey = "/target/upload/download/target.xlsx";
         uploadStatus = new TargetUploadCreateState();
@@ -100,6 +101,6 @@ public class TargetUploadReportEntityBuilder {
                 createdAt,
                 requestedAt,
                 uploadedAt,
-                sendRequest);
+                sendRequest, true);
     }
 }

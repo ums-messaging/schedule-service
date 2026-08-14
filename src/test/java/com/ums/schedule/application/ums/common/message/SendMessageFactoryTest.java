@@ -9,6 +9,7 @@ import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.code.message.MessageConfigurationPrefix;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.common.code.message.MessageType;
+import com.ums.schedule.fixture.template.TemplateResultBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ class SendMessageFactoryTest {
 
     @BeforeEach
     void setUp() {
-        template = mock(TemplateResult.class);
+        template = TemplateResultBuilder.builder().build();
     }
 
     @Test

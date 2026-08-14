@@ -76,7 +76,7 @@ class S3EmailTemplateQueryServiceTest {
         @Nested
         @DisplayName("header 템플릿")
         class WhenHeaderTemplate {
-            private static final String headerKey = "/template/email/jang314/my_template/header.html";;
+            private static final String headerKey = "/template/email/jang314/my_template/email/header.html";
 
             @Test
             @DisplayName("header 템플릿을 조회한다.")
@@ -128,7 +128,7 @@ class S3EmailTemplateQueryServiceTest {
         @Nested
         @DisplayName("body 템플릿")
         class WhenBodyTemplate {
-            private static final String bodyKey = "/template/email/jang314/my_template/body.html";
+            private static final String bodyKey = "/template/email/jang314/my_template/email/body.html";
 
             @Test
             @DisplayName("body 템플릿을 조회한다.")
@@ -180,7 +180,7 @@ class S3EmailTemplateQueryServiceTest {
         @Nested
         @DisplayName("footer 템플릿")
         class WhenFooterTemplate {
-            private static final String footerKey = "/template/email/jang314/my_template/footer.html";
+            private static final String footerKey = "/template/email/jang314/my_template/email/footer.html";
 
             @Test
             @DisplayName("footer 템플릿을 조회한다.")
@@ -231,7 +231,7 @@ class S3EmailTemplateQueryServiceTest {
         @Nested
         @DisplayName("cover 템플릿")
         class WhenCoverTemplate {
-            private static final String coverKey = "/template/email/jang314/my_template/cover.html";
+            private static final String coverKey = "/template/email/jang314/my_template/email/cover.html";
 
             @Test
             @DisplayName("cover 템플릿을 조회한다.")
@@ -284,8 +284,8 @@ class S3EmailTemplateQueryServiceTest {
     @Nested
     @DisplayName("첨부파일 템플릿")
     class WhenAttachmentTemplate {
-        private static final String attachmentKey = "/template/email/jang314/my_template/attachment/attachment.pdf";
-        private static final String fileKeyTemplate = "/template/email/jang314/my_template/attachment/${target_name}.pdf";
+        private static final String attachmentKey = "/template/email/jang314/my_template/email/attachment/attachment.pdf";
+        private static final String fileKeyTemplate = "/template/email/jang314/my_template/email/attachment/${target_name}.pdf";
 
         @BeforeEach
         void setUp() {
@@ -514,7 +514,7 @@ class S3EmailTemplateQueryServiceTest {
 
                 EmailTemplateResult template = templateService.findTemplate(command);
 
-                assertThat(template.emailTemplate().imageDir()).isEqualTo("/template/email/hyejin_company/my_template/image");
+                assertThat(template.emailTemplate().imageDir()).isEqualTo("/template/email/hyejin_company/my_template/email/image");
             }
         }
     }

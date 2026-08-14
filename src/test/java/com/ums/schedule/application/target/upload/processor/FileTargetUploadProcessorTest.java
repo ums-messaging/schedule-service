@@ -10,6 +10,9 @@ import com.ums.schedule.application.target.exception.TargetUploadReportNotFoundE
 import com.ums.schedule.application.target.processor.FileTargetUploadProcessor;
 import com.ums.schedule.application.target.reader.model.FileTargetUploadRequestedEvent;
 import com.ums.schedule.application.target.report.model.TargetUploadRequestResult;
+import com.ums.schedule.common.code.api.CommonErrorCode;
+import com.ums.schedule.common.code.api.TargetUploadErrorCode;
+import com.ums.schedule.common.code.target_upload.TargetUploadConfiguration;
 import com.ums.schedule.common.code.target_upload.TargetUploadType;
 import com.ums.schedule.common.exception.file.FileNotFoundException;
 import com.ums.schedule.config.properties.TargetUploadProperties;
@@ -31,6 +34,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -146,10 +150,18 @@ class FileTargetUploadProcessorTest {
         void shouldThrowException_whenConfiguredBatchSizeIsEmpty() {
             doReturn(10000L).when(properties).getFileLimitSize();
             doReturn(0).when(properties).getBatchSize();
+            doReturn(100).when(properties).getPartitionSize();
+
             givenFileMetadata();
 
             assertThatThrownBy(() -> processor.request(id))
-                    .isInstanceOf(TargetUploadReportNotConfiguredException.class);
+                    .isInstanceOf(TargetUploadReportNotConfiguredException.class)
+                    .extracting(v -> ((TargetUploadReportNotConfiguredException) v))
+                    .extracting(v ->
+                            assertThat(v.getArgs())
+                                    .contains(TargetUploadConfiguration.FILE_BATCH_SIZE.description())
+                    )
+            ;
         }
 
         @Test
@@ -159,9 +171,29 @@ class FileTargetUploadProcessorTest {
             doReturn(response).when(fileRepository).getFileMetadata(anyString());
             doReturn(10000L).when(properties).getFileLimitSize();
             doReturn(100).when(properties).getBatchSize();
+            doReturn(10).when(properties).getPartitionSize();
 
             assertThatThrownBy(() -> processor.request(id))
                     .isInstanceOf(TargetUploadProcessException.class);
+        }
+
+        @Test
+        @DisplayName("파티션 크기가 존재하지 않으면 예외가 발생한다.")
+        void shouldThrowException_whenPartitionSizeDoesNotExist() {
+            AwsS3FileMetadataResponse response = responseBuilder.contentLength(20000L).build();
+            doReturn(response).when(fileRepository).getFileMetadata(anyString());
+            doReturn(100000L).when(properties).getFileLimitSize();
+            doReturn(100).when(properties).getBatchSize();
+            doReturn(0).when(properties).getPartitionSize();
+
+            assertThatThrownBy(() -> processor.request(id))
+                    .isInstanceOf(TargetUploadReportNotConfiguredException.class)
+                    .extracting(v -> ((TargetUploadReportNotConfiguredException) v))
+                    .extracting(v ->
+                            assertThat(v.getArgs())
+                                    .contains(TargetUploadConfiguration.PARTITION_SIZE.description())
+                    )
+            ;
         }
     }
 
@@ -209,5 +241,6 @@ class FileTargetUploadProcessorTest {
     private void givenConfiguration() {
         doReturn(1000).when(properties).getBatchSize();
         doReturn(3000L).when(properties).getFileLimitSize();
+        doReturn(100).when(properties).getPartitionSize();
     }
 }

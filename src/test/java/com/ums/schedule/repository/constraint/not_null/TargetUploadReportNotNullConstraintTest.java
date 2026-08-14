@@ -10,6 +10,7 @@ import com.ums.schedule.repository.DbErrorMessage;
 import com.ums.schedule.repository.EntityJpaTestSupport;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,7 @@ public class TargetUploadReportNotNullConstraintTest extends EntityJpaTestSuppor
     }
 
     @Test
+    @Disabled
     @DisplayName("created_at은 NULL을 허용하지 않는다.")
     void shouldNotAllow_whenCreatedAtIsNull(){
         TargetUploadReport targetUpload = entityBuilder

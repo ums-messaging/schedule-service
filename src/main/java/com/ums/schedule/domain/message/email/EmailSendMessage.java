@@ -74,9 +74,14 @@ public class EmailSendMessage implements ChannelMessage {
         sendMessage.assignTemplateKeyInfo(context.headerKey(), context.bodyKey(), context.footerKey());
         sendMessage.assignSendMessageAndResolveTitle(message, context.title());
         sendMessage.assignImageDir(context.imageDir());
+        sendMessage.assignEmailType(context.emailType());
         sendMessage.assignSecurityMailPolicy(context.securityMail());
         sendMessage.assignConvertPolicy(context.convertMail());
         return sendMessage;
+    }
+
+    private void assignEmailType(EmailType emailType) {
+        this.emailType = Objects.requireNonNull(emailType, "emailType is required.");
     }
 
     private void assignSecurityMailPolicy(SecurityMail securityMail) {

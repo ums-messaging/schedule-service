@@ -189,7 +189,7 @@ class SendRequestCreateServiceTest {
             doThrow(new DataIntegrityViolationException("not null")).when(sendRequestRepository).save(any(SendRequest.class));
 
             assertThatThrownBy(() -> sendRequestService.create(command, sendMessage));
-            verify(targetUploadService).create(any(), any());
+            verify(targetUploadService, never()).create(any(), any());
         }
     }
 

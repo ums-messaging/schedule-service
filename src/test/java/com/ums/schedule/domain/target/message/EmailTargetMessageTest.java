@@ -41,6 +41,7 @@ class EmailTargetMessageTest {
                 .attachmentList(List.of());
 
         this.targetMessageData = new TargetMessageData(
+                1,
                 createTargetData(),
                 createDataParam()
         );

@@ -14,10 +14,13 @@ import com.ums.schedule.domain.request.customer.CustomerRequestKey;
 import com.ums.schedule.domain.schedule.Schedule;
 import com.ums.schedule.domain.schedule.ScheduleJpaRepository;
 import com.ums.schedule.domain.message.SendMessage;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SendRequestCreateService {
@@ -36,11 +39,10 @@ public class SendRequestCreateService {
 
         SendRequestCreateContext context = command.toContext(schedule, customerRequestKey, message, retryCount);
         SendRequest sendRequest = SendRequest.of(context);
+        sendRequestRepository.save(sendRequest);
 
         TargetUploadCreateCommand uploadCommand = TargetUploadCreateCommand.of(sendRequest, command);
         TargetUploadResult result = targetUploadService.create(sendRequest, uploadCommand);
-
-        sendRequestRepository.save(sendRequest);
 
         return SendRequestCreateResult.of(message.getId(), sendRequest, result);
     }

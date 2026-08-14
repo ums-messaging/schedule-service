@@ -28,7 +28,7 @@ public class SendMessageFactory {
         String advertisePrefix = getAdvertisingPrefix(messageType);
 
         SendMessageCreateCommand command =
-                SendMessageCreateCommand.of(messageType, advertisePrefix);
+                SendMessageCreateCommand.of(template, messageType, advertisePrefix);
 
         return SendMessage.of(command);
     }

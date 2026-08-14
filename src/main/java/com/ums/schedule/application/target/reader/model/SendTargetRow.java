@@ -19,7 +19,7 @@ public record SendTargetRow (
 
     public TargetMessageData toTargetData() {
         Map<String, Object> messageData = extractMessageVariable();
-        return TargetMessageData.of(messageData);
+        return TargetMessageData.of(rowNo, messageData);
     }
 
     public Map<String, Object> extractMessageVariable() {

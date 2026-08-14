@@ -3,9 +3,11 @@ package com.ums.schedule.application.ums.common.template.loader;
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.application.ums.common.exception.TemplateLoadFailException;
 import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplate;
+import com.ums.schedule.application.ums.email.exception.EmailMessageNotFoundException;
 import com.ums.schedule.common.code.api.TemplateErrorCode;
 import com.ums.schedule.common.code.email.EmailMessageSection;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
+import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class EmailTemplateLoader implements TemplateLoader {
+    private final EmailSendMessageJpaRepository messageRepository;
     private final AwsS3Repository fileRepository;
     private final Configuration configuration;
 

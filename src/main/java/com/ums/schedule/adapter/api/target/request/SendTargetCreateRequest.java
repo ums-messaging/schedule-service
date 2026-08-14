@@ -14,10 +14,6 @@ public record SendTargetCreateRequest(
         Map<String, Object> messageVariable
 )  {
 
-    public TargetMessageData toTargetData() {
-        Map<SendTargetColumn, String> targetData = resolveTargetData();
-        return new TargetMessageData(targetData, this.messageVariable);
-    }
 
     public Map<SendTargetColumn, String> resolveTargetData() {
         return Map.of(

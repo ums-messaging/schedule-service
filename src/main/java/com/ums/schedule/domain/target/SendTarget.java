@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.target;
 
-import com.github.f4b6a3.uuid.UuidCreator;
-import com.ums.schedule.common.exception.BusinessException;
+import com.ums.schedule.application.ums.common.target.context.SendTargetCreateContext;
+import com.ums.schedule.common.code.target.SendTargetRowStatus;
 import com.ums.schedule.common.util.JsonUtil;
 import com.ums.schedule.domain.request.converter.UuidBinaryConverter;
 import com.ums.schedule.domain.target.state.SendTargetCreateState;
@@ -62,7 +62,8 @@ public class SendTarget {
     @Convert(converter = SendTargetStatusConverter.class)
     private SendTargetState state;
 
-    @Column(name = "result_message")
+    @Lob
+    @Column(name = "result_message", columnDefinition = "LONGTEXT")
     private String resultMessage;
 
     @Column(name = "attempt_no", nullable = false)
@@ -85,28 +86,22 @@ public class SendTarget {
     @JoinColumn(name = "target_message_id")
     private TargetMessage targetMessage;
 
-    public static SendTarget of(TargetUploadReport targetUpload, TargetMessageData targetMessageData, TargetMessage targetMessage) {
+    public static SendTarget of(TargetUploadReport targetUploadReport, SendTargetCreateContext context) {
         SendTarget target = new SendTarget();
-        target.initializeTargetData(targetMessageData);
-        target.changeTargetStatus(new SendTargetCreateState());
-        target.dataParamToJson(targetMessageData);
-        target.applyTargetUpload(targetUpload);
-        target.assignTargetMessage(targetMessage);
+        target.initializeTargetData(context.targetMessageData());
+        target.initializeState(context.state());
+        target.dataParamToJson(context.partitionNo(), context.targetMessageData());
+        target.applyTargetUpload(targetUploadReport);
+        target.assignTargetMessage(context.targetMessage());
         return target;
     }
 
-    public static SendTarget failureOf(TargetUploadReport report, TargetMessageData row, String errorMessage) {
-        SendTarget target = new SendTarget();
-        try {
-            target.initializeTargetData(row);
-            target.dataParamToJson(row);
-            target.onError(errorMessage);
-            return target;
-        } catch (BusinessException e) {
-            target.onError(errorMessage);
+    private void initializeState(SendTargetRowStatus state) {
+        if(state == SendTargetRowStatus.FAIL) {
+            changeTargetStatus(new SendTargetFailState());
+            return;
         }
-        target.applyTargetUpload(report);
-        return target;
+        changeTargetStatus(new SendTargetCreateState());
     }
 
     public void assignTargetMessage(TargetMessage targetMessage) {
@@ -122,12 +117,6 @@ public class SendTarget {
         this.targetName = targetMap.get(SendTargetColumn.TARGET_NAME);
     }
 
-
-    protected void onFailure(String errorMessage) {
-        changeTargetStatus(new SendTargetFailState());
-        assignResultMessage(errorMessage);
-    }
-
     protected void assignResultMessage(String message) {
         this.resultMessage = message;
     }
@@ -137,15 +126,29 @@ public class SendTarget {
     }
 
     private void applyTargetUpload(TargetUploadReport targetUpload) {
-        this.targetUpload = targetUpload;
+        this.targetUpload = Objects.requireNonNull(targetUpload, "target upload is required.");
     }
 
-    private void dataParamToJson(TargetMessageData dataParam) {
-        String messageVariable = JsonUtil.toJson(dataParam.getTargetParam());
+    private void dataParamToJson(Integer partitionNo, TargetMessageData dataParam) {
+        Map<String, Object> newDataParam = putDataParam(partitionNo, dataParam);
+        String messageVariable = JsonUtil.toJson(newDataParam);
+
         if(!StringUtils.hasText(messageVariable)) {
-            messageVariable = dataParam.toString();
+            this.messageVariable = dataParam.toString();
+            return;
         }
         this.messageVariable = messageVariable;
+    }
+
+    private Map<String, Object> putDataParam(Integer partitionNo, TargetMessageData dataParam) {
+        Map<String, Object> targetData = new HashMap<>();
+        targetData.put("partitionNo", partitionNo);
+        dataParam.getTargetParam().entrySet()
+                .stream()
+                .forEach(v -> {
+                    targetData.put(v.getKey(), v.getValue());
+                });
+        return targetData;
     }
 
     public void changeTargetStatus(SendTargetState state) {

@@ -1,5 +1,6 @@
 package com.ums.schedule.fixture.entity;
 
+import com.github.f4b6a3.tsid.TsidCreator;
 import com.ums.schedule.application.sendrequest.command.SendRequestCreateCommand;
 import com.ums.schedule.application.sendrequest.command.SendRequestUpdateCommand;
 import com.ums.schedule.common.code.common.ChannelType;
@@ -39,6 +40,7 @@ public class SendRequestEntityBuilder {
 
     private SendRequestEntityBuilder() {
         CustomerRequestKey customerKey = CustomerRequestKey.of("jang314", "request123");
+        this.id = TsidCreator.getTsid().toLong();
         this.senderKey = "test@test.com";
         this.templateKey = UUID.randomUUID().toString();
         this.channelType = ChannelType.EMAIL;
@@ -130,7 +132,8 @@ public class SendRequestEntityBuilder {
                 createdAt,
                 requestedAt,
                 sendStartedAt,
-                sendEndedAt
+                sendEndedAt,
+                true
         );
 
         return sendRequest;

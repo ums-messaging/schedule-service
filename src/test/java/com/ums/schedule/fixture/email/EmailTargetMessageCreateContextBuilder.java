@@ -54,12 +54,12 @@ public class EmailTargetMessageCreateContextBuilder {
 
     public EmailTargetMessageCreateContext build() {
         return new EmailTargetMessageCreateContext(
-            sendMessage,
-            subject,
-            header,
-            bodyTemplate,
-            footer,
-            attachmentList
+                subject,
+                header,
+                bodyTemplate,
+                footer,
+                sendMessage,
+                attachmentList
         );
     }
 }

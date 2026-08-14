@@ -1,13 +1,14 @@
 package com.ums.schedule.fixture.target_upload;
 
-import com.ums.schedule.application.target.uploader.model.TargetUploadContext;
+import com.ums.schedule.application.target.uploader.model.EmailGeneratorContext;
 import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplate;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
 
 import java.util.UUID;
 
 public class TargetUploadContextBuilder {
-    private UUID uploadId;
+    private TargetUploadReport targetUploadReport;
     private EmailTemplate template;
     private EmailSendMessage sendMessage;
 
@@ -17,8 +18,8 @@ public class TargetUploadContextBuilder {
 
     private TargetUploadContextBuilder() { }
 
-    public TargetUploadContextBuilder uploadId(UUID uuid) {
-        this.uploadId = uuid;
+    public TargetUploadContextBuilder targetUploadReport(TargetUploadReport targetUploadReport) {
+        this.targetUploadReport = targetUploadReport;
         return this;
     }
 
@@ -32,11 +33,11 @@ public class TargetUploadContextBuilder {
         return this;
     }
 
-    public TargetUploadContext build() {
-        return new TargetUploadContext(
-                uploadId,
-                template,
-                sendMessage
+    public EmailGeneratorContext build() {
+        return new EmailGeneratorContext(
+                targetUploadReport,
+                sendMessage,
+                template
         );
     }
 }

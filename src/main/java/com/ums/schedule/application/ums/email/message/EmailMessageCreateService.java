@@ -1,5 +1,6 @@
 package com.ums.schedule.application.ums.email.message;
 
+import com.ums.schedule.adapter.api.request.email.request.EmailAttachmentRequest;
 import com.ums.schedule.adapter.api.request.email.request.EmailSendCreateRequest;
 import com.ums.schedule.application.ums.email.attachment.EmailAttachmentCreateService;
 import com.ums.schedule.application.ums.email.message.model.EmailMessageCreateContext;
@@ -68,13 +69,20 @@ public class EmailMessageCreateService {
     }
 
     private EmailTemplateDetailQuery toQuery(String customerId, EmailSendCreateRequest request) {
-        List<EmailAttachmentDetailQuery> attachmentQueries = request.attachmentList().stream()
+        List<EmailAttachmentDetailQuery> attachmentQueries =
+                Optional.ofNullable(request.attachmentList())
+                                .map(this::attachmentListToQuery)
+                        .orElseGet(() -> List.of());
+
+        return request.toQuery(customerId, attachmentQueries);
+    }
+
+    private List<EmailAttachmentDetailQuery> attachmentListToQuery(List<EmailAttachmentRequest> attachmentList) {
+        return attachmentList.stream()
                 .map(l -> {
                     EnumMapperValue attachmentType = mapperFactory.findEnumMapperValue(EmailCode.ATTACHMENT_TYPE, l.type());
                     return l.toQuery(attachmentType);
                 })
                 .toList();
-
-        return request.toQuery(customerId, attachmentQueries);
     }
 }

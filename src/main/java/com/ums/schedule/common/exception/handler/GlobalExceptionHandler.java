@@ -20,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 @RestControllerAdvice
@@ -52,19 +53,31 @@ public class GlobalExceptionHandler {
         ApiResponseCode responseCode = ApiResponseCode.valueOf(errorCode.code());
 
         return ResponseEntity.status(responseCode.getHttpStatus())
-                .body(ApiResponse.of(responseCode, errorCode));
+                .body(ApiResponse.of(responseCode, MessageFormat.format(
+                        e.getErrorCode().description(),
+                        e.getArgs()
+                )));
     }
 
     @ExceptionHandler(ExternalSystemException.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handle(ExternalSystemException e) {
         return ResponseEntity.internalServerError()
-                .body(ApiResponse.of(ApiResponseCode.SERVER_ERROR, e.getErrorCode()));
+                .body(ApiResponse.of(ApiResponseCode.SERVER_ERROR,
+                        MessageFormat.format(
+                                e.getErrorCode().description(),
+                                e.getArgs()
+                        )
+                        ))
+                ;
     }
 
     @ExceptionHandler(EnumMapperNotFoundException.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handlerEnumMapperException(EnumMapperNotFoundException e) {
         return ResponseEntity.internalServerError()
-                .body(ApiResponse.of(ApiResponseCode.SERVER_ERROR, e.getErrorCode()));
+                .body(ApiResponse.of(ApiResponseCode.SERVER_ERROR, MessageFormat.format(
+                        e.getErrorCode().description(),
+                        e.getArgs()
+                )));
     }
 
 

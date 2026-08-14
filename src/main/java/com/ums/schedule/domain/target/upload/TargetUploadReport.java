@@ -25,6 +25,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -35,11 +36,9 @@ import java.util.stream.Collectors;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TargetUploadReport {
+public class TargetUploadReport implements Persistable<UUID> {
     @Id
     @Column(name = "report_id")
-    @UuidGenerator
-    @GeneratedValue
     @Convert(converter = UuidBinaryConverter.class)
     private UUID id;
 
@@ -48,7 +47,7 @@ public class TargetUploadReport {
     private TargetUploadType uploadType;
 
     @Column(name = "upload_format")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private TargetUploadFormatEnum uploadFormat;
 
     private Long totalCount;
@@ -87,18 +86,19 @@ public class TargetUploadReport {
     @JoinColumn(name = "request_id", nullable = false)
     private SendRequest sendRequest;
 
+    @Transient
+    private boolean isNew;
+
     public static TargetUploadReport of(TargetUploadReportCreateContext context) {
         TargetUploadReport targetUpload = new TargetUploadReport();
         String id = targetUpload.generateId();
 
         TargetUploadState state = targetUpload.initializeEventAndState();
-
         targetUpload.assignUploadType(context.uploadType());
         targetUpload.initializeSendRequestAndChangeState(state, context.sendRequest());
         targetUpload.initializeDownloadKey(context.downloadKeyPrefix(), id);
         targetUpload.initializeFileUploadTypeInfo(context, id);
         targetUpload.initializeCreatedAt();
-
         return targetUpload;
     }
 
@@ -126,6 +126,7 @@ public class TargetUploadReport {
 
     private String generateId() {
         this.id = UuidCreator.getTimeOrdered();
+        this.isNew = true;
         return this.id.toString();
     }
 
@@ -254,5 +255,17 @@ public class TargetUploadReport {
 
     public void startTargetUpload() {
         onEvent(TargetUploadEvent.TARGET_UPLOAD_STARTED);
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if(this.createdAt == null) {
+            initializeCreatedAt();
+        }
     }
 }

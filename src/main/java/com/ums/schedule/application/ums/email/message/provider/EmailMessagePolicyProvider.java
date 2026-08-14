@@ -26,10 +26,11 @@ public class EmailMessagePolicyProvider {
     private final SecurityMailAssembler securityAssembler;
 
     public EmailPolicyResult provide(EmailSendCreateRequest request){
+        EnumMapperValue emailType = mapperFactory.findEnumMapperValue(EmailCode.EMAIL_TYPE, request.mailType());
         SecurityMail securityMail = createSecurityMail(request);
         ConvertMail convertMail = resolveEmailConvertPolicy(request, securityMail);
 
-        return EmailPolicyResult.of(securityMail, convertMail);
+        return EmailPolicyResult.of(emailType, securityMail, convertMail);
     }
 
     private ConvertMail resolveEmailConvertPolicy(EmailSendCreateRequest request, SecurityMail securityMail) {

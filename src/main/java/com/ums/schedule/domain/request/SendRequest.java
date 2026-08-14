@@ -21,6 +21,7 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -34,9 +35,8 @@ import java.util.Optional;
             )})
 @Getter
 @AllArgsConstructor
-public class SendRequest {
+public class SendRequest implements Persistable<Long> {
     @Id
-    @Tsid
     @Column(name = "send_request_id")
     private Long id;
 
@@ -80,6 +80,8 @@ public class SendRequest {
     private LocalDateTime sendStartedAt;
     private LocalDateTime sendCompletedAt;
 
+    @Transient
+    private boolean isNew;
     public static SendRequest of(SendRequestCreateContext context) {
         SendRequest request = new SendRequest();
         request.assignChannelType(context.channelType());
@@ -103,6 +105,7 @@ public class SendRequest {
 
     protected SendRequest() {
         this.id = TsidCreator.getTsid().toLong();
+        this.isNew = true;
     }
 
     private void initializeStatusAndEvent() {
@@ -209,4 +212,15 @@ public class SendRequest {
         return this.currentTargetUpload == targetUploadReport;
     }
 
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if(this.createdAt == null) {
+            initializeCreateAt();
+        }
+    }
 }

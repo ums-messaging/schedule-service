@@ -11,10 +11,11 @@ public record SendTargetSaveResult(
         List<SendTarget> failedTargetList
 ) {
     public static SendTargetSaveResult of(List<SendTarget> targetList) {
-        List<SendTarget> completedList = targetList.stream()
+        List<SendTarget> snapshot = List.copyOf(targetList);
+        List<SendTarget> completedList = snapshot.stream()
                 .filter(target -> target.getState().getCurrentCode() != SendTargetStatus.FAIL)
                 .toList();
-        List<SendTarget> failedList = targetList.stream()
+        List<SendTarget> failedList = snapshot.stream()
                 .filter(target -> target.getState().getCurrentCode() == SendTargetStatus.FAIL)
                 .toList();
         return new SendTargetSaveResult(completedList, failedList);
@@ -34,5 +35,13 @@ public record SendTargetSaveResult(
                 .findAny()
                 .orElse(List.of());
         return new SendTargetSaveResult(completedList, failedList);
+    }
+
+    public Integer succeedCount() {
+        return this.completedTargetList.size();
+    }
+
+    public Integer failedCount() {
+        return this.failedTargetList.size();
     }
 }

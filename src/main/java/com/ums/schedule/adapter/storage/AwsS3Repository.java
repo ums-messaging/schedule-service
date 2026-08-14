@@ -23,7 +23,7 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class AwsS3Repository {
     private final S3Client s3Client;
-    private final String BUCKET_NAME = "ums-file-bucket-01";
+    private final String BUCKET_NAME = "ums-proj-bucket-01";
 
     public AwsS3FileMetadataResponse getFileMetadata(String key) {
         if(!existsFile(key)) {
@@ -73,6 +73,7 @@ public class AwsS3Repository {
     public InputStream getFileContent(String key) {
         ResponseInputStream<GetObjectResponse> inputStream = s3Client.getObject(
                 GetObjectRequest.builder()
+                        .bucket(BUCKET_NAME)
                         .key(key)
                         .build()
         );

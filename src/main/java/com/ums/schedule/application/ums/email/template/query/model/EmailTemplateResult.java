@@ -14,8 +14,9 @@ public record EmailTemplateResult(
         EmailTemplateDetailResult emailTemplate
 ) {
 
-    public static EmailTemplateResult of(EmailTemplateDetailResult detail) {
-        return new EmailTemplateResult(null, detail);
+    public static EmailTemplateResult of(String templateKey, String messageType, EmailTemplateDetailResult detail) {
+        TemplateResult template = TemplateResult.of(templateKey, messageType);
+        return new EmailTemplateResult(template, detail);
     }
 
     public String title() {

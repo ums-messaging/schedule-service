@@ -39,15 +39,15 @@ public class TargetUploadPersistTest extends EntityJpaTestSupport {
     @Test
     @DisplayName("TARGET_UPLOAD_REPORT 저장 테스트")
     void shouldPersist_whenTargetUploadCreate() {
-        TargetUploadReport targetUploadReport = TargetUploadReportEntityBuilder.builder().id(null)
-                .id(null)
+        TargetUploadReport targetUploadReport = TargetUploadReportEntityBuilder.builder()
+                .id(UUID.randomUUID())
                 .sendRequest(sendRequest)
                 .build();
 
         persist(targetUploadReport);
-        UUID id = targetUploadReport.getId();
+        entityManager.clear();
 
-        TargetUploadReport findTargetUploadReport = entityManager.find(TargetUploadReport.class, id);
+        TargetUploadReport findTargetUploadReport = entityManager.find(TargetUploadReport.class, targetUploadReport.getId());
 
         assertThat(findTargetUploadReport).isNotNull();
     }

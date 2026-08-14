@@ -6,4 +6,12 @@ public record TemplateResult(
         String templateType,
         String channelType
 ) {
+    public static TemplateResult of(String templateKey, String templateType) {
+        return new TemplateResult(
+                templateKey,
+                null,
+                templateType,
+                null
+        );
+    }
 }

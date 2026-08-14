@@ -20,7 +20,7 @@ import java.util.*;
 @AllArgsConstructor
 public class SendMessage {
     @Id
-    @Column(columnDefinition = "BINARY(16)")
+    @Column
     @GeneratedValue
     @UuidGenerator
     @Convert(converter = UuidBinaryConverter.class)
@@ -38,7 +38,12 @@ public class SendMessage {
     public static SendMessage of(SendMessageCreateCommand command) {
         SendMessage message = new SendMessage();
         message.assignMessageTypeAndAdvertisingPrefix(command.messageType(), command.advertisingPrefix());
+        message.assignTemplateKey(command.templateKey());
         return message;
+    }
+
+    private void assignTemplateKey(String templateKey) {
+        this.templateKey = Objects.requireNonNull(templateKey, "template_key is required.");
     }
 
     private void assignMessageTypeAndAdvertisingPrefix(MessageType messageType, String messagePrefix) {

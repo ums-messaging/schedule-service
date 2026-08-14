@@ -10,12 +10,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public record TargetMessageData(
+        Integer rowNo,
         Map<SendTargetColumn, String> targetData,
         Map<String, Object> dataParam
 ) {
-
-
-    public static TargetMessageData of(Map<String, Object> dataParam) {
+    public static TargetMessageData of(Integer rowNo, Map<String, Object> dataParam) {
         Map<SendTargetColumn, String> targetData = Arrays.stream(SendTargetColumn.class.getEnumConstants())
                 .filter(col -> dataParam.containsKey(col.value()))
                 .collect(Collectors.toMap(
@@ -23,7 +22,7 @@ public record TargetMessageData(
                         col -> String.valueOf(dataParam.get(col.value()))
                 ));
 
-        return new TargetMessageData(targetData, dataParam);
+        return new TargetMessageData(rowNo, targetData, dataParam);
     }
 
     public Map<String, Object> getTargetParam() {

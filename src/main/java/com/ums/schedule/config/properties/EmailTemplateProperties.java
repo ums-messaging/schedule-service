@@ -17,5 +17,4 @@ public class EmailTemplateProperties {
     private String templateKeyPrefix;
     private String imageKeySuffix;
     private String attachmentKeySuffix;
-
 }

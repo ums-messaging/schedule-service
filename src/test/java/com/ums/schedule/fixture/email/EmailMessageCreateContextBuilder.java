@@ -2,10 +2,12 @@ package com.ums.schedule.fixture.email;
 
 import com.ums.schedule.application.ums.email.message.model.EmailMessageCreateContext;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
+import com.ums.schedule.common.code.email.EmailType;
 import com.ums.schedule.domain.message.email.convert.ConvertMail;
 import com.ums.schedule.domain.message.email.security.SecurityMailPolicy;
 
 public class EmailMessageCreateContextBuilder {
+    private EmailType emailType;
     private String title;
     private String headerKey;
     private String bodyKey;
@@ -23,7 +25,10 @@ public class EmailMessageCreateContextBuilder {
     private EmailMessageCreateContextBuilder() {
 
     }
-
+    public EmailMessageCreateContextBuilder emailType(EmailType emailType) {
+        this.emailType = emailType;
+        return this;
+    }
     public EmailMessageCreateContextBuilder title(String title) {
         this.title = title;
         return this;
@@ -69,6 +74,7 @@ public class EmailMessageCreateContextBuilder {
 
     public EmailMessageCreateContext build() {
         return new EmailMessageCreateContext(
+                emailType,
                 title,
                 headerKey,
                 bodyKey,

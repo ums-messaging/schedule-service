@@ -14,6 +14,7 @@ import com.ums.schedule.application.ums.email.template.query.EmailTemplateQueryS
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailResult;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateResult;
 import com.ums.schedule.common.code.email.EmailCode;
+import com.ums.schedule.common.code.email.EmailType;
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.exception.DbNotFoundException;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
@@ -21,6 +22,7 @@ import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.message.email.convert.ConvertMail;
+import com.ums.schedule.domain.request.message.SendMessageBuilder;
 import com.ums.schedule.fixture.email.convert.EmailPolicyResultBuilder;
 import com.ums.schedule.fixture.template.EmailTemplateContentResultBuilder;
 import com.ums.schedule.fixture.template.EmailTemplateDetailResultBuilder;
@@ -110,7 +112,7 @@ class EmailMessageCreateServiceTest {
         void setUp() {
             givenTemplate();
             givenEmailPolicyResult();
-            doReturn(mock(SendMessage.class)).when(factory).createSendMessage(any());
+            doReturn(SendMessageBuilder.builder().build()).when(factory).createSendMessage(any());
             doReturn(mock(EmailSendMessage.class)).when(repository).save(any());
         }
 
@@ -205,6 +207,7 @@ class EmailMessageCreateServiceTest {
 
     private void givenEmailPolicyResult() {
         EmailPolicyResult policyResult = EmailPolicyResultBuilder.builder()
+                .emailType(EmailType.PLAIN)
                 .convertMail(mock(ConvertMail.class))
                 .securityMail(null)
                 .build();

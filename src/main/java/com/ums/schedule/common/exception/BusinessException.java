@@ -3,6 +3,8 @@ package com.ums.schedule.common.exception;
 import com.ums.schedule.common.code.api.ErrorCode;
 import lombok.Getter;
 
+import java.text.MessageFormat;
+
 @Getter
 public abstract class BusinessException extends RuntimeException {
     private final Object id;
@@ -19,5 +21,9 @@ public abstract class BusinessException extends RuntimeException {
         this.id = id;
         this.errorCode = errorCode;
         this.args = args;
+    }
+
+    public String getErrorMessage() {
+        return MessageFormat.format(errorCode.description(), args);
     }
 }

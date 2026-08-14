@@ -12,16 +12,21 @@ public record FileTargetUploadRequestedEvent(
         UUID messageId,
         UUID uploadId,
         String uploadKey,
+        Integer partitionSize,
         Integer batchSize
 ) {
 
-    public static FileTargetUploadRequestedEvent of(TargetUploadReport report, TargetUploadRequestResult result, Integer batchSize) {
+    public static FileTargetUploadRequestedEvent of(TargetUploadReport report,
+                                                    TargetUploadRequestResult result,
+                                                    Integer partitionSize,
+                                                    Integer batchSize) {
         return new FileTargetUploadRequestedEvent(
                 result.channelType(),
                 result.requestId(),
                 result.messageId(),
                 report.getId(),
                 report.getUploadKey(),
+                partitionSize,
                 batchSize
         );
     }

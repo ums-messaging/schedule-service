@@ -11,6 +11,7 @@ public class FileTargetUploadRequestedEventBuilder {
     private UUID messageId;
     private UUID uploadId;
     private String uploadKey;
+    private Integer partitionSize;
     private Integer batchSize;
 
     public static FileTargetUploadRequestedEventBuilder builder() {
@@ -24,6 +25,12 @@ public class FileTargetUploadRequestedEventBuilder {
         this.uploadId = UUID.randomUUID();
         this.messageId = UUID.randomUUID();
         this.uploadKey = "target_upload.xlsx";
+        this.partitionSize = 100;
+    }
+
+    public FileTargetUploadRequestedEventBuilder partitionSize(Integer partitionSize) {
+        this.partitionSize = partitionSize;
+        return this;
     }
 
     public FileTargetUploadRequestedEventBuilder channelType(ChannelType channelType) {
@@ -63,6 +70,7 @@ public class FileTargetUploadRequestedEventBuilder {
                 messageId,
                 uploadId,
                 uploadKey,
+                partitionSize,
                 batchSize
         );
     }

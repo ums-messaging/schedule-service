@@ -2,9 +2,17 @@ package com.ums.schedule.application.sendrequest.target;
 
 import com.ums.schedule.application.sendrequest.target.event.SendTargetFailedEvent;
 import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
+import com.ums.schedule.application.target.reader.model.TargetRowResult;
+import com.ums.schedule.application.ums.common.target.context.SendTargetCreateContext;
+import com.ums.schedule.application.ums.common.target.result.TargetMessageResult;
 import com.ums.schedule.common.exception.BusinessException;
 import com.ums.schedule.domain.target.SendTarget;
+import com.ums.schedule.domain.target.state.SendTargetFailState;
+import com.ums.schedule.domain.target.upload.TargetUploadReport;
+import com.ums.schedule.domain.target.upload.TargetUploadReportJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -15,49 +23,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SendTargetUploadService {
-    private final ApplicationEventPublisher failTargetUploadPublisher;
+    private final ApplicationEventPublisher publisher;
     private final SendTargetService targetService;
 
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public List<SendTargetSaveResult> upload(List<SendTarget> targetList, int partitionSize) {
-        List<SendTargetSaveResult> results = new ArrayList<>();
-
+    public SendTargetSaveResult upload(TargetUploadReport targetUploadReport, List<TargetMessageResult> results) {
+        List<SendTarget> targetSaveResults = new ArrayList<>();
+        List<SendTargetCreateContext> targetList = results.stream()
+                .map(SendTargetCreateContext::of)
+                .toList();
+        long startMs = System.currentTimeMillis();
         try {
-            Map<Integer, List<SendTarget>> groupedTargetMap = groupedSendTargetList(targetList, partitionSize);
-
-            Set<Map.Entry<Integer, List<SendTarget>>> entries = groupedTargetMap.entrySet();
-
-            for (Map.Entry<Integer, List<SendTarget>> entry : entries) {
-                SendTargetSaveResult saveResult = null;
-                try {
-                    saveResult = targetService.saveTargetList(entry.getValue());
-                } catch (DataIntegrityViolationException e) {
-                    saveResult = targetService.saveTarget(entry.getValue());
-                } finally {
-                    results.add(saveResult);
-                }
-            }
+            targetSaveResults = targetService.saveTargetList(targetUploadReport, targetList);
         } catch (BusinessException e) {
-            List<SendTarget> failures = targetList.stream()
-                    .map(target -> target.onError(e.getMessage()))
-                    .toList();
-            results.add(SendTargetSaveResult.of(failures));
+            targetSaveResults = targetService.saveTarget(targetUploadReport, targetList);
         } finally {
-            SendTargetFailedEvent event = SendTargetFailedEvent.of(results);
-
+            long endMs = System.currentTimeMillis();
+            SendTargetSaveResult result = SendTargetSaveResult.of(targetSaveResults);
+            SendTargetFailedEvent event = SendTargetFailedEvent.of(result);
             if(!event.failureTargetList().isEmpty()) {
-                failTargetUploadPublisher.publishEvent(event);
+                publisher.publishEvent(event);
             }
+            return result;
         }
-        return results;
     }
-    private Map<Integer, List<SendTarget>> groupedSendTargetList(List<SendTarget> targetList, int partitionSize) {
-        return targetList.stream()
-                .collect(Collectors.groupingBy(i -> (targetList.indexOf(i) / partitionSize)));
-    }
+
 }

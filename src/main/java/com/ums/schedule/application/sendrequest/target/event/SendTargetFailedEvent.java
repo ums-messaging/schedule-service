@@ -10,12 +10,10 @@ public record SendTargetFailedEvent(
         List<SendTarget> failureTargetList
 ) {
 
-    public static SendTargetFailedEvent of(List<SendTargetSaveResult> results) {
+    public static SendTargetFailedEvent of(SendTargetSaveResult result) {
         List<SendTarget> targetList = new ArrayList<>();
-        for (SendTargetSaveResult result : results) {
-            for (SendTarget sendTarget : result.failedTargetList()) {
-                targetList.add(sendTarget);
-            }
+        for (SendTarget sendTarget : result.failedTargetList()) {
+            targetList.add(sendTarget);
         }
         return new SendTargetFailedEvent(targetList);
     }
