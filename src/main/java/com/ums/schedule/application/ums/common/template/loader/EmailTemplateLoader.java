@@ -5,9 +5,11 @@ import com.ums.schedule.application.ums.common.exception.TemplateLoadFailExcepti
 import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplate;
 import com.ums.schedule.application.ums.email.exception.EmailMessageNotFoundException;
 import com.ums.schedule.common.code.api.TemplateErrorCode;
+import com.ums.schedule.common.code.email.AttachmentType;
 import com.ums.schedule.common.code.email.EmailMessageSection;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessageJpaRepository;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +25,22 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class EmailTemplateLoader implements TemplateLoader {
-    private final EmailSendMessageJpaRepository messageRepository;
     private final AwsS3Repository fileRepository;
     private final Configuration configuration;
 
     public EmailTemplate loadTemplate(EmailSendMessage sendMessage) {
         Map<EmailMessageSection, String> templateMap = sendMessage.mapToTemplateKey();
         Map<EmailMessageSection, Template> toTemplateMap = toTemplateMap(templateMap);
+        List<EmailAttachment> attachments = sendMessage.getAttachments();
+        attachments.stream()
+                .filter(attachment -> !attachment.isTemplateType())
+                .forEach(attachment -> {
+                    if(!fileRepository.existsFile(attachment.fileKey())) {
+                        throw TemplateLoadFailException.of(attachment.fileKey(), TemplateErrorCode.FILE_KEY_TEMPLATE_EMPTY);
+                    }
+                });
 
         return EmailTemplate.of(sendMessage, toTemplateMap);
-
     }
 
     private Map<EmailMessageSection, Template> toTemplateMap(Map<EmailMessageSection, String> templateMap) {

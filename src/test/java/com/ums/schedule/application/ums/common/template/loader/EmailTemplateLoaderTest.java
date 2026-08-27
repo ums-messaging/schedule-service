@@ -3,8 +3,13 @@ package com.ums.schedule.application.ums.common.template.loader;
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.application.ums.common.exception.TemplateLoadFailException;
 import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplate;
+import com.ums.schedule.common.code.api.TemplateErrorCode;
+import com.ums.schedule.common.code.email.AttachmentType;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
+import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
+import com.ums.schedule.domain.request.message.SendMessageBuilder;
 import com.ums.schedule.domain.request.message.email.EmailSendMessageBuilder;
+import com.ums.schedule.fixture.email.attachment.EmailAttachmentBuilder;
 import freemarker.template.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +20,8 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +43,7 @@ class EmailTemplateLoaderTest {
         configuration = new Configuration(Configuration.VERSION_2_3_31);
         builder = EmailSendMessageBuilder.builder()
                 .id(UUID.randomUUID())
+                .sendMessage(SendMessageBuilder.builder().build())
                 .bodyTemplateKey("body.html")
         ;
     }
@@ -296,15 +304,56 @@ class EmailTemplateLoaderTest {
         }
     }
 
-    @Test
-    @DisplayName("첨부 파일 개수만큼 첨부파일 템플릿 정보가 생성된다.")
-    void shouldCreateAttachmentList() {
 
-    }
+    @Nested
+    @DisplayName("첨부파일 테스트")
+    class WhenAttachmentListTest {
+        private EmailSendMessage sendMessage;
+        private List<EmailAttachment> attachments;
 
-    @Test
-    @DisplayName("첨부파일이 존재하지 않으면 첨부파일 개수는 빈 배열이다.")
-    void shouldEmptyList_whenAttachmentsEmpty(){
+        @BeforeEach
+        void setUp() {
+            EmailAttachment templateAttachment = EmailAttachmentBuilder.builder()
+                    .attachmentType(AttachmentType.TEMPLATE)
+                    .build();
+            EmailAttachment directAttachment = EmailAttachmentBuilder.builder()
+                    .attachmentType(AttachmentType.DIRECT)
+                    .fileKey("attachment.html")
+                    .build();
 
+            attachments = List.of(templateAttachment, directAttachment, templateAttachment, directAttachment);
+            sendMessage = builder.attachments(attachments).build();
+            doReturn("template").when(fileRepository)
+                    .getFileStringContent(anyString());
+        }
+
+        @Test
+        @DisplayName("타입이 DIRECT인 첨부파일 개수 만큼 파일이 존재하는지 확인한다.")
+        void shouldConfirmToExistFile_whenDirectAttachments() {
+            doReturn(true).when(fileRepository).existsFile(anyString());
+            loader.loadTemplate(sendMessage);
+            verify(fileRepository, times(2)).existsFile(anyString());
+        }
+
+        @Test
+        @DisplayName("첨부파일이 존재하지 않으면 예외가 발생한다")
+        void shouldThrowException_whenAttachmentsDoNotExist() {
+            doReturn(false).when(fileRepository).existsFile(anyString());
+
+            assertThatThrownBy(() -> loader.loadTemplate(sendMessage))
+                    .isInstanceOf(TemplateLoadFailException.class)
+                    .extracting(v -> ((TemplateLoadFailException) v).getErrorCode())
+                    .isEqualTo(TemplateErrorCode.FILE_KEY_TEMPLATE_EMPTY);
+
+        }
+
+        @Test
+        @DisplayName("첨부파일 목록이 존재하지 않으면 파일을 찾지 않는다.")
+        void shouldNotFindAttachmentFile() {
+            EmailSendMessage sendMessage = builder.attachments(List.of()).build();
+
+            loader.loadTemplate(sendMessage);
+            verify(fileRepository, never()).existsFile(anyString());
+        }
     }
 }

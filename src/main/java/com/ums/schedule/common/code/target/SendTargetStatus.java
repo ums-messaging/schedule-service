@@ -1,7 +1,7 @@
 package com.ums.schedule.common.code.target;
 
-import com.ums.schedule.common.converter.StatusState;
-import com.ums.schedule.common.converter.StatusStateType;
+import com.ums.schedule.common.converter.state.StatusState;
+import com.ums.schedule.common.converter.state.StatusStateType;
 import com.ums.schedule.domain.target.state.*;
 
 public enum SendTargetStatus implements StatusStateType {

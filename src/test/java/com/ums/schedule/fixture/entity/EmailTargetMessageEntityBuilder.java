@@ -1,5 +1,6 @@
 package com.ums.schedule.fixture.entity;
 
+import com.github.f4b6a3.tsid.TsidCreator;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.target.SendTarget;
 import com.ums.schedule.domain.target.TargetMessage;
@@ -8,8 +9,7 @@ import com.ums.schedule.domain.target.message.EmailTargetMessage;
 import java.util.UUID;
 
 public class EmailTargetMessageEntityBuilder {
-    private TargetMessage targetMessage;
-    private UUID id;
+    private String email;
     private String subject;
     private String headerMessage;
     private String bodyMessage;
@@ -17,11 +17,11 @@ public class EmailTargetMessageEntityBuilder {
     private String attachments;
 
     private EmailSendMessage message;
-    private SendTarget sendTarget;
 
     public static EmailTargetMessageEntityBuilder builder() {
         return new EmailTargetMessageEntityBuilder();
     }
+
 
     private EmailTargetMessageEntityBuilder() {
         this.subject = "메일 제목";
@@ -58,14 +58,9 @@ public class EmailTargetMessageEntityBuilder {
         return this;
     }
 
-    public EmailTargetMessageEntityBuilder targetMessage(TargetMessage targetMessage) {
-        this.targetMessage = targetMessage;
-        return this;
-    }
-
-    public EmailTargetMessage build() {
+    public TargetMessage build() {
         EmailTargetMessage message = new EmailTargetMessage(
-                id,
+                email,
                 subject,
                 headerMessage,
                 bodyMessage,

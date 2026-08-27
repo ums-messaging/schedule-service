@@ -6,7 +6,7 @@ import com.ums.schedule.common.code.mapper.EnumMapperType;
 public enum SendTargetCode implements EnumMapper {
     TARGET_STATUS(SendTargetStatus.class),
     TARGET_COLUMN(SendTargetColumn.class),
-    TARGET_ERROR_CODE(SendTargetErrorCode.class)
+    TARGET_ERROR_CODE(SendTargetResultCode.class)
     ;
 
     Class<? extends EnumMapperType> clz;

@@ -12,6 +12,7 @@ import java.util.UUID;
 public record TargetUploadRequestResult(
         ChannelType channelType,
         Long requestId,
+        String customerId,
         UUID messageId,
         SendRequestStatus sendRequestStatus,
         TargetUploadStatus targetUploadStatus
@@ -21,6 +22,7 @@ public record TargetUploadRequestResult(
         return new TargetUploadRequestResult(
                 sendRequest.getChannelType(),
                 sendRequest.getId(),
+                sendRequest.customerId(),
                 sendMessage.getId(),
                 sendRequest.getState().getCurrentCode(),
                 status

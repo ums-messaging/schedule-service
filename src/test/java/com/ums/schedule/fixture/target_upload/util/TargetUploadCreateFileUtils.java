@@ -54,7 +54,8 @@ public abstract class TargetUploadCreateFileUtils {
     private static String randomEmail(int i) {
         String[] emails = {"naver.com", "hanmail.com", "gmail.com", "yahoo.com","hotmail.com"};
         String randomId = RandomStringUtils.randomAlphabetic(8);
-        int random = (int) (Math.random() * emails.length);
+//        int random = (int) (Math.random() * emails.length);
+        int random = (i-1) % emails.length;
         return "%s@%s".formatted(randomId, emails[random]);
     }
 

@@ -1,15 +1,16 @@
 package com.ums.schedule.application.ums.common.template.loader.model;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.ums.email.generator.model.RenderedTemplateContent;
 import com.ums.schedule.application.ums.common.exception.TemplateParseException;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.email.EmailMessageSection;
 import com.ums.schedule.common.code.email.EmailType;
+import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.message.email.convert.ConvertMail;
+import com.ums.schedule.domain.target.message.AttachmentPayload;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.AccessLevel;
@@ -21,13 +22,14 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
-import java.util.stream.Stream;
 
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class EmailTemplate implements ChannelTemplate  {
+
+    private String templateKey;
     private EmailType emailType;
     private ConvertType convertType;
     private String title;
@@ -42,12 +44,18 @@ public class EmailTemplate implements ChannelTemplate  {
 
     public static EmailTemplate of(EmailSendMessage sendMessage, Map<EmailMessageSection, Template> templateMap) {
         EmailTemplate template = new EmailTemplate();
+        template.assignTemplateKey(sendMessage.getSendMessage().getTemplateKey());
         template.assignTitle(sendMessage.getSubject());
         template.assignConvertType(sendMessage.getConvertType());
         template.assignMessage(templateMap, sendMessage);
         template.assignAttachments(sendMessage.getAttachments());
         template.assignSecurityMail(sendMessage.getEmailType(), sendMessage);
         return template;
+    }
+
+    private void assignTemplateKey(String templateKey) {
+        Objects.requireNonNull(templateKey, "template_key is not null");
+        this.templateKey = templateKey;
     }
 
     private void assignConvertType(ConvertType convertType) {
@@ -79,28 +87,7 @@ public class EmailTemplate implements ChannelTemplate  {
                 .toList();
     }
 
-    public RenderedTemplateContent renderHeader(TargetMessageData targetMessageData) {
-        return renderedTemplateContent(this.header, targetMessageData);
-    }
-    public RenderedTemplateContent renderFooter(TargetMessageData targetMessageData) {
-        return renderedTemplateContent(this.footer, targetMessageData);
-    }
-    public RenderedTemplateContent renderBody(TargetMessageData targetMessageData) {
-        return renderedTemplateContent(this.body, targetMessageData);
-    }
-    public RenderedTemplateContent renderCover(TargetMessageData targetMessageData) {
-        return renderedTemplateContent(this.cover, targetMessageData);
-    }
-
-    private RenderedTemplateContent renderedTemplateContent(EmailTemplateContent content, TargetMessageData targetData) {
-        return Optional.ofNullable(content)
-                .map(v -> renderTemplate(v.template(), targetData))
-                .filter(StringUtils::hasText)
-                .map(v -> RenderedTemplateContent.of(content, v, targetData))
-                .orElse(null);
-    }
-
-    private String renderTemplate(Template template, TargetMessageData targetMessageData) {
+    public String renderTemplate(Template template, TargetMessageData targetMessageData) {
         return Optional.ofNullable(template)
                 .map(v -> render(v, targetMessageData.getTargetParam()))
                 .map(StringWriter::toString)
@@ -166,22 +153,10 @@ public class EmailTemplate implements ChannelTemplate  {
                 .map(EmailTemplateContent::of)
                 .orElse(null);
     }
-    private EmailTemplateContent toEmailContent(Template template, ConvertMail convertMail) {
-        Objects.requireNonNull(convertMail.getFileKeyTemplate(), "body_file_key_template");
-        Objects.requireNonNull(convertMail.getAttachmentName(), "body_attachment_name");
-        Objects.requireNonNull(convertMail.getDownloadName(), "body_download_name");
-        return EmailTemplateContent.of(template, convertMail);
-    }
 
     public void assignTitle(String title) {
         Objects.requireNonNull(title, "title is required.");
         this.title = title;
-    }
-
-    public List<RenderedTemplateContent> renderAttachments(TargetMessageData targetData) {
-        return attachments.stream()
-                .map(v -> RenderedTemplateContent.of(v, targetData))
-                .toList();
     }
 
     public String passwordPolicy() {
@@ -218,4 +193,20 @@ public class EmailTemplate implements ChannelTemplate  {
                 .map(EmailTemplateContent::template)
                 .orElse(null);
     }
+
+    public EnumMapperValue convertTypeValue() {
+        return EnumMapperValue.fromEnumMapperType(this.convertType);
+    }
+
+    public List<AttachmentPayload> toPayloads() {
+        return attachments.stream()
+                .map(attachment -> {
+                    if(StringUtils.hasText(attachment.fileKey())) {
+                        return AttachmentPayload.of(attachment,attachment.fileKey());
+                    }
+                    return AttachmentPayload.of(attachment, attachment.fileKeyTemplate());
+                })
+                .toList();
+    }
+
 }

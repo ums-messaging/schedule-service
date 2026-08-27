@@ -1,11 +1,12 @@
 package com.ums.schedule.application.ums.email.generator.handler.model;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.ums.email.generator.model.RenderedTemplate;
+import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplate;
 import com.ums.schedule.application.ums.email.security.SecurityMail;
 import com.ums.schedule.common.code.email.EmailType;
 import com.ums.schedule.common.code.email.security.EncryptionTypeEnum;
 import com.ums.schedule.common.code.email.security.PermissionMaskEnum;
+import freemarker.template.Template;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,16 +20,16 @@ public record EmailConvertContext(
         PermissionMaskEnum permissionMask,
         EncryptionTypeEnum encryptionType
 ) {
-    public static EmailConvertContext of(RenderedTemplate template, TargetMessageData targetData) throws IOException {
-        Path path = Files.createTempFile(template.convertType().value(), targetData.targetKey());
+    public static EmailConvertContext of(EmailTemplate template, String bodyTemplate, TargetMessageData targetData) throws IOException {
+        Path path = Files.createTempFile(template.getConvertType().value(), targetData.targetKey());
 
-        return Optional.ofNullable(template.emailType())
+        return Optional.ofNullable(template.getEmailType())
                 .filter(v ->  v == EmailType.SECURITY)
-                .map(v -> EmailConvertContext.of(path, template.securityMail(), template.body().template(), targetData))
-                .orElseGet(() -> EmailConvertContext.of(path, template.body().template()));
+                .map(v -> EmailConvertContext.of(path, template.getSecurityMail(), bodyTemplate, targetData))
+                .orElseGet(() -> EmailConvertContext.of(path, bodyTemplate));
     }
 
-    private static EmailConvertContext of(Path path, SecurityMail securityMail, String template, TargetMessageData targetData) {
+    private static EmailConvertContext of(Path path, SecurityMail securityMail, String  template, TargetMessageData targetData) {
         return Optional.ofNullable(securityMail)
                 .map(v -> new EmailConvertContext(
                         path,

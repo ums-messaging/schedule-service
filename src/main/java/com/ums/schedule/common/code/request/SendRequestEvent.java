@@ -1,7 +1,7 @@
 package com.ums.schedule.common.code.request;
 
-import com.ums.schedule.common.converter.StatusStateEvent;
-import com.ums.schedule.common.converter.StatusStateType;
+import com.ums.schedule.common.converter.state.StatusStateEvent;
+import com.ums.schedule.common.converter.state.StatusStateType;
 
 public enum SendRequestEvent implements StatusStateEvent {
     SEND_REQUEST_CREATED(SendRequestStatus.CREATE, "발송 요청 생성 완료"),

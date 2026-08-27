@@ -1,8 +1,8 @@
 package com.ums.schedule.domain.schedule.state;
 
 import com.ums.schedule.common.code.schedule.ScheduleState;
-import com.ums.schedule.common.converter.StatusState;
-import com.ums.schedule.common.converter.StatusStateEvent;
+import com.ums.schedule.common.converter.state.StatusState;
+import com.ums.schedule.common.converter.state.StatusStateEvent;
 
 public interface ScheduleStatus extends StatusState {
     ScheduleStatus onEvent(StatusStateEvent event);

@@ -19,9 +19,9 @@ public class TargetUploadExecutorConfig {
     @Bean(name = "targetUploadExecutor")
     public ThreadPoolTaskExecutor targetUploadExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
+        executor.setCorePoolSize(15);
         executor.setMaxPoolSize(20);
-        executor.setQueueCapacity(10);
+        executor.setQueueCapacity(20);
         executor.setThreadNamePrefix("target-upload-");
         executor.initialize();
 

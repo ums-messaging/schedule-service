@@ -12,4 +12,7 @@ public class SendTargetUploadExcecption extends BusinessException {
     public static SendTargetUploadExcecption of(String targetKey, Throwable e) {
         return new SendTargetUploadExcecption(SendTargetErrorCode.TARGET_UPLOAD_FAIL, targetKey, e.getMessage());
     }
+    public static SendTargetUploadExcecption of(SendTargetErrorCode errorCode, String targetKey) {
+        return new SendTargetUploadExcecption(errorCode, targetKey);
+    }
 }

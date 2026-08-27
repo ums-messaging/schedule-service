@@ -1,10 +1,6 @@
 package com.ums.schedule.domain.message.email.convert;
 
 import com.ums.schedule.adapter.api.request.email.request.EmailSendCreateRequest;
-import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplate;
-import com.ums.schedule.application.ums.email.attachment.model.EmailResourcePayload;
-import com.ums.schedule.application.ums.email.generator.AttachmentMetadata;
 import com.ums.schedule.common.code.email.ConvertType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

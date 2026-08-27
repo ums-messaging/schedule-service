@@ -12,6 +12,7 @@ public record FileTargetUploadRequestedEvent(
         UUID messageId,
         UUID uploadId,
         String uploadKey,
+        String customerId,
         Integer partitionSize,
         Integer batchSize
 ) {
@@ -26,6 +27,7 @@ public record FileTargetUploadRequestedEvent(
                 result.messageId(),
                 report.getId(),
                 report.getUploadKey(),
+                result.customerId(),
                 partitionSize,
                 batchSize
         );

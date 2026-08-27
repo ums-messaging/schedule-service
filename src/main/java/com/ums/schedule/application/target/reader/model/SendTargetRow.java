@@ -17,9 +17,9 @@ public record SendTargetRow (
         return new SendTargetRow(rowNo, headMap, targetData);
     }
 
-    public TargetMessageData toTargetData() {
+    public TargetMessageData toTargetData(String customerId) {
         Map<String, Object> messageData = extractMessageVariable();
-        return TargetMessageData.of(rowNo, messageData);
+        return TargetMessageData.of(rowNo,customerId, messageData);
     }
 
     public Map<String, Object> extractMessageVariable() {

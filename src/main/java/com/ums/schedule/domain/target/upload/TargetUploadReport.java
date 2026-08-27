@@ -2,7 +2,7 @@ package com.ums.schedule.domain.target.upload;
 
 import com.github.f4b6a3.uuid.UuidCreator;
 import com.ums.schedule.application.target.report.model.TargetUploadReportCreateContext;
-import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
+import com.ums.schedule.application.sendrequest.target.result.TargetUploadResultList;
 import com.ums.schedule.common.code.api.TargetUploadErrorCode;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.code.target_upload.TargetUploadEvent;
@@ -24,7 +24,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
@@ -181,7 +180,7 @@ public class TargetUploadReport implements Persistable<UUID> {
         return groupedTargetList;
     }
 
-    public void completeTargetUpload(List<SendTargetSaveResult> results) {
+    public void completeTargetUpload(List<TargetUploadResultList> results) {
         long completedCount = results.stream()
                 .mapToLong(target -> target.completedTargetList().size())
                 .sum();

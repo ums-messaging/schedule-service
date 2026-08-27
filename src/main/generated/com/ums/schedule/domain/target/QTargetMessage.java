@@ -22,9 +22,29 @@ public class QTargetMessage extends EntityPathBase<TargetMessage> {
 
     public static final QTargetMessage targetMessage = new QTargetMessage("targetMessage");
 
-    public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
+    public final NumberPath<Integer> attemptNo = createNumber("attemptNo", Integer.class);
 
-    public final QSendTarget sendTarget;
+    public final StringPath contact = createString("contact");
+
+    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
+
+    public final NumberPath<Long> groupId = createNumber("groupId", Long.class);
+
+    public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final DateTimePath<java.time.LocalDateTime> lastUploadedAt = createDateTime("lastUploadedAt", java.time.LocalDateTime.class);
+
+    public final StringPath messageVariable = createString("messageVariable");
+
+    public final StringPath resultMessage = createString("resultMessage");
+
+    public final SimplePath<com.ums.schedule.domain.target.state.SendTargetState> state = createSimple("state", com.ums.schedule.domain.target.state.SendTargetState.class);
+
+    public final StringPath targetKey = createString("targetKey");
+
+    public final StringPath targetName = createString("targetName");
+
+    public final com.ums.schedule.domain.target.upload.QTargetUploadReport targetUploadReport;
 
     public QTargetMessage(String variable) {
         this(TargetMessage.class, forVariable(variable), INITS);
@@ -44,7 +64,7 @@ public class QTargetMessage extends EntityPathBase<TargetMessage> {
 
     public QTargetMessage(Class<? extends TargetMessage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.sendTarget = inits.isInitialized("sendTarget") ? new QSendTarget(forProperty("sendTarget"), inits.get("sendTarget")) : null;
+        this.targetUploadReport = inits.isInitialized("targetUploadReport") ? new com.ums.schedule.domain.target.upload.QTargetUploadReport(forProperty("targetUploadReport"), inits.get("targetUploadReport")) : null;
     }
 
 }

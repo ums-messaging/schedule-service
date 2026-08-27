@@ -1,7 +1,8 @@
 package com.ums.schedule.application.sendrequest.target.data;
 
 import com.ums.schedule.common.code.target.SendTargetColumn;
-import com.ums.schedule.domain.target.exception.SendTargetMessageVariableMissingException;
+import com.ums.schedule.common.code.target.SendTargetResultCode;
+import com.ums.schedule.domain.target.TargetMessage;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -10,11 +11,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public record TargetMessageData(
+        String customerId,
         Integer rowNo,
         Map<SendTargetColumn, String> targetData,
         Map<String, Object> dataParam
 ) {
-    public static TargetMessageData of(Integer rowNo, Map<String, Object> dataParam) {
+    public static TargetMessageData of(Integer rowNo, String customerId, Map<String, Object> dataParam) {
         Map<SendTargetColumn, String> targetData = Arrays.stream(SendTargetColumn.class.getEnumConstants())
                 .filter(col -> dataParam.containsKey(col.value()))
                 .collect(Collectors.toMap(
@@ -22,7 +24,7 @@ public record TargetMessageData(
                         col -> String.valueOf(dataParam.get(col.value()))
                 ));
 
-        return new TargetMessageData(rowNo, targetData, dataParam);
+        return new TargetMessageData(customerId, rowNo, targetData, dataParam);
     }
 
     public Map<String, Object> getTargetParam() {
@@ -36,33 +38,6 @@ public record TargetMessageData(
         targetParamMap.putAll(dataParam);
 
         return targetParamMap;
-    }
-
-    public String parse(String content) {
-        if(!StringUtils.hasText(content)) {
-            return null;
-        }
-        String targetKey = String.valueOf(dataParam.get(SendTargetColumn.TARGET_KEY.value()));
-        Set<String> keySet = getKeySet(content);
-        for(String key : keySet) {
-            Object value = dataParam.get(key);
-            if(value == null) {
-                throw SendTargetMessageVariableMissingException.of(targetKey, key);
-            }
-            String valueTo = String.valueOf(value);
-            content = content.replace("${".concat(key).concat("}"), valueTo);
-        }
-        return content;
-    }
-
-    private Set<String> getKeySet(String content) {
-        Pattern pattern = Pattern.compile("\\$\\{([^}]+)\\}");
-        Matcher matcher = pattern.matcher(content);
-        Set<String> keySet = new HashSet<>();
-        while(matcher.find()) {
-            keySet.add(matcher.group(1));
-        }
-        return keySet;
     }
 
     public String targetKey() {

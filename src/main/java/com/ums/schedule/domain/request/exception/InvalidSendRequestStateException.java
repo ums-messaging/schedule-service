@@ -2,7 +2,7 @@ package com.ums.schedule.domain.request.exception;
 
 import com.ums.schedule.common.code.api.ErrorCode;
 import com.ums.schedule.common.code.api.SendRequestErrorCode;
-import com.ums.schedule.common.converter.StatusStateType;
+import com.ums.schedule.common.converter.state.StatusStateType;
 import com.ums.schedule.common.exception.StateException;
 
 public class InvalidSendRequestStateException extends StateException {

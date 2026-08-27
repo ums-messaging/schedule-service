@@ -19,7 +19,8 @@ public class TargetUploadRequestService {
         TargetUploadStatus status = report.requestTargetUpload();
         SendRequest sendRequest = report.getSendRequest();
         sendRequest.changeStateByTargetUploadReport(status);
-        return TargetUploadRequestResult.of(sendRequest, sendRequest.getSendMessage(), status);
+        return TargetUploadRequestResult.of(sendRequest, sendRequest.getSendMessage(),
+                status);
     }
 }
 

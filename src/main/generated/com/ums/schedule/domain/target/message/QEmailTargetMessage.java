@@ -26,20 +26,53 @@ public class QEmailTargetMessage extends EntityPathBase<EmailTargetMessage> {
 
     public final StringPath attachments = createString("attachments");
 
+    //inherited
+    public final NumberPath<Integer> attemptNo;
+
     public final StringPath bodyMessage = createString("bodyMessage");
+
+    //inherited
+    public final StringPath contact;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt;
+
+    public final StringPath domain = createString("domain");
 
     public final StringPath footerMessage = createString("footerMessage");
 
+    //inherited
+    public final NumberPath<Long> groupId;
+
     public final StringPath headerMessage = createString("headerMessage");
 
-    public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
+    //inherited
+    public final NumberPath<Long> id;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> lastUploadedAt;
+
+    //inherited
+    public final StringPath messageVariable;
+
+    //inherited
+    public final StringPath resultMessage;
 
     public final com.ums.schedule.domain.message.email.QEmailSendMessage sendMessage;
 
-    // inherited
-    public final com.ums.schedule.domain.target.QSendTarget sendTarget;
+    //inherited
+    public final SimplePath<com.ums.schedule.domain.target.state.SendTargetState> state;
 
     public final StringPath subject = createString("subject");
+
+    //inherited
+    public final StringPath targetKey;
+
+    //inherited
+    public final StringPath targetName;
+
+    // inherited
+    public final com.ums.schedule.domain.target.upload.QTargetUploadReport targetUploadReport;
 
     public QEmailTargetMessage(String variable) {
         this(EmailTargetMessage.class, forVariable(variable), INITS);
@@ -60,8 +93,19 @@ public class QEmailTargetMessage extends EntityPathBase<EmailTargetMessage> {
     public QEmailTargetMessage(Class<? extends EmailTargetMessage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this._super = new com.ums.schedule.domain.target.QTargetMessage(type, metadata, inits);
+        this.attemptNo = _super.attemptNo;
+        this.contact = _super.contact;
+        this.createdAt = _super.createdAt;
+        this.groupId = _super.groupId;
+        this.id = _super.id;
+        this.lastUploadedAt = _super.lastUploadedAt;
+        this.messageVariable = _super.messageVariable;
+        this.resultMessage = _super.resultMessage;
         this.sendMessage = inits.isInitialized("sendMessage") ? new com.ums.schedule.domain.message.email.QEmailSendMessage(forProperty("sendMessage"), inits.get("sendMessage")) : null;
-        this.sendTarget = _super.sendTarget;
+        this.state = _super.state;
+        this.targetKey = _super.targetKey;
+        this.targetName = _super.targetName;
+        this.targetUploadReport = _super.targetUploadReport;
     }
 
 }

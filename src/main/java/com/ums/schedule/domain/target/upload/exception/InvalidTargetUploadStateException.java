@@ -1,6 +1,6 @@
 package com.ums.schedule.domain.target.upload.exception;
 
-import com.ums.schedule.common.converter.StatusStateType;
+import com.ums.schedule.common.converter.state.StatusStateType;
 import com.ums.schedule.common.exception.StateException;
 
 public class InvalidTargetUploadStateException extends StateException {

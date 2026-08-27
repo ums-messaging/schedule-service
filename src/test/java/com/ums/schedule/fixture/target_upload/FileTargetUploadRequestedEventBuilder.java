@@ -11,6 +11,7 @@ public class FileTargetUploadRequestedEventBuilder {
     private UUID messageId;
     private UUID uploadId;
     private String uploadKey;
+    private String customerId;
     private Integer partitionSize;
     private Integer batchSize;
 
@@ -70,6 +71,7 @@ public class FileTargetUploadRequestedEventBuilder {
                 messageId,
                 uploadId,
                 uploadKey,
+                customerId,
                 partitionSize,
                 batchSize
         );

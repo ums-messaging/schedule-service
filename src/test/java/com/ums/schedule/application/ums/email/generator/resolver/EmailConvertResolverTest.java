@@ -8,7 +8,7 @@ import com.ums.schedule.application.ums.email.generator.policy.EmailMessageConve
 import com.ums.schedule.application.ums.email.generator.policy.IdentityEmailConvertPolicy;
 import com.ums.schedule.application.ums.email.generator.policy.model.EmailConvertPolicy;
 import com.ums.schedule.common.code.email.ConvertType;
-import com.ums.schedule.fixture.email.RenderedTemplateBuilder;
+import com.ums.schedule.fixture.email.EmailTemplateBuilder;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.DisplayName;
@@ -36,14 +36,14 @@ class EmailConvertResolverTest {
     @Spy private List<EmailMessageConvertPolicy> polices = new ArrayList<>();
     @InjectMocks private EmailConvertResolver resolver;
 
-    private RenderedTemplateBuilder templateBuilder;
+    private EmailTemplateBuilder templateBuilder;
 
     @BeforeEach
     void setUp() {
         polices.add(identityPolicy);
         polices.add(attachmentPolicy);
 
-        templateBuilder = RenderedTemplateBuilder.builder()
+        templateBuilder = EmailTemplateBuilder.builder()
                 .convertType(ConvertType.NONE);
     }
 

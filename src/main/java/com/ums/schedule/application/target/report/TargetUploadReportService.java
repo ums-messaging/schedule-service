@@ -11,7 +11,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TargetUploadReportService {
-    private final SendTargetRepository repository;
 
     @Transactional
     public void reportingAndOnCompleted(TargetUploadReport targetUpload) {

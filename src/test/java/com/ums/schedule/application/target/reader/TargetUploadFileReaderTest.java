@@ -11,6 +11,7 @@ import com.ums.schedule.common.exception.BusinessException;
 import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.target.upload.TargetUploadReportJpaRepository;
 import com.ums.schedule.domain.target.upload.state.TargetUploadRequestState;
+import com.ums.schedule.fixture.entity.SendRequestEntityBuilder;
 import com.ums.schedule.fixture.target_upload.FileTargetUploadRequestedEventBuilder;
 import com.ums.schedule.fixture.entity.TargetUploadReportEntityBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,6 +57,7 @@ class TargetUploadFileReaderTest {
         builder = FileTargetUploadRequestedEventBuilder.builder()
                 .uploadKey("/target_upload/target_upload_test.xlsx");
         targetUploadReport = TargetUploadReportEntityBuilder.builder()
+                .sendRequest(SendRequestEntityBuilder.builder().build())
                 .uploadStatus(new TargetUploadRequestState())
                 .build();
         is = getClass().getResourceAsStream("/target_upload/target_upload_test.xlsx");

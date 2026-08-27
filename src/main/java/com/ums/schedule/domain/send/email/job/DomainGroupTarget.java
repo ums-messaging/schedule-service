@@ -14,16 +14,17 @@ public record DomainGroupTarget(
 ) {
     public static DomainGroupTarget of(DomainGroup domainGroup, TargetMessage targetMessage)
     {
-        SendTarget target = targetMessage.getSendTarget();
-        return new DomainGroupTarget(
-                domainGroup,
-                target.getId().toString(),
-                target.getTargetName(),
-                target.getContact(),
-                null,
-                null,
-                target.getAttemptNo()
-        );
+//        SendTarget target = targetMessage.getSendTarget();
+//        return new DomainGroupTarget(
+//                domainGroup,
+//                target.getId().toString(),
+//                target.getTargetName(),
+//                target.getContact(),
+//                null,
+//                null,
+//                target.getAttemptNo()
+//        );
+        return null;
     }
 
     public String getDomain() {

@@ -1,20 +1,23 @@
 package com.ums.schedule.application.ums.email.convert.strategy;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.ums.email.generator.model.RenderedTemplate;
-import com.ums.schedule.application.ums.email.generator.model.RenderedTemplateContent;
+import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplate;
+import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplateContent;
 import com.ums.schedule.application.ums.email.generator.policy.IdentityEmailConvertPolicy;
 import com.ums.schedule.application.ums.email.generator.policy.model.EmailConvertPolicy;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.domain.message.email.exception.EmailContentMissingException;
-import com.ums.schedule.fixture.email.RenderedTemplateBuilder;
-import com.ums.schedule.fixture.email.RenderedTemplateContentBuilder;
+import com.ums.schedule.fixture.email.EmailTemplateBuilder;
+import com.ums.schedule.fixture.email.EmailTemplateContentBuilder;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,21 +28,27 @@ import static org.mockito.Mockito.mock;
 class IdentityEmailConvertPolicyTest {
     @InjectMocks private IdentityEmailConvertPolicy convertPolicy;
 
+    private EmailTemplateBuilder templateBuilder;
     private EnumMapperValue convertTypeValue;
-    private RenderedTemplateBuilder templateBuilder;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         convertTypeValue = EnumMapperValue.fromEnumMapperType(ConvertType.NONE);
-        templateBuilder = RenderedTemplateBuilder.builder()
-                .body(RenderedTemplateContentBuilder
-                        .builder()
-                        .template("body_template")
-                        .build()
-                )
-        ;
+        templateBuilder = generateEmailTemplate();
+    }
+    private EmailTemplateBuilder generateEmailTemplate() throws IOException {
+        return EmailTemplateBuilder.builder()
+                .body(createTemplate("body_template"));
     }
 
+    private EmailTemplateContent createTemplate(String template) throws IOException {
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_21);
+        return EmailTemplateContentBuilder.builder()
+                .template(new Template("test", template, configuration))
+                .fileKeyTemplate("${targetKey}.pdf")
+                .fileKey("body.pdf")
+                .build();
+    }
     @Nested
     @DisplayName("Supports 테스트")
     class WhenSupports {
@@ -72,18 +81,20 @@ class IdentityEmailConvertPolicyTest {
         @Test
         @DisplayName("본문 파일 키는 BODY 의 파일 키가 반환된다.")
         void shouldReturnBodyFileKey() {
-            RenderedTemplate template = templateBuilder.build();
+            EmailTemplate template = templateBuilder.build();
 
             EmailConvertPolicy policy = convertPolicy.convert(template, mock(TargetMessageData.class));
 
-            assertThat(policy.bodyTemplate()).isEqualTo("body_template");
+            assertThat(policy.bodyTemplate().toString()).isEqualTo("body_template");
         }
 
         @Test
         @DisplayName("첨부파일은 입력된 개수만큼 반환된다.")
         void shouldReturnAttachmentList() {
-            RenderedTemplateContent attachment = RenderedTemplateContentBuilder.builder().build();
-            RenderedTemplate template = templateBuilder.attachments(List.of(attachment, attachment, attachment)).build();
+            EmailTemplateContent attachment = EmailTemplateContentBuilder.builder()
+                    .fileKey("attachment.pdf")
+                    .build();
+            EmailTemplate template = templateBuilder.attachmentList(List.of(attachment, attachment, attachment)).build();
 
             EmailConvertPolicy policy = convertPolicy.convert(template, mock(TargetMessageData.class));
 
@@ -98,7 +109,7 @@ class IdentityEmailConvertPolicyTest {
         @Test
         @DisplayName("바디가 존재하지 않으면 예외가 발생한다.")
         void shouldThrowException_whenBodyTemplateDoesNotExist() {
-            RenderedTemplate template = templateBuilder.body(null).build();
+            EmailTemplate template = templateBuilder.body(null).build();
 
             assertThatThrownBy(() -> convertPolicy.convert(template, mock(TargetMessageData.class)))
                     .isInstanceOf(EmailContentMissingException.class);

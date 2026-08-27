@@ -8,6 +8,7 @@ import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.message.email.convert.ConvertMail;
 import com.ums.schedule.domain.message.email.security.SecurityMailPolicy;
+import com.ums.schedule.domain.request.message.SendMessageBuilder;
 import com.ums.schedule.domain.request.message.email.EmailSendMessageBuilder;
 import com.ums.schedule.fixture.email.attachment.EmailAttachmentBuilder;
 import com.ums.schedule.fixture.email.convert.ConvertMailBuilder;
@@ -34,7 +35,8 @@ class EmailTemplateTest {
         templateMap = Map.of(
                 EmailMessageSection.BODY, mock(Template.class)
         );
-        builder = EmailSendMessageBuilder.builder();
+        builder = EmailSendMessageBuilder.builder()
+                .sendMessage(SendMessageBuilder.builder().build());
     }
 
     @Nested
@@ -74,7 +76,8 @@ class EmailTemplateTest {
                     EmailMessageSection.HEADER, mock(Template.class),
                     EmailMessageSection.BODY, mock(Template.class)
             );
-            message = builder.headerTemplateKey("header.html")
+            message = builder
+                    .headerTemplateKey("header.html")
                     .build();
         }
 

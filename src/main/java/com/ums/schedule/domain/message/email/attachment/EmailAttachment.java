@@ -123,5 +123,9 @@ public class EmailAttachment {
     public String fileKeyTemplate() {
         return this.type == AttachmentType.TEMPLATE ? fileKey : null;
     }
+
+    public boolean isTemplateType() {
+        return this.type == AttachmentType.TEMPLATE;
+    }
 }
 

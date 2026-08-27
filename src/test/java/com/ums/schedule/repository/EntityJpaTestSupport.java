@@ -1,14 +1,11 @@
 package com.ums.schedule.repository;
 
-import com.github.f4b6a3.tsid.TsidCreator;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.request.message.SendMessageBuilder;
 import com.ums.schedule.domain.request.message.email.EmailSendMessageBuilder;
-import com.ums.schedule.fixture.entity.SendTargetEntityBuilder;
 import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.target.SendTarget;
 import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import com.ums.schedule.fixture.entity.ScheduleEntityBuilder;
 import com.ums.schedule.fixture.entity.SendRequestEntityBuilder;
@@ -60,13 +57,6 @@ public class EntityJpaTestSupport {
 
         return entityManager.find(Schedule.class, id);
     }
-    protected SendTarget givenSendTarget(TargetUploadReport targetUploadReport) {
-        SendTarget sendTarget = SendTargetEntityBuilder.builder().targetUpload(targetUploadReport).build();
-        persist(sendTarget);
-        UUID id = sendTarget.getId();
-        entityManager.clear();
-        return entityManager.find(SendTarget.class, id);
-    }
 
     protected TargetUploadReport givenTargetUploadReport(SendRequest sendRequest) {
         TargetUploadReport targetUploadReport = TargetUploadReportEntityBuilder.builder()
@@ -81,7 +71,6 @@ public class EntityJpaTestSupport {
     }
     protected SendRequest givenSendRequest(Schedule schedule, SendMessage sendMessage) {
         SendRequest sendRequest = SendRequestEntityBuilder.builder()
-                .id(TsidCreator.getTsid().toLong())
                 .schedule(schedule)
                 .sendMessage(sendMessage)
                 .build();

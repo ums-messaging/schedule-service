@@ -1,7 +1,7 @@
 package com.ums.schedule.common.code.target_upload;
 
-import com.ums.schedule.common.converter.StatusStateEvent;
-import com.ums.schedule.common.converter.StatusStateType;
+import com.ums.schedule.common.converter.state.StatusStateEvent;
+import com.ums.schedule.common.converter.state.StatusStateType;
 
 public enum TargetUploadEvent implements StatusStateEvent {
     TARGET_UPLOAD_CREATED(TargetUploadStatus.CREATED, "대상자 업로드 생성됨"),

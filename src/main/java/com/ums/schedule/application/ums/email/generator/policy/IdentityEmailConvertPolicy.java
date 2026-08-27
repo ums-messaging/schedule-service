@@ -1,8 +1,8 @@
 package com.ums.schedule.application.ums.email.generator.policy;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.ums.email.generator.model.RenderedTemplate;
-import com.ums.schedule.application.ums.email.generator.model.RenderedTemplateContent;
+import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplate;
+import com.ums.schedule.application.ums.common.template.loader.model.EmailTemplateContent;
 import com.ums.schedule.application.ums.email.generator.policy.model.EmailConvertPolicy;
 import com.ums.schedule.common.code.email.ConvertType;
 import com.ums.schedule.common.code.email.EmailMessageSection;
@@ -20,12 +20,12 @@ public class IdentityEmailConvertPolicy implements EmailMessageConvertPolicy {
     }
 
     @Override
-    public EmailConvertPolicy convert(RenderedTemplate context, TargetMessageData targetData) {
-        RenderedTemplateContent body = Optional.ofNullable(context.body()).orElseThrow(() -> EmailContentMissingException.of(EmailMessageSection.BODY));
+    public EmailConvertPolicy convert(EmailTemplate template, TargetMessageData targetData) {
+        EmailTemplateContent bodyTemplate = Optional.ofNullable(template.getBody()).orElseThrow(() -> EmailContentMissingException.of(EmailMessageSection.BODY));
         return EmailConvertPolicy.of(
                 ConvertType.NONE,
-                body.template(),
-                context.attachments()
+                bodyTemplate.template(),
+                template.toPayloads()
         );
     }
 }

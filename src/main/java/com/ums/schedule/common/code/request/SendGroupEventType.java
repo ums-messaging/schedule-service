@@ -1,7 +1,7 @@
 package com.ums.schedule.common.code.request;
 
-import com.ums.schedule.common.converter.StatusStateEvent;
-import com.ums.schedule.common.converter.StatusStateType;
+import com.ums.schedule.common.converter.state.StatusStateEvent;
+import com.ums.schedule.common.converter.state.StatusStateType;
 
 public enum SendGroupEventType implements StatusStateEvent {
     SEND_GROUP_CREATED("CREATE", "발송 대상자 그룹 생성 완료"),

@@ -1,9 +1,11 @@
 package com.ums.schedule.domain.target.state;
 
 import com.ums.schedule.common.code.target.SendTargetStatus;
-import com.ums.schedule.common.converter.StatusState;
-import com.ums.schedule.common.converter.StatusStateEvent;
+import com.ums.schedule.common.converter.state.StatusState;
+import com.ums.schedule.common.converter.state.StatusStateEvent;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public class SendTargetSendingState implements SendTargetState {
 
     @Override

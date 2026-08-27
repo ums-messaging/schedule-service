@@ -1,14 +1,16 @@
 package com.ums.schedule.application.target;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.application.target.reader.model.TargetRowResult;
+import com.ums.schedule.application.target.reader.model.TargetUploadRowResult;
+import com.ums.schedule.common.code.target.SendTargetResultCode;
 import com.ums.schedule.common.code.target.SendTargetRowStatus;
 
 public class TargetRowResultBuilder {
     private Integer rowNo;
+    private String groupKey;
     private TargetMessageData targetMessage;
-    private SendTargetRowStatus status;
-    private String reason;
+    private SendTargetResultCode resultCode;
+    private String resultMessage;
 
     public static TargetRowResultBuilder builder() {
         return new TargetRowResultBuilder();
@@ -24,22 +26,23 @@ public class TargetRowResultBuilder {
         return this;
     }
 
-    public TargetRowResultBuilder targetRowStatus(SendTargetRowStatus status) {
-        this.status= status;
+    public TargetRowResultBuilder resultCode(SendTargetResultCode resultCode) {
+        this.resultCode = resultCode;
         return this;
     }
 
-    public TargetRowResultBuilder reason(String reason) {
-        this.reason = reason;
+    public TargetRowResultBuilder resultMessage(String resultMessage) {
+        this.resultMessage = resultMessage;
         return this;
     }
 
-    public TargetRowResult build() {
-        return new TargetRowResult(
+    public TargetUploadRowResult build() {
+        return new TargetUploadRowResult(
                 rowNo,
+                groupKey,
                 targetMessage,
-                status,
-                reason
+                resultCode,
+                resultMessage
         );
     }
 }

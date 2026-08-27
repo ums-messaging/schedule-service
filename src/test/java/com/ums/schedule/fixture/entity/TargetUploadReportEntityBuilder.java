@@ -101,6 +101,7 @@ public class TargetUploadReportEntityBuilder {
                 createdAt,
                 requestedAt,
                 uploadedAt,
-                sendRequest, true);
+                sendRequest,
+                true);
     }
 }

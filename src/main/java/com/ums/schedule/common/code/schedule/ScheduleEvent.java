@@ -1,7 +1,6 @@
 package com.ums.schedule.common.code.schedule;
 
-import com.ums.schedule.common.converter.StatusStateEvent;
-import com.ums.schedule.common.converter.StatusStateType;
+import com.ums.schedule.common.converter.state.StatusStateEvent;
 
 public enum ScheduleEvent implements StatusStateEvent {
     TO_ACTIVE(ScheduleState.ACTIVE, "활성화"),

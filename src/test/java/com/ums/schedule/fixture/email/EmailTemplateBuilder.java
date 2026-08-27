@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmailTemplateBuilder {
+    private String templateKey;
     private EmailType emailType;
     private ConvertType convertType;
 
@@ -27,6 +28,7 @@ public class EmailTemplateBuilder {
     }
 
     private EmailTemplateBuilder() {
+        this.templateKey = "template_key";
         this.title = "${month}월 청구서";
     }
 
@@ -77,6 +79,7 @@ public class EmailTemplateBuilder {
 
     public EmailTemplate build() {
         return new EmailTemplate(
+                templateKey,
                 emailType,
                 convertType,
                 title,

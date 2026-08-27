@@ -6,7 +6,7 @@ public enum SendTargetColumn implements EnumMapperType {
     TARGET_ID("id", "대상자 ID"),
     TARGET_KEY("key", "대상자 KEY"),
     TARGET_NAME("name", "이름"),
-    TARGET_EMAIL("email","이메일 주소"),
+    TARGET_EMAIL("email","이메일"),
     TARGET_PHONE("phone", "핸드폰 번호"),
     TARGET_BIRTHDAY("birthday", "생년월일");
 

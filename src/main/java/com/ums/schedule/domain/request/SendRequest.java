@@ -162,7 +162,7 @@ public class SendRequest implements Persistable<Long> {
         }
     }
 
-    public void requestSend(Long totalTargetCount) {
+    public void requestSend() {
         initializeRequestedAt();
         schedule.checkExecutableSchedule(this.requestedAt);
         onEvent(SendRequestEvent.SEND_REQUEST_REQUESTED);
@@ -201,6 +201,17 @@ public class SendRequest implements Persistable<Long> {
         return FileUtil.generateFilePaths(customerId, String.valueOf(this.id), channelType.code().toLowerCase());
     }
 
+    public String customerRequestId() {
+        return Optional.ofNullable(customerRequestKey)
+                .map(CustomerRequestKey::getCustomerRequestId)
+                .orElse(null);
+    }
+
+    public String customerId() {
+        return Optional.ofNullable(customerRequestKey)
+                .map(CustomerRequestKey::getCustomerId)
+                .orElse(null);
+    }
 
     public void readyForSendRequest(TargetUploadReport targetUploadReport) {
         if(targetUploadReport.isCompleted()) {
@@ -215,6 +226,11 @@ public class SendRequest implements Persistable<Long> {
     @Override
     public boolean isNew() {
         return this.isNew;
+    }
+
+    @PostLoad
+    public void postLoad() {
+        this.isNew = false;
     }
 
     @PrePersist

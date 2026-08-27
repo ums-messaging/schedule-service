@@ -2,7 +2,7 @@ package com.ums.schedule.domain.schedule.status;
 
 import com.ums.schedule.common.code.schedule.ScheduleEvent;
 import com.ums.schedule.common.code.schedule.ScheduleState;
-import com.ums.schedule.common.converter.StatusState;
+import com.ums.schedule.common.converter.state.StatusState;
 import com.ums.schedule.domain.schedule.exception.InvalidScheduleStateException;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleStatus;

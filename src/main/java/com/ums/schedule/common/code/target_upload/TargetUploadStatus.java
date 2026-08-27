@@ -1,7 +1,7 @@
 package com.ums.schedule.common.code.target_upload;
 
-import com.ums.schedule.common.converter.StatusState;
-import com.ums.schedule.common.converter.StatusStateType;
+import com.ums.schedule.common.converter.state.StatusState;
+import com.ums.schedule.common.converter.state.StatusStateType;
 import com.ums.schedule.domain.target.upload.state.*;
 
 public enum TargetUploadStatus implements StatusStateType {
