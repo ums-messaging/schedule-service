@@ -4,10 +4,12 @@ import com.ums.schedule.adapter.api.email.smtp.response.SmtpSessionInfo;
 import com.ums.schedule.application.send.mime.MimeWriter;
 import com.ums.schedule.domain.send.email.mime.MimeMessage;
 import com.ums.schedule.adapter.api.email.smtp.response.EmailSmtpResponse;
-import com.ums.schedule.domain.send.email.code.EmailSendCommand;
+import com.ums.schedule.common.code.email.SmtpCommandType;
 import com.ums.schedule.domain.send.email.job.DomainGroupTarget;
 import com.ums.schedule.domain.send.email.job.EmailSendJob;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,10 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class EmailSmtpClient {
     private final SmtpHelper helper;
     private final MimeWriter writer;
+
+    @Autowired
+    public EmailSmtpClient(SmtpHelper smtpHelper, @Qualifier("mimeHtmlWriter") MimeWriter writer) {
+        this.helper = smtpHelper;
+        this.writer = writer;
+    }
 
     public List<EmailSmtpResponse> send(EmailSendJob job, String domain, List<DomainGroupTarget> targetList) {
         int retryCount = 0;
@@ -41,7 +48,7 @@ public class EmailSmtpClient {
                 }
             }
 
-            session.sendCommand(EmailSendCommand.QUIT);
+            session.sendCommand(SmtpCommandType.QUIT);
         } catch (ConnectException e) {
             if(retryCount == 3) {
                 throw new RuntimeException(e);

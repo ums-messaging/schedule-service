@@ -32,7 +32,7 @@ public class QSendRequestReport extends EntityPathBase<SendRequestReport> {
 
     public final NumberPath<Long> sendingCount = createNumber("sendingCount", Long.class);
 
-    public final com.ums.schedule.domain.sendrequest.QSendRequest sendRequest;
+    public final com.ums.schedule.domain.request.QSendRequest sendRequest;
 
     public final NumberPath<Long> successCount = createNumber("successCount", Long.class);
 
@@ -56,7 +56,7 @@ public class QSendRequestReport extends EntityPathBase<SendRequestReport> {
 
     public QSendRequestReport(Class<? extends SendRequestReport> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.sendRequest = inits.isInitialized("sendRequest") ? new com.ums.schedule.domain.sendrequest.QSendRequest(forProperty("sendRequest"), inits.get("sendRequest")) : null;
+        this.sendRequest = inits.isInitialized("sendRequest") ? new com.ums.schedule.domain.request.QSendRequest(forProperty("sendRequest"), inits.get("sendRequest")) : null;
     }
 
 }

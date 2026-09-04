@@ -1,10 +1,11 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.domain.schedule.code.CycleCdEnum;
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
+import com.ums.schedule.common.code.schedule.CycleCd;
 import com.ums.schedule.application.schedule.factory.cycle_policy.CyclePolicy;
 import com.ums.schedule.application.schedule.factory.cycle_policy.DayCyclePolicyFactory;
-import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
-import com.ums.schedule.common.exception.validation.InvalidNumberFormatException;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleCyclePolicyException;
+import com.ums.schedule.domain.schedule.exception.SchedulePolicyViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,23 +19,27 @@ class DayCyclePolicyTest {
         CyclePolicy policy = new DayCyclePolicyFactory();
         SchedulePolicyValue cycleValue = policy.create(30);
 
-        assertThat(cycleValue.getCycleCdEnum()).isEqualTo(CycleCdEnum.DAY);
+        assertThat(cycleValue.getCycleCdEnum()).isEqualTo(CycleCd.DAY);
     }
 
     @Test
     @DisplayName("일 주기의 스케쥴의 주기 값은 1~31 입력 값만 가능하다.")
     void shouldRejectCycleValueDay () {
         CyclePolicy policy = new DayCyclePolicyFactory();
+        InvalidScheduleCyclePolicyException expect = InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.CYCLE_VALUE_NOT_DAY);
+
         assertThatThrownBy(() -> policy.create(32))
-                .isInstanceOf(InvalidCycleValueException.class)
-                .hasMessage(InvalidCycleValueException.toDay().getMessage());
+                .isInstanceOf(expect.getClass())
+                .hasMessage(expect.getMessage());
     }
     @Test
     @DisplayName("숫자가 아닌 값이 입력되면 에러가 발생한다.")
     void shouldThrowException_whenCycleValueIsNotNumber() {
         CyclePolicy policy = new DayCyclePolicyFactory();
+
         assertThatThrownBy(() -> policy.create("number"))
-                .isInstanceOf(InvalidNumberFormatException.class)
-                .hasMessage(InvalidNumberFormatException.ofCycleValue().getMessage());
+                .isInstanceOf(InvalidScheduleCyclePolicyException.class)
+                .extracting(v -> ((InvalidScheduleCyclePolicyException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_CYCLE_VALUE);
     }
 }

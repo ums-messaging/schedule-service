@@ -1,9 +1,10 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.domain.schedule.code.CycleCdEnum;
-import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
-import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
-import com.ums.schedule.common.exception.validation.InvalidDateFormatException;
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
+import com.ums.schedule.common.code.schedule.CycleCd;
+import com.ums.schedule.common.code.schedule.ScheduleType;
+import com.ums.schedule.common.exception.validate.InvalidDateFormatException;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleCyclePolicyException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,11 +23,11 @@ public class ReservationPolicyValue implements SchedulePolicyValue {
                     .withNano(0);
             LocalDateTime compareDate = LocalDateTime.now().plusHours(1).withSecond(0).withNano(0);
             if(reservationDate.isBefore(compareDate)) {
-                throw InvalidCycleValueException.toReservationDate();
+                throw InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.INVALID_RESERVATION_DATE);
             }
             return new ReservationPolicyValue(reservationDate);
         } catch (DateTimeParseException e) {
-            throw InvalidDateFormatException.ofReservationDate();
+            throw InvalidDateFormatException.of("RESERVATION_DATE");
         }
     }
 
@@ -35,13 +36,13 @@ public class ReservationPolicyValue implements SchedulePolicyValue {
     }
 
     @Override
-    public ScheduleTypeEnum getScheduleType() {
-        return ScheduleTypeEnum.RESERVATION;
+    public ScheduleType getScheduleType() {
+        return ScheduleType.RESERVATION;
     }
 
     @Override
-    public CycleCdEnum getCycleCdEnum() {
-        return CycleCdEnum.ONCE;
+    public CycleCd getCycleCdEnum() {
+        return CycleCd.ONCE;
     }
 
     @Override

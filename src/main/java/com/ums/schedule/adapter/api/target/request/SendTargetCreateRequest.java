@@ -1,7 +1,7 @@
 package com.ums.schedule.adapter.api.target.request;
 
 import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
-import com.ums.schedule.domain.sendrequest.target.code.TargetColumnEnum;
+import com.ums.schedule.common.code.target.SendTargetColumn;
 
 import java.util.Map;
 
@@ -14,18 +14,14 @@ public record SendTargetCreateRequest(
         Map<String, Object> messageVariable
 )  {
 
-    public TargetMessageData toTargetData() {
-        Map<TargetColumnEnum, String> targetData = resolveTargetData();
-        return new TargetMessageData(targetData, this.messageVariable);
-    }
 
-    public Map<TargetColumnEnum, String> resolveTargetData() {
+    public Map<SendTargetColumn, String> resolveTargetData() {
         return Map.of(
-                TargetColumnEnum.TARGET_KEY, targetKey,
-                TargetColumnEnum.TARGET_NAME, targetName,
-                TargetColumnEnum.TARGET_EMAIL, email,
-                TargetColumnEnum.TARGET_PHONE, phoneNumber,
-                TargetColumnEnum.TARGET_BIRTHDAY, birthday
+                SendTargetColumn.TARGET_KEY, targetKey,
+                SendTargetColumn.TARGET_NAME, targetName,
+                SendTargetColumn.TARGET_EMAIL, email,
+                SendTargetColumn.TARGET_PHONE, phoneNumber,
+                SendTargetColumn.TARGET_BIRTHDAY, birthday
         );
     }
 }

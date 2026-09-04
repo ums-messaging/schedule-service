@@ -1,18 +1,19 @@
 package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleCreateCommand;
-import com.ums.schedule.domain.schedule.code.ScheduleEventEnum;
-import com.ums.schedule.common.exception.validation.RequiredException;
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
+import com.ums.schedule.common.code.schedule.ScheduleEvent;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleCyclePolicyException;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.domain.schedule.policy.cycle.ReservationPolicyValue;
 import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
-import com.ums.schedule.domain.schedule.exception.InvalidCycleValueException;
+import com.ums.schedule.fixture.schedule.ScheduleCreateCommandBuilder;
 import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
 
-import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
+import com.ums.schedule.fixture.entity.ScheduleEntityBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,19 +36,7 @@ class ScheduleCreateTest {
 
             Schedule expect = Schedule.of(command, policy);
 
-            assertThat(expect.getScheduleStatus()).isInstanceOf(ScheduleActiveStatus.class);
-        }
-
-        @Test
-        @DisplayName("스케쥴 명이 빈 값일 떄, 익셉션이 발생한다.")
-        void shouldThrowException_whenScheduleNameIsEmpty() {
-            ScheduleCreateCommand command = ScheduleEntityBuilder.builder().scheduleName("").toCommand();
-
-            RequiredException expect = RequiredException.fieldOf("schedule name");
-
-            assertThatThrownBy(() -> Schedule.of(command, ScheduleCyclePolicy.realtimeOf()))
-                    .isInstanceOf(expect.getClass())
-                    .hasMessage(expect.getMessage());
+            assertThat(expect.getStatus()).isInstanceOf(ScheduleActiveStatus.class);
         }
     }
 
@@ -61,9 +50,9 @@ class ScheduleCreateTest {
                     .status(new ScheduleActiveStatus())
                     .build();
 
-            schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
+            schedule.toStatus(ScheduleEvent.TO_RUNNING);
 
-            assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleRunningStatus.class);
+            assertThat(schedule.getStatus()).isInstanceOf(ScheduleRunningStatus.class);
         }
 
         @Test
@@ -74,18 +63,18 @@ class ScheduleCreateTest {
                     .build();
 
             //when
-            schedule.toStatus(ScheduleEventEnum.TO_ACTIVE);
+            schedule.toStatus(ScheduleEvent.TO_ACTIVE);
 
-            assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleActiveStatus.class);
+            assertThat(schedule.getStatus()).isInstanceOf(ScheduleActiveStatus.class);
         }
 
         @Test
         @DisplayName("스케쥴 상태가 ACTIVE일 때, InACTIVE로 변경하면 Status는 INACTIVE가 반환된다.")
         void shouldReturnStatusDeActive_whenCallToInActive(){
             Schedule schedule = ScheduleEntityBuilder.builder().status(new ScheduleActiveStatus()).build();
-            schedule.toStatus(ScheduleEventEnum.TO_INACTIVE);
+            schedule.toStatus(ScheduleEvent.TO_INACTIVE);
 
-            assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleInActiveStatus.class);
+            assertThat(schedule.getStatus()).isInstanceOf(ScheduleInActiveStatus.class);
         }
     }
 
@@ -103,8 +92,8 @@ class ScheduleCreateTest {
             ScheduleCyclePolicy policy = givenReservationAt(givenAt);
 
             assertThatThrownBy(() -> Schedule.of(command, policy))
-                    .isInstanceOf(InvalidCycleValueException.class)
-                    .hasMessage(InvalidCycleValueException.compareToReservationDate().getMessage());
+                    .isInstanceOf(InvalidScheduleCyclePolicyException.class)
+                    .hasMessage(InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.NOT_IN_PERIOD_RESERVATION_DATE).getMessage());
         }
 
         @Test
@@ -118,8 +107,8 @@ class ScheduleCreateTest {
             ScheduleCyclePolicy policy = givenReservationAt(givenAt);
 
             assertThatThrownBy(() -> Schedule.of(command, policy))
-                    .isInstanceOf(InvalidCycleValueException.class)
-                    .hasMessage(InvalidCycleValueException.compareToReservationDate().getMessage());
+                    .isInstanceOf(InvalidScheduleCyclePolicyException.class)
+                    .hasMessage(InvalidScheduleCyclePolicyException.of(ScheduleErrorCode.NOT_IN_PERIOD_RESERVATION_DATE).getMessage());
         }
 
         @Test
@@ -159,7 +148,7 @@ class ScheduleCreateTest {
         ScheduleCyclePolicy policy = ScheduleCyclePolicy.realtimeOf();
 
         Schedule schedule = Schedule.of(command, policy);
-        schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
+        schedule.toStatus(ScheduleEvent.TO_RUNNING);
 
         boolean expect = schedule.availableSchedulePeriodAndStatus();
 
@@ -170,11 +159,11 @@ class ScheduleCreateTest {
     @Test
     @DisplayName("현재 날짜가 스케쥴 기간에 포함되고, 상태가 RUNNING이면 TRUE를 반환한다.")
     void shouldReturnTrue_whenCurrentDateContainsInSchedulePeriodAndStatusIsRunning() {
-        ScheduleCreateCommand command = ScheduleEntityBuilder.builder().toCommand();
+        ScheduleCreateCommand command = ScheduleCreateCommandBuilder.builder().build();
         ScheduleCyclePolicy policy = ScheduleCyclePolicy.realtimeOf();
 
         Schedule schedule = Schedule.of(command, policy);
-        schedule.toStatus(ScheduleEventEnum.TO_RUNNING);
+        schedule.toStatus(ScheduleEvent.TO_RUNNING);
 
         boolean expect = schedule.availableSchedulePeriodAndStatus();
 

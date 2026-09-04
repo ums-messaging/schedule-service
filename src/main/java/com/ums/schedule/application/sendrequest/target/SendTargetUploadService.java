@@ -1,66 +1,38 @@
 package com.ums.schedule.application.sendrequest.target;
 
-import com.ums.schedule.application.exception.ApplicationException;
-import com.ums.schedule.application.sendrequest.target.assembler.SendTargetAssembler;
-import com.ums.schedule.application.sendrequest.data.SendRequestKeyData;
-import com.ums.schedule.application.sendrequest.target.data.TargetMessageData;
 import com.ums.schedule.application.sendrequest.target.event.SendTargetFailedEvent;
-import com.ums.schedule.application.sendrequest.target.result.SendTargetSaveResult;
-import com.ums.schedule.common.exception.DomainException;
-import com.ums.schedule.domain.sendrequest.code.ChannelTypeEnum;
-import com.ums.schedule.domain.sendrequest.target.SendTarget;
-import com.ums.schedule.domain.sendrequest.target.exeption.SendTargetPolicyViolationException;
-import com.ums.schedule.domain.sendrequest.target.upload.TargetUploadReport;
+import com.ums.schedule.application.sendrequest.target.result.SendTargetUploadResult;
+import com.ums.schedule.application.sendrequest.target.result.TargetUploadResultList;
+import com.ums.schedule.common.exception.BusinessException;
+import com.ums.schedule.domain.target.TargetMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SendTargetUploadService {
-    private final Map<ChannelTypeEnum, SendTargetAssembler> targetAssemblerMap;
-    private final ApplicationEventPublisher failTargetUploadPublisher;
-    private final SendTargetService targetService;
+    private final ApplicationEventPublisher publisher;
+    private final TargetMessageCreateService targetService;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public List<SendTargetSaveResult> upload(TargetUploadReport report, SendRequestKeyData keyData, List<TargetMessageData> targetList, int partitionSize) {
-        SendTargetAssembler assembler = targetAssemblerMap.get(keyData.channelType());
-
-        List<SendTargetSaveResult> results = new ArrayList<>();
-
+    public TargetUploadResultList upload(List<TargetMessage> messages) {
         try {
-            List<SendTarget> targetAssembleList = assembler.assemble(keyData.messageId(), report, targetList);
-            Map<Integer, List<SendTarget>> groupedTarget = report.startTargetUploadAndGroupedTarget(targetAssembleList, partitionSize);
-
-            Set<Map.Entry<Integer, List<SendTarget>>> entries = groupedTarget.entrySet();
-
-            for (Map.Entry<Integer, List<SendTarget>> entry : entries) {
-                SendTargetSaveResult saveResult = null;
-                try {
-                    saveResult = targetService.saveTargetList(entry.getValue());
-                } catch (DataIntegrityViolationException e) {
-                    saveResult = targetService.saveTarget(entry.getValue());
-                } finally {
-                    results.add(saveResult);
-                }
-            }
-            report.completeTargetUpload(results);
-        } catch (DomainException | ApplicationException e) {
-            report.onError(e.getMessage());
+            targetService.saveTargetList(messages);
+        } catch (BusinessException e) {
+            targetService.saveTarget(messages);
         } finally {
-            SendTargetFailedEvent event = SendTargetFailedEvent.of(results);
+            SendTargetFailedEvent event = SendTargetFailedEvent.of(messages);
             if(!event.failureTargetList().isEmpty()) {
-                failTargetUploadPublisher.publishEvent(event);
+                publisher.publishEvent(event);
             }
+            return TargetUploadResultList.of(messages);
         }
-        return results;
     }
 }

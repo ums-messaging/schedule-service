@@ -1,7 +1,7 @@
 package com.ums.schedule.domain.send.email.mime;
 
 
-import com.ums.schedule.domain.send.email.code.EmailSendCommand;
+import com.ums.schedule.common.code.email.SmtpCommandType;
 import com.ums.schedule.domain.send.email.job.DomainGroupTarget;
 import com.ums.schedule.domain.send.email.job.EmailSendJob;
 import org.jsoup.Jsoup;
@@ -38,10 +38,10 @@ public record MimeMessage(
     }
 
     public String getMailFrom() {
-        return EmailSendCommand.MAIL_FROM.toCommand(this.mailFrom());
+        return SmtpCommandType.MAIL_FROM.toCommand(this.mailFrom());
     }
 
     public String getReceiver() {
-        return EmailSendCommand.RCPT_TO.toCommand(this.mailFrom());
+        return SmtpCommandType.RCPT_TO.toCommand(this.mailFrom());
     }
 }

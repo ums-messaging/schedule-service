@@ -1,11 +1,12 @@
 package com.ums.schedule.common.code.mapper;
 
-import com.ums.schedule.domain.sendrequest.resource.email.code.AttachmentEnumMapper;
-import com.ums.schedule.domain.send.email.code.EmailEnumMapper;
-import com.ums.schedule.domain.sendrequest.template.code.TemplateEnumMapper;
-import com.ums.schedule.domain.sendrequest.code.SendRequestEnumMapper;
-import com.ums.schedule.domain.schedule.code.ScheduleEnumMapper;
-import com.ums.schedule.domain.sendrequest.target.upload.code.TargetUploadReportEnumMapper;
+import com.ums.schedule.common.code.email.EmailCode;
+import com.ums.schedule.common.code.email.security.SecurityMailCode;
+import com.ums.schedule.common.code.message.MessageCode;
+import com.ums.schedule.common.code.request.SendRequestCode;
+import com.ums.schedule.common.code.schedule.ScheduleCode;
+import com.ums.schedule.common.code.target.SendTargetCode;
+import com.ums.schedule.common.code.target_upload.TargetUploadReportCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +14,12 @@ import org.springframework.stereotype.Component;
 public class EnumMapperRegistry {
     @Autowired
     public EnumMapperRegistry(EnumMapperFactory factory) {
-        factory.register(ScheduleEnumMapper.class);
-        factory.register(SendRequestEnumMapper.class);
-        factory.register(TemplateEnumMapper.class);
-        factory.register(AttachmentEnumMapper.class);
-        factory.register(TargetUploadReportEnumMapper.class);
-        factory.register(EmailEnumMapper.class);
+        factory.register(ScheduleCode.class);
+        factory.register(SendRequestCode.class);
+        factory.register(SecurityMailCode.class);
+        factory.register(TargetUploadReportCode.class);
+        factory.register(SendTargetCode.class);
+        factory.register(EmailCode.class);
+        factory.register(MessageCode.class);
     }
 }

@@ -1,11 +1,10 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.schedule.code.CycleCdEnum;
-import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.CycleCd;
+import com.ums.schedule.common.code.schedule.ScheduleType;
 import com.ums.schedule.application.schedule.factory.schedule_policy.ReservationScheduleFactory;
 import com.ums.schedule.application.schedule.factory.schedule_policy.SchedulePolicyFactory;
-import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +20,7 @@ class ReservationScheduleFactoryTest {
     void shouldReturnTrue_whenScheduleTypeIsReservation() {
         SchedulePolicyFactory factory = new ReservationScheduleFactory();
 
-        boolean result = factory.supports(EnumMapperValue.fromEnumMapperType(ScheduleTypeEnum.RESERVATION));
+        boolean result = factory.supports(EnumMapperValue.fromEnumMapperType(ScheduleType.RESERVATION));
 
         assertThat(result).isTrue();
     }
@@ -37,8 +36,8 @@ class ReservationScheduleFactoryTest {
         ScheduleCyclePolicy result = factory.create(null, format);
 
         // then
-        assertThat(result.getScheduleType()).isEqualTo(ScheduleTypeEnum.RESERVATION);
-        assertThat(result.getCycleCd()).isEqualTo(CycleCdEnum.ONCE);
+        assertThat(result.getScheduleType()).isEqualTo(ScheduleType.RESERVATION);
+        assertThat(result.getCycleCd()).isEqualTo(CycleCd.ONCE);
         assertThat(result.getPolicyValue().getCycleValue()).isEqualTo(format);
     }
 

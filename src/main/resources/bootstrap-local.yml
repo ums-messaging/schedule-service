@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/ums
+    username: root
+    password: jang314
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 15
+      connection-timeout: 3000
+      leak-detection-threshold: 30000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: false
+        show_sql: false
+        generate-ddl: false
+        jdbc:
+          batch_size: 200
+        order_inserts: true
+logging:
+  file:
+    name: logs/app.log
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
+#  level:
+#    org.hibernate.orm.jdbc.bind: TRACE

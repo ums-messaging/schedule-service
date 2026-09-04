@@ -1,15 +1,12 @@
 package com.ums.schedule.common.exception;
 
-public abstract class PolicyViolationException extends DomainException {
-    protected PolicyViolationException(String message) {
-        super(message);
-    }
+import com.ums.schedule.common.code.api.ErrorCode;
 
-    public PolicyViolationException(String message, Throwable e) {
-        super(message, e);
+public abstract class PolicyViolationException extends BusinessException {
+    protected PolicyViolationException(Object id, ErrorCode errorCode, Object... args) {
+        super(id, errorCode, args);
     }
-
-    public PolicyViolationException(Throwable e) {
-        super(e);
+    protected PolicyViolationException(ErrorCode errorCode, Object... args) {
+        super(errorCode, args);
     }
 }

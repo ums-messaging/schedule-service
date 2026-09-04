@@ -41,7 +41,7 @@ public class EmailSendManager {
                     )
                     .toArray(CompletableFuture[]::new);
 
-            CompletableFuture.allOf(futures);
+            CompletableFuture.allOf(futures).join();
         }
     }
 }

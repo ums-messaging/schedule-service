@@ -1,9 +1,8 @@
 package com.ums.schedule.domain.send.group;
 
-import com.ums.schedule.domain.sendrequest.SendRequest;
-import com.ums.schedule.domain.send.code.ResultCodeEnum;
-import com.ums.schedule.domain.sendrequest.code.SendGroupEventTypeEnum;
-import com.ums.schedule.domain.sendrequest.exception.SendRequestException;
+import com.ums.schedule.common.code.request.SendGroupEventType;
+import com.ums.schedule.domain.request.SendRequest;
+import com.ums.schedule.common.code.email.EmailResultCode;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-import static com.ums.schedule.domain.send.code.ResultCodeEnum.FAIL;
+import static com.ums.schedule.common.code.email.EmailResultCode.FAIL;
 
 @Getter
 @Entity
@@ -26,11 +25,11 @@ public class SendGroupEvent {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type", nullable = false)
-    private SendGroupEventTypeEnum eventType;
+    private SendGroupEventType eventType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "result_code", nullable = false)
-    private ResultCodeEnum resultCode;
+    private EmailResultCode resultCode;
 
     private String resultMessage;
 
@@ -48,27 +47,22 @@ public class SendGroupEvent {
         return event;
     }
 
-    public static SendGroupEvent of(SendRequest sendRequest, SendRequestException e) {
-        SendGroupEvent event = SendGroupEvent.of(sendRequest);
-        event.onError(sendRequest, e);
-        return event;
-    }
 
     private void assignSendRequest(SendRequest sendRequest) {
         this.sendRequest = sendRequest;
     }
 
-    private SendGroupEvent(SendGroupEventTypeEnum eventType) {
+    private SendGroupEvent(SendGroupEventType eventType) {
         this.eventType = eventType;
-        this.resultCode = ResultCodeEnum.SUCCESS;
+        this.resultCode = EmailResultCode.SUCCESS;
     }
 
-    private void onError(SendRequest sendRequest, SendRequestException e) {
-        setResult(FAIL, e.getMessage());
+    private void onError(SendRequest sendRequest, String message) {
+        setResult(FAIL, message);
     }
 
 
-    private void setResult(ResultCodeEnum code, String message) {
+    private void setResult(EmailResultCode code, String message) {
         this.resultCode = code;
         this.resultMessage = message;
     }

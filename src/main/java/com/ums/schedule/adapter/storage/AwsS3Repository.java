@@ -1,7 +1,11 @@
 package com.ums.schedule.adapter.storage;
 
+import com.ums.schedule.common.code.api.FileErrorCode;
+import com.ums.schedule.common.exception.file.AmazonS3FileException;
+import com.ums.schedule.common.exception.file.FileNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -19,25 +23,31 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class AwsS3Repository {
     private final S3Client s3Client;
-    private final String BUCKET_NAME = "ums-file-bucket-01";
+    private final String BUCKET_NAME = "ums-proj-bucket-01";
 
     public AwsS3FileMetadataResponse getFileMetadata(String key) {
         if(!existsFile(key)) {
-            return null;
+            throw FileNotFoundException.of(key);
         }
-        HeadObjectResponse response = s3Client.headObject(
-                HeadObjectRequest.builder()
-                        .bucket(BUCKET_NAME)
-                        .key(key)
-                        .build()
-        );
-        return new AwsS3FileMetadataResponse(
-                key,
-                response.contentType(),
-                response.contentLength(),
-                response.lastModified(),
-                response.metadata()
-        );
+        HeadObjectResponse response;
+
+        try {
+            response = s3Client.headObject(
+                    HeadObjectRequest.builder()
+                            .bucket(BUCKET_NAME)
+                            .key(key)
+                            .build()
+            );
+            return new AwsS3FileMetadataResponse(
+                    key,
+                    response.contentType(),
+                    response.contentLength(),
+                    response.lastModified(),
+                    response.metadata()
+            );
+        } catch (NoSuchKeyException e) {
+            throw AmazonS3FileException.of(FileErrorCode.FILE_METADATA_LOAD_FAILED, key, e);
+        }
     }
 
     public boolean existsFile(String key) {
@@ -63,6 +73,7 @@ public class AwsS3Repository {
     public InputStream getFileContent(String key) {
         ResponseInputStream<GetObjectResponse> inputStream = s3Client.getObject(
                 GetObjectRequest.builder()
+                        .bucket(BUCKET_NAME)
                         .key(key)
                         .build()
         );
@@ -70,23 +81,27 @@ public class AwsS3Repository {
     }
 
     public PresigendUrlResponse generateUploadUrl(String objectKey) {
-        S3Presigner presigner = S3Presigner.create();
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(BUCKET_NAME)
-                .key(objectKey)
-                .build();
+        try {
+            S3Presigner presigner = S3Presigner.create();
+            PutObjectRequest request = PutObjectRequest.builder()
+                    .bucket(BUCKET_NAME)
+                    .key(objectKey)
+                    .build();
 
-        Duration expiredDuration = Duration.ofHours(3);
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(expiredDuration)
-                .putObjectRequest(request)
-                .build();
+            Duration expiredDuration = Duration.ofHours(3);
+            PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                    .signatureDuration(expiredDuration)
+                    .putObjectRequest(request)
+                    .build();
 
-        String url = presigner.presignPutObject(presignRequest)
-                .url().toString();
+            String url = presigner.presignPutObject(presignRequest)
+                    .url().toString();
 
-        presigner.close();
-        return PresigendUrlResponse.of(objectKey, url, expiredDuration);
+            presigner.close();
+            return PresigendUrlResponse.of(objectKey, url, expiredDuration);
+        } catch (AwsServiceException e) {
+            throw AmazonS3FileException.of(FileErrorCode.UPLOAD_URL_GENERATED_FAIL, objectKey, e);
+        }
     }
 
     public PresigendUrlResponse generateDownloadUrl(String objectKey) {
@@ -107,18 +122,23 @@ public class AwsS3Repository {
         return PresigendUrlResponse.of(objectKey, url, expiredDuration);
     }
 
-    public String upload(File file, String key) throws IOException {
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(BUCKET_NAME)
-                .key(key)
-                .contentType(Files.probeContentType(file.toPath()))
-                .build();
+    public String upload(File file, String key) {
+        PutObjectRequest request = null;
+        try {
+            request = PutObjectRequest.builder()
+                    .bucket(BUCKET_NAME)
+                    .key(key)
+                    .contentType(Files.probeContentType(file.toPath()))
+                    .build();
+            s3Client.putObject(
+                    request,
+                    RequestBody.fromFile(file)
+            );
 
-        s3Client.putObject(
-                request,
-                RequestBody.fromFile(file)
-        );
+            return key;
+        } catch (IOException e) {
+            throw AmazonS3FileException.of(FileErrorCode.FILE_UPLOAD_FAIL, key, e);
 
-        return key;
+        }
     }
 }

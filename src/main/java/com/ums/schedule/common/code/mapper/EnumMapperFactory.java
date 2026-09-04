@@ -1,7 +1,8 @@
 package com.ums.schedule.common.code.mapper;
 
-import com.ums.schedule.common.exception.EnumMapperNotEmptyException;
-import com.ums.schedule.common.exception.EnumMapperNotFoundException;
+import com.ums.schedule.common.code.api.ErrorCode;
+import com.ums.schedule.common.code.api.GlobalErrorCode;
+import com.ums.schedule.common.code.mapper.exception.EnumMapperNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -29,17 +30,17 @@ public class EnumMapperFactory {
 
     public EnumMapperValue findEnumMapperValue(EnumMapper key, String value) {
         if(!StringUtils.hasText(value)) {
-            throw EnumMapperNotEmptyException.of(key);
+            return null;
         }
         return findEnumMapperList(key)
                 .stream()
                 .filter(e -> e.value().toUpperCase().equals(value.toUpperCase()))
                 .findFirst()
-                .orElseThrow(() -> EnumMapperNotFoundException.forEnumMapperValue(key, value));
+                .orElseThrow(() -> EnumMapperNotFoundException.of(key, value));
     }
 
     public List<EnumMapperValue> findEnumMapperList(EnumMapper key) {
         return Optional.ofNullable(codeMap.get(key))
-                .orElseThrow(() -> EnumMapperNotFoundException.forEnumMapper(key));
+                .orElseThrow(() -> EnumMapperNotFoundException.of(key));
     }
 }

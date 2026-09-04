@@ -1,31 +1,31 @@
 package com.ums.schedule.domain.schedule.policy.cycle;
 
-import com.ums.schedule.domain.schedule.code.CycleCdEnum;
-import com.ums.schedule.domain.schedule.code.ScheduleTypeEnum;
+import com.ums.schedule.common.code.schedule.CycleCd;
+import com.ums.schedule.common.code.schedule.ScheduleType;
 import lombok.Getter;
 
 
 public class CyclePolicyValue implements SchedulePolicyValue {
-    private CycleCdEnum cycleCd;
+    private CycleCd cycleCd;
     @Getter
     private int cycle;
 
-    public static CyclePolicyValue of(CycleCdEnum cycleCd, int cycle) {
+    public static CyclePolicyValue of(CycleCd cycleCd, int cycle) {
        return new CyclePolicyValue(cycleCd, cycle);
     }
 
-    private CyclePolicyValue(CycleCdEnum cycleCd, int cycle) {
+    private CyclePolicyValue(CycleCd cycleCd, int cycle) {
         this.cycleCd = cycleCd;
         this.cycle = cycle;
     }
 
     @Override
-    public ScheduleTypeEnum getScheduleType() {
-        return ScheduleTypeEnum.CYCLE;
+    public ScheduleType getScheduleType() {
+        return ScheduleType.CYCLE;
     }
 
     @Override
-    public CycleCdEnum getCycleCdEnum() {
+    public CycleCd getCycleCdEnum() {
         return this.cycleCd;
     }
 

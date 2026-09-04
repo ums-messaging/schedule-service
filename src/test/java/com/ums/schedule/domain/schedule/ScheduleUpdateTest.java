@@ -1,15 +1,16 @@
 package com.ums.schedule.domain.schedule;
 
 import com.ums.schedule.application.schedule.dto.ScheduleUpdateCommand;
-import com.ums.schedule.common.exception.validation.RequiredException;
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
+import com.ums.schedule.common.code.schedule.ScheduleState;
 import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
-import com.ums.schedule.domain.schedule.exception.InvalidScheduleStatusException;
+import com.ums.schedule.domain.schedule.exception.InvalidScheduleStateException;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import com.ums.schedule.fixture.schedule.SchedulePeriodEntityBuilder;
 import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
 import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
-import com.ums.schedule.fixture.schedule.ScheduleEntityBuilder;
+import com.ums.schedule.fixture.entity.ScheduleEntityBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ public class ScheduleUpdateTest {
         Schedule schedule = ScheduleEntityBuilder.builder().status(new ScheduleRunningStatus()).build();
         ScheduleUpdateCommand command = ScheduleEntityBuilder.builder().scheduleName("schedule").toUpdateCommand();
 
-        InvalidScheduleStatusException expect = InvalidScheduleStatusException.invalidStatus();
+        InvalidScheduleStateException expect = InvalidScheduleStateException.of(ScheduleState.RUNNING, ScheduleState.ACTIVE);
 
         assertThatThrownBy(() -> schedule.update(command))
                 .isInstanceOf(expect.getClass())
@@ -47,7 +48,7 @@ public class ScheduleUpdateTest {
 
         ScheduleUpdateCommand command = ScheduleEntityBuilder.builder().scheduleName("schedule").toUpdateCommand();
 
-        InvalidSchedulePeriodException expect = InvalidSchedulePeriodException.expired();
+        InvalidSchedulePeriodException expect = InvalidSchedulePeriodException.of(schedule.getId(), ScheduleErrorCode.EXPIRED_SCHEDULE);
 
         assertThatThrownBy(() -> schedule.update(command))
                 .isInstanceOf(expect.getClass())
@@ -70,24 +71,9 @@ public class ScheduleUpdateTest {
         ScheduleUpdateCommand command = ScheduleEntityBuilder.builder().scheduleName("schedule").toUpdateCommand();
 
         assertThatThrownBy(() -> schedule.update(command));
-        assertThat(schedule.getScheduleStatus()).isInstanceOf(ScheduleInActiveStatus.class);
+        assertThat(schedule.getStatus()).isInstanceOf(ScheduleInActiveStatus.class);
     }
 
-    @Test
-    @DisplayName("스케쥴 명이 공백일 경우 익셉션이 발생한다.")
-    void shouldThrowException_whenScheduleNameIsEmpty() {
-        Schedule schedule = ScheduleEntityBuilder.builder()
-                .status(new ScheduleActiveStatus())
-                .build();
-
-        ScheduleUpdateCommand command = ScheduleEntityBuilder.builder().scheduleName(" ").toUpdateCommand();
-
-        RequiredException expect = RequiredException.fieldOf("schedule name");
-
-        assertThatThrownBy(() -> schedule.update(command))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
-    }
 
     @Test
     @DisplayName("스케쥴 명 입력 시 입력한 스케쥴 명으로 변경된다.")

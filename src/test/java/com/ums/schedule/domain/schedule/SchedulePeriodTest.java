@@ -1,5 +1,7 @@
 package com.ums.schedule.domain.schedule;
 
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
+import com.ums.schedule.common.exception.validate.InvalidDateFormatException;
 import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
 import com.ums.schedule.domain.schedule.policy.SchedulePeriod;
 import org.junit.jupiter.api.DisplayName;
@@ -20,11 +22,10 @@ public class SchedulePeriodTest {
     void shouldThrowException_whenScheduleStartAtIsEmpty() {
         String scheduleEndAt = LocalDate.now().plusMonths(1).format(formatter);
 
-        InvalidSchedulePeriodException expect = InvalidSchedulePeriodException.requiredSchedulePeriod();
-
         assertThatThrownBy(() -> SchedulePeriod.of("", scheduleEndAt))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidSchedulePeriodException.class)
+                .extracting(v -> ((InvalidSchedulePeriodException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_PERIOD_FORMAT);;
     }
 
     @Test
@@ -33,10 +34,10 @@ public class SchedulePeriodTest {
         String scheduleStartAt = "Invalid Date";
         String scheduleEndAt = LocalDate.now().plusMonths(1).format(formatter);
 
-        InvalidSchedulePeriodException expect = InvalidSchedulePeriodException.invalidFormat();
         assertThatThrownBy(() -> SchedulePeriod.of(scheduleStartAt, scheduleEndAt))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidSchedulePeriodException.class)
+                .extracting(v -> ((InvalidSchedulePeriodException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_PERIOD_FORMAT);
     }
 
     @Test
@@ -44,11 +45,10 @@ public class SchedulePeriodTest {
     void shouldThrowException_whenScheduleEndAtIsEmpty() {
         String scheduleStartAt = LocalDate.now().plusMonths(1).format(formatter);
 
-        InvalidSchedulePeriodException expect = InvalidSchedulePeriodException.requiredSchedulePeriod();
-
         assertThatThrownBy(() -> SchedulePeriod.of(scheduleStartAt, " "))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidSchedulePeriodException.class)
+                .extracting(v -> ((InvalidSchedulePeriodException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_PERIOD_FORMAT);
     }
 
     @Test
@@ -57,11 +57,10 @@ public class SchedulePeriodTest {
         String scheduleStartAt = LocalDate.now().plusMonths(1).format(formatter);
         String scheduleEndAt = "Invalid Date";
 
-        InvalidSchedulePeriodException expect = InvalidSchedulePeriodException.invalidFormat();
-
         assertThatThrownBy(() -> SchedulePeriod.of(scheduleStartAt, scheduleEndAt))
-                .isInstanceOf(expect.getClass())
-                .hasMessage(expect.getMessage());
+                .isInstanceOf(InvalidSchedulePeriodException.class)
+                .extracting(v -> ((InvalidSchedulePeriodException) v).getErrorCode())
+                .isEqualTo(ScheduleErrorCode.INVALID_PERIOD_FORMAT);
     }
 
     @Test
@@ -74,7 +73,8 @@ public class SchedulePeriodTest {
         // When, Then
         assertThatThrownBy(
                 () -> SchedulePeriod.of(scheduleStartAt.format(formatter), scheduleEndAt.format(formatter)))
-                .isInstanceOf(InvalidSchedulePeriodException.class);
+                .isInstanceOf(InvalidSchedulePeriodException.class)
+                .hasMessage(InvalidSchedulePeriodException.of(ScheduleErrorCode.START_AT_BEFORE_NOW).getMessage());
     }
 
     @Test
@@ -86,7 +86,8 @@ public class SchedulePeriodTest {
 
         assertThatThrownBy(
                 () -> SchedulePeriod.of(scheduleStartAt.format(formatter), scheduleEndAt.format(formatter))
-        ).isInstanceOf(InvalidSchedulePeriodException.class);
+        ).isInstanceOf(InvalidSchedulePeriodException.class)
+                .hasMessage(InvalidSchedulePeriodException.of(ScheduleErrorCode.INVALID_PERIOD_RANGE).getMessage());
     }
 
     @Test

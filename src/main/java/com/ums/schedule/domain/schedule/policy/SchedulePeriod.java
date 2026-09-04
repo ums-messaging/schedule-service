@@ -1,5 +1,6 @@
 package com.ums.schedule.domain.schedule.policy;
 
+import com.ums.schedule.common.code.api.ScheduleErrorCode;
 import com.ums.schedule.domain.schedule.exception.InvalidSchedulePeriodException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -17,7 +18,7 @@ import java.time.format.DateTimeParseException;
 @Embeddable
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SchedulePeriod {
     @Column(name = "schedule_start_at", nullable = false)
     private LocalDate scheduleStartAt;
@@ -32,7 +33,6 @@ public class SchedulePeriod {
     }
 
     protected SchedulePeriod(String scheduleStartAt, String scheduleEndAt) {
-        validateRequiredMissing(scheduleStartAt, scheduleEndAt);
         this.scheduleStartAt = parseToLocalDate(scheduleStartAt);
         this.scheduleEndAt = parseToLocalDate(scheduleEndAt);
     }
@@ -41,38 +41,35 @@ public class SchedulePeriod {
         try {
             return LocalDate.parse(scheduleDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } catch (DateTimeParseException e) {
-            throw InvalidSchedulePeriodException.invalidFormat();
+            throw InvalidSchedulePeriodException.of(ScheduleErrorCode.INVALID_PERIOD_FORMAT);
         }
     }
-
-    private void validateRequiredMissing(String scheduleStartAt, String scheduleEndAt) {
-        if(isEmpty(scheduleStartAt, scheduleEndAt)) {
-            throw InvalidSchedulePeriodException.requiredSchedulePeriod();
-        }
-    }
-
-    private boolean isEmpty(String scheduleStartAt, String scheduleEndAt) {
-        return !StringUtils.hasText(scheduleStartAt.trim()) || !StringUtils.hasText(scheduleEndAt.trim());
-    }
-
     private static void validateStartAtAndEndAt(LocalDate scheduleStartAt, LocalDate scheduleEndAt) {
         LocalDate minScheduleEndAt = scheduleStartAt
                 .plusDays(1);
 
         if(scheduleEndAt.isBefore(minScheduleEndAt)) {
-            throw InvalidSchedulePeriodException.endAtAfterStartAt();
+            throw InvalidSchedulePeriodException.of(ScheduleErrorCode.INVALID_PERIOD_RANGE);
         }
     }
 
     private static void validateStartAt(LocalDate scheduleStartAt) {
         LocalDate currentTime = LocalDate.now();
         if(scheduleStartAt.isBefore(currentTime)) {
-            throw InvalidSchedulePeriodException.startAtBeforeNow();
+            throw InvalidSchedulePeriodException.of(ScheduleErrorCode.START_AT_BEFORE_NOW);
         }
     }
 
     public boolean contains(LocalDateTime dateTime) {
-        return !(dateTime.toLocalDate().isBefore(scheduleStartAt) || dateTime.toLocalDate().isAfter(scheduleEndAt));
+        return compareStartAt(dateTime) && compareEndAt(dateTime);
+    }
+
+    private boolean compareStartAt(LocalDateTime dateTime) {
+        return dateTime.toLocalDate().isEqual(scheduleStartAt) || dateTime.toLocalDate().isAfter(scheduleStartAt);
+    }
+
+    private boolean compareEndAt(LocalDateTime dateTime) {
+        return dateTime.toLocalDate().isEqual(scheduleEndAt) || dateTime.toLocalDate().isBefore(scheduleEndAt);
     }
 
     public boolean isExpired() {

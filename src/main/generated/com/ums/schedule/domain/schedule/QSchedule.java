@@ -36,7 +36,7 @@ public class QSchedule extends EntityPathBase<Schedule> {
 
     public final com.ums.schedule.domain.schedule.policy.QSchedulePeriod schedulePeriod;
 
-    public final SimplePath<com.ums.schedule.domain.schedule.state.ScheduleStatus> scheduleStatus = createSimple("scheduleStatus", com.ums.schedule.domain.schedule.state.ScheduleStatus.class);
+    public final SimplePath<com.ums.schedule.domain.schedule.state.ScheduleStatus> status = createSimple("status", com.ums.schedule.domain.schedule.state.ScheduleStatus.class);
 
     public QSchedule(String variable) {
         this(Schedule.class, forVariable(variable), INITS);

@@ -2,7 +2,7 @@ package com.ums.schedule.adapter.api.email.dns;
 
 import com.ums.schedule.common.code.mapper.EnumMapperFactory;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
-import com.ums.schedule.domain.send.email.code.EmailEnumMapper;
+import com.ums.schedule.common.code.email.EmailCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class DnsQueryClient implements DnsClient {
 
     @Override
     public DnsQueryResult getDomainInfo(String domainName) {
-        List<EnumMapperValue> enumMapperList = factory.findEnumMapperList(EmailEnumMapper.DNS_QUERY_RESULT);
+        List<EnumMapperValue> enumMapperList = factory.findEnumMapperList(EmailCode.DNS_QUERY_RESULT);
         List<DnsQuery> queries = new ArrayList<>();
         try {
             Lookup lookup = queryLookup(domainName, Type.MX);

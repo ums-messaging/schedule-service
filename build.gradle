@@ -15,6 +15,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
 
 group = 'com.ums'
 version = '0.0.1-SNAPSHOT'
@@ -23,6 +24,10 @@ description = 'schedule-service'
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
+    }
+
+    jacoco {
+        toolVersion = "0.8.13"
     }
 }
 
@@ -53,6 +58,8 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-kafka'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'dnsjava:dnsjava:3.6.1'
@@ -60,22 +67,26 @@ dependencies {
     implementation 'software.amazon.awssdk:s3'
     implementation 'com.alibaba:easyexcel:3.3.2'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
     implementation 'com.github.f4b6a3:tsid-creator:5.2.6'
     implementation 'com.github.f4b6a3:uuid-creator:5.3.3'
     implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
     implementation 'com.openhtmltopdf:openhtmltopdf-slf4j:1.0.10'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
     implementation 'org.jsoup:jsoup:1.18.1'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2'
+    testRuntimeOnly 'com.h2database:h2'
+    testImplementation 'org.apache.kafka:kafka-streams-test-utils'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor "com.querydsl:querydsl-apt:5.1.0:jakarta"
@@ -94,4 +105,14 @@ dependencyManagement {
 }
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        html.required = true
+        xml.required = true
+        csv.required = false
+    }
 }

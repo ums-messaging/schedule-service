@@ -1,0 +1,19 @@
+package com.ums.schedule.domain.target.state;
+
+import com.ums.schedule.common.code.target.SendTargetStatus;
+import com.ums.schedule.common.converter.state.StatusState;
+import com.ums.schedule.common.converter.state.StatusStateEvent;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
+public class SendTargetFailState implements SendTargetState {
+    @Override
+    public StatusState onEvent(StatusStateEvent event) {
+        return null;
+    }
+
+    @Override
+    public SendTargetStatus getCurrentCode() {
+        return SendTargetStatus.FAIL;
+    }
+}
