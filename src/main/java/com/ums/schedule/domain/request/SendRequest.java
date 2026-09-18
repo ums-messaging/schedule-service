@@ -13,8 +13,10 @@ import com.ums.schedule.domain.request.customer.CustomerRequestKey;
 import com.ums.schedule.domain.message.SendMessage;
 import com.ums.schedule.domain.request.exception.SendRequestDomainException;
 import com.ums.schedule.domain.request.state.SendRequestCreateState;
+import com.ums.schedule.domain.request.state.SendRequestSendingState;
 import com.ums.schedule.domain.request.state.SendRequestState;
 import com.ums.schedule.domain.request.converter.SendRequestStateConverter;
+import com.ums.schedule.domain.send.email.job.SendJob;
 import com.ums.schedule.domain.target.upload.TargetUploadReport;
 import com.ums.schedule.domain.schedule.Schedule;
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -223,6 +225,11 @@ public class SendRequest implements Persistable<Long> {
         return this.currentTargetUpload == targetUploadReport;
     }
 
+    public SendJob createJob() {
+        TargetUploadReport targetUpload = getCurrentTargetUpload();
+        return SendJob.of(this, targetUpload.getId(), targetUpload.getSuccessCount());
+    }
+
     @Override
     public boolean isNew() {
         return this.isNew;
@@ -238,5 +245,11 @@ public class SendRequest implements Persistable<Long> {
         if(this.createdAt == null) {
             initializeCreateAt();
         }
+    }
+
+    public SendRequest sendStart() {
+        changeStatus(new SendRequestSendingState());
+        this.sendStartedAt = LocalDateTime.now();
+        return this;
     }
 }

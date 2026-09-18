@@ -112,12 +112,18 @@ public class EmailTargetMessage extends TargetMessage {
     }
 
     @Override
+    protected String initializeGroupKey(String groupKey) {
+        this.domain = groupKey;
+        return groupKey;
+    }
+
+    @Override
     protected String assignContact(Map<SendTargetColumn, String> targetMap) {
         return assignTargetData(SendTargetColumn.TARGET_EMAIL, targetMap.get(SendTargetColumn.TARGET_EMAIL));
     }
 
     public void renderTemplate(EmailTemplate template, EmailConvertPolicy policy) {
-        if(this.state.getCurrentCode() == SendTargetStatus.CREATE) {
+        if(this.state == SendTargetStatus.CREATE) {
             renderTemplate(template, policy, getDataParamMap());
             parseToPayload(policy.attachments());
         }

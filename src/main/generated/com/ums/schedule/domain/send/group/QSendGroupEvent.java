@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -18,13 +17,15 @@ public class QSendGroupEvent extends EntityPathBase<SendGroupEvent> {
 
     private static final long serialVersionUID = -1094911003L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QSendGroupEvent sendGroupEvent = new QSendGroupEvent("sendGroupEvent");
 
     public final NumberPath<Long> eventId = createNumber("eventId", Long.class);
 
     public final EnumPath<com.ums.schedule.common.code.request.SendGroupEventType> eventType = createEnum("eventType", com.ums.schedule.common.code.request.SendGroupEventType.class);
+
+    public final NumberPath<Long> failCount = createNumber("failCount", Long.class);
+
+    public final NumberPath<Long> groupId = createNumber("groupId", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> issuedAt = createDateTime("issuedAt", java.time.LocalDateTime.class);
 
@@ -34,27 +35,22 @@ public class QSendGroupEvent extends EntityPathBase<SendGroupEvent> {
 
     public final StringPath resultMessage = createString("resultMessage");
 
-    public final com.ums.schedule.domain.request.QSendRequest sendRequest;
+    public final NumberPath<Long> sendRequestId = createNumber("sendRequestId", Long.class);
+
+    public final NumberPath<Long> successCount = createNumber("successCount", Long.class);
+
+    public final NumberPath<Long> totalCount = createNumber("totalCount", Long.class);
 
     public QSendGroupEvent(String variable) {
-        this(SendGroupEvent.class, forVariable(variable), INITS);
+        super(SendGroupEvent.class, forVariable(variable));
     }
 
     public QSendGroupEvent(Path<? extends SendGroupEvent> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QSendGroupEvent(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QSendGroupEvent(PathMetadata metadata, PathInits inits) {
-        this(SendGroupEvent.class, metadata, inits);
-    }
-
-    public QSendGroupEvent(Class<? extends SendGroupEvent> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.sendRequest = inits.isInitialized("sendRequest") ? new com.ums.schedule.domain.request.QSendRequest(forProperty("sendRequest"), inits.get("sendRequest")) : null;
+        super(SendGroupEvent.class, metadata);
     }
 
 }

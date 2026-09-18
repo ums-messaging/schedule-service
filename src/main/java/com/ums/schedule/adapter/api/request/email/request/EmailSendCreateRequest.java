@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.ums.schedule.adapter.api.request.request.SendRequestCreateRequest;
 import com.ums.schedule.application.ums.email.template.query.model.EmailAttachmentDetailQuery;
 import com.ums.schedule.application.ums.email.template.query.model.EmailTemplateDetailQuery;
-import com.ums.schedule.common.util.ValueResolverUtils;
 import com.ums.schedule.common.code.email.security.PasswordType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -51,16 +49,4 @@ public record EmailSendCreateRequest(
                         .orElse(null);
         }
 
-        public Map<PasswordType, String> toPasswordTypeMap(String defaultPasswordPolicy) {
-                Map<PasswordType, String> passwordTypeMap = new EnumMap<>(PasswordType.class);
-                toPutMap(passwordTypeMap, PasswordType.PASSWORD_POLICY, ValueResolverUtils.getValueOrDefault(passwordPolicy(), defaultPasswordPolicy));
-                toPutMap(passwordTypeMap, PasswordType.PASSWORD_POLICY, passwordFormat());
-                return passwordTypeMap;
-        }
-
-        private void toPutMap(Map<PasswordType, String> passwordTypeMap, PasswordType passwordType, String putValue) {
-                if(StringUtils.hasText(putValue)) {
-                        passwordTypeMap.put(passwordType, putValue);
-                }
-        }
 }

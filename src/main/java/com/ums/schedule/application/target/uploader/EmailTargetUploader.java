@@ -53,7 +53,6 @@ public class EmailTargetUploader implements TargetUploader {
             long startTime = System.currentTimeMillis();
             List<CompletableFuture<TargetUploadResultList>> futures = worker.process(context, List.copyOf(rows));
 
-
             List<TargetUploadResultList> results = futures.stream().
                     map(CompletableFuture::join).toList();
 

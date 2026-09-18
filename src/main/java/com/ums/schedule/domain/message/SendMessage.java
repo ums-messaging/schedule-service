@@ -2,7 +2,6 @@ package com.ums.schedule.domain.message;
 
 import com.ums.schedule.application.ums.common.message.model.SendMessageCreateCommand;
 import com.ums.schedule.domain.request.converter.UuidBinaryConverter;
-import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.common.code.message.MessageType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

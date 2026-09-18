@@ -58,7 +58,8 @@ public class TargetUploadFileReaderListener extends AnalysisEventListener<Map<Lo
             }
             groupMap.put(rowResult.groupKey(), rowList);
         } catch (Exception e) {
-            TargetUploadRowResult result = TargetUploadRowResult.of(rowNo, SendTargetResultCode.TARGET_ROW_READ_FAIL);
+            TargetUploadRowResult result = TargetUploadRowResult.of(rowNo, SendTargetResultCode.TARGET_ROW_READ_FAIL,
+                    targetData.get(SendTargetColumn.TARGET_KEY), e.getMessage());
             targetList.add(result);
         } finally {
             if (targetList.size() == batchSize) {

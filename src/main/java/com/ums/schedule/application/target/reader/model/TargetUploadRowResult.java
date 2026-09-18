@@ -26,7 +26,7 @@ public record TargetUploadRowResult(
                 null,
                 null,
                 resultCode,
-                String.format(resultCode.description(), args)
+                resultCode.description().formatted(args)
         );
     }
 }

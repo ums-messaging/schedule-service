@@ -19,7 +19,7 @@ public record MimeMessage(
         MultipartImage[] images,
         MimeMultiPart[] attachments) {
     public static MimeMessage of(EmailSendJob job, DomainGroupTarget target) {
-        Document document = Jsoup.parse(target.content());
+        Document document = Jsoup.parse(target.bodyMessage());
         MultipartImage[] images = MimeMessage.createImage(job.imageDir(), document);
         MimeMultiPart[] attachments = null;
 //                MimeMessage.createAttachments(target.attachments());
