@@ -61,7 +61,7 @@ public class QEmailTargetMessage extends EntityPathBase<EmailTargetMessage> {
     public final com.ums.schedule.domain.message.email.QEmailSendMessage sendMessage;
 
     //inherited
-    public final SimplePath<com.ums.schedule.domain.target.state.SendTargetState> state;
+    public final EnumPath<com.ums.schedule.common.code.target.SendTargetStatus> state;
 
     public final StringPath subject = createString("subject");
 

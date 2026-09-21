@@ -94,7 +94,7 @@ class EmailTargetMessageGeneratorTest {
 
         assertThat(result)
                 .extracting(
-                        v -> assertThat(v.getState().getCurrentCode()).isEqualTo(SendTargetStatus.FAIL),
+                        v -> assertThat(v.getState()).isEqualTo(SendTargetStatus.FAIL),
                         v -> assertThat(v.getResultMessage())
                                 .contains(resultMessage)
                 );
@@ -113,7 +113,7 @@ class EmailTargetMessageGeneratorTest {
 
         EmailTargetMessage result = generator.generate(context, target);
 
-        assertThat(result.getState().getCurrentCode())
+        assertThat(result.getState())
                 .isEqualTo(SendTargetStatus.CREATE);
     }
 }

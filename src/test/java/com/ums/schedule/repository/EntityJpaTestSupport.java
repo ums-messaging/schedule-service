@@ -22,7 +22,7 @@ import java.util.UUID;
 @ActiveProfiles("test")
 @DataJpaTest
 public class EntityJpaTestSupport {
-    @Autowired private EntityManager entityManager;
+    @Autowired protected EntityManager entityManager;
 
     public <T> T persist(T entity) {
         entityManager.persist(entity);

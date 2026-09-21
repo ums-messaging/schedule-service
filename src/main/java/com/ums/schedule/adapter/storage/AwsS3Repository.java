@@ -64,10 +64,12 @@ public class AwsS3Repository {
         }
     }
 
-    public String getFileStringContent(String key) {
-        InputStream is = getFileContent(key);
-        InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-        return reader.toString();
+    public String getFileStringContent(String key)  {
+        try (InputStream is = getFileContent(key)) {
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw AmazonS3FileException.of(FileErrorCode.FILE_READ_FAIL, key, e);
+        }
     }
 
     public InputStream getFileContent(String key) {

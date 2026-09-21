@@ -9,7 +9,7 @@ import com.ums.schedule.domain.target.message.EmailTargetMessage;
 import java.util.UUID;
 
 public class EmailTargetMessageEntityBuilder {
-    private String email;
+    private String domain;
     private String subject;
     private String headerMessage;
     private String bodyMessage;
@@ -26,6 +26,7 @@ public class EmailTargetMessageEntityBuilder {
     private EmailTargetMessageEntityBuilder() {
         this.subject = "메일 제목";
         this.bodyMessage = "이메일 내용";
+        this.domain = "test.com";
     }
 
     public EmailTargetMessageEntityBuilder subject(String subject) {
@@ -60,7 +61,7 @@ public class EmailTargetMessageEntityBuilder {
 
     public TargetMessage build() {
         EmailTargetMessage message = new EmailTargetMessage(
-                email,
+                domain,
                 subject,
                 headerMessage,
                 bodyMessage,

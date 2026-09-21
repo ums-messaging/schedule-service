@@ -13,8 +13,6 @@ public record DomainGroupEntry(Long jobId, Long groupId, List<DomainGroupTarget>
     public Long getScore() {
         return jobId;
     }
-
-
     public List<DomainGroupTarget> getMember() {
         return groups;
     }

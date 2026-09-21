@@ -1,13 +1,12 @@
 package com.ums.schedule.adapter.api.email.smtp;
 
 import com.ums.schedule.adapter.api.email.smtp.response.SmtpSessionInfo;
-import com.ums.schedule.application.send.mime.MimeWriter;
+import com.ums.schedule.application.ums.email.mime.MimeWriter;
 import com.ums.schedule.domain.send.email.mime.MimeMessage;
 import com.ums.schedule.adapter.api.email.smtp.response.EmailSmtpResponse;
 import com.ums.schedule.common.code.email.SmtpCommandType;
 import com.ums.schedule.domain.send.email.job.DomainGroupTarget;
 import com.ums.schedule.domain.send.email.job.EmailSendJob;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -47,7 +46,6 @@ public class EmailSmtpClient {
 
                 }
             }
-
             session.sendCommand(SmtpCommandType.QUIT);
         } catch (ConnectException e) {
             if(retryCount == 3) {

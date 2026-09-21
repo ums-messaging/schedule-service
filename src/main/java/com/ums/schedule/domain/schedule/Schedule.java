@@ -165,4 +165,8 @@ public class Schedule {
         }
         this.createdAt = LocalDateTime.now();
     }
+
+    public boolean isRealtime() {
+        return cyclePolicy.getScheduleType() == ScheduleType.REALTIME;
+    }
 }

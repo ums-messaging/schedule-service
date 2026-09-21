@@ -1,5 +1,6 @@
 package com.ums.schedule.common.code.mapper;
 
+import com.ums.schedule.common.code.common.CommonCode;
 import com.ums.schedule.common.code.email.EmailCode;
 import com.ums.schedule.common.code.email.security.SecurityMailCode;
 import com.ums.schedule.common.code.message.MessageCode;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class EnumMapperRegistry {
     @Autowired
     public EnumMapperRegistry(EnumMapperFactory factory) {
+        factory.register(CommonCode.class);
         factory.register(ScheduleCode.class);
         factory.register(SendRequestCode.class);
         factory.register(SecurityMailCode.class);

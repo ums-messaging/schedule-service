@@ -77,7 +77,7 @@ public class EmailTargetUploadWorkerTest {
 
         worker.process(mock(EmailGeneratorContext.class), groupedList);
 
-        verify(targetUploadService, times(4)).upload(any());
+        verify(targetUploadService, times(4)).upload(any(), any());
     }
 
     private List<SendTargetGroupedList> givenTargetList(List<TargetUploadRowResult> rows, int partitionSize) {

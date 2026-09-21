@@ -1,40 +1,31 @@
 package com.ums.schedule.domain.send.email.job;
 
-import com.github.f4b6a3.tsid.TsidCreator;
-import com.ums.schedule.common.code.schedule.ScheduleType;
+import com.github.f4b6a3.uuid.UuidCreator;
 import com.ums.schedule.domain.request.SendRequest;
-import com.ums.schedule.domain.schedule.Schedule;
-import com.ums.schedule.domain.schedule.policy.cycle.ScheduleCyclePolicy;
-import com.ums.schedule.domain.target.upload.TargetUploadReport;
-
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record SendJob(
-        Long jobId,
-        Long scheduleId,
-        ScheduleType scheduleType,
+        String jobId,
+        UUID uploadId,
+        String senderKey,
+        Long totalCount,
         Long requestId,
-        Long reportId,
-        String targetUploadId,
-        String templateKey,
-        Integer retryCount,
-        LocalDateTime createdAt
+        Long completedCount,
+        Long failedCount,
+        Long sendingCount,
+        Long retryingCount
 ) {
-
-    public static SendJob of(SendRequest sendRequest, Schedule schedule, TargetUploadReport targetUpload) {
-        Long id = TsidCreator.getTsid().toLong();
-        ScheduleCyclePolicy cyclePolicy = schedule.getCyclePolicy();
-
+    public static SendJob of(SendRequest sendRequest, UUID uploadId, Long totalCount) {
         return new SendJob(
-                id,
-                schedule.getId(),
-                cyclePolicy.getScheduleType(),
+                UuidCreator.getTimeOrdered().toString(),
+                uploadId,
+                sendRequest.getSenderKey(),
+                totalCount,
                 sendRequest.getId(),
-                null,
-                targetUpload.getId().toString(),
-                sendRequest.getTemplateKey(),
-                sendRequest.getRetryCnt(),
-                LocalDateTime.now()
+                0L,
+                0L,
+                0L,
+                0L
         );
     }
 }

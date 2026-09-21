@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -34,11 +35,10 @@ public class EmailTargetUploadWorker {
         this.uploadService = uploadService;
         this.executor = executor;
     }
-
     public List<CompletableFuture<TargetUploadResultList>> process(EmailGeneratorContext context, List<SendTargetGroupedList> groupList) {
         List<CompletableFuture<TargetUploadResultList>> futures = groupList.stream()
                 .map(group -> CompletableFuture.supplyAsync(() -> {
-                    printLog();
+//                    printLog();
                     List<TargetUploadRowResult> targetRows = List.copyOf(group.targetRows());
                     List<TargetMessage> results = targetRows.stream()
                             .map(row -> {
@@ -47,7 +47,7 @@ public class EmailTargetUploadWorker {
                                 return targetMessage;
                             })
                             .toList();
-                    return uploadService.upload(results);
+                    return uploadService.upload(context.targetUploadReport().getId(), results);
                 }, executor)).toList();
 
         CompletableFuture.allOf(

@@ -38,7 +38,7 @@ public class QTargetMessage extends EntityPathBase<TargetMessage> {
 
     public final StringPath resultMessage = createString("resultMessage");
 
-    public final SimplePath<com.ums.schedule.domain.target.state.SendTargetState> state = createSimple("state", com.ums.schedule.domain.target.state.SendTargetState.class);
+    public final EnumPath<com.ums.schedule.common.code.target.SendTargetStatus> state = createEnum("state", com.ums.schedule.common.code.target.SendTargetStatus.class);
 
     public final StringPath targetKey = createString("targetKey");
 

@@ -12,7 +12,7 @@ public enum SendTargetResultCode implements EnumMapperType  {
     TARGET_ROW_READ_FAIL("", "[%s] 파일 읽기 실패 (cause : %s) "),
     CONVERT_MESSAGE_FAIL("", "메시지 컨버팅 실패 (cause : %s)"),
     SUCCESS("", "업로드 성공"),
-    DUPLICATED("", "중복 데이터"),
+    DUPLICATED("", "[%s][%s] 중복 데이터"),
     TEMPLATE_EMPTY("", "%s is empty."),
     ETC("", "기타")
     ;

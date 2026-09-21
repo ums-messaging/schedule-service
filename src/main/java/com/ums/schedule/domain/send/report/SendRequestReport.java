@@ -10,15 +10,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@Entity
+@Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SendRequestReport {
-    @Id
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-//    @Column(name = "report_id")
-//    @Getter
-    private Long id;
 
     @Column(name = "total_count", nullable = false)
     private Long totalCount;

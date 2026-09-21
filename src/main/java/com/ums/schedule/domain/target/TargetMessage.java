@@ -5,6 +5,7 @@ import com.ums.schedule.application.ums.common.target.result.SendTargetResult;
 import com.ums.schedule.application.ums.email.generator.policy.model.EmailConvertPolicy;
 import com.ums.schedule.common.code.target.SendTargetColumn;
 import com.ums.schedule.common.code.target.SendTargetResultCode;
+import com.ums.schedule.common.code.target.SendTargetStatus;
 import com.ums.schedule.common.util.JsonUtil;
 import com.ums.schedule.domain.target.converter.SendTargetStatusConverter;
 import com.ums.schedule.domain.target.state.SendTargetCreateState;
@@ -50,9 +51,13 @@ public abstract class TargetMessage implements Persistable<Long> {
     @Column(name = "message_variable")
     protected String messageVariable;
 
+//    @Column(name = "status", nullable = false)
+//    @Convert(converter = SendTargetStatusConverter.class)
+//    protected SendTargetState state;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    @Convert(converter = SendTargetStatusConverter.class)
-    protected SendTargetState state;
+    protected SendTargetStatus state;
 
     @Lob
     @Column(name = "result_message", columnDefinition = "LONGTEXT")
@@ -85,15 +90,17 @@ public abstract class TargetMessage implements Persistable<Long> {
         initializeState(target.resultCode(), target.resultMessage());
         assignTargetUploadReport(targetUploadReport);
         initializeTargetData(target.targetData());
-        initializeGroupId(target.groupId());
+        initializeGroupIdAndKey(target.groupId(), target.groupKey());
         dataParamToJson(target.partitionNo(), target.rowNo(), target.targetData());
         initializeCreatedAt();
         initializeAttemptNo();
     }
 
-    private void initializeGroupId(Long groupId) {
+    private void initializeGroupIdAndKey(Long groupId,String groupKey) {
         this.groupId = groupId;
+        initializeGroupKey(groupKey);
     }
+
 
     private void generateId() {
         this.id = TsidCreator.getTsid().toLong();
@@ -112,11 +119,11 @@ public abstract class TargetMessage implements Persistable<Long> {
     }
     private void initializeState(SendTargetResultCode resultCode, String resultMessage) {
         if(resultCode != SendTargetResultCode.SUCCESS) {
-            this.state = new SendTargetFailState();
+            this.state = new SendTargetFailState().getCurrentCode();
             this.resultMessage = resultMessage;
             return;
         }
-        this.state = new SendTargetCreateState();
+        this.state = new SendTargetCreateState().getCurrentCode();
     }
     private void initializeTargetData(TargetMessageData targetMessageData) {
         Map<SendTargetColumn, String> targetMap = targetMessageData.targetData();
@@ -158,7 +165,7 @@ public abstract class TargetMessage implements Persistable<Long> {
     }
 
     protected void changeTargetStatus(SendTargetState state) {
-        this.state = state;
+        this.state = state.getCurrentCode();
         this.lastUploadedAt = LocalDateTime.now();
     }
     @PostPersist
@@ -215,6 +222,13 @@ public abstract class TargetMessage implements Persistable<Long> {
         this.attemptNo = Optional.ofNullable(attemptNo).orElse(3);
         this.createdAt = LocalDateTime.now();
     }
-
+    protected abstract String initializeGroupKey(String groupKey);
     protected abstract String assignContact(Map<SendTargetColumn, String> targetMap);
+
+    public TargetMessage changeTargetMessageKey(String targetKey, String contact) {
+        this.contact = null;
+        this.targetKey = null;
+        onError(SendTargetResultCode.DUPLICATED, targetKey, contact);
+        return this;
+    }
 }

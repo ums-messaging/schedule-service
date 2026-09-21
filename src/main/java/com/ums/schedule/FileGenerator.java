@@ -1,24 +1,20 @@
 package com.ums.schedule;
 
+import com.github.f4b6a3.tsid.TsidCreator;
+import com.github.f4b6a3.uuid.UuidCreator;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 public class FileGenerator {
     public static void main(String[] args) throws IOException {
-        createTargetList(100_000);
+        createTargetList(10000);
     }
     public static void createTargetList(int rowSize) throws IOException {
         SXSSFWorkbook workbook = new SXSSFWorkbook(100);
@@ -28,7 +24,7 @@ public class FileGenerator {
         createRows(sheet, rowSize);
 
         FileOutputStream os =
-                new FileOutputStream("test-targets-20260810.xlsx");
+                new FileOutputStream("target-upload-0828-100k.xlsx");
         workbook.write(os);
 
         workbook.dispose();
@@ -42,7 +38,7 @@ public class FileGenerator {
     }
 
     private static void createRow(Row row, int i) {
-        createRow(row, 0, UUID.randomUUID().toString());
+        createRow(row, 0, TsidCreator.getTsid().toString());
         createRow(row, 1, RandomStringUtils.randomAlphabetic(6)); // name
         createRow(row, 2, randomEmail(i)); // email
         createRow(row, 3, randomBirthday(i)); // birthday
@@ -56,9 +52,8 @@ public class FileGenerator {
 
     private static String randomEmail(int i) {
         String[] emails = {"naver.com", "hanmail.com", "gmail.com", "yahoo.com","hotmail.com"};
-        String randomId = RandomStringUtils.randomAlphabetic(8);
         int random = (int) (Math.random() * emails.length);
-        return "%s@%s".formatted(randomId, emails[random]);
+        return "%s@%s".formatted(TsidCreator.getTsid().toString(), emails[random]);
     }
 
     private static String randomBirthday(int i) {

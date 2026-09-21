@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ums.schedule.adapter.api.email.dns.DnsQueryClient;
 import com.ums.schedule.adapter.api.email.dns.DnsQueryResult;
-import com.ums.schedule.application.send.mime.MimeHtmlWriter;
-import com.ums.schedule.application.send.mime.MimeWriter;
+import com.ums.schedule.application.ums.email.mime.MimeHtmlWriter;
+import com.ums.schedule.application.ums.email.mime.MimeWriter;
 import com.ums.schedule.adapter.storage.AwsS3Repository;
 import com.ums.schedule.domain.send.email.job.DomainGroupTarget;
 import com.ums.schedule.domain.send.email.job.EmailSendJob;
@@ -15,6 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
@@ -33,7 +34,8 @@ public class KafkaTestConsumer {
     @KafkaListener(topics = TEST_SCHEDULE_TOPIC, groupId = TEST_SCHEDULE_GROUP)
     public void consume(String message) throws JsonProcessingException {
         EmailSendJob job = mapper.readValue(message, EmailSendJob.class);
-        Set<String> payloads = redisTemplate.opsForZSet().rangeByScore("request:email", job.job().jobId(), job.job().jobId());
+        Set<String> payloads = new HashSet<>();
+//                redisTemplate.opsForZSet().rangeByScore("request:email", job.job().jobId(), job.job().jobId());
         // 멀티스레드 처리
         for (String payload : payloads) {
             List<DomainGroupTarget> targetList = mapper.readValue(payload, new TypeReference<List<DomainGroupTarget>>() {

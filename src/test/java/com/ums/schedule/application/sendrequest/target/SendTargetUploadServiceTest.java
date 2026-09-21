@@ -73,9 +73,10 @@ class SendTargetUploadServiceTest {
         createFailTargets(dbFailTargetList, 15);
         createCompleteTargetList(dbFailTargetList, 5);
 
-        doReturn(dbFailTargetList).when(targetService).saveTarget(any());
+        doReturn(dbFailTargetList).when(targetService).saveTarget(any(), any());
 
-        TargetUploadResultList resultList = targetUploadService.upload(dbFailTargetList);
+        TargetUploadResultList resultList = targetUploadService.upload(UUID.randomUUID(),
+                dbFailTargetList);
 
         assertThat(resultList.completedTargetList())
                 .hasSize(5);
@@ -91,9 +92,9 @@ class SendTargetUploadServiceTest {
         createFailTargets(dbFailTargetList, 15);
         createCompleteTargetList(dbFailTargetList, 5);
 
-        doReturn(dbFailTargetList).when(targetService).saveTarget(any());
+        doReturn(dbFailTargetList).when(targetService).saveTarget(any(), any());
 
-        TargetUploadResultList resultList = targetUploadService.upload(dbFailTargetList);
+        TargetUploadResultList resultList = targetUploadService.upload(UUID.randomUUID(), dbFailTargetList);
 
         assertThat(resultList.failedTargetList())
                 .hasSize(15);
@@ -107,7 +108,7 @@ class SendTargetUploadServiceTest {
 
         doReturn(targetList).when(targetService).saveTargetList(any());
 
-        targetUploadService.upload(targetList);
+        targetUploadService.upload(UUID.randomUUID(), targetList);
 
         verify(publisher, never()).publishEvent(any());
     }
@@ -117,7 +118,7 @@ class SendTargetUploadServiceTest {
     void shouldPublishEvent_whenFailureSendTargetListExist() {
         doReturn(targetList).when(targetService).saveTargetList(any());
 
-        targetUploadService.upload(targetList);
+        targetUploadService.upload(UUID.randomUUID(), targetList);
 
         verify(publisher).publishEvent(any(SendTargetFailedEvent.class));
     }
@@ -135,10 +136,10 @@ class SendTargetUploadServiceTest {
         doAnswer(invocation -> {
             List<TargetMessage> targets = invocation.getArgument(0);
             return TargetUploadResultList.batchOf(targets);
-        }).when(targetService).saveTarget(any());
+        }).when(targetService).saveTarget(any(), any());
 
-        targetUploadService.upload(targetList);
+        targetUploadService.upload(UUID.randomUUID(), targetList);
 
-        verify(targetService).saveTarget(any(List.class));
+        verify(targetService).saveTarget(any(), any(List.class));
     }
 }

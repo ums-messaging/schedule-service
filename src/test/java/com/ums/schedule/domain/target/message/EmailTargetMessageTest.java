@@ -124,7 +124,7 @@ class EmailTargetMessageTest {
                     .build();
             EmailTargetMessage targetMessage = EmailTargetMessage.of(contextBuilder.build(), target);
 
-            assertThat(targetMessage.getState().getCurrentCode())
+            assertThat(targetMessage.getState())
                     .isEqualTo(SendTargetStatus.FAIL);
         }
 
@@ -133,7 +133,7 @@ class EmailTargetMessageTest {
         void shouldReturnCreate_whenSendResultCodeIsSuccess() {
             EmailTargetMessage targetMessage = EmailTargetMessage.of(contextBuilder.build(), targetBuilder.build());
 
-            assertThat(targetMessage.getState().getCurrentCode())
+            assertThat(targetMessage.getState())
                     .isEqualTo(SendTargetStatus.CREATE);
         }
 
@@ -200,7 +200,7 @@ class EmailTargetMessageTest {
             EmailTargetMessage targetMessage = EmailTargetMessage.of(contextBuilder.build(), target);
 
             assertThat(targetMessage)
-                    .extracting(v -> v.getState().getCurrentCode(), EmailTargetMessage::getMessageVariable)
+                    .extracting(v -> v.getState(), EmailTargetMessage::getMessageVariable)
                     .contains(SendTargetStatus.FAIL, dataParam.toString());
         }
 
@@ -218,7 +218,7 @@ class EmailTargetMessageTest {
             EmailTargetMessage targetMessage = EmailTargetMessage.of(contextBuilder.build(), target);
 
             assertThat(targetMessage)
-                    .extracting(v -> v.getState().getCurrentCode(), v -> v.getResultMessage())
+                    .extracting(v -> v.getState(), v -> v.getResultMessage())
                     .contains(SendTargetStatus.FAIL, "대상자 KEY은(는) 필수 값 입니다.");
         }
 
@@ -236,7 +236,7 @@ class EmailTargetMessageTest {
             EmailTargetMessage targetMessage = EmailTargetMessage.of(contextBuilder.build(), target);
 
             assertThat(targetMessage)
-                    .extracting(v -> v.getState().getCurrentCode(), v -> v.getResultMessage())
+                    .extracting(v -> v.getState(), v -> v.getResultMessage())
                     .contains(SendTargetStatus.FAIL, "이름은(는) 필수 값 입니다.");
         }
 
@@ -254,7 +254,7 @@ class EmailTargetMessageTest {
             EmailTargetMessage targetMessage = EmailTargetMessage.of(contextBuilder.build(), target);
 
             assertThat(targetMessage)
-                    .extracting(v -> v.getState().getCurrentCode(), v -> v.getResultMessage())
+                    .extracting(v -> v.getState(), v -> v.getResultMessage())
                     .contains(SendTargetStatus.FAIL, "이메일은(는) 필수 값 입니다.");
         }
 
@@ -334,7 +334,7 @@ class EmailTargetMessageTest {
                         .formatted("subject");
 
                 assertThat(targetMessage)
-                        .extracting(v -> v.getState().getCurrentCode(), v -> v.getResultMessage())
+                        .extracting(v -> v.getState(), v -> v.getResultMessage())
                         .contains(SendTargetStatus.FAIL, resultMessage);
             }
 
@@ -354,7 +354,7 @@ class EmailTargetMessageTest {
                         .formatted("subject", "fruit");
 
                 assertThat(targetMessage)
-                        .extracting(v -> v.getState().getCurrentCode(), v -> v.getResultMessage())
+                        .extracting(v -> v.getState(), v -> v.getResultMessage())
                         .contains(SendTargetStatus.FAIL, resultMessage);
             }
 
@@ -370,7 +370,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getSubject(),
-                                v -> v.getState().getCurrentCode(),
+                                v -> v.getState(),
                                 v -> v.getResultMessage());
             }
         }
@@ -391,7 +391,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getHeaderMessage(),
-                                v -> v.getState().getCurrentCode(),
+                                v -> v.getState(),
                                 v -> v.getResultMessage())
                         .contains(null, SendTargetStatus.CREATE, null);
             }
@@ -409,7 +409,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getHeaderMessage(),
-                                v -> v.getState().getCurrentCode(),
+                                v -> v.getState(),
                                 v -> v.getResultMessage())
                         .contains("header_message", SendTargetStatus.CREATE, null);
             }
@@ -430,7 +430,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getHeaderMessage(),
-                                v -> v.getState().getCurrentCode())
+                                v -> v.getState())
                         .contains(null, SendTargetStatus.FAIL);
             }
         }
@@ -451,7 +451,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getFooterMessage(),
-                                v -> v.getState().getCurrentCode(),
+                                v -> v.getState(),
                                 v -> v.getResultMessage())
                         .contains(null, SendTargetStatus.CREATE, null);
             }
@@ -468,7 +468,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getFooterMessage(),
-                                v -> v.getState().getCurrentCode(),
+                                v -> v.getState(),
                                 v -> v.getResultMessage())
                         .contains("footer_message", SendTargetStatus.CREATE, null);
             }
@@ -488,7 +488,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getFooterMessage(),
-                                v -> v.getState().getCurrentCode())
+                                v -> v.getState())
                         .contains(null, SendTargetStatus.FAIL);
             }
         }
@@ -513,7 +513,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getBodyMessage(),
-                                v -> v.getState().getCurrentCode(),
+                                v -> v.getState(),
                                 v -> v.getResultMessage())
                         .contains(null, SendTargetStatus.FAIL, resultMessage);
             }
@@ -530,7 +530,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getBodyMessage(),
-                                v -> v.getState().getCurrentCode(),
+                                v -> v.getState(),
                                 v -> v.getResultMessage())
                         .contains("body_message", SendTargetStatus.CREATE, null);
             }
@@ -550,7 +550,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getFooterMessage(),
-                                v -> v.getState().getCurrentCode())
+                                v -> v.getState())
                         .contains(null, SendTargetStatus.FAIL);
             }
         }
@@ -618,7 +618,7 @@ class EmailTargetMessageTest {
                 assertThat(targetMessage)
                         .extracting(
                                 v -> v.getAttachments(),
-                                v -> v.getState().getCurrentCode(),
+                                v -> v.getState(),
                                 v -> v.getResultMessage()
                         )
                         .contains(null, SendTargetStatus.FAIL, resultMessage);

@@ -13,8 +13,8 @@ import com.querydsl.core.types.dsl.PathInits;
 /**
  * QSendRequestReport is a Querydsl query type for SendRequestReport
  */
-@Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QSendRequestReport extends EntityPathBase<SendRequestReport> {
+@Generated("com.querydsl.codegen.DefaultEmbeddableSerializer")
+public class QSendRequestReport extends BeanPath<SendRequestReport> {
 
     private static final long serialVersionUID = -657481324L;
 
@@ -27,8 +27,6 @@ public class QSendRequestReport extends EntityPathBase<SendRequestReport> {
     public final StringPath downloadUrl = createString("downloadUrl");
 
     public final NumberPath<Long> failCount = createNumber("failCount", Long.class);
-
-    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final NumberPath<Long> sendingCount = createNumber("sendingCount", Long.class);
 
