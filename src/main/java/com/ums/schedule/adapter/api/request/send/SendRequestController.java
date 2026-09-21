@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/v1/send-requests")
 public class SendRequestController {
     private final SendRequestRequestService requestService;
-
-    @PatchMapping("/{requestId}/requests")
-    public ResponseEntity request(@PathVariable(value = "requestId") Long requestId) {
-        requestService.request(requestId);
+    @PatchMapping("/{requestId}/requests/{uploadId}")
+    public ResponseEntity request(@PathVariable(value = "requestId") Long requestId, @PathVariable(value = "uploadId") String uploadId) {
+        requestService.request(requestId, uploadId);
         return ResponseEntity.ok().build();
     }
 }

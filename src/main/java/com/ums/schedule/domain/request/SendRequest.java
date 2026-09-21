@@ -225,9 +225,8 @@ public class SendRequest implements Persistable<Long> {
         return this.currentTargetUpload == targetUploadReport;
     }
 
-    public SendJob createJob() {
-        TargetUploadReport targetUpload = getCurrentTargetUpload();
-        return SendJob.of(this, targetUpload.getId(), targetUpload.getSuccessCount());
+    public SendJob createJob(TargetUploadReport targetUploadReport) {
+        return SendJob.of(this, targetUploadReport.getId(), targetUploadReport.getTotalCount());
     }
 
     @Override
