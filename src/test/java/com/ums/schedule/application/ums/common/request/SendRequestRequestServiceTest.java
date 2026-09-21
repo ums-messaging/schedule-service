@@ -62,7 +62,7 @@ class SendRequestRequestServiceTest {
                 .when(repository).findById(anyLong());
         doReturn(true).when(emailJobManager).supports(any());
 
-        requestService.request(1L);
+        requestService.request(1L, null);
 
         verify(repository).findById(anyLong());
     }
@@ -107,7 +107,7 @@ class SendRequestRequestServiceTest {
                     .when(repository).findById(anyLong());
             doReturn(true).when(emailJobManager).supports(any());
 
-            requestService.request(1L);
+            requestService.request(1L,null);
 
             assertThat(sendRequest.getState().getCurrentCode()).isEqualTo(SendRequestStatus.SENDING);
         }
@@ -121,7 +121,7 @@ class SendRequestRequestServiceTest {
                     .when(repository).findById(anyLong());
             doReturn(true).when(emailJobManager).supports(any());
 
-            requestService.request(1L);
+            requestService.request(1L,null);
 
             verify(emailJobManager).manage(any());
         }
