@@ -107,6 +107,10 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+test {
+    finalizedBy 'jacocoTestReport'
+}
+
 jacocoTestReport {
     dependsOn test
 
@@ -115,4 +119,24 @@ jacocoTestReport {
         xml.required = true
         csv.required = false
     }
+    classDirectories.setFrom(
+            files(classDirectories.files.collect {
+                fileTree(dir: it, excludes: [
+                        '**/Q*.class'
+                ])
+            })
+    )
+    finalizedBy 'jacocoTestCoverageVerification'
 }
+
+jacocoTestCoverageVerification {
+    classDirectories.setFrom(
+            files(classDirectories.files.collect {
+                fileTree(dir: it, excludes: [
+                        '**/Q*.class'
+                ])
+            })
+    )
+}
+
+
