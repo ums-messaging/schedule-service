@@ -2,6 +2,7 @@ package com.ums.schedule.application.sendrequest.target;
 
 import com.ums.schedule.application.sendrequest.target.event.SendTargetFailedEvent;
 import com.ums.schedule.application.sendrequest.target.result.TargetUploadResultList;
+import com.ums.schedule.common.code.target.SendTargetStatus;
 import com.ums.schedule.common.exception.BusinessException;
 import com.ums.schedule.domain.target.SendTarget;
 import com.ums.schedule.domain.target.TargetMessage;
@@ -48,17 +49,18 @@ class SendTargetUploadServiceTest {
         for(int i = 0; i < endIdx; i++) {
             TargetMessage targetMessage = EmailTargetMessageEntityBuilder.builder()
                     .build();
-            ReflectionTestUtils.setField(targetMessage, "state", new SendTargetFailState());
+            ReflectionTestUtils.setField(targetMessage, "state", SendTargetStatus.FAIL);
 
             targetList.add(targetMessage);
         }
     }
 
     private void createCompleteTargetList(List<TargetMessage> targetList, int endIdx) {
-        for(int i = 0; i < endIdx; i++) {
+        for(long i = 0; i < endIdx; i++) {
             TargetMessage targetMessage = EmailTargetMessageEntityBuilder.builder()
                     .build();
-            ReflectionTestUtils.setField(targetMessage, "state", new SendTargetCreateState());
+            ReflectionTestUtils.setField(targetMessage, "id", i);
+            ReflectionTestUtils.setField(targetMessage, "state", SendTargetStatus.CREATE);
             targetList.add(targetMessage);
         }
     }
@@ -133,10 +135,6 @@ class SendTargetUploadServiceTest {
         doThrow(mock(BusinessException.class))
                 .when(targetService).saveTargetList(any());
 
-        doAnswer(invocation -> {
-            List<TargetMessage> targets = invocation.getArgument(0);
-            return TargetUploadResultList.batchOf(targets);
-        }).when(targetService).saveTarget(any(), any());
 
         targetUploadService.upload(UUID.randomUUID(), targetList);
 

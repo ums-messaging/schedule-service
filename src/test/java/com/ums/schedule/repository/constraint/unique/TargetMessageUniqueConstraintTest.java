@@ -1,6 +1,8 @@
 package com.ums.schedule.repository.constraint.unique;
 
 import com.github.f4b6a3.tsid.TsidCreator;
+import com.ums.schedule.common.code.request.SendRequestStatus;
+import com.ums.schedule.common.code.target.SendTargetStatus;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.schedule.Schedule;
@@ -104,6 +106,6 @@ public class TargetMessageUniqueConstraintTest extends EntityJpaTestSupport {
         ReflectionTestUtils.setField(targetMessage, "id", id);
         ReflectionTestUtils.setField(targetMessage, "groupId", TsidCreator.getTsid().toLong());
         ReflectionTestUtils.setField(targetMessage, "targetUploadReport", targetUpload);
-        ReflectionTestUtils.setField(targetMessage, "state", new SendTargetCreateState());
+        ReflectionTestUtils.setField(targetMessage, "state", SendTargetStatus.CREATE);
     }
 }

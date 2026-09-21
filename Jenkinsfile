@@ -34,19 +34,19 @@ pipeline {
             }
         }
 
-//         stage('Test') {
-//             steps {
-//                 sh '''
-//                     chmod +x gradlew
-//                     ./gradlew build
-//                 '''
-//             }
-//             post {
-//                 always {
-//                     junit 'build/test-results/test/*.xml'
-//                 }
-//             }
-//         }
+        stage('Test') {
+            steps {
+                sh '''
+                    chmod +x gradlew
+                    ./gradlew clean test
+                '''
+            }
+            post {
+                always {
+                    junit 'build/test-results/test/*.xml'
+                }
+            }
+        }
 
         stage('Gradle Build') {
             steps {

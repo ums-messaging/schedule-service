@@ -1,6 +1,7 @@
 package com.ums.schedule.repository.persist;
 
 import com.github.f4b6a3.tsid.TsidCreator;
+import com.ums.schedule.common.code.target.SendTargetStatus;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.request.SendRequest;
 import com.ums.schedule.domain.schedule.Schedule;
@@ -75,7 +76,7 @@ class TargetMessagePersistTest extends EntityJpaTestSupport {
         ReflectionTestUtils.setField(targetMessage, "id", id);
         ReflectionTestUtils.setField(targetMessage, "groupId", TsidCreator.getTsid().toLong());
         ReflectionTestUtils.setField(targetMessage, "targetUploadReport", targetUploadReport);
-        ReflectionTestUtils.setField(targetMessage, "state", new SendTargetCreateState());
+        ReflectionTestUtils.setField(targetMessage, "state", SendTargetStatus.CREATE);
         ReflectionTestUtils.setField(targetMessage, "targetKey", "jang314");
         ReflectionTestUtils.setField(targetMessage, "contact", "jang314@test.com");
     }
