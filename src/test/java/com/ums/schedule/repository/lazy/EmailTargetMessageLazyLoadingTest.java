@@ -1,5 +1,6 @@
 package com.ums.schedule.repository.lazy;
 
+import com.ums.schedule.common.code.target.SendTargetStatus;
 import com.ums.schedule.domain.message.email.EmailSendMessage;
 import com.ums.schedule.domain.message.email.attachment.EmailAttachment;
 import com.ums.schedule.domain.request.SendRequest;
@@ -50,7 +51,7 @@ public class EmailTargetMessageLazyLoadingTest extends EntityJpaTestSupport {
     private void initializeEmailTargetMessage(TargetUploadReport targetUploadReport, TargetMessage targetMessage) {
         ReflectionTestUtils.setField(targetMessage, "id", 1L);
         ReflectionTestUtils.setField(targetMessage, "groupId", 3L);
-        ReflectionTestUtils.setField(targetMessage, "state", new SendTargetCreateState());
+        ReflectionTestUtils.setField(targetMessage, "state", SendTargetStatus.CREATE);
         ReflectionTestUtils.setField(targetMessage, "targetUploadReport", targetUploadReport);
     }
 

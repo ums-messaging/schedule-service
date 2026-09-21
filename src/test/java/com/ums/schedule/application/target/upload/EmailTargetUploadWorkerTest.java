@@ -8,7 +8,9 @@ import com.ums.schedule.application.ums.common.target.context.SendTargetGroupedL
 import com.ums.schedule.application.ums.email.generator.EmailTargetMessageGenerator;
 import com.ums.schedule.domain.target.TargetMessage;
 import com.ums.schedule.domain.target.message.EmailTargetMessage;
+import com.ums.schedule.fixture.entity.TargetUploadReportEntityBuilder;
 import com.ums.schedule.fixture.target.SendTargetGroupedListBuilder;
+import com.ums.schedule.fixture.target_upload.EmailGeneratorContextBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +33,7 @@ public class EmailTargetUploadWorkerTest {
 
     private EmailTargetUploadWorker worker;
 
-    private SendTargetGroupedListBuilder groupedListBuilder;
+    private EmailGeneratorContext context;
 
     @BeforeEach
     void setUp() {
@@ -40,7 +42,9 @@ public class EmailTargetUploadWorkerTest {
                 targetUploadService,
                 executor
         );
-        this.groupedListBuilder = SendTargetGroupedListBuilder.builder();
+        context = EmailGeneratorContextBuilder.builder()
+                .targetUploadReport(TargetUploadReportEntityBuilder.builder().build())
+                .build();
         doReturn(mock(EmailTargetMessage.class)).when(generator).generate(any(), any());
     }
 
@@ -56,7 +60,7 @@ public class EmailTargetUploadWorkerTest {
             return null;
         }).when(executor).execute(any());
 
-        worker.process(mock(EmailGeneratorContext.class), groupedList);
+        worker.process(context, groupedList);
 
         verify(generator, times(12)).generate(any(), any());
 
@@ -65,6 +69,7 @@ public class EmailTargetUploadWorkerTest {
     @Test
     @DisplayName("대상자 업로드는 파티션 개수 만큼 실행된다.")
     void shouldExecuteTargetUpload() {
+
         TargetUploadRowResult row = mock(TargetUploadRowResult.class);
         List<TargetUploadRowResult> results = List.of(row, row, row);
 
@@ -75,7 +80,7 @@ public class EmailTargetUploadWorkerTest {
             return null;
         }).when(executor).execute(any());
 
-        worker.process(mock(EmailGeneratorContext.class), groupedList);
+        worker.process(context, groupedList);
 
         verify(targetUploadService, times(4)).upload(any(), any());
     }
