@@ -35,7 +35,7 @@ class EmailJobManagerTest {
             results.add(result);
         }
         SendRequest sendRequest = SendRequestEntityBuilder.builder().build();
-        job = sendRequest.createJob();
+//        job = sendRequest.createJob();
     }
 
 

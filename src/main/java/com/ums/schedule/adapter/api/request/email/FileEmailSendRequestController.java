@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/send-requests/email/upload-url")
+@RequestMapping(value = "/api/v1/send-requests/email")
 public class FileEmailSendRequestController {
     private final EmailSendRequestValidator validator;
     private final EmailSendRequestCreateService process;
@@ -27,12 +27,17 @@ public class FileEmailSendRequestController {
         binder.addValidators(validator);
     }
 
-    @PostMapping
+    @PostMapping(value = "/upload-url")
     public ResponseEntity<ApiResponse<FileEmailSendRequestResponse>> create(@RequestHeader("X-CUSTOMER-ID") final String customerId,
                                                                             @Valid @RequestBody final EmailSendCreateRequest request) {
         EmailSendRequestCreateSummary summary = process.create(customerId, TargetUploadType.FILE, request);
         FileEmailSendRequestResponse toResponse = FileEmailSendRequestResponse.of(summary);
         ApiResponse<FileEmailSendRequestResponse> response = ApiResponse.of(ApiResponseCode.CREATED, toResponse);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/{uploadId}")
+    public ResponseEntity createAndRequest(@PathVariable String uploadId, @Valid @RequestBody final EmailSendCreateRequest request) {
+        return ResponseEntity.ok().build();
     }
 }
