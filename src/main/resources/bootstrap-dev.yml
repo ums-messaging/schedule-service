@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/ums
+    url: jdbc:mariadb://10.0.0.138:3307/ums
     username: ums
     password: jang314
     hikari:
