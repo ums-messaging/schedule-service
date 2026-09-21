@@ -80,7 +80,7 @@ class TargetMessageQueryRepositoryTest extends EntityJpaTestSupport {
     @Test
     @DisplayName("그룹 대상자 조회 테스트")
     void shouldReturnTargetGroupList() {
-        List<TargetGroupQueryResult> list = repository.findGroupByGroupIdAndDomain(groupId, "test.com");
+        List<TargetGroupQueryResult> list = repository.findGroupByGroupIdAndDomain(targetUploadReport.getId().toString(), groupId, "test.com");
         assertThat(list).hasSize(1);
     }
 
