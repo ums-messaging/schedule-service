@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         AWS_REGION = 'ap-northeast-2'
-        TARGET_INSTANCE_ID = 'i-0aaebf8a7f7ae7d59'
+        TARGET_INSTANCE_ID = 'i-00464ff35252824cb'
         REGISTRY = "registry.ums.local:5000"
         APP_NAME = "schedule-service"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
