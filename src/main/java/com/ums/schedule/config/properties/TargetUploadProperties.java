@@ -13,6 +13,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 @ToString
 public class TargetUploadProperties {
     private String bucket;
+    private String mode;
     private String prefixUploadKey;
     private String prefixDownloadKey;
     private Integer batchSize;

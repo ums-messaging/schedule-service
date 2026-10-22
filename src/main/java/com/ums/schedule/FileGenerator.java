@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 public class FileGenerator {
     public static void main(String[] args) throws IOException {
-        createTargetList(10000);
+        createTargetList(10);
     }
     public static void createTargetList(int rowSize) throws IOException {
         SXSSFWorkbook workbook = new SXSSFWorkbook(100);
@@ -24,7 +24,7 @@ public class FileGenerator {
         createRows(sheet, rowSize);
 
         FileOutputStream os =
-                new FileOutputStream("target-upload-0828-100k.xlsx");
+                new FileOutputStream("target-upload-10.xlsx");
         workbook.write(os);
 
         workbook.dispose();

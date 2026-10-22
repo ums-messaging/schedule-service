@@ -24,6 +24,10 @@ public abstract class BusinessException extends RuntimeException {
     }
 
     public String getErrorMessage() {
-        return MessageFormat.format(errorCode.description(), args);
+        String errorMessage = MessageFormat.format(errorCode.description(), args);
+        if(errorMessage.length() > 1000) {
+            return errorMessage.substring(0, 999);
+        }
+        return errorMessage;
     }
 }

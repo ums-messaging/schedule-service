@@ -5,8 +5,8 @@ import com.ums.schedule.common.code.mapper.EnumMapperType;
 import com.ums.schedule.common.code.mapper.EnumMapperValue;
 
 public enum MessageType implements EnumMapperType {
-    ADVERTISE("AD", "광고"),
-    NONE("NONE", "해당없음");
+    ADVERTISE("AD", "(광고)"),
+    NONE("NONE", "");
 
     String value;
     String description;

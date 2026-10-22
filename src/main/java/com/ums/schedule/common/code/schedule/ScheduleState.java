@@ -2,26 +2,27 @@ package com.ums.schedule.common.code.schedule;
 
 import com.ums.schedule.common.converter.state.StatusState;
 import com.ums.schedule.common.converter.state.StatusStateType;
-import com.ums.schedule.domain.schedule.state.ScheduleActiveStatus;
-import com.ums.schedule.domain.schedule.state.ScheduleInActiveStatus;
-import com.ums.schedule.domain.schedule.state.ScheduleRunningStatus;
+import com.ums.schedule.orchestrator.domain.schedule.state.ScheduleActiveStatus;
+import com.ums.schedule.orchestrator.domain.schedule.state.ScheduleInActiveStatus;
+import com.ums.schedule.orchestrator.domain.schedule.state.ScheduleRunningStatus;
+import com.ums.schedule.orchestrator.domain.schedule.state.ScheduleStatus;
 
 public enum ScheduleState implements StatusStateType {
     RUNNING("RUNNING","실행중") {
         @Override
-        public StatusState createStatus() {
+        public ScheduleStatus createStatus() {
             return new ScheduleRunningStatus();
         }
     },
     ACTIVE("ACTIVE", "활성화") {
         @Override
-        public StatusState createStatus() {
+        public ScheduleStatus createStatus() {
             return new ScheduleActiveStatus();
         }
     },
     INACTIVE("INACTIVE", "비활성화") {
         @Override
-        public StatusState createStatus() {
+        public ScheduleStatus createStatus() {
             return new ScheduleInActiveStatus();
         }
     };
@@ -47,5 +48,11 @@ public enum ScheduleState implements StatusStateType {
     @Override
     public String description() {
         return this.description;
+    }
+
+
+    @Override
+    public ScheduleStatus createStatus() {
+        return createStatus();
     }
 }

@@ -5,6 +5,7 @@ public enum SendRequestErrorCode implements ErrorCode {
     TEMPLATE_KEY_REQUIRED(ApiResponseCode.BAD_REQUEST, "템플릿 키는 필수 값 입니다."),
     SENDER_KEY_REQUIRED(ApiResponseCode.BAD_REQUEST, "발신 키는 필수 값 입니다."),
     CUSTOMER_KEY_REQUIRED(ApiResponseCode.BAD_REQUEST, "고객 요청 키는 필수 값 입니다."),
+    TARGET_UPLOAD_NOT_COMPLETED(ApiResponseCode.BAD_REQUEST, "대상자가 업로드 되지 않았습니다."),
     REQUEST_CREATED_SUCCESS(ApiResponseCode.SUCCESS, "발송 요청이 정상 처리 되었습니다."),
     DUPLICATED_CUSTOMER_KEY(ApiResponseCode.CONFLICT, "이미 존재하는 고객 키 입니다."),
 

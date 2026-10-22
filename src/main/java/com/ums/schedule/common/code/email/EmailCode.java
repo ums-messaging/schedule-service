@@ -2,12 +2,14 @@ package com.ums.schedule.common.code.email;
 
 import com.ums.schedule.common.code.mapper.EnumMapper;
 import com.ums.schedule.common.code.mapper.EnumMapperType;
+import com.ums.schedule.common.code.message.MessageType;
 
 public enum EmailCode implements EnumMapper {
     ATTACHMENT_TYPE(AttachmentType.class),
+    MESSAGE_TYPE(MessageType.class),
     EMAIL_TYPE(EmailType.class),
     CONVERT_TYPE(ConvertType.class),
-    DNS_QUERY_RESULT(DnsQueryResult.class),
+    DNS_QUERY_RESULT(DnsQueryResultCode.class),
     CACHE_KEY(EmailCacheKey.class),
     ENCODING_TYPE(EmailEncodingType.class),
     MESSAGE_SECTION(EmailMessageSection.class),

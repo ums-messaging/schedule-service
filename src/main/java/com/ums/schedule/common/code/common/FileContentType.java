@@ -38,4 +38,5 @@ public enum FileContentType implements EnumMapperType {
     public String description() {
         return this.description;
     }
+
 }

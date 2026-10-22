@@ -1,8 +1,8 @@
 package com.ums.schedule.common.exception.handler;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.ums.schedule.adapter.api.request.ApiResponse;
-import com.ums.schedule.adapter.api.request.ErrorResponse;
+import com.ums.schedule.orchestrator.adaptor.in.rest.common.ApiResponse;
+import com.ums.schedule.orchestrator.adaptor.in.rest.common.ErrorResponse;
 import com.ums.schedule.common.code.api.ApiResponseCode;
 import com.ums.schedule.common.code.api.ErrorCode;
 import com.ums.schedule.common.code.api.GlobalErrorCode;
@@ -12,7 +12,6 @@ import com.ums.schedule.common.code.mapper.exception.EnumMapperNotFoundException
 import com.ums.schedule.common.exception.BusinessException;
 import com.ums.schedule.common.exception.ExternalSystemException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

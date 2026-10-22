@@ -40,7 +40,7 @@ public class TargetFileReadListener extends AnalysisEventListener<Map<Long, Stri
             SendTargetReadRow row = SendTargetReadRow.of(rowNo, headMap, targetData);
             DomainGroup group = findDomainGroup(row);
             List<SendTargetRequest> targets = groupMap.getOrDefault(group, new ArrayList<>());
-            SendTargetRequest target = SendTargetRequest.of(group, row);
+            SendTargetRequest target = SendTargetRequest.of(this.context.getRequestId(), group, row);
             groupingTargetsAndExecuteWorker(group, target, targets);
         } catch (Exception e) {
             SendTargetReadRow row = SendTargetReadRow.of(rowNo, headMap, targetData);
@@ -124,7 +124,7 @@ public class TargetFileReadListener extends AnalysisEventListener<Map<Long, Stri
         return groupedSendTargetList(targetList, context.getPartitionSize())
                 .entrySet()
                 .stream()
-                .map(v -> SendTargetGroupedList.of(v.getKey(), group, v.getValue()))
+                .map(v -> SendTargetGroupedList.of(v.getKey(), context.getRequestId(), group, v.getValue()))
                 .toList();
     }
     private Map<Integer, List<SendTargetRequest>> groupedSendTargetList(List<SendTargetRequest> targetList, int partitionSize) {

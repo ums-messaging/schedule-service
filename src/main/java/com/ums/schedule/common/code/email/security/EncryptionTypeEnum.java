@@ -4,6 +4,7 @@ package com.ums.schedule.common.code.email.security;
 import com.ums.schedule.common.code.mapper.EnumMapperType;
 
 public enum EncryptionTypeEnum implements EnumMapperType {
+    NONE("NONE", "0"),
     ASE128("ASE-128", "128"),
     ASE256("ASE-256", "256");
 

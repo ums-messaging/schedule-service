@@ -2,6 +2,7 @@ package com.ums.schedule.common.code.target;
 
 import com.ums.schedule.common.code.mapper.EnumMapper;
 import com.ums.schedule.common.code.mapper.EnumMapperType;
+import com.ums.schedule.email.common.code.SendTargetStatus;
 
 public enum SendTargetCode implements EnumMapper {
     TARGET_STATUS(SendTargetStatus.class),
