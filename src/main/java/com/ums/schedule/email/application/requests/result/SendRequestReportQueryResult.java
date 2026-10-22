@@ -1,9 +1,9 @@
 package com.ums.schedule.email.application.requests.result;
 
-import com.ums.schedule.email.adaptor.out.persistence.jpa.entity.EmailSendRequestEntity;
+import com.ums.schedule.email.domain.requests.EmailSendRequest;
 
 public record SendRequestReportQueryResult(
-        EmailSendRequestEntity sendRequest,
+        EmailSendRequest sendRequest,
         Long failCount
 ) {
 }

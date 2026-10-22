@@ -33,9 +33,14 @@ public abstract class BaseEntity {
             this.isNew = true;
         }
     }
+    @PostPersist
+    public void postPersist() {
+        this.lastUpdatedAt = LocalDateTime.now();
+        this.isNew = false;
+    }
+
     @PostLoad
     public void postLoad() {
-        this.lastUpdatedAt = LocalDateTime.now();
         this.isNew = false;
     }
 }

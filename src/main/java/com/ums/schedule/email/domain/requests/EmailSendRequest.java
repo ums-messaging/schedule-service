@@ -1,8 +1,8 @@
 package com.ums.schedule.email.domain.requests;
 
-import com.ums.schedule.email.adaptor.out.persistence.jpa.entity.BaseEntity;
 import com.ums.schedule.email.adaptor.out.persistence.jpa.entity.EmailSendRequestEntity;
 import com.ums.schedule.email.application.requests.command.SendRequestCommand;
+import com.ums.schedule.email.application.target.reader.model.SendTargetsReadResult;
 import com.ums.schedule.email.common.code.EmailSendStatusCode;
 import com.ums.schedule.email.domain.common.SendResult;
 import com.ums.schedule.email.domain.requests.result.SendRequestReport;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
-public class EmailSendRequest extends BaseEntity {
+public class EmailSendRequest {
     private Long id;
     private UUID messageId;
     private Long requestId;
@@ -32,9 +32,11 @@ public class EmailSendRequest extends BaseEntity {
     private SendResult result;
     private Sender sender;
 
+    private LocalDateTime createdAt;
+    private LocalDateTime sendRequestedAt;
     private LocalDateTime sendStartedAt;
     private LocalDateTime sendEndedAt;
-    private LocalDateTime createdAt;
+    private LocalDateTime lastUpdatedAt;
 
     public static EmailSendRequest of(SendRequestCommand command) {
         return new EmailSendRequest(command);
@@ -65,8 +67,11 @@ public class EmailSendRequest extends BaseEntity {
         this.groupCount = entity.getGroupCount();
         this.sendRequestReport = entity.getSendRequestReport();
         this.sendResultReport = entity.getSendResultReport();
-        this.createdAt = entity.getCreatedAt();
         this.result = entity.getResult();
+        this.createdAt = entity.getCreatedAt();
+        this.sendRequestedAt = entity.getSendRequestedAt();
+        this.sendStartedAt = entity.getSendStartedAt();
+        this.sendEndedAt = entity.getSendEndedAt();
     }
 
     public void startSend() {
@@ -81,7 +86,11 @@ public class EmailSendRequest extends BaseEntity {
         this.sendResultReport = sendResultReport;
     }
 
-    public void setSendRequestReport(SendRequestReport report) {
-        this.sendRequestReport = report;
+    public SendRequestReport uploadRequest(SendTargetsReadResult result, Long failCount) {
+        SendRequestReport sendRequestReport = SendRequestReport.of(result, failCount);
+        this.groupCount = result.groupCount();
+        this.sendRequestReport = sendRequestReport;
+        this.sendRequestedAt = LocalDateTime.now();
+        return sendRequestReport;
     }
 }

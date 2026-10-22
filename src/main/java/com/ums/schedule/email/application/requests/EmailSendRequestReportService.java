@@ -19,9 +19,10 @@ public class EmailSendRequestReportService {
 
     @Transactional
     public SendRequestReport updateSendRequestReport(Long requestId, SendTargetsReadResult result) {
-        int failedCount = errorRepository.countRequestFailCount(requestId);
-        SendRequestReport sendReport = SendRequestReport.of(result, failedCount);
-        repository.updateRequestReport(requestId, sendReport);
-        return sendReport;
+        SendRequestReportQueryResult queryResult = repository.findWithRequestFailCountById(requestId);
+        EmailSendRequest sendRequest = queryResult.sendRequest();
+        SendRequestReport sendRequestReport = sendRequest.uploadRequest(result, queryResult.failCount());
+        repository.save(sendRequest);
+        return sendRequestReport;
     }
 }

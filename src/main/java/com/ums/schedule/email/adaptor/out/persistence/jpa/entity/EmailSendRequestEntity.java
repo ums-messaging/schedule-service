@@ -50,6 +50,7 @@ public class EmailSendRequestEntity extends BaseEntity {
     @JoinColumn(name = "messageId")
     private EmailSendMessageEntity message;
 
+    private LocalDateTime sendRequestedAt;
     private LocalDateTime sendStartedAt;
     private LocalDateTime sendEndedAt;
 
@@ -74,6 +75,10 @@ public class EmailSendRequestEntity extends BaseEntity {
         this.requestId = domain.getRequestId();
         this.status = domain.getState().name();
         this.createdAt = domain.getCreatedAt();
+        this.lastUpdatedAt = domain.getLastUpdatedAt();
+        this.sendRequestedAt = domain.getSendRequestedAt();
+        this.sendStartedAt = domain.getSendStartedAt();
+        this.sendEndedAt = domain.getSendEndedAt();
     }
 
     private void assignSendResult(SendResult result) {
@@ -153,6 +158,6 @@ public class EmailSendRequestEntity extends BaseEntity {
         if(this.status.equals(EmailSendStatusCode.COMPLETED.name())) {
            return new SendResultReport(this.sendSuccessCount, this.sendFailCount);
         }
-        return null;
+        return new SendResultReport(0, 0);
     }
 }

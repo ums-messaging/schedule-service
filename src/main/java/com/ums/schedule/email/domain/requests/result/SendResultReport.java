@@ -6,7 +6,10 @@ public record SendResultReport(
         int successCount,
         int failCount
 ) {
-    public static SendResultReport of(SendTargetResultList resultList) {
-        return new SendResultReport(resultList.successList().size(), resultList.errorList().size());
+    public static SendResultReport of(SendResultReport report, SendTargetResultList resultList) {
+        return new SendResultReport(
+                report.successCount() + resultList.successList().size(),
+                report.failCount() + resultList.errorList().size()
+        );
     }
 }

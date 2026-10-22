@@ -5,6 +5,7 @@ import com.ums.schedule.email.adaptor.out.persistence.jpa.entity.EmailSendMessag
 import com.ums.schedule.email.adaptor.out.persistence.jpa.entity.EmailSendRequestEntity;
 import com.ums.schedule.email.adaptor.out.persistence.jpa.repository.EmailSendMessageJpaRepository;
 import com.ums.schedule.email.adaptor.out.persistence.jpa.repository.EmailSendRequestJpaRepository;
+import com.ums.schedule.email.adaptor.out.persistence.jpa.repository.projection.SendRequestReportQueryProjection;
 import com.ums.schedule.email.adaptor.out.persistence.jpa.repository.query.EmailSendRequestQueryRepository;
 import com.ums.schedule.email.adaptor.out.persistence.mapper.SendRequestMapper;
 import com.ums.schedule.email.application.requests.result.SendRequestQueryResult;
@@ -73,9 +74,8 @@ public class EmailSendRequestJpaAdapter implements EmailSendRequestRepository {
     }
 
     @Override
-    public EmailSendRequest updateRequestReport(Long requestId, SendRequestReport report) {
-        EmailSendRequestEntity entity = repository.findById(requestId).orElseThrow();
-        entity.updateSendRequestReport(report);
-        return entity.toDomain();
+    public SendRequestReportQueryResult findWithRequestFailCountById(Long requestId) {
+        SendRequestReportQueryProjection result = queryRepository.countSendRequestReport(requestId).orElseThrow();
+        return new SendRequestReportQueryResult(result.sendRequest().toDomain(), result.failCount());
     }
 }

@@ -28,10 +28,9 @@ public class SendRequestUploadManager {
     @Transactional
     public void upload(SendJob job, SendResult sendResult,  SendTargetResultList resultList) {
         EmailSendRequest sendRequest = repository.findById(job.sendRequestId()).orElseThrow();
-        SendResultReport report = SendResultReport.of(resultList);
+        SendResultReport report = SendResultReport.of(sendRequest.getSendResultReport(), resultList);
         sendRequest.endSend(sendResult, report);
         EmailSendRequest saved = repository.save(sendRequest);
-        log.info("saved = {}", saved.toString());
         SendGroupEventResult result = SendGroupEventResult.of(EmailResultCode.SUCCESS, null);
         dispatcher.publish(SendGroupEventType.SEND_RESULT_UPLOAD, result, resultList);
     }

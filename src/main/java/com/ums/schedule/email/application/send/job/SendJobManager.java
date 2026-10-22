@@ -42,7 +42,6 @@ public class SendJobManager {
         SendTargetReadContext ctx = new EmailTargetReadContext(sendJob, consumer);
         SendTargetsReadResult result = reader.read(jobCommand.downloadUrl(), ctx);
         SendRequestReport sendReport = reportService.updateSendRequestReport(ctx.getRequestId(), result);
-        log.info("sendReport = {}", sendReport);
         return sendReport;
     }
 }

@@ -11,6 +11,7 @@ import com.ums.schedule.email.application.send.mime.model.MimeMessage;
 
 import com.ums.schedule.email.application.send.mime.writer.MimeWriter;
 import com.ums.schedule.email.common.code.SendTargetErrorTypeCode;
+import com.ums.schedule.email.domain.common.SendResult;
 import com.ums.schedule.email.domain.event.SendGroupEventResult;
 import com.ums.schedule.email.domain.event.SendTargetResultList;
 import com.ums.schedule.email.domain.target.SendTargetError;
@@ -54,7 +55,7 @@ public class SendManager {
         List<SendTargetRequest> successList = new ArrayList<>();
         List<SendTargetError> errorList = new ArrayList<>();
         Set<Integer> keySet = groupList.keySet();
-
+        SendGroupEventResult result = SendGroupEventResult.of();
         for (Integer idx : keySet) {
             Path tempFile = null;
             SmtpSessionInfo session = sessionFactory.createSession(mimeMessage.domain());
@@ -74,29 +75,27 @@ public class SendManager {
                         writer.setFinish();
                         send(tempFile, target);
                         successList.add(target);
-
                     } catch (IOException | TemplateException e) {
                         errorList.add(SendTargetError.of(target, SendTargetErrorTypeCode.TEMPLATE_ERROR, e.getMessage()));
-                        log.error("send.error = ", e);
-                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    } catch (RuntimeException e) {
+                        result = SendGroupEventResult.of(EmailResultCode.FAIL, e.getMessage());
                         errorList.add(SendTargetError.of(target, SendTargetErrorTypeCode.SMTP_ERROR, e.getMessage()));
                     }
                 }
-                SendTargetResultList resultList = SendTargetResultList.of(sendRequestId, group, successList, errorList);
-                SendGroupEventResult result = SendGroupEventResult.of(EmailResultCode.SUCCESS, null);
-                dispatcher.publish(SendGroupEventType.SEND_COMPLETED, result, resultList);
-                return resultList;
             } catch (IOException e){
                 log.error("error = ", e);
                 SendTargetResultList resultList = SendTargetResultList.of(sendRequestId, group, successList, errorList);
-                SendGroupEventResult result = SendGroupEventResult.of(EmailResultCode.FAIL, e.getMessage());
                 dispatcher.publish(SendGroupEventType.SEND_COMPLETED, result, resultList);
                 throw e;
             } finally {
                 Files.deleteIfExists(tempFile);
             }
         }
-        return SendTargetResultList.of(sendRequestId, group, successList, errorList);
+        SendTargetResultList resultList = SendTargetResultList.of(sendRequestId, group, successList, errorList);
+        dispatcher.publish(SendGroupEventType.SEND_COMPLETED, result, resultList);
+
+        return resultList;
     }
 
     private void send(Path tempFile, SendTargetRequest target) {
